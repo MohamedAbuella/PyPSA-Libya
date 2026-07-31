@@ -1,0 +1,7 @@
+technology,parameter,value
+# Placeholder file — replace with sourced values before running.
+# Format follows PyPSA-Spain's data_ES/costs/costs_updates.csv (technology, parameter, value).
+# Example rows (DELETE once you have real sourced figures):
+# solar,capital_cost,380
+# onwind,capital_cost,1100
+# CCGT,fuel,7.5

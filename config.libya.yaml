@@ -1,0 +1,49 @@
+# config.libya.yaml
+# Overlay/override file for PyPSA-Earth targeting Libya.
+# Usage: snakemake --configfile config.yaml config.libya.yaml <target>
+# (Snakemake merges configfiles left-to-right; later files override earlier ones.)
+#
+# NOTE: exact key names/paths depend on the PyPSA-Earth version you fork from
+# (config schema changes between releases) — cross-check against the
+# `config.default.yaml` shipped in your fork before running.
+
+run:
+  name: "libya-2030"
+
+countries: ["LY"]
+
+# Libya's real interconnections: Tunisia (west, operational), Egypt (east,
+# operational but limited capacity), and a long-proposed but unbuilt Italy
+# subsea HVDC link (~1000 km, GECOL/Terna feasibility studies since 2007).
+# Model Tunisia + Egypt as border nodes now; keep Italy as an optional
+# scenario switch, not a default assumption.
+electricity:
+  extendable_carriers:
+    Generator: [solar, onwind, OCGT, CCGT]
+    StorageUnit: [battery]
+    Store: [H2]
+  conventional_carriers: [OCGT, CCGT, oil]
+  renewable_carriers: [solar, onwind]
+  co2limit: null   # set explicitly once you define a Libyan decarbonisation target
+                    # (Libya has no NECP-equivalent; NDC/vision-2040 targets are
+                    # far less quantified than Spain's PNIEC — treat this as a
+                    # scenario assumption, not a given, and state that in the paper)
+
+atlite:
+  cutouts:
+    africa-2013-era5:
+      module: era5
+      x: [9., 26.]     # rough Libya bounding box, tighten after first run
+      y: [19., 34.]
+      time: ["2013-01-01", "2013-12-31"]
+
+clustering:
+  n_clusters: [1, 4, 8, 15, 25, 40]   # mirrors PyPSA-Spain's node-count sweep
+                                       # (Table 1 / Fig. 11-14 style sensitivity)
+
+costs:
+  year: 2030
+  # Point to Libya-specific overrides, same pattern as PyPSA-Spain's
+  # data_ES/costs/costs_updates.csv
+  # (technology, parameter, value) triples
+  # e.g. higher capital cost for imported components due to logistics/tariffs

@@ -1,18 +1,61 @@
-# PyPSA meets Africa (currenlty under prototype development)
+# PyPSA-Libya
 
-[![GitHub Super-Linter](https://github.com/pz-max/pypsa-meets-africa/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+An open, high-resolution model of the Libyan electricity system, built on
+[PyPSA-Earth](https://github.com/pypsa-meets-earth/pypsa-earth), following the
+national-fork methodology introduced by
+[PyPSA-Spain](https://doi.org/10.1016/j.esr.2025.101764)
+(Gallego-Castillo & Victoria, *Energy Strategy Reviews*, 2025).
 
+## Why a national fork instead of PyPSA-Africa / PyPSA-Earth directly?
 
-PyPSA meets Africa is a free and open source software project aiming to develop a powerful energy system model for Africa. The tool which is currenlty under development and will be heavily based on [PyPSA](https://pypsa.readthedocs.io/en/latest/) and [PyPSA-Eur](https://pypsa-eur.readthedocs.io/en/latest/). A short presentation about our project and its aims is given on our [preliminary website](https://max-parzen.github.io/Project_PyPSA_Africa.html). There you can also sign-up to our Newsletter. 
+A single-country model allows finer spatial and temporal resolution for the
+same compute budget than a continental model, and lets national datasets
+(GECOL capacity data, historical generation, national cost assumptions)
+override the continental defaults — the same rationale PyPSA-Spain gives for
+forking PyPSA-Eur instead of using it directly on Spain alone.
 
-Watch our latest discusson with African leaders about [Open Energy System Modelling in Africa: State of the Art and Future Opportunities](https://www.youtube.com/watch?v=E0V0T4U9nmQ). Let's work together for a better future.
+## Status
 
+🚧 Early scaffold — configuration and data-collection stage, not yet a
+validated model. See `REPO_STRUCTURE.md` for the repository architecture and
+what is/isn't tracked in git.
 
-The python package requirements are curated in the `envs/environment.yml` file.
-The environment can be installed and activated using
+## Quickstart
 
-    .../pypsa_meets_africa % conda env create -f envs/environment.yml
+```bash
+mamba env create -f envs/environment.yaml
+conda activate pypsa-earth
+snakemake --configfile config.yaml config.libya.yaml -j4 solve_all_networks
+```
 
-    .../pypsa_meets_africa % conda activate pypsa-africa
+## Data availability
 
-The development will be documented along the way with [automated readthedocs documentation](https://pypsa-meets-africa.readthedocs.io/en/latest/index.html).
+Large regenerable artifacts (weather cutouts, solved network `.nc` files,
+full result sets) are **not** stored in this repository. Pre-computed inputs
+and published results are archived at:
+
+> [ADD Zenodo/OSF DOI link here once published]
+
+## Known limitations vs. PyPSA-Spain
+
+Libya lacks equivalents of Spain's Datadis (hourly demand by region) and
+ESIOS (capacity by region) APIs, so the renewable-profile correction and
+demand-disaggregation methods from PyPSA-Spain are not yet transferable
+as-is — see `REPO_STRUCTURE.md` §7 for details and what data would be needed
+to close that gap.
+
+## Citing
+
+If you use this model, please cite this repository and the methodological
+basis:
+
+```
+Gallego-Castillo, C., Victoria, M., 2025. PyPSA-Spain: An extension of
+PyPSA-Eur to model the Spanish energy system. Energy Strategy Reviews 60,
+101764. https://doi.org/10.1016/j.esr.2025.101764
+```
+
+## License
+
+[Match the upstream PyPSA-Earth license — MIT/AGPL depending on component,
+check LICENSES/ in the fork before publishing.]
