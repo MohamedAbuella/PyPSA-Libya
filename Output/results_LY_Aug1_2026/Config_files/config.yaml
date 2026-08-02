@@ -1,0 +1,62 @@
+# config.yaml
+# Single override file for a SMALL, FAST first test run of PyPSA-Earth on Libya.
+
+run:
+  name: "libya-test"
+
+countries: ["LY"]
+
+snapshots:
+  start: "2013-01-01"
+  end: "2013-01-02"
+  inclusive: "left"
+
+enable:
+  retrieve_databundle: true
+  download_osm_data: true
+  retrieve_cost_data: true
+  retrieve_cutout: false
+  build_cutout: true
+  build_natura_raster: false
+  retrieve_databundle_sector: false
+  download_global_buildings: false
+
+atlite:
+  nprocesses: 2
+  default: cutout-2013-era5
+  cutouts:
+    cutout-2013-era5:
+      module: era5
+      dx: 0.3
+      dy: 0.3
+      x: [9.0, 26.0]
+      y: [19.0, 34.0]
+
+electricity:
+  extendable_carriers:
+    Generator: [solar, onwind, OCGT, CCGT]
+    StorageUnit: [battery]
+    Store: [H2]
+  conventional_carriers: [OCGT, CCGT, oil]
+  renewable_carriers: [solar, onwind]
+
+scenario:
+  clusters: [8]
+
+clustering:
+  distribute_cluster: ["load"]
+  focus_weights:
+    LY: 1.0
+ 
+co2:
+  limit: 1.0e9   # instead #limit: null, now placeholder — no real Libyan CO2 target exists yet;
+                 # set deliberately non-binding for first test run
+
+costs:
+  year: 2030
+
+solving:
+  solver:
+    name: highs
+    options: highs-default
+  mem: 4000
