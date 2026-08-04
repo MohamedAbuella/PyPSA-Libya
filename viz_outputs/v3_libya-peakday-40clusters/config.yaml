@@ -1,0 +1,73 @@
+# config.yaml
+# PyPSA-Earth override for Libya — FULL YEAR, 40-CLUSTER RESOLUTION run.
+
+run:
+  name: "libya-year-40AggBuses"   # updated run name -> writes to a fresh
+                             # resources/networks/results folder ("Year" run), so this
+                             # run won't collide with or overwrite your
+                             # earlier test results
+
+countries: ["LY"]
+
+# =================== CHANGE 1: Entire Year 2013 ===================
+snapshots:
+  start: "2013-01-01"
+  end: "2014-01-01"
+  inclusive: "left"
+
+enable:
+  retrieve_databundle: true
+  download_osm_data: true
+  retrieve_cost_data: true
+  retrieve_cutout: false
+  build_cutout: true
+  build_natura_raster: false
+  retrieve_databundle_sector: false
+  download_global_buildings: false
+
+atlite:
+  nprocesses: 2
+  default: cutout-2013-era5
+  cutouts:
+    cutout-2013-era5:
+      module: era5
+      dx: 0.3
+      dy: 0.3
+      x: [9.0, 26.0]
+      y: [19.0, 34.0]
+      # time intentionally left unset — build_cutout derives it from the
+      # `snapshots:` block above, so it will build for the full year 2013.
+
+electricity:
+  extendable_carriers:
+    Generator: [solar, onwind, OCGT, CCGT]
+    StorageUnit: [battery]
+    Store: [H2]
+  conventional_carriers: [OCGT, CCGT, oil]
+  renewable_carriers: [solar, onwind]
+
+# =================== CHANGE 2: 40 clusters instead of 100 ===================
+scenario:
+  clusters: [40]
+
+clustering:
+  distribute_cluster: ["load"]
+  focus_weights:
+    LY: 1.0
+
+co2:
+  limit: 1.0e9   # still a non-binding placeholder — no real Libyan CO2
+                 # target defined yet
+
+costs:
+  year: 2030
+
+solving:
+  solver:
+    name: highs
+    options: highs-default
+  mem: 8000   # kept at 8000 for 40 clusters — comfortably under your 23.3 GB
+              # usable RAM. Snakemake will still auto-compute the actual
+              # solve_network memory *request* based on problem size (watch
+              # the dry-run "mem=" value); this setting mainly affects other
+              # jobs' resource requests, not a hard local cap.

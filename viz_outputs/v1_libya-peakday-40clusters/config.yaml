@@ -1,0 +1,88 @@
+# config.yaml
+# PyPSA-Earth override for Libya — PEAK DAY, MAX RESOLUTION test run.
+
+run:
+  name: "Libya-peakday_40AggBuses"   # new run name -> writes to a fresh
+                                 # resources/networks/results folder, so this
+                                 # run won't collide with or overwrite your
+                                 # earlier "libya-test" results
+
+countries: ["LY"]
+
+# =================== CHANGE 1: peak demand day instead of Jan 1 ===================
+snapshots:
+  start: "2013-08-21"
+  end: "2013-08-22"
+  inclusive: "left"
+# NOTE: this assumes Aug 21, 2013 is the peak-demand day in whichever demand
+# dataset the workflow uses (the SSP2-2.6 synthetic demand profile, per the
+# "Demand data folder: data\ssp2-2.6\2030\era5_2013" line you've seen in
+# every run so far) — not necessarily real historical GECOL demand data.
+# Worth stating that distinction explicitly if this ends up in the paper.
+
+enable:
+  retrieve_databundle: true
+  download_osm_data: true
+  retrieve_cost_data: true
+  retrieve_cutout: false
+  build_cutout: true
+  build_natura_raster: false
+  retrieve_databundle_sector: false
+  download_global_buildings: false
+
+atlite:
+  nprocesses: 2
+  default: cutout-2013-era5
+  cutouts:
+    cutout-2013-era5:
+      module: era5
+      dx: 0.3
+      dy: 0.3
+      x: [9.0, 26.0]
+      y: [19.0, 34.0]
+      # time intentionally left unset — build_cutout derives it from the
+      # `snapshots:` block above, so it will now build for Aug 21 instead
+      # of Jan 1 automatically.
+
+electricity:
+  extendable_carriers:
+    Generator: [solar, onwind, OCGT, CCGT]
+    StorageUnit: [battery]
+    Store: [H2]
+  conventional_carriers: [OCGT, CCGT, oil]
+  renewable_carriers: [solar, onwind]
+
+# =================== CHANGE 2: max available clusters, not 8 ===================
+scenario:
+  clusters: [40]
+  # The workflow's actual ceiling is 117 ("Number of clusters must be
+  # 8 <= n_clusters <= 117 for this selection of countries" — the total
+  # bus count after simplify_network, i.e. 117 = NO aggregation at all).
+  # A dry run at 117 clusters requested ~32.8 GB for solve_network, which
+  # doesn't fit safely on a 24 GB (23.3 GB usable) machine. 40 clusters is
+  # a middle ground: meaningfully more detailed than the earlier 8-cluster
+  # test, but a much smaller LP than the full 117. If this also strains
+  # memory, drop toward 25-30; if it solves comfortably, 50-60 could be
+  # tried next as a step up before jumping to the full 117.
+
+clustering:
+  distribute_cluster: ["load"]
+  focus_weights:
+    LY: 1.0
+
+co2:
+  limit: 1.0e9   # still a non-binding placeholder — no real Libyan CO2
+                 # target defined yet
+
+costs:
+  year: 2030
+
+solving:
+  solver:
+    name: highs
+    options: highs-default
+  mem: 8000   # kept at 8000 for 40 clusters — comfortably under your 23.3 GB
+              # usable RAM. Snakemake will still auto-compute the actual
+              # solve_network memory *request* based on problem size (watch
+              # the dry-run "mem=" value); this setting mainly affects other
+              # jobs' resource requests, not a hard local cap.
