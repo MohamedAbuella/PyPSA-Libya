@@ -19,21 +19,16 @@ import matplotlib.cm as cm
 import matplotlib.colors as mcolors
 from matplotlib.lines import Line2D
 
-# Cartopy import for geographic basemaps
-try:
-    import cartopy.crs as ccrs
-    import cartopy.feature as cfeature
-    HAS_CARTOPY = True
-except ImportError:
-    HAS_CARTOPY = False
-    print("Warning: cartopy not found. Falling back to simple coordinate plotting.")
 
 # =====================================================================
-# CONFIGURATION
+# RUN CONFIGURATION
 # =====================================================================
 
 CLUSTERS = 36  
-HOURS = 6
+
+# HOURS = 6
+HOURS = 3
+
 USE_CCL = False
 
 RUN_NAME_BY_CLUSTERS = {
@@ -47,6 +42,89 @@ RUN_NAME = RUN_NAME_BY_CLUSTERS.get(CLUSTERS, f"libya-year-{CLUSTERS}clusters")
 ccl_suffix = "_CCL" if USE_CCL else ""
 OUT_DIR = os.path.join("viz_outputs", f"libya-year-{CLUSTERS}clusters-{HOURS}h{ccl_suffix}")
 os.makedirs(OUT_DIR, exist_ok=True)
+
+
+
+# Cartopy import for geographic basemaps
+try:
+    import cartopy.crs as ccrs
+    import cartopy.feature as cfeature
+    HAS_CARTOPY = True
+except ImportError:
+    HAS_CARTOPY = False
+    print("Warning: cartopy not found. Falling back to simple coordinate plotting.")
+
+# =====================================================================
+# COASTAL LINE ROUTING CONFIGURATION (LIBYA LAND BOUNDARY)
+# =====================================================================
+
+COAST_LONS = np.array([
+    9.0, 11.5, 12.08, 12.73, 13.19, 14.26, 14.57, 15.09, 
+    15.25, 15.50, 15.80, 16.20, 16.59, 17.50, 18.56, 19.20,
+    19.57, 19.80, 20.00, 20.10, 20.20, 20.30, 20.50, 20.83, 
+    21.75, 22.64, 23.96, 25.09, 26.0
+])
+
+COAST_LATS = np.array([
+    33.0, 33.1, 32.93, 32.76, 32.89, 32.65, 32.47, 32.38, 
+    31.40, 31.20, 31.12, 31.15, 31.21, 30.80, 30.51, 30.35,
+    30.41, 30.42, 30.50, 30.60, 31.20, 32.00, 32.10, 32.49, 
+    32.76, 32.77, 32.08, 31.76, 31.50
+])
+
+def get_coast_lat(lon):
+    """Returns the latitude of the Libyan coastline at a given longitude."""
+    return np.interp(lon, COAST_LONS, COAST_LATS)
+
+def route_line_land(x0, y0, x1, y1, land_offset=0.13, num_pts=50, allow_waypoint=True):
+    """
+    Routes transmission lines safely on land following coastal contours if 
+    a straight Euclidean segment crosses water. Inland lines remain straight.
+    """
+    if x0 == x1 or (abs(x0 - x1) < 1e-5 and abs(y0 - y1) < 1e-5):
+        return [x0, x1], [y0, y1]
+
+    # Special waypoint routing for the Gulf of Sirte corner (Brega/Ajdabiya to Benghazi corridor)
+    # where lines connect southwest (lon < 20.15, lat < 30.8) to north (lon 19.8-20.4, lat > 31.3)
+    min_x, max_x = min(x0, x1), max(x0, x1)
+    min_y, max_y = min(y0, y1), max(y0, y1)
+
+    is_region2_crossing = (
+        (min_x < 20.15 and max_x > 19.8) and
+        (min_y < 30.8 and max_y > 31.3)
+    )
+
+    if is_region2_crossing and allow_waypoint:
+        x_mid, y_mid = 20.32, 30.70  # Inland waypoint east of Ajdabiya
+        xs1, ys1 = route_line_land(x0, y0, x_mid, y_mid, land_offset=land_offset, num_pts=num_pts//2, allow_waypoint=False)
+        xs2, ys2 = route_line_land(x_mid, y_mid, x1, y1, land_offset=land_offset, num_pts=num_pts//2, allow_waypoint=False)
+        return np.concatenate([xs1, xs2]), np.concatenate([ys1, ys2])
+
+    xs = np.linspace(x0, x1, num_pts)
+    ys_linear = np.linspace(y0, y1, num_pts)
+    coast_lats = get_coast_lat(xs) - land_offset
+    
+    # Clamp y-coordinates to stay on land (south of coastal water)
+    ys_land = np.minimum(ys_linear, coast_lats)
+    ys_land[0] = y0
+    ys_land[-1] = y1
+    
+    # Smooth line path if it was adjusted landward
+    if num_pts > 5 and np.any(ys_linear > coast_lats):
+        kernel_size = 5
+        kernel = np.ones(kernel_size) / kernel_size
+        ys_smooth = np.convolve(ys_land, kernel, mode='same')
+        ys_smooth[0] = y0
+        ys_smooth[1] = ys_land[1]
+        ys_smooth[-2] = ys_land[-2]
+        ys_smooth[-1] = y1
+        ys_land = np.minimum(ys_smooth, coast_lats)
+        ys_land[0] = y0
+        ys_land[-1] = y1
+
+    return xs, ys_land
+
+
 
 print("=" * 70)
 print(f"RUN CONFIGURATION: Clusters={CLUSTERS}, Resolution={HOURS}h, USE_CCL={USE_CCL}")
@@ -220,7 +298,8 @@ def draw_base_lines(base_network, ax, color="tab:orange", alpha=0.75, linewidth=
         x0, y0 = find_bus_coords(base_network, row.bus0)
         x1, y1 = find_bus_coords(base_network, row.bus1)
         if x0 is not None and x1 is not None and (x0 != x1 or y0 != y1):
-            ax.plot([x0, x1], [y0, y1], c=color, lw=linewidth, alpha=alpha, zorder=2)
+            xs, ys = route_line_land(x0, y0, x1, y1)
+            ax.plot(xs, ys, c=color, lw=linewidth, alpha=alpha, zorder=2)
             lines_drawn += 1
     return lines_drawn
 
@@ -439,7 +518,7 @@ else:
 
 active_carriers = [c for c in colors.keys() if c in total_dispatch.columns and total_dispatch[c].sum() > 1e-3]
 
-# Annual Time Series Area Plot (Fixed using matplotlib stackplot for explicit color assignment)
+# Annual Time Series Area Plot
 if active_carriers:
     fig, ax = plt.subplots(figsize=(14, 6))
     
@@ -805,7 +884,8 @@ for idx, row in n.lines.iterrows():
         val = metric_series.get(idx, 0.0)
         line_color = cmap_lines(norm_metric(val)) if val > (min_val + 0.05 * (max_val - min_val)) else "#a1a1aa"
         linewidth = 1.0 + 3.0 * norm_metric(val)
-        ax.plot([x0, x1], [y0, y1], color=line_color, lw=linewidth, zorder=3, alpha=0.85)
+        xs, ys = route_line_land(x0, y0, x1, y1)
+        ax.plot(xs, ys, color=line_color, lw=linewidth, zorder=3, alpha=0.85)
 
 top_10_lines = metric_series.head(10)
 line_offsets = [
@@ -820,8 +900,10 @@ for i, idx in enumerate(top_10_lines.index):
         x0, y0 = find_bus_coords(n, row.bus0)
         x1, y1 = find_bus_coords(n, row.bus1)
         if x0 is not None and x1 is not None:
-            mid_x = (x0 + x1) / 2.0
-            mid_y = (y0 + y1) / 2.0
+            xs, ys = route_line_land(x0, y0, x1, y1)
+            mid_idx = len(xs) // 2
+            mid_x = xs[mid_idx]
+            mid_y = ys[mid_idx]
             
             raw_offset = line_offsets[i % len(line_offsets)]
             safe_offset = get_safe_offset(mid_x, mid_y, raw_offset)
