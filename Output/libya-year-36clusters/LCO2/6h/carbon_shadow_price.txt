@@ -1,0 +1,13 @@
+=================================================================
+ PyPSA-Libya — CO2 Constraint & Shadow Price Report (Full Year (8760 Hours))
+=================================================================
+
+Target CO2 Limit Cap         : 0.00 Tonnes
+CO2 Dual Value (mu)          : -25,749.9320
+
+-----------------------------------------------------------------
+EQUIVALENT CARBON TAX VALUE  : €25,749.93 / Tonne CO2
+-----------------------------------------------------------------
+
+Interpretation: The CO2 cap was active and binding. This value represents
+                the exact marginal cost of eliminating the final ton of CO2.
