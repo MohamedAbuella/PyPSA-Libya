@@ -1,0 +1,14 @@
+===========================================================================
+PyPSA-Libya: Levelized Cost of Hydrogen (LCOH) Export Results
+===========================================================================
+
+            Total Cost [Billion EUR]  Exported H2 [TWh]  LCOH [EUR/MWh]  LCOH [EUR/kg]
+Scenario A                  6.715456          70.191781       95.672975       3.188780
+Scenario B                  4.739906          70.191781       67.527941       2.250706
+Scenario C                  3.602212          70.191781       51.319564       1.710481
+
+===========================================================================
+Notes:
+ - LCOH [EUR/MWh] = Total Annualized System Cost / Exported H2 Energy
+ - LCOH [EUR/kg] assumed H2 Lower Heating Value (LHV) = 0.03333 MWh/kg
+===========================================================================
