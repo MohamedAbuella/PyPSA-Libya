@@ -24,17 +24,40 @@ import matplotlib.patches as mpatches
 # PATH CONFIGURATION
 # =====================================================================
 
+#### H2 export, week
+
 # RESULTS = {
 #     "Scenario A": r"Output\libya_h2export_test\scenario_a\postnetworks\elec_s_36_ec_lcopt_Co2L-3h_144h_2030_0.071_AB_0.25export.nc",
 #     "Scenario B": r"Output\libya_h2export_test\scenario_b\postnetworks\elec_s_36_ec_lcopt_Co2L-3h_144h_2030_0.071_AB_0.25export.nc",
 #     "Scenario C": r"Output\libya_h2export_test\scenario_c\postnetworks\elec_s_36_ec_lcopt_Co2L-3h_144h_2030_0.071_AB_0.25export.nc",
 #           }
 
+
+### H2 export, year, 6-hrs 
+
+# RESULTS = {
+#     "Scenario A": r"Output\libya_h2export_test\scenario_a\postnetworks\elec_s_36_ec_lcopt_Co2L-6h_144h_2030_0.071_AB_70export.nc",
+#     "Scenario B": r"Output\libya_h2export_test\scenario_b\postnetworks\elec_s_36_ec_lcopt_Co2L-6h_144h_2030_0.071_AB_70export.nc",
+#     "Scenario C": r"Output\libya_h2export_test\scenario_c\postnetworks\elec_s_36_ec_lcopt_Co2L-6h_144h_2030_0.071_AB_70export.nc",
+#           }
+
+
+### H2 export, year, 6-hrs 
+
 RESULTS = {
-    "Scenario A": r"Output\libya_h2export_test\scenario_a\postnetworks\elec_s_36_ec_lcopt_Co2L-6h_144h_2030_0.071_AB_70export.nc",
-    "Scenario B": r"Output\libya_h2export_test\scenario_b\postnetworks\elec_s_36_ec_lcopt_Co2L-6h_144h_2030_0.071_AB_70export.nc",
-    "Scenario C": r"Output\libya_h2export_test\scenario_c\postnetworks\elec_s_36_ec_lcopt_Co2L-6h_144h_2030_0.071_AB_70export.nc",
+    "Scenario A": r"Output\libya_h2export_test\scenario_a\3hrs\postnetworks\elec_s_36_ec_lcopt_Co2L-3h_144h_2030_0.071_AB_70export.nc",
+    "Scenario B": r"Output\libya_h2export_test\scenario_b\3hrs\postnetworks\elec_s_36_ec_lcopt_Co2L-3h_144h_2030_0.071_AB_70export.nc",
+    "Scenario C": r"Output\libya_h2export_test\scenario_c\3hrs\postnetworks\elec_s_36_ec_lcopt_Co2L-3h_144h_2030_0.071_AB_70export.nc",
           }
+
+
+#### No H2 export, year
+
+# RESULTS = {
+#     "Scenario A": r"Output\libya_h2export_test\scenario_a\No_Hydrogen_H2_0\postnetworks\elec_s_36_ec_lcopt_Co2L-6h_144h_2030_0.071_AB_0export.nc",
+#     "Scenario B": r"Output\libya_h2export_test\scenario_b\No_Hydrogen_H2_0\postnetworks\elec_s_36_ec_lcopt_Co2L-6h_144h_2030_0.071_AB_0export.nc",
+#     "Scenario C": r"Output\libya_h2export_test\scenario_c\No_Hydrogen_H2_0\postnetworks\elec_s_36_ec_lcopt_Co2L-6h_144h_2030_0.071_AB_0export.nc",
+#           }
 
 
 OUT_DIR = "viz_outputs/h2_scenario_comparison"
@@ -272,3 +295,162 @@ else:
 print("\n" + "=" * 70)
 print("Execution Complete.")
 print("=" * 70)
+
+
+
+# =====================================================================
+# 3. LCOE & LCOH (Levelized Cost Analysis) Computation & Text Exports
+# =====================================================================
+print("\n" + "=" * 70)
+print("Computing System LCOE and Net-Cost Allocated LCOH across Scenarios")
+print("=" * 70)
+
+# Paths to Baseline Reference Networks (0 TWh H2 Export) for Option B Net-Cost Allocation
+BASELINE_RESULTS = {
+    "Scenario A": r"Output\libya_h2export_test\scenario_a\No_Hydrogen_H2_0\postnetworks\elec_s_36_ec_lcopt_Co2L-6h_144h_2030_0.071_AB_0export.nc",
+    "Scenario B": r"Output\libya_h2export_test\scenario_b\No_Hydrogen_H2_0\postnetworks\elec_s_36_ec_lcopt_Co2L-6h_144h_2030_0.071_AB_0export.nc",
+    "Scenario C": r"Output\libya_h2export_test\scenario_c\No_Hydrogen_H2_0\postnetworks\elec_s_36_ec_lcopt_Co2L-6h_144h_2030_0.071_AB_0export.nc",
+}
+
+DEFAULT_EXPORT_H2_MWH = 70 * 1e6      # 70 TWh export target in MWh
+DEFAULT_DOMESTIC_AC_MWH = 52.04 * 1e6 # 52.04 TWh AC domestic demand in MWh
+
+# Hydrogen Heating Values:
+# Lower Heating Value (LHV): 33.33 kWh/kg = 0.03333 MWh/kg
+# Higher Heating Value (HHV): 39.41 kWh/kg = 0.03941 MWh/kg
+H2_LHV_MWH_PER_KG = 0.03333           
+H2_HHV_MWH_PER_KG = 0.03941           
+
+lcoe_results = {}
+lcoh_results_main = {}
+lcoh_results_summary = {}
+
+for scenario_name, export_path in RESULTS.items():
+    if not os.path.exists(export_path) or scenario_name not in scenario_costs:
+        continue
+
+    # ------------------------------------------------------------------
+    # A. Combined System-Wide Levelized Cost of Energy (LCOE) Calculation
+    # ------------------------------------------------------------------
+    n_export = pypsa.Network(export_path)
+    total_system_cost_eur = scenario_costs[scenario_name].sum()
+    
+    # Extract Domestic AC Load Served
+    domestic_ac_mwh = 0.0
+    ac_loads = n_export.loads[n_export.loads.carrier == "AC"]
+    if not ac_loads.empty and not n_export.loads_t.p.empty:
+        weights = n_export.snapshot_weightings.generators
+        domestic_ac_mwh = n_export.loads_t.p[ac_loads.index].mul(weights, axis=0).sum().sum()
+    if domestic_ac_mwh <= 0:
+        domestic_ac_mwh = DEFAULT_DOMESTIC_AC_MWH
+
+    # Extract Exported H2 Energy
+    exported_h2_mwh = 0.0
+    h2_export_loads = n_export.loads[n_export.loads.carrier.str.contains("H2|h2|export", case=False, na=False)]
+    if not h2_export_loads.empty and not n_export.loads_t.p.empty:
+        weights = n_export.snapshot_weightings.generators
+        exported_h2_mwh = n_export.loads_t.p[h2_export_loads.index].mul(weights, axis=0).sum().sum()
+    if exported_h2_mwh <= 0:
+        exported_h2_mwh = DEFAULT_EXPORT_H2_MWH
+
+    # Total Multi-Carrier System Energy Demand (Electricity + H2 Export)
+    total_system_energy_mwh = domestic_ac_mwh + exported_h2_mwh
+
+    # Calculate Overall System LCOE across all energy served
+    lcoe_system_eur_per_mwh = total_system_cost_eur / total_system_energy_mwh
+    
+    lcoe_results[scenario_name] = {
+        "Total System Cost [Billion EUR]": total_system_cost_eur / 1e9,
+        "Domestic AC Demand [TWh]": domestic_ac_mwh / 1e6,
+        "Exported H2 Energy [TWh]": exported_h2_mwh / 1e6,
+        "Total System Energy [TWh]": total_system_energy_mwh / 1e6,
+        "System LCOE [EUR/MWh]": lcoe_system_eur_per_mwh,
+    }
+
+    # ------------------------------------------------------------------
+    # B. Net-Cost Allocated LCOH Calculation (Option B - Table Split)
+    # ------------------------------------------------------------------
+    base_path = BASELINE_RESULTS.get(scenario_name)
+    if base_path and os.path.exists(base_path):
+        print(f"Loading 0-Export baseline network for net LCOH: {scenario_name}...")
+        n_base = pypsa.Network(base_path)
+        
+        # Calculate annualized baseline cost for 0 TWh H2 export
+        capex_base = capex_by_category(n_base).sum()
+        opex_base = operating_cost(n_base)
+        baseline_cost_eur = capex_base + opex_base
+        
+        # Incremental H2 cost = Total Export Run Cost - Baseline Run Cost
+        net_h2_cost_eur = total_system_cost_eur - baseline_cost_eur
+
+        # Net LCOH metrics (per MWh, per kg LHV, and per kg HHV)
+        lcoh_eur_per_mwh = net_h2_cost_eur / exported_h2_mwh
+        lcoh_eur_per_kg_lhv = lcoh_eur_per_mwh * H2_LHV_MWH_PER_KG
+        lcoh_eur_per_kg_hhv = lcoh_eur_per_mwh * H2_HHV_MWH_PER_KG
+
+        # Table 1: Cost Breakdown & Export Volume
+        lcoh_results_main[scenario_name] = {
+            "Export Run Cost [B EUR]": total_system_cost_eur / 1e9,
+            "Baseline Cost [B EUR]": baseline_cost_eur / 1e9,
+            "Net H2 Cost [B EUR]": net_h2_cost_eur / 1e9,
+            "Exported H2 [TWh]": exported_h2_mwh / 1e6,
+            "Net LCOH [EUR/MWh]": lcoh_eur_per_mwh,
+        }
+
+        # Table 2: Dedicated Unit Conversion Metrics
+        lcoh_results_summary[scenario_name] = {
+            "Net LCOH [EUR/MWh]": lcoh_eur_per_mwh,
+            "Net LCOH LHV [EUR/kg]": lcoh_eur_per_kg_lhv,
+            "Net LCOH HHV [EUR/kg]": lcoh_eur_per_kg_hhv,
+        }
+    else:
+        print(f"[WARNING] Baseline network file not found for {scenario_name} at: {base_path}")
+
+# ------------------------------------------------------------------
+# Save Reports to File
+# ------------------------------------------------------------------
+if lcoe_results:
+    lcoe_df = pd.DataFrame(lcoe_results).T
+    print("\n" + "=" * 50 + "\nSYSTEM LCOE RESULTS\n" + "=" * 50)
+    print(lcoe_df.to_string())
+
+    lcoe_txt_path = os.path.join(OUT_DIR, "LCOE_summary_results.txt")
+    with open(lcoe_txt_path, "w", encoding="utf-8") as f:
+        f.write("=" * 85 + "\n")
+        f.write("PyPSA-Libya: Combined System-Wide Levelized Cost of Energy (LCOE) Results\n")
+        f.write("=" * 85 + "\n\n")
+        f.write(lcoe_df.to_string())
+        f.write("\n\n" + "=" * 85 + "\n")
+        f.write("Notes:\n")
+        f.write(" - Total System Cost includes all capital and operational costs for electricity, H2 export, and industrial carriers.\n")
+        f.write(" - Total System Energy = Domestic AC Electricity Demand + Exported Hydrogen Energy\n")
+        f.write(" - System LCOE [EUR/MWh] = Total System Cost / Total System Energy\n")
+        f.write("=" * 85 + "\n")
+    print(f"\nSaved LCOE summary report -> {lcoe_txt_path}")
+
+if lcoh_results_main:
+    lcoh_main_df = pd.DataFrame(lcoh_results_main).T
+    lcoh_summary_df = pd.DataFrame(lcoh_results_summary).T
+
+    print("\n" + "=" * 50 + "\nNET ALLOCATED LCOH RESULTS (OPTION B)\n" + "=" * 50)
+    print(lcoh_main_df.to_string())
+    print("\n" + lcoh_summary_df.to_string())
+
+    lcoh_txt_path = os.path.join(OUT_DIR, "LCOH_summary_results.txt")
+    with open(lcoh_txt_path, "w", encoding="utf-8") as f:
+        f.write("=" * 95 + "\n")
+        f.write("PyPSA-Libya: Net Levelized Cost of Hydrogen (LCOH) Export Results (Option B)\n")
+        f.write("=" * 95 + "\n\n")
+        f.write("--- Table 1: Cost Allocation & Net LCOH Breakdown ---\n")
+        f.write(lcoh_main_df.to_string())
+        f.write("\n\n")
+        f.write("--- Table 2: Net LCOH Unit Summary (MWh vs. LHV / HHV per kg) ---\n")
+        f.write(lcoh_summary_df.to_string())
+        f.write("\n\n" + "=" * 95 + "\n")
+        f.write("Notes:\n")
+        f.write(" - Net H2 Cost = Export System Cost - 0-Export Baseline Cost\n")
+        f.write(" - Net LCOH = Net H2 Cost / Exported H2 Energy\n")
+        f.write(f" - Assumed H2 Lower Heating Value (LHV) = {H2_LHV_MWH_PER_KG} MWh/kg (33.33 kWh/kg)\n")
+        f.write(f" - Assumed H2 Higher Heating Value (HHV) = {H2_HHV_MWH_PER_KG} MWh/kg (39.41 kWh/kg)\n")
+        f.write("=" * 95 + "\n")
+    print(f"\nSaved Net LCOH summary report -> {lcoh_txt_path}")
