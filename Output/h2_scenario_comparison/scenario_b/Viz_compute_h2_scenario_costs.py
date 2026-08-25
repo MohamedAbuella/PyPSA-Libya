@@ -14,11 +14,20 @@ Run from pypsa-libya folder in pypsa-earth conda environment:
     python compute_h2_scenario_costs.py
 """
 
+
 import os
+import re
+import math
 import pypsa
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+
+import matplotlib.cm as cm
+import matplotlib.colors as mcolors
+from matplotlib.lines import Line2D
+
 
 # =====================================================================
 # PATH CONFIGURATION
@@ -208,8 +217,10 @@ else:
     plt.close(fig)
     print(f"\nSaved cost comparison chart -> {out_path}")
 
-    # ------------------------------------------------------------------
-    # 2. Spatial Investment Maps for All Scenarios (A, B, and C)
+
+
+# ------------------------------------------------------------------
+    # 2.1 Spatial Investment (Financial CAPEX) Maps for All Scenarios (A, B, C)
     # ------------------------------------------------------------------
     def per_bus_capex(net):
         frames = []
@@ -223,6 +234,11 @@ else:
             cost = l.capital_cost * l.p_nom_opt
             cat = l.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(c))
             frames.append(pd.DataFrame({"bus": l.bus0, "category": cat, "cost": cost}))
+        if not net.stores.empty:
+            s = net.stores
+            cost = s.capital_cost * s.e_nom_opt
+            cat = s.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(c))
+            frames.append(pd.DataFrame({"bus": s.bus, "category": cat, "cost": cost}))
         
         if not frames:
             return pd.DataFrame()
@@ -233,7 +249,7 @@ else:
     def strip_h2_suffix(b):
         return b[:-3] if b.endswith(" H2") else b
 
-    print("\nGenerating Spatial Investment Maps...")
+    print("\nGenerating Spatial Investment (CAPEX) Maps...")
 
     for scenario_name, path in RESULTS.items():
         if not os.path.exists(path):
@@ -258,29 +274,32 @@ else:
         total_by_bus = pivot.sum(axis=1)
         max_cost = total_by_bus.max() if total_by_bus.max() > 0 else 1.0
 
-        for bus in pivot.index:
-            if bus not in buses.index:
-                continue
-            x, y = buses.loc[bus, ["x", "y"]]
-            total = total_by_bus[bus]
-            if total <= 0:
-                continue
-            size = 200 + 3000 * (total / max_cost)
-            dominant = pivot.loc[bus].idxmax()
-            ax.scatter(x, y, s=size, c=CHART_COLORS.get(dominant, "gray"),
-                       edgecolors="black", linewidths=0.5, alpha=0.85, zorder=3)
-            ax.annotate(f"{total/1e6:,.0f}M", (x, y), fontsize=7, fontweight="bold",
-                        textcoords="offset points", xytext=(5, 5))
-
         for _, row in n.lines.iterrows():
             if row.bus0 in buses.index and row.bus1 in buses.index:
                 x0, y0 = buses.loc[row.bus0, ["x", "y"]]
                 x1, y1 = buses.loc[row.bus1, ["x", "y"]]
                 ax.plot([x0, x1], [y0, y1], c="gray", lw=0.5, alpha=0.5, zorder=1)
 
+        for bus in buses.index:
+            x, y = buses.loc[bus, ["x", "y"]]
+            total = total_by_bus.get(bus, 0.0)
+            
+            if total < 0.5 * 1e6:
+                ax.scatter(x, y, s=20, c="lightgray", edgecolors="gray", linewidths=0.5, zorder=2)
+                continue
+
+            size = 150 + 2500 * (total / max_cost)
+            dominant = pivot.loc[bus].idxmax()
+            ax.scatter(x, y, s=size, c=CHART_COLORS.get(dominant, "gray"),
+                       edgecolors="black", linewidths=0.6, alpha=0.85, zorder=3)
+            
+            label_text = f"{total/1e9:.2f}B" if total >= 1e9 else f"{total/1e6:.0f}M"
+            ax.annotate(label_text, (x, y), fontsize=7, fontweight="bold",
+                        textcoords="offset points", xytext=(4, 4), zorder=4)
+
         legend_handles = [mpatches.Patch(color=c, label=k) for k, c in CHART_COLORS.items() if k in pivot.columns]
         ax.legend(handles=legend_handles, loc="lower left", fontsize=8)
-        ax.set_title(f"PyPSA-Libya — {scenario_name}: Spatial Investment Allocation\n"
+        ax.set_title(f"PyPSA-Libya — {scenario_name}: Spatial Financial Investment Allocation\n"
                      "Marker size = Total Capex at node; Color = Dominant Technology", fontsize=11)
         ax.set_xlabel("Longitude")
         ax.set_ylabel("Latitude")
@@ -290,11 +309,312 @@ else:
         out_path = os.path.join(OUT_DIR, f"figure9b_style_investment_map_{safe_name}.png")
         fig.savefig(out_path, dpi=200, bbox_inches="tight")
         plt.close(fig)
-        print(f"Saved spatial map -> {out_path}")
+        print(f"Saved financial map -> {out_path}")
 
-print("\n" + "=" * 70)
-print("Execution Complete.")
-print("=" * 70)
+
+    # ------------------------------------------------------------------
+    # 2.2 Spatial Capacity Investment Maps for All Scenarios (A, B, C)
+    # ------------------------------------------------------------------
+    def per_bus_capacity(net):
+        """Extracts optimal installed capacities per bus (MW for generators/links, MWh for storage)."""
+        frames = []
+        if not net.generators.empty:
+            g = net.generators
+            cat = g.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(c))
+            frames.append(pd.DataFrame({"bus": g.bus, "category": cat, "capacity": g.p_nom_opt}))
+
+        if not net.links.empty:
+            l = net.links
+            cat = l.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(c))
+            frames.append(pd.DataFrame({"bus": l.bus0, "category": cat, "capacity": l.p_nom_opt}))
+
+        if not net.stores.empty:
+            s = net.stores
+            cat = s.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(c))
+            # Capacity stored in MWh for storage nodes
+            frames.append(pd.DataFrame({"bus": s.bus, "category": cat, "capacity": s.e_nom_opt}))
+
+        if not frames:
+            return pd.DataFrame()
+
+        res = pd.concat(frames, ignore_index=True)
+        return res.dropna(subset=["category"])
+
+    print("\nGenerating Spatial Capacity Investment Maps...")
+
+    for scenario_name, path in RESULTS.items():
+        if not os.path.exists(path):
+            print(f"[SKIP Capacity Map] {scenario_name}: File not found at '{path}'")
+            continue
+
+        n = pypsa.Network(path)
+        bus_cap = per_bus_capacity(n)
+
+        if bus_cap.empty:
+            print(f"[SKIP Capacity Map] {scenario_name}: No capacity components found.")
+            continue
+
+        pivot_cap = bus_cap.pivot_table(index="bus", columns="category",
+                                         values="capacity", aggfunc="sum", fill_value=0.0)
+
+        pivot_cap.index = [strip_h2_suffix(b) for b in pivot_cap.index]
+        pivot_cap = pivot_cap.groupby(level=0).sum()
+
+        buses = n.buses.loc[n.buses.index.intersection(pivot_cap.index)]
+        fig, ax = plt.subplots(figsize=(10, 8))
+        
+        # Calculate total power generation & conversion capacity in MW (excluding MWh storage for sizing scale)
+        gen_cols = [c for c in pivot_cap.columns if c != "H2 Storage"]
+        total_mw_by_bus = pivot_cap[gen_cols].sum(axis=1) if gen_cols else pivot_cap.sum(axis=1)
+        max_mw = total_mw_by_bus.max() if total_mw_by_bus.max() > 0 else 1.0
+
+        for _, row in n.lines.iterrows():
+            if row.bus0 in buses.index and row.bus1 in buses.index:
+                x0, y0 = buses.loc[row.bus0, ["x", "y"]]
+                x1, y1 = buses.loc[row.bus1, ["x", "y"]]
+                ax.plot([x0, x1], [y0, y1], c="gray", lw=0.5, alpha=0.5, zorder=1)
+
+        for bus in buses.index:
+            x, y = buses.loc[bus, ["x", "y"]]
+            total_mw = total_mw_by_bus.get(bus, 0.0)
+            
+            # Filter out zero / minimal capacity buses (< 50 MW)
+            if total_mw < 50.0:
+                ax.scatter(x, y, s=20, c="lightgray", edgecolors="gray", linewidths=0.5, zorder=2)
+                continue
+
+            size = 150 + 2500 * (total_mw / max_mw)
+            dominant = pivot_cap.loc[bus, gen_cols].idxmax() if gen_cols else pivot_cap.loc[bus].idxmax()
+            
+            ax.scatter(x, y, s=size, c=CHART_COLORS.get(dominant, "gray"),
+                       edgecolors="black", linewidths=0.6, alpha=0.85, zorder=3)
+            
+            # Label node in GW or MW
+            label_text = f"{total_mw/1e3:.1f}GW" if total_mw >= 1000.0 else f"{total_mw:.0f}MW"
+            ax.annotate(label_text, (x, y), fontsize=7, fontweight="bold",
+                        textcoords="offset points", xytext=(4, 4), zorder=4)
+
+        legend_handles = [mpatches.Patch(color=c, label=k) for k, c in CHART_COLORS.items() if k in pivot_cap.columns]
+        ax.legend(handles=legend_handles, loc="lower left", fontsize=8)
+        ax.set_title(f"PyPSA-Libya — {scenario_name}: Spatial Installed Capacity Allocation\n"
+                     "Marker size = Total Power/Conversion Capacity [MW/GW]; Color = Dominant Technology", fontsize=11)
+        ax.set_xlabel("Longitude")
+        ax.set_ylabel("Latitude")
+        ax.grid(True, linestyle=":", alpha=0.6)
+
+        safe_name = scenario_name.lower().replace(" ", "_")
+        out_path = os.path.join(OUT_DIR, f"figure9c_style_capacity_map_{safe_name}.png")
+        fig.savefig(out_path, dpi=200, bbox_inches="tight")
+        plt.close(fig)
+        print(f"Saved physical capacity map -> {out_path}")
+        
+        
+        
+        
+# =====================================================================
+    # 2.3 Spatial & Graphical Transmission Line Bottlenecks for Scenarios
+    # =====================================================================
+    
+    import numpy as np
+
+    print("\n" + "=" * 70)
+    print("Generating Transmission Line Bottlenecks (Reports & Maps) across Scenarios")
+    print("=" * 70)
+
+    # ------------------------------------------------------------------
+    # Helper Functions for Routing & Line Identification
+    # ------------------------------------------------------------------
+    COAST_LONS = np.array([
+        9.0, 11.5, 12.08, 12.73, 13.19, 14.26, 14.57, 15.09, 
+        15.25, 15.50, 15.80, 16.20, 16.59, 17.50, 18.56, 19.20,
+        19.57, 19.80, 20.00, 20.10, 20.20, 20.30, 20.50, 20.83, 
+        21.75, 22.64, 23.96, 25.09, 26.0
+    ])
+    COAST_LATS = np.array([
+        33.0, 33.1, 32.93, 32.76, 32.89, 32.65, 32.47, 32.38, 
+        31.40, 31.20, 31.12, 31.15, 31.21, 30.80, 30.51, 30.35,
+        30.41, 30.42, 30.50, 30.60, 31.20, 32.00, 32.10, 32.49, 
+        32.76, 32.77, 32.08, 31.76, 31.50
+    ])
+
+    def get_coast_lat(lon):
+        return np.interp(lon, COAST_LONS, COAST_LATS)
+
+    def route_line_land(x0, y0, x1, y1, land_offset=0.13, num_pts=50, allow_waypoint=True):
+        if x0 == x1 or (abs(x0 - x1) < 1e-5 and abs(y0 - y1) < 1e-5):
+            return [x0, x1], [y0, y1]
+        min_x, max_x = min(x0, x1), max(x0, x1)
+        min_y, max_y = min(y0, y1), max(y0, y1)
+
+        if ((min_x < 20.15 and max_x > 19.8) and (min_y < 30.8 and max_y > 31.3)) and allow_waypoint:
+            x_mid, y_mid = 20.32, 30.70
+            xs1, ys1 = route_line_land(x0, y0, x_mid, y_mid, land_offset=land_offset, num_pts=num_pts//2, allow_waypoint=False)
+            xs2, ys2 = route_line_land(x_mid, y_mid, x1, y1, land_offset=land_offset, num_pts=num_pts//2, allow_waypoint=False)
+            return np.concatenate([xs1, xs2]), np.concatenate([ys1, ys2])
+
+        xs = np.linspace(x0, x1, num_pts)
+        ys_linear = np.linspace(y0, y1, num_pts)
+        coast_lats = get_coast_lat(xs) - land_offset
+        ys_land = np.minimum(ys_linear, coast_lats)
+        ys_land[0], ys_land[-1] = y0, y1
+
+        if num_pts > 5 and np.any(ys_linear > coast_lats):
+            kernel = np.ones(5) / 5.0
+            ys_smooth = np.convolve(ys_land, kernel, mode='same')
+            ys_smooth[0], ys_smooth[1], ys_smooth[-2], ys_smooth[-1] = y0, ys_land[1], ys_land[-2], y1
+            ys_land = np.minimum(ys_smooth, coast_lats)
+            ys_land[0], ys_land[-1] = y0, y1
+        return xs, ys_land
+
+    def shorten_line_id(line_idx, bus0, bus1):
+        idx_str = str(line_idx).strip()
+        if "lines new" in idx_str or "new" in idx_str.lower() or idx_str.startswith("N"):
+            m = re.search(r'LY\s*([1-9]\d*)\s*(\d*)', str(bus1)) or re.search(r'LY\s*([1-9]\d*)\s*(\d*)', str(bus0))
+            if m:
+                return f"NLY{m.group(1)} {m.group(2)}".strip() if m.group(2) else f"NLY{m.group(1)}"
+            clean_idx = idx_str.replace("lines new ", "NL_").replace(" <-> ", "_").replace(" AC", "")
+            return re.sub(r'\s+', '', clean_idx)[:10]
+        return idx_str
+
+    # ------------------------------------------------------------------
+    # Data Processing & Analysis
+    # ------------------------------------------------------------------
+    scenario_line_data = {}
+    
+    with open(os.path.join(OUT_DIR, "transmission_line_bottlenecks.txt"), "w", encoding="utf-8") as f_out:
+        f_out.write("=" * 135 + "\n")
+        f_out.write(" PyPSA-Libya — Scenario Comparison: Transmission Line Bottlenecks Report\n")
+        f_out.write("=" * 135 + "\n\n")
+
+        for scenario_name, path in RESULTS.items():
+            if not os.path.exists(path):
+                continue
+            
+            n_scen = pypsa.Network(path)
+            if n_scen.lines.empty or n_scen.lines_t.p0.empty:
+                continue
+
+            flows = n_scen.lines_t.p0.abs()
+            caps = n_scen.lines["s_nom_opt"] if "s_nom_opt" in n_scen.lines.columns else n_scen.lines["s_nom"]
+            caps = caps.replace(0, 1e-6)
+            loading_ratios = flows.div(caps, axis=1) * 100.0
+
+            short_ids = [shorten_line_id(idx, row.bus0, row.bus1) for idx, row in n_scen.lines.iterrows()]
+
+            line_df = pd.DataFrame({
+                "short_line_id": short_ids,
+                "bus0": n_scen.lines["bus0"],
+                "bus1": n_scen.lines["bus1"],
+                "capacity_MW": caps,
+                "max_flow_MW": flows.max(axis=0),
+                "max_loading_pct": loading_ratios.max(axis=0),
+                "mean_loading_pct": loading_ratios.mean(axis=0),
+                "hours_gt_50pct": (loading_ratios >= 50.0).sum(axis=0),
+                "hours_gt_70pct": (loading_ratios >= 70.0).sum(axis=0),
+            }, index=n_scen.lines.index).sort_values(by="mean_loading_pct", ascending=False)
+
+            scenario_line_data[scenario_name] = (n_scen, line_df)
+
+            # Write scenario section to master txt report
+            f_out.write(f"--- SCENARIO: {scenario_name} ---\n")
+            header = f"{'LINE ID':12s} | {'From BUS':10s} | {'To BUS':10s} | {'CAP (MW)':12s} | {'MAX FLOW (MW)':14s} | {'MAX LOAD %':11s} | {'MEAN LOAD %':11s} | {'HRS >= 50%':10s} | {'HRS >= 70%':10s}"
+            f_out.write(header + "\n" + "-" * 135 + "\n")
+
+            for _, row in line_df.iterrows():
+                f_out.write(f"{row['short_line_id']:12s} | {str(row['bus0']):10s} | {str(row['bus1']):10s} | "
+                            f"{row['capacity_MW']:12.1f} | {row['max_flow_MW']:14.1f} | {row['max_loading_pct']:10.2f}% | "
+                            f"{row['mean_loading_pct']:10.2f}% | {row['hours_gt_50pct']:10d} | {row['hours_gt_70pct']:10d}\n")
+            f_out.write("\n\n")
+
+    print(f"Saved transmission bottlenecks summary text file -> {os.path.join(OUT_DIR, 'transmission_line_bottlenecks.txt')}")
+
+    # ------------------------------------------------------------------
+    # Comparative Bar Chart: Top Bottleneck Lines across Scenarios
+    # ------------------------------------------------------------------
+    if scenario_line_data:
+        # Find global top 10 bottleneck lines based on mean loading across scenarios
+        combined_means = pd.concat([df["mean_loading_pct"] for _, df in scenario_line_data.values()], axis=1)
+        top_line_indices = combined_means.mean(axis=1).nlargest(10).index
+        
+        # Build comparative dataframe for plotting
+        chart_data = {}
+        for scen_name, (_, df) in scenario_line_data.items():
+            short_labels = df.loc[top_line_indices, "short_line_id"]
+            chart_data[scen_name] = df.loc[top_line_indices, "mean_loading_pct"]
+        
+        plot_df = pd.DataFrame(chart_data, index=top_line_indices)
+        plot_df.index = [scenario_line_data[list(scenario_line_data.keys())[0]][1].loc[i, "short_line_id"] for i in top_line_indices]
+
+        fig, ax = plt.subplots(figsize=(12, 6))
+        plot_df.plot(kind="bar", ax=ax, width=0.8, colormap="viridis", edgecolor="black", linewidth=0.5)
+        ax.set_ylabel("Mean Capacity Loading (%)", fontsize=11)
+        ax.set_title("PyPSA-Libya — Transmission Bottlenecks Comparison across Scenarios\n(Top 10 Congested Lines)", fontsize=12, fontweight="bold")
+        ax.set_xticklabels(plot_df.index, rotation=45, ha="right")
+        ax.grid(axis="y", linestyle="--", alpha=0.5)
+        ax.legend(title="Scenarios", fontsize=9)
+        fig.tight_layout()
+
+        out_bar_path = os.path.join(OUT_DIR, "transmission_line_bottlenecks.png")
+        fig.savefig(out_bar_path, dpi=200, bbox_inches="tight")
+        plt.close(fig)
+        print(f"Saved transmission bottlenecks bar chart -> {out_bar_path}")
+
+    # ------------------------------------------------------------------
+    # Spatial Map: Line Bottleneck Locations per Scenario
+    # ------------------------------------------------------------------
+    for scenario_name, (n_scen, line_df) in scenario_line_data.items():
+        fig = plt.figure(figsize=(11, 8))
+        ax = fig.add_subplot(1, 1, 1)
+        ax.set_xlim(9.0, 25.5)
+        ax.set_ylim(19.0, 33.8)
+        ax.set_xlabel("Longitude")
+        ax.set_ylabel("Latitude")
+        ax.grid(True, linestyle=":", alpha=0.5)
+
+        metric_series = line_df["mean_loading_pct"]
+        min_val, max_val = 0.0, max(metric_series.max(), 1.0)
+        norm_metric = mcolors.Normalize(vmin=min_val, vmax=max_val)
+        cmap_lines = plt.cm.get_cmap("Reds")
+
+        for idx, row in n_scen.lines.iterrows():
+            if row.bus0 in n_scen.buses.index and row.bus1 in n_scen.buses.index:
+                x0, y0 = n_scen.buses.loc[row.bus0, ["x", "y"]]
+                x1, y1 = n_scen.buses.loc[row.bus1, ["x", "y"]]
+                val = metric_series.get(idx, 0.0)
+                line_color = cmap_lines(norm_metric(val)) if val > 5.0 else "#a1a1aa"
+                linewidth = 1.0 + 3.0 * norm_metric(val)
+                xs, ys = route_line_land(x0, y0, x1, y1)
+                ax.plot(xs, ys, color=line_color, lw=linewidth, zorder=3, alpha=0.85)
+
+        # Label top 8 congested lines
+        top_map_lines = metric_series.head(8)
+        for i, idx in enumerate(top_map_lines.index):
+            row = n_scen.lines.loc[idx]
+            x0, y0 = n_scen.buses.loc[row.bus0, ["x", "y"]]
+            x1, y1 = n_scen.buses.loc[row.bus1, ["x", "y"]]
+            xs, ys = route_line_land(x0, y0, x1, y1)
+            mid_idx = len(xs) // 2
+            short_id = line_df.loc[idx, "short_line_id"]
+            ax.annotate(short_id, (xs[mid_idx], ys[mid_idx]), fontsize=8, fontweight="bold",
+                        bbox=dict(boxstyle="round,pad=0.2", facecolor="white", alpha=0.7, edgecolor="none"), zorder=6)
+
+        macro_buses = n_scen.buses[~n_scen.buses.index.str.contains("low voltage|battery|H2", case=False)]
+        ax.scatter(macro_buses.x, macro_buses.y, s=15, c="#1e293b", edgecolors="white", linewidths=0.5, zorder=4)
+
+        sm_line = plt.cm.ScalarMappable(cmap=cmap_lines, norm=norm_metric)
+        sm_line.set_array([])
+        cbar = fig.colorbar(sm_line, ax=ax, orientation="vertical", shrink=0.7, pad=0.03)
+        cbar.set_label("Mean Capacity Loading (%)", fontsize=10)
+
+        ax.set_title(f"PyPSA-Libya — {scenario_name}: Transmission Bottlenecks Map\nLabels indicate Top Congested Corridors", fontsize=11, fontweight="bold")
+        
+        safe_scen = scenario_name.lower().replace(" ", "_")
+        out_map_path = os.path.join(OUT_DIR, f"transmission_line_bottlenecks_map_{safe_scen}.png")
+        fig.savefig(out_map_path, dpi=200, bbox_inches="tight")
+        plt.close(fig)
+        print(f"Saved transmission map for {scenario_name} -> {out_map_path}")
+
+
 
 
 
