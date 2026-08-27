@@ -57,7 +57,7 @@ electricity:
   offshore: false
   extendable_carriers:
     Generator: [solar, onwind, OCGT, CCGT, oil]
-    StorageUnit: []
+    StorageUnit: [battery]
     Store: [H2]
     Link: [H2 Electrolysis, H2 Fuel Cell]
   conventional_carriers: [OCGT, CCGT, oil]
@@ -68,6 +68,7 @@ sector:
     heat: false
     biomass: false
     industry: true
+    hydrogen: true
     shipping: false
     aviation: false
     land_transport: false
@@ -83,7 +84,8 @@ sector:
     network_routes: greenfield
     gas_network_repurposing: false
     underground_storage:
-      enabled: false
+      enabled: true
+
     # =========== CHANGED FOR SCENARIO A ===========
     production_technologies:   # <-- electrolysis ONLY, per the paper's
       - H2 Electrolysis         #     scenario (a) definition
@@ -97,17 +99,17 @@ industry:
   H2_electrolysis: true
 
 export:
+  h2export: [70]   
   endogenous: false
-  store: true
-  store_capital_costs: "no_costs" #"standard_costs"
-  h2export: [70]   # <-- your test export value; see companion, [0.25] or [1.342] 
-                       #     _noexport.yaml for the paired baseline run
+  store: "H2"
+  store_capital_costs: "standard_costs"
   export_profile: "ship"
   ship:
     ship_capacity: 0.4
     travel_time: 288
     fill_time: 24
     unload_time: 24
+
 
 # =========== CHANGED FOR SCENARIO A ===========
 policy_config:
