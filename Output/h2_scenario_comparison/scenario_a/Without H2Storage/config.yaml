@@ -1,0 +1,175 @@
+### (pypsa-earth) C:\Users\Mhdella\Documents\pypsa-libya>snakemake --cores 12 solve_all_networks
+### (pypsa-earth) C:\Users\Mhdella\Documents\pypsa-libya>snakemake --cores 12 solve_sector_networks
+
+# config_scenario_a_export.yaml
+# Scenario (a) per Abdel-Khalek et al. 2025 (PyPSA-Earth sector-coupled,
+# Applied Energy 383, 125316 — the Egypt showcase paper you referenced):
+# "only electrolysis with yearly matching constraint"
+#
+# Run this AS config.yaml, then rename/duplicate with h2export: [0] for the
+# paired "no export" baseline run needed to compute "additional system cost"
+# (see bottom of this file and the companion _noexport variant).
+#
+# Everything below is your existing base config.yaml UNCHANGED except the
+# two blocks marked CHANGED FOR SCENARIO A.
+
+run:
+  name: "libya_h2export_scenario_a"   # <-- CHANGED: distinct run name so
+                                        # scenario a doesn't collide with
+                                        # b or c in resources/networks/results
+
+countries: ["LY"]
+
+scenario:
+  clusters: [36]
+  opts: [Co2L-6h] #[Co2L-3h]
+  planning_horizons: [2030]
+  sopts: ["144h"]
+  demand: ["AB"]
+
+snapshots:
+  start: "2013-01-01"
+  end: "2014-01-01"
+  inclusive: "left"
+
+enable:
+  retrieve_databundle: true
+  download_osm_data: true
+  retrieve_cost_data: true
+  retrieve_cutout: false
+  build_cutout: false
+  build_natura_raster: false
+  retrieve_databundle_sector: true
+  download_global_buildings: false
+
+atlite:
+  nprocesses: 2
+  default: cutout-2013-era5
+  cutouts:
+    cutout-2013-era5:
+      module: era5
+      dx: 0.3
+      dy: 0.3
+      x: [9.0, 26.0]
+      y: [19.0, 34.0]
+
+electricity:
+  offshore: false
+  extendable_carriers:
+    Generator: [solar, onwind, OCGT, CCGT, oil]
+    StorageUnit: [battery] #[battery, H2]
+    Store: [] #[H2]
+    Link: [H2 Electrolysis, H2 Fuel Cell]
+  conventional_carriers: [OCGT, CCGT, oil]
+  renewable_carriers: [solar, onwind]
+
+sector:
+  enable:
+    heat: false
+    biomass: false
+    industry: true
+    hydrogen: true
+    shipping: false
+    aviation: false
+    land_transport: false
+    rail_transport: false
+    agriculture: false
+    residential: false
+    services: false
+
+  hydrogen:
+    network: true
+    h2_turbine: true
+    network_limit: 2000
+    network_routes: greenfield
+    gas_network_repurposing: false
+    underground_storage:
+      enabled: false  # true
+
+    # =========== CHANGED FOR SCENARIO A ===========
+    production_technologies:   # <-- electrolysis ONLY, per the paper's
+      - H2 Electrolysis         #     scenario (a) definition
+    # SMR and SMR CC intentionally NOT listed — the model literally cannot
+    # choose them if they're absent from this list, which is exactly how
+    # the paper enforces "only electrolysis" as a scenario constraint
+    # rather than relying on cost alone to rule them out.
+
+industry:
+  h2_fuel_cell: true
+  H2_electrolysis: true
+
+export:
+  h2export: [70]   
+  endogenous: false
+  store: false # "H2"
+  store_capital_costs: false # "standard_costs" "no_costs"
+  export_profile: "ship"
+  ship:
+    ship_capacity: 0.4
+    travel_time: 288
+    fill_time: 24
+    unload_time: 24
+
+
+# =========== CHANGED FOR SCENARIO A ===========
+policy_config:
+  hydrogen:
+    temporal_matching: "year"   # <-- CHANGED from "no_temporal_matching".
+      # This is the "yearly matching constraint" explicitly named in the
+      # paper's scenario (a) definition: exported H2 must be backed by an
+      # equivalent amount of renewable generation somewhere in the system
+      # over the course of a year (not necessarily hour-by-hour or
+      # bus-by-bus) — the loosest form of genuine "green hydrogen"
+      # accounting, one step stricter than no matching at all.
+    spatial_matching: false
+    additionality: false
+
+clustering:
+  distribute_cluster: ["load"]
+  focus_weights:
+    LY: 1.0
+  simplify_network:
+    to_substations: false
+    remove_stubs: true
+    remove_stubs_across_borders: false
+    p_threshold_drop_isolated: 0.0
+    p_threshold_merge_isolated: 0.05
+    s_threshold_fetch_isolated: false
+  cluster_network:
+    algorithm: kmeans
+    feature: load
+
+osm:
+  build_osm_network:
+    group_close_buses: true
+    group_tolerance_buses: 15000
+
+augmented_line_connection:
+  add_to_snakefile: true
+  connectivity_upgrade: 1
+  new_line_type: ["HVAC"]
+  min_expansion: 1
+
+co2:
+  limit: 1.0e7
+
+costs:
+  year: 2030
+
+solving:
+  solver:
+    name: highs
+    options: highs-default
+  solver_options:
+    highs-default:
+      threads: 8
+      solver: "ipm"
+      run_crossover: "off"
+      primal_feasibility_tolerance: 1e-3
+      dual_feasibility_tolerance: 1e-3
+      ipm_optimality_tolerance: 1e-3
+  mem: 12000
+
+### (pypsa-earth) C:\Users\Mhdella\Documents\pypsa-libya>snakemake --cores 12 solve_all_networks
+### (pypsa-earth) C:\Users\Mhdella\Documents\pypsa-libya>snakemake --cores 12 solve_sector_networks
+
