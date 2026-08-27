@@ -42,22 +42,22 @@ from matplotlib.lines import Line2D
 #           }
 
 
-### H2 export, year, 6-hrs 
-
-# RESULTS = {
-#     "Scenario A": r"Output\libya_h2export_test\scenario_a\postnetworks\elec_s_36_ec_lcopt_Co2L-6h_144h_2030_0.071_AB_70export.nc",
-#     "Scenario B": r"Output\libya_h2export_test\scenario_b\postnetworks\elec_s_36_ec_lcopt_Co2L-6h_144h_2030_0.071_AB_70export.nc",
-#     "Scenario C": r"Output\libya_h2export_test\scenario_c\postnetworks\elec_s_36_ec_lcopt_Co2L-6h_144h_2030_0.071_AB_70export.nc",
-#           }
-
-
-### H2 export, year, 6-hrs 
+#### H2 export, year, 6-hrs 
 
 RESULTS = {
-    "Scenario A": r"Output\libya_h2export_test\scenario_a\3hrs\postnetworks\elec_s_36_ec_lcopt_Co2L-3h_144h_2030_0.071_AB_70export.nc",
-    "Scenario B": r"Output\libya_h2export_test\scenario_b\3hrs\postnetworks\elec_s_36_ec_lcopt_Co2L-3h_144h_2030_0.071_AB_70export.nc",
-    "Scenario C": r"Output\libya_h2export_test\scenario_c\3hrs\postnetworks\elec_s_36_ec_lcopt_Co2L-3h_144h_2030_0.071_AB_70export.nc",
+    "Scenario A": r"Output\libya_h2export_test\scenario_a\postnetworks\elec_s_36_ec_lcopt_Co2L-6h_144h_2030_0.071_AB_70export.nc",
+    "Scenario B": r"Output\libya_h2export_test\scenario_b\postnetworks\elec_s_36_ec_lcopt_Co2L-6h_144h_2030_0.071_AB_70export.nc",
+    "Scenario C": r"Output\libya_h2export_test\scenario_c\postnetworks\elec_s_36_ec_lcopt_Co2L-6h_144h_2030_0.071_AB_70export.nc",
           }
+
+
+#### H2 export, year, 3-hrs 
+
+# RESULTS = {
+#     "Scenario A": r"Output\libya_h2export_test\scenario_a\3hrs\postnetworks\elec_s_36_ec_lcopt_Co2L-3h_144h_2030_0.071_AB_70export.nc",
+#     "Scenario B": r"Output\libya_h2export_test\scenario_b\3hrs\postnetworks\elec_s_36_ec_lcopt_Co2L-3h_144h_2030_0.071_AB_70export.nc",
+#     "Scenario C": r"Output\libya_h2export_test\scenario_c\3hrs\postnetworks\elec_s_36_ec_lcopt_Co2L-3h_144h_2030_0.071_AB_70export.nc",
+#           }
 
 
 #### No H2 export, year
@@ -84,8 +84,11 @@ CAPEX_CARRIER_MAP = {
     "co2 sequestration": "CO2 sequestration",
     "H2 pipeline": "H2 pipeline",
     "H2 Store": "H2 Storage",
+    "H2 Store Underground": "H2 Storage",
+    "H2 UHS": "H2 Storage",
     "H2 Fuel Cell": "H2 Fuel Cell",
 }
+
 
 CHART_COLORS = {
     "Electrolysis": "#7b2d8e",
@@ -219,32 +222,45 @@ else:
 
 
 
-# ------------------------------------------------------------------
-    # 2.1 Spatial Investment (Financial CAPEX) Maps for All Scenarios (A, B, C)
-    # ------------------------------------------------------------------
-    def per_bus_capex(net):
+    def per_bus_capex(net: pypsa.Network) -> pd.DataFrame:
+        """Extracts capital costs per bus across all network components, including H2 stores."""
         frames = []
+        
         if not net.generators.empty:
             g = net.generators
             cost = g.capital_cost * g.p_nom_opt
-            cat = g.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(c))
+            cat = g.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(c, None))
             frames.append(pd.DataFrame({"bus": g.bus, "category": cat, "cost": cost}))
+    
         if not net.links.empty:
             l = net.links
             cost = l.capital_cost * l.p_nom_opt
-            cat = l.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(c))
+            cat = l.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(c, None))
             frames.append(pd.DataFrame({"bus": l.bus0, "category": cat, "cost": cost}))
+    
         if not net.stores.empty:
             s = net.stores
             cost = s.capital_cost * s.e_nom_opt
-            cat = s.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(c))
+            cat = s.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(c, None))
             frames.append(pd.DataFrame({"bus": s.bus, "category": cat, "cost": cost}))
-        
+    
+        if not net.storage_units.empty:
+            su = net.storage_units
+            cost = su.capital_cost * su.p_nom_opt
+            cat = su.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(c, None))
+            frames.append(pd.DataFrame({"bus": su.bus, "category": cat, "cost": cost}))
+    
         if not frames:
             return pd.DataFrame()
-            
+    
         res = pd.concat(frames, ignore_index=True)
-        return res.dropna(subset=["category"])
+        res = res.dropna(subset=["category"])
+        
+        # Normalize bus names (e.g., 'LY0 32 H2' -> 'LY0 32')
+        res["bus"] = res["bus"].apply(lambda b: b[:-3] if str(b).endswith(" H2") else str(b))
+        return res
+        
+
 
     def strip_h2_suffix(b):
         return b[:-3] if b.endswith(" H2") else b
@@ -312,33 +328,120 @@ else:
         print(f"Saved financial map -> {out_path}")
 
 
+# ------------------------------------------------------------------
+    # 2.1 Spatial Investment (Financial CAPEX) Maps for All Scenarios (A, B, C)
+    # ------------------------------------------------------------------
+    print("\nGenerating Spatial Investment (CAPEX) Maps...")
+
+    for scenario_name, path in RESULTS.items():
+        if not os.path.exists(path):
+            print(f"[SKIP Map] {scenario_name}: File not found at '{path}'")
+            continue
+
+        n = pypsa.Network(path)
+        bus_cost = per_bus_capex(n)
+
+        if bus_cost.empty:
+            print(f"[SKIP Map] {scenario_name}: No mapped capex components found.")
+            continue
+
+        pivot = bus_cost.pivot_table(
+            index="bus", columns="category", values="cost", aggfunc="sum", fill_value=0.0
+        )
+
+        buses = n.buses.loc[n.buses.index.intersection(pivot.index)]
+        fig, ax = plt.subplots(figsize=(10, 8))
+        total_by_bus = pivot.sum(axis=1)
+        max_cost = total_by_bus.max() if total_by_bus.max() > 0 else 1.0
+
+        for _, row in n.lines.iterrows():
+            b0 = strip_h2_suffix(row.bus0)
+            b1 = strip_h2_suffix(row.bus1)
+            if b0 in buses.index and b1 in buses.index:
+                x0, y0 = buses.loc[b0, ["x", "y"]]
+                x1, y1 = buses.loc[b1, ["x", "y"]]
+                ax.plot([x0, x1], [y0, y1], c="gray", lw=0.5, alpha=0.5, zorder=1)
+
+        for bus in buses.index:
+            x, y = buses.loc[bus, ["x", "y"]]
+            total = total_by_bus.get(bus, 0.0)
+            
+            if total < 0.5 * 1e6:
+                ax.scatter(x, y, s=20, c="lightgray", edgecolors="gray", linewidths=0.5, zorder=2)
+                continue
+
+            size = 150 + 2500 * (total / max_cost)
+            dominant = pivot.loc[bus].idxmax()
+            ax.scatter(
+                x, y, s=size, c=CHART_COLORS.get(dominant, "gray"),
+                edgecolors="black", linewidths=0.6, alpha=0.85, zorder=3
+            )
+            
+            label_text = f"{total/1e9:.2f}B" if total >= 1e9 else f"{total/1e6:.0f}M"
+            ax.annotate(
+                label_text, (x, y), fontsize=7, fontweight="bold",
+                textcoords="offset points", xytext=(4, 4), zorder=4
+            )
+
+        legend_handles = [
+            mpatches.Patch(color=c, label=k) 
+            for k, c in CHART_COLORS.items() 
+            if k in pivot.columns
+        ]
+        ax.legend(handles=legend_handles, loc="lower left", fontsize=8)
+        ax.set_title(
+            f"PyPSA-Libya — {scenario_name}: Spatial Financial Investment Allocation\n"
+            "Marker size = Total Capex at node; Color = Dominant Technology", fontsize=11
+        )
+        ax.set_xlabel("Longitude")
+        ax.set_ylabel("Latitude")
+        ax.grid(True, linestyle=":", alpha=0.6)
+
+        safe_name = scenario_name.lower().replace(" ", "_")
+        out_path = os.path.join(OUT_DIR, f"figure9b_style_investment_map_{safe_name}.png")
+        fig.savefig(out_path, dpi=200, bbox_inches="tight")
+        plt.close(fig)
+        print(f"Saved financial map -> {out_path}")
+        
+        
+        
+
     # ------------------------------------------------------------------
     # 2.2 Spatial Capacity Investment Maps for All Scenarios (A, B, C)
     # ------------------------------------------------------------------
-    def per_bus_capacity(net):
+    def per_bus_capacity(net: pypsa.Network) -> pd.DataFrame:
         """Extracts optimal installed capacities per bus (MW for generators/links, MWh for storage)."""
         frames = []
+        
         if not net.generators.empty:
             g = net.generators
-            cat = g.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(c))
+            cat = g.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(c, None))
             frames.append(pd.DataFrame({"bus": g.bus, "category": cat, "capacity": g.p_nom_opt}))
-
+    
         if not net.links.empty:
             l = net.links
-            cat = l.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(c))
+            cat = l.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(c, None))
             frames.append(pd.DataFrame({"bus": l.bus0, "category": cat, "capacity": l.p_nom_opt}))
-
+    
         if not net.stores.empty:
             s = net.stores
-            cat = s.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(c))
-            # Capacity stored in MWh for storage nodes
+            cat = s.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(c, None))
             frames.append(pd.DataFrame({"bus": s.bus, "category": cat, "capacity": s.e_nom_opt}))
-
+    
+        if not net.storage_units.empty:
+            su = net.storage_units
+            cat = su.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(c, None))
+            frames.append(pd.DataFrame({"bus": su.bus, "category": cat, "capacity": su.p_nom_opt}))
+    
         if not frames:
             return pd.DataFrame()
-
+    
         res = pd.concat(frames, ignore_index=True)
-        return res.dropna(subset=["category"])
+        res = res.dropna(subset=["category"])
+        
+        # Normalize bus names to align with network spatial coordinates
+        res["bus"] = res["bus"].apply(lambda b: b[:-3] if str(b).endswith(" H2") else str(b))
+        return res
 
     print("\nGenerating Spatial Capacity Investment Maps...")
 
