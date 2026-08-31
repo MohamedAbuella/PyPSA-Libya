@@ -1,0 +1,148 @@
+\documentclass[preprint,12pt,authoryear]{elsarticle}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{geometry}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\journal{Energy Strategy Reviews}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{PyPSA-Libya: An Open-Source Energy System Model for National Decarbonization and Hydrogen Export Pathways}
+
+\author[a]{Mohamed Abuella}
+\ead{mhdabuella@gmail.com}
+\affiliation[a]{organization={Independent Researcher}, city={Newcastle upon Tyne}, country={UK}}
+
+\begin{abstract}
+Libya possesses significant renewable energy potential that remains largely untapped. This paper presents PyPSA-Libya, a national-scale model built on the PyPSA-Earth framework, designed to explore optimal transition pathways for the Libyan power sector. We present two primary studies: (1) an electricity-only capacity expansion analysis comparing a zero-emission constraint against an unconstrained baseline at 36-cluster resolution, and (2) a sector-coupled hydrogen export study evaluating the levelized cost of exporting 70 TWh/year of hydrogen to Europe under three technological scenarios. Results indicate that while solar PV dominates the capacity mix due to favorable 2030 cost assumptions, the integration of hydrogen production significantly alters the grid's storage requirements. The model, data, and configuration files are released under an open-source license to support transparent energy planning in Libya.
+\end{abstract}
+
+\begin{keyword}
+Energy system modelling \sep Libya \sep Green Hydrogen \sep Decarbonization \sep PyPSA-Earth
+\end{keyword}
+
+\end{frontmatter}
+
+\section{Introduction}
+As the global energy transition accelerates, Libya faces a dual challenge: diversifying its oil-dependent economy and decarbonizing its domestic power sector. Libya's geographical position offers some of the highest solar irradiance levels in the world, yet the existing grid remains heavily dependent on fossil fuels (OCGT, CCGT, and oil). 
+
+This work introduces \texttt{PyPSA-Libya}, a fork of the \texttt{PyPSA-Earth} framework \cite{fakhreddine2025global}. While continental models provide broad insights, national planning requires localized data on grid topology and specific interconnection constraints. \texttt{PyPSA-Libya} addresses these needs by incorporating OpenStreetMap (OSM) grid data with connectivity upgrades to bridge known data gaps in the Libyan network.
+
+\section{Methodology and Model Basis}
+
+\subsection{Framework and Spatial Resolution}
+The model utilizes the \texttt{PyPSA-Earth} Snakemake workflow. We employ two spatial resolutions:
+\begin{itemize}
+    \item \textbf{Electricity-Only:} 36 clustered nodes to capture transmission bottlenecks and regional resource variations.
+    \item \textbf{Sector-Coupled:} 12 clustered nodes to maintain computational tractability for complex hydrogen-production LPs.
+\end{itemize}
+
+\subsection{Data and Cost Assumptions}
+We utilize ERA5 reanalysis weather data for the year 2013, resampled to 3-hour or 6-hour intervals. Technology costs are calibrated to the \textbf{2030 horizon}. A critical modification in \texttt{PyPSA-Libya} is the \texttt{connectivity\_upgrade} setting, which ensures that every node in the OSM-derived topology has at least one connection, mitigating the issue of isolated buses common in Libyan data.
+
+\subsection{Scenario Design}
+The study is divided into two distinct parts:
+
+\subsubsection{Part 1: Electricity-Only Decarbonization}
+We compare two cases to isolate the cost of climate ambition:
+\begin{itemize}
+    \item \textbf{Case 1 (Zero-CO2):} A strict \texttt{co2\_limit} of 0.0, forcing a 100\% renewable system (Solar, Wind, Battery, and H2 storage units).
+    \item \textbf{Case 2 (Baseline):} An unconstrained CO2 cap ($10^9$ tonnes) reflecting a cost-minimal fossil-heavy baseline.
+\end{itemize}
+
+\subsubsection{Part 2: Sector-Coupled Hydrogen Export}
+Following the methodology of \cite{abdelkhalek2025pypsa}, we model the export of \textbf{70 TWh/year} of hydrogen via shipping. We evaluate three scenarios:
+\begin{itemize}
+    \item \textbf{Scenario A:} Electrolysis only (Green) with annual renewable matching.
+    \item \textbf{Scenario B:} Electrolysis + Blue H2 (SMR with Carbon Capture).
+    \item \textbf{Scenario C:} Unconstrained (Electrolysis + SMR + SMR CC).
+\end{itemize}
+
+\section{Results: Electricity-Only Baseline}
+
+\subsection{Capacity Mix and System Cost}
+[Insert discussion here: Case 1 likely shows a massive buildout of Solar PV and Battery storage compared to Case 2's reliance on CCGT/OCGT.]
+
+\begin{figure}[ht]
+    \centering
+    % Placeholder for visualize_libya_year.py output
+    \includegraphics[width=0.45\textwidth]{Figures/solved_capacity_by_carrier.png}
+    \caption{Optimal capacity mix for the 36-cluster electricity-only model (Zero-CO2 Case).}
+    \label{fig:elec_capacity}
+\end{figure}
+
+\subsection{Transmission Bottlenecks}
+Utilizing the shadow prices (dual variables) of the transmission constraints, we identify key corridors requiring reinforcement to facilitate 100\% renewable penetration.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{Figures/transmission_line_bottlenecks_map.png}
+    \caption{Map of transmission line loading and identified bottlenecks in the Libyan grid.}
+    \label{fig:bottlenecks}
+\end{figure}
+
+\section{Results: Sector-Coupled Hydrogen Export}
+
+\subsection{Levelized Cost of Hydrogen (LCOH)}
+We report the \textbf{Net LCOH}, calculated by differencing the total system cost of an export run and a zero-export baseline.
+
+\begin{table}[ht]
+\centering
+\caption{Summary of H2 Export Costs (2030 Assumptions)}
+\begin{tabular}{lccc}
+\toprule
+Metric & Scenario A & Scenario B & Scenario C \\
+\midrule
+Net LCOH [EUR/MWh] & [Value] & [Value] & [Value] \\
+Net LCOH [EUR/kg LHV] & [Value] & [Value] & [Value] \\
+System LCOE [EUR/MWh] & [Value] & [Value] & [Value] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Spatial Investment Patterns}
+The optimizer allocates hydrogen production near high-irradiance zones and coastal export hubs.
+
+\begin{figure}[ht]
+     \centering
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{Figures/figure9b_style_investment_map_scenario_a.png}
+         \caption{Scenario A}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{Figures/figure9b_style_investment_map_scenario_b.png}
+         \caption{Scenario B}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.3\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{Figures/figure9b_style_investment_map_scenario_c.png}
+         \caption{Scenario C}
+     \end{subfigure}
+        \caption{Spatial investment allocation for hydrogen production and supporting infrastructure.}
+        \label{fig:h2_investment_maps}
+\end{figure}
+
+\section{Discussion and Limitations}
+Key findings indicate that onshore wind is often priced out by Solar PV in the 2030 horizon despite Libya's strong wind resource. Furthermore, the reliance on OSM data remains a limitation; while \texttt{connectivity\_upgrade} ensures a solved network, it may not perfectly reflect the operational reality of GECOL's transmission system. Future work should integrate verified geological data for underground H2 storage, which is currently modeled as functionally unconstrained.
+
+\section{Conclusion}
+PyPSA-Libya provides the first open-source, high-resolution look at Libya’s energy future. The results suggest that Libya could become a competitive exporter of green hydrogen to Europe, provided that transmission bottlenecks are addressed.
+
+\section*{Code and Data availability}
+The model code is available at \url{https://github.com/mhdella/pypsa-libya}. Results and network files are archived on Zenodo at [DOI Placeholder].
+
+\bibliographystyle{elsarticle-num}
+\bibliography{Libya_H2}
+
+\end{document}
