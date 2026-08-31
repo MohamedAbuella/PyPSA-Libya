@@ -1,0 +1,119 @@
+@article{almaktar2021prospects,
+  title={Prospects of renewable energy as a non-rivalry energy alternative in Libya},
+  author={Almaktar, Mohamed and Shaaban, Mohamed},
+  journal={Renewable and Sustainable Energy Reviews},
+  volume={143},
+  pages={110852},
+  year={2021},
+  publisher={Elsevier},
+  doi={10.1016/j.rser.2021.110852}
+}
+
+@article{eljrushi1990solar,
+  title={Solar-hydrogen energy system for Libya},
+  author={Eljrushi, G. S. and Veziroglu, T. N.},
+  journal={International Journal of Hydrogen Energy},
+  volume={15},
+  number={12},
+  pages={885--894},
+  year={1990},
+  publisher={Pergamon Press plc},
+  doi={10.1016/0360-3199(90)90077-C}
+}
+
+@article{fakhreddine2025global,
+  title={Global hydrogen trade pathways: A review of modelling advances and challenges},
+  author={Fakhreddine, Jana and Dodds, Paul E. and Butnar, Isabela},
+  journal={International Journal of Hydrogen Energy},
+  volume={129},
+  pages={236--252},
+  year={2025},
+  publisher={Elsevier},
+  doi={10.1016/j.ijhydene.2025.04.203}
+}
+
+@article{terlouw2022large,
+  title={Large-scale hydrogen production via water electrolysis: a techno-economic and environmental assessment},
+  author={Terlouw, Tom and Bauer, Christian and McKenna, Russell and Mazzotti, Marco},
+  journal={Energy \& Environmental Science},
+  volume={15},
+  pages={3583--3602},
+  year={2022},
+  publisher={Royal Society of Chemistry},
+  doi={10.1039/d2ee01023b}
+}
+
+@article{fattahi2024opportunities,
+  title={Opportunities of hydrogen and ammonia trade between Europe and MENA},
+  author={Fattahi, Amir and Longa, Francesco Dalla and van der Zwaan, Bob},
+  journal={International Journal of Hydrogen Energy},
+  volume={83},
+  pages={967--974},
+  year={2024},
+  publisher={Elsevier},
+  doi={10.1016/j.ijhydene.2024.08.021}
+}
+
+@article{abdelkhalek2025pypsa,
+  title={PyPSA-Earth sector-coupled: A global open-source multi-energy system model showcased for hydrogen applications in countries of the Global South},
+  author={Abdel-Khalek, Hazem and Schumm, Leon and Jalbout, Eddy and Parzen, Maximilian and Schau{\ss}, Caspar and Fioriti, Davide},
+  journal={Applied Energy},
+  volume={383},
+  pages={125316},
+  year={2025},
+  publisher={Elsevier},
+  doi={10.1016/j.apenergy.2025.125316}
+}
+
+@article{gallego2025pypsaspain,
+  title={PyPSA-Spain: An extension of PyPSA-Eur to model the Spanish energy system},
+  author={Gallego-Castillo, Cristobal and Victoria, Marta},
+  journal={Energy Strategy Reviews},
+  volume={60},
+  pages={101764},
+  year={2025},
+  publisher={Elsevier},
+  doi={10.1016/j.esr.2025.101764}
+}
+
+@article{johnson2025realistic,
+  title={Realistic roles for hydrogen in the future energy transition},
+  author={Johnson, Nathan and Liebreich, Michael and Kammen, Daniel M. and Ekins, Paul and McKenna, Russell and Staffell, Iain},
+  journal={Nature Reviews Clean Technology},
+  year={2025},
+  publisher={Nature Portfolio},
+  doi={10.1038/s44359-025-00050-4}
+}
+
+@article{alanazi2025renewable,
+  title={Renewable hydrogen trade in a global decarbonised energy system},
+  author={Alanazi, Khalid and Mittal, Shivika and Hawkes, Adam and Shah, Nilay},
+  journal={International Journal of Hydrogen Energy},
+  volume={101},
+  pages={712--730},
+  year={2025},
+  publisher={Elsevier},
+  doi={10.1016/j.ijhydene.2024.12.452}
+}
+
+@article{rahil2018techno,
+  title={Techno-economic assessment of dispatchable hydrogen production by multiple electrolysers in Libya},
+  author={Rahil, Abdulla and Gammon, Rupert and Brown, Neil},
+  journal={Journal of Energy Storage},
+  volume={16},
+  pages={46--60},
+  year={2018},
+  publisher={Elsevier},
+  doi={10.1016/j.est.2017.12.016}
+}
+
+@article{achhammer2026impact,
+  title={The impact of hydrogen underground storage on export dynamics and system resilience: A GIS-based integration of salt caverns into PyPSA-Earth},
+  author={Achhammer, Anton and Fioriti, Davide and Patonia, Aliaksei and Sterner, Michael},
+  journal={Energy},
+  volume={360},
+  pages={141729},
+  year={2026},
+  publisher={Elsevier},
+  doi={10.1016/j.energy.2026.141729}
+}
