@@ -1,0 +1,22 @@
+================================================================================
+ PyPSA-Libya — Net Present Value (NPV) & Financial Analysis (25 Years)
+================================================================================
+
+  Discount Rate (WACC)        : 7.0 %
+  Project Lifetime            : 25 Years
+  Assumed Electricity Price   : €75.00 / MWh
+
+--------------------------------------------------------------------------------
+  Estimated Overnight CAPEX   : €57.494 Billion
+  Annualized CAPEX            : €4.934 Billion / Year
+  Annual OPEX                 : €1.33 Million / Year
+  Total Annual System Cost    : €3.162 Billion / Year
+--------------------------------------------------------------------------------
+  Annual System Energy Demand : 53.65 TWh (53,650,961 MWh)
+  Levelized Cost (LCOE)       : €58.94 / MWh
+  Annual Projected Revenue    : €4.024 Billion / Year
+  Annual Net Operational CF   : €4.022 Billion / Year
+--------------------------------------------------------------------------------
+  NET PRESENT VALUE (NPV)     : €-10.617 Billion
+  INTERNAL RATE OF RETURN(IRR): 4.86 %
+================================================================================
