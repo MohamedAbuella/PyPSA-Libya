@@ -1,0 +1,14 @@
+====================================================================================================
+PyPSA-Libya: Electricity-Only Cost Breakdown Summary (3h) (Billion EUR/year)
+====================================================================================================
+
+--- Itemized Cost Breakdown (Billion EUR/year) ---
+category       Solar PV  Onshore Wind    CCGT     Oil  Battery Storage  Operating Cost
+Limited CO2      1.4601        0.4004  1.4972  0.2518           1.3138          0.0013
+Unlimited CO2    0.4211        0.6223  1.4972  0.2518           0.0010          0.9539
+
+----------------------------------------------------------------------------------------------------
+--- Total System Costs Summary ---
+  Limited CO2    Total Cost:    4.925 Billion EUR/year
+  Unlimited CO2  Total Cost:    3.747 Billion EUR/year
+====================================================================================================
