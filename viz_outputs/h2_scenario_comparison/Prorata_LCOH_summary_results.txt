@@ -1,0 +1,23 @@
+===============================================================================================
+PyPSA-Libya: Pro-Rata Levelized Cost of Hydrogen (LCOH) Export Results
+===============================================================================================
+
+--- Table 1: Cost Allocation & Pro-Rata Cost Breakdown ---
+            Dedicated H2 Cost [B EUR]  Allocated Elec Cost [B EUR]  Allocated Gas Cost [B EUR]  Total Pro-Rata Cost [B EUR]  Exported H2 [TWh]  Elec Alloc Share [%]  Gas Alloc Share [%]
+Scenario A                   3.748909                     4.328657                    0.000000                     8.077566               70.0             71.659120             0.000000
+Scenario B                   1.043769                     0.000451                    2.756309                     3.800529               70.0              0.021857            99.986534
+Scenario C                   0.843307                     0.052556                    2.499603                     3.395465               70.0              7.189569            99.994883
+
+--- Table 2: Pro-Rata LCOH Unit Summary (MWh vs. LHV / HHV per kg) ---
+            Pro-Rata LCOH [EUR/MWh]  Pro-Rata LCOH LHV [EUR/kg]  Pro-Rata LCOH HHV [EUR/kg]
+Scenario A               115.393800                    3.846075                    4.547670
+Scenario B                54.293265                    1.809595                    2.139698
+Scenario C                48.506647                    1.616727                    1.911647
+
+===============================================================================================
+Notes:
+ - Total Pro-Rata Cost = Dedicated Costs + Allocated Elec Pool Cost + Allocated Gas Fuel Cost
+ - Pro-Rata LCOH = Total Pro-Rata Cost / Exported H2 Energy
+ - Assumed H2 Lower Heating Value (LHV) = 0.03333 MWh/kg (33.33 kWh/kg)
+ - Assumed H2 Higher Heating Value (HHV) = 0.03941 MWh/kg (39.41 kWh/kg)
+===============================================================================================

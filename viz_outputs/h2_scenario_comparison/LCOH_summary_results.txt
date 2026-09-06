@@ -1,0 +1,23 @@
+===============================================================================================
+PyPSA-Libya: Net Levelized Cost of Hydrogen (LCOH) Export Results (Option B)
+===============================================================================================
+
+--- Table 1: Cost Allocation & Net LCOH Breakdown ---
+            Export Run Cost [B EUR]  Baseline Cost [B EUR]  Net H2 Cost [B EUR]  Exported H2 [TWh]  Net LCOH [EUR/MWh]
+Scenario A                 9.951696               1.970001             7.981695               70.0          114.024221
+Scenario B                 5.570504               1.930160             3.640344               70.0           52.004918
+Scenario C                 4.079586               0.972131             3.107455               70.0           44.392211
+
+--- Table 2: Net LCOH Unit Summary (MWh vs. LHV / HHV per kg) ---
+            Net LCOH [EUR/MWh]  Net LCOH LHV [EUR/kg]  Net LCOH HHV [EUR/kg]
+Scenario A          114.024221               3.800427               4.493695
+Scenario B           52.004918               1.733324               2.049514
+Scenario C           44.392211               1.479592               1.749497
+
+===============================================================================================
+Notes:
+ - Net H2 Cost = Export System Cost - 0-Export Baseline Cost
+ - Net LCOH = Net H2 Cost / Exported H2 Energy
+ - Assumed H2 Lower Heating Value (LHV) = 0.03333 MWh/kg (33.33 kWh/kg)
+ - Assumed H2 Higher Heating Value (HHV) = 0.03941 MWh/kg (39.41 kWh/kg)
+===============================================================================================
