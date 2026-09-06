@@ -1,5 +1,5 @@
 ===============================================================================================
-PyPSA-Libya: Net Levelized Cost of Hydrogen (LCOH) Export Results (Option B)
+PyPSA-Libya: Net Levelized Cost of Hydrogen (LCOH) Export Results
 ===============================================================================================
 
 --- Table 1: Cost Allocation & Net LCOH Breakdown ---
