@@ -1,5 +1,5 @@
 ===================================================================================================================
-PyPSA-Libya: Figure 9a Cost Breakdown Summary by Scenario (Billion EUR/year)
+PyPSA-Libya: Cost Breakdown Summary by Scenario (Export Hydrogen) (Billion EUR/year)
 ===================================================================================================================
 
 --- Itemized Cost Breakdown (Billion EUR/year) ---
