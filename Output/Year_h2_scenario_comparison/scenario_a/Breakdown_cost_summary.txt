@@ -1,0 +1,16 @@
+===================================================================================================================
+PyPSA-Libya: Figure 9a Cost Breakdown Summary by Scenario (Billion EUR/year)
+===================================================================================================================
+
+--- Itemized Cost Breakdown (Billion EUR/year) ---
+category    Solar PV  Onshore Wind    CCGT     Oil  Electrolysis  H2 Storage  H2 Fuel Cell     SMR  SMR with CC  H2 pipeline  Operating Cost
+Scenario A    1.5245        4.1119  0.0004  0.1651        3.3863      0.3613        0.0002  0.0000       0.0000       0.1075          0.2946
+Scenario B    0.3379        1.2213  0.0003  0.1653        0.0005      0.1141        0.0002  0.0000       0.9281       0.0025          2.8004
+Scenario C    0.0237        0.0003  0.0002  0.3676        0.0017      0.1141        0.0002  0.7256       0.0008       0.0042          2.8411
+
+-------------------------------------------------------------------------------------------------------------------
+--- Total System Costs Summary ---
+  Scenario A   Total Cost:    9.952 Billion EUR/year
+  Scenario B   Total Cost:    5.571 Billion EUR/year
+  Scenario C   Total Cost:    4.080 Billion EUR/year
+===================================================================================================================
