@@ -14,7 +14,7 @@
 # two blocks marked CHANGED FOR SCENARIO A.
 
 run:
-  name: "libya_h2export_scenario_a"   # <-- CHANGED: distinct run name so
+  name: "libya_h2export_scenario_a_3h"   # <-- CHANGED: distinct run name so
                                         # scenario a doesn't collide with
                                         # b or c in resources/networks/results
 
@@ -22,7 +22,7 @@ countries: ["LY"]
 
 scenario:
   clusters: [12]
-  opts: [Co2L-6h] #[Co2L-3h]
+  opts: [Co2L-3h] #[Co2L-6h]
   planning_horizons: [2030]
   sopts: [""]
   demand: ["AB"]
@@ -169,7 +169,7 @@ solving:
       parallel: "on"
       solver: "ipm"
       run_crossover: "off"              
-      ipm_dense_col_threshold: 100  # user_bound_scale: -13  
+      user_bound_scale: -14 
       primal_feasibility_tolerance: 1e-3
       dual_feasibility_tolerance: 1e-3
       ipm_optimality_tolerance: 1e-3
