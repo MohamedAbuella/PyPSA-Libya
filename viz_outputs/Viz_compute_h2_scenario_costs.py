@@ -61,7 +61,7 @@ RESULTS = {
 
 
 
-##### No H2 export, year, 6-hrs 
+# #### No H2 export, year, 6-hrs 
 
 # RESULTS = {
 #     "Scenario A": r"Output\libya_h2export_test\scenario_a\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
@@ -263,98 +263,129 @@ def operating_cost(n: pypsa.Network) -> float:
     return total
 
 
+
+ 
+
 # =====================================================================
-# COST COMPUTATION & FIGURE 9A GENERATION
+# COST COMPUTATION & FIGURE 9A GENERATION (H2 EXPORT & NO H2 EXPORT)
 # =====================================================================
 
-print("=" * 70)
-print("Computing Annualized Total System Costs across Export Scenarios (A, B, C)")
-print("=" * 70)
+# Define dictionary mapping run cases to their respective input NC files dictionary and file output prefix
+RUN_CASES = {
+    "H2_Export": {
+        "results": RESULTS,
+        "prefix": "",  # Keeps original names: figure9a_cost_by_scenario.png & Breakdown_cost_summary.txt
+    },
+    "No_H2_Export": {
+        "results": {
+            "Scenario A": r"Output\libya_h2export_test\scenario_a\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
+            "Scenario B": r"Output\libya_h2export_test\scenario_b\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
+            "Scenario C": r"Output\libya_h2export_test\scenario_c\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
+        },
+        "prefix": "No_H2_export_",  # Output names: figure9a_No_H2_export_cost_by_scenario.png & Breakdown_No_H2_export_cost_summary.txt
+    },
+}
 
-scenario_costs = {}
+for case_key, case_info in RUN_CASES.items():
+    results_dict = case_info["results"]
+    prefix = case_info["prefix"]
 
-for scenario_name, path in RESULTS.items():
-    if not os.path.exists(path):
-        print(f"\n[SKIP] {scenario_name}: File not found at '{path}'")
-        continue
+    print("=" * 70)
+    print(f"Computing Annualized Total System Costs across Scenarios (A, B, C) [{case_key}]")
+    print("=" * 70)
 
-    print(f"Loading network for {scenario_name}...")
-    n_export = pypsa.Network(path)
+    scenario_costs = {}
 
-    capex = capex_by_category(n_export)
-    opex = operating_cost(n_export)
+    for scenario_name, path in results_dict.items():
+        if not os.path.exists(path):
+            print(f"\n[SKIP] {scenario_name}: File not found at '{path}'")
+            continue
 
-    combined = capex.copy()
-    combined["Operating Cost"] = opex
+        print(f"Loading network for {scenario_name}...")
+        n_export = pypsa.Network(path)
 
-    scenario_costs[scenario_name] = combined
-    print(f"\n{scenario_name} Breakdown:")
-    print((combined / 1e9).round(3).to_string())
-    print(f"  TOTAL System Cost: {combined.sum() / 1e9:,.3f} B EUR/yr")
+        capex = capex_by_category(n_export)
+        opex = operating_cost(n_export)
 
-if not scenario_costs:
-    print("\nNo scenario output files were found. Please check network run paths.")
-else:
-    # ------------------------------------------------------------------
-    # 1. Total System Cost Stacked Bar Chart Comparison  
-    # ------------------------------------------------------------------
-    df = pd.DataFrame(scenario_costs).T / 1e9  # Convert to billions
-    df = df.fillna(0.0)
+        combined = capex.copy()
+        combined["Operating Cost"] = opex
 
-    category_order = [c for c in
+        scenario_costs[scenario_name] = combined
+        print(f"\n{scenario_name} Breakdown:")
+        print((combined / 1e9).round(3).to_string())
+        print(f"  TOTAL System Cost: {combined.sum() / 1e9:,.3f} B EUR/yr")
+
+    if not scenario_costs:
+        print(f"\nNo scenario output files were found for {case_key}. Please check network run paths.")
+    else:
+        # ------------------------------------------------------------------
+        # 1. Total System Cost Stacked Bar Chart Comparison  
+        # ------------------------------------------------------------------
+        df = pd.DataFrame(scenario_costs).T / 1e9  # Convert to billions
+        df = df.fillna(0.0)
+
+        category_order = [c for c in
                           ["Solar PV", "Onshore Wind", "Offshore Wind", "CCGT", "OCGT", "Oil",
                            "Electrolysis", "H2 Storage", "H2 Fuel Cell", "SMR", "SMR with CC", 
                            "CO2 sequestration", "H2 pipeline", "Operating Cost"]
                           if c in df.columns]
+        
+        df = df[category_order]
+
+        fig, ax = plt.subplots(figsize=(10, 6))
+        bottom = pd.Series(0.0, index=df.index)
+
+        for cat in category_order:
+            values = df[cat]
+            ax.bar(df.index, values, bottom=bottom,
+                   color=CHART_COLORS.get(cat, "#95a5a6"), label=cat,
+                   edgecolor="black", linewidth=0.5)
+            bottom += values
+
+        ax.set_ylabel("Annualized System Cost [Billion EUR]", fontsize=11)
+        
+        # Adjust chart title based on the case
+        title_type = "No Export Hydrogen" if case_key == "No_H2_Export" else "Export Hydrogen"
+        ax.set_title(f"PyPSA-Libya: {title_type} System Cost Comparison\nScenarios (a), (b), and (c)", fontsize=12, fontweight="bold")
+        ax.legend(loc="upper left", bbox_to_anchor=(1.02, 1.0), fontsize=9)
+        ax.grid(axis="y", linestyle="--", alpha=0.5)
+
+        fig.tight_layout()
+
+        # Generate filename with or without prefix
+        png_filename = f"figure9a_{prefix}cost_by_scenario.png" if prefix else "figure9a_cost_by_scenario.png"
+        out_path = os.path.join(OUT_DIR, png_filename)
+        
+        fig.savefig(out_path, dpi=200, bbox_inches="tight")
+        pdf_name_key = f"{prefix}cost_by_scenario" if prefix else "cost_by_scenario"
+        save_paper_pdf(fig, ax, pdf_name_key)
+        plt.close(fig)
+        print(f"\nSaved cost comparison chart -> {out_path}")
+        
+        # ------------------------------------------------------------------
+        # 1.1 Save Itemized Figure 9a Cost Breakdown Summary Text File
+        # ------------------------------------------------------------------
+        txt_filename = f"Breakdown_{prefix}cost_summary.txt" if prefix else "Breakdown_cost_summary.txt"
+        txt_out_path = os.path.join(OUT_DIR, txt_filename)
+        
+        # Calculate total annualized cost per scenario
+        df_totals = df.sum(axis=1)
+        
+        with open(txt_out_path, "w", encoding="utf-8") as f:
+            f.write("=" * 115 + "\n")
+            f.write(f"PyPSA-Libya: Cost Breakdown Summary by Scenario ({title_type}) (Billion EUR/year)\n")
+            f.write("=" * 115 + "\n\n")
+            f.write("--- Itemized Cost Breakdown (Billion EUR/year) ---\n")
+            f.write(df.round(4).to_string())
+            f.write("\n\n" + "-" * 115 + "\n")
+            f.write("--- Total System Costs Summary ---\n")
+            for scenario_k, total_val in df_totals.items():
+                f.write(f"  {scenario_k:12s} Total Cost: {total_val:8.3f} Billion EUR/year\n")
+            f.write("=" * 115 + "\n")
+
+        print(f"Saved Figure 9a cost breakdown text file -> {txt_out_path}\n")
     
-    df = df[category_order]
-
-    fig, ax = plt.subplots(figsize=(10, 6))
-    bottom = pd.Series(0.0, index=df.index)
-
-    for cat in category_order:
-        values = df[cat]
-        ax.bar(df.index, values, bottom=bottom,
-               color=CHART_COLORS.get(cat, "#95a5a6"), label=cat,
-               edgecolor="black", linewidth=0.5)
-        bottom += values
-
-    ax.set_ylabel("Annualized System Cost [Billion EUR]", fontsize=11)
-    ax.set_title("PyPSA-Libya: Export Hydrogen System Cost Comparison\nScenarios (a), (b), and (c)", fontsize=12, fontweight="bold")
-    ax.legend(loc="upper left", bbox_to_anchor=(1.02, 1.0), fontsize=9)
-    ax.grid(axis="y", linestyle="--", alpha=0.5)
-
-    fig.tight_layout()
-
-    out_path = os.path.join(OUT_DIR, "figure9a_cost_by_scenario.png")
-    fig.savefig(out_path, dpi=200, bbox_inches="tight")
-    save_paper_pdf(fig, ax, "cost_by_scenario")
-    plt.close(fig)
-    print(f"\nSaved cost comparison chart -> {out_path}")
     
-    # ------------------------------------------------------------------
-    # 1.1 Save Itemized Figure 9a Cost Breakdown Summary Text File
-    # ------------------------------------------------------------------
-    txt_out_path = os.path.join(OUT_DIR, "Breakdown_cost_summary.txt")
-    
-    # Calculate total annualized cost per scenario
-    df_totals = df.sum(axis=1)
-    
-    with open(txt_out_path, "w", encoding="utf-8") as f:
-        f.write("=" * 115 + "\n")
-        f.write("PyPSA-Libya: Figure 9a Cost Breakdown Summary by Scenario (Billion EUR/year)\n")
-        f.write("=" * 115 + "\n\n")
-        f.write("--- Itemized Cost Breakdown (Billion EUR/year) ---\n")
-        f.write(df.round(4).to_string())
-        f.write("\n\n" + "-" * 115 + "\n")
-        f.write("--- Total System Costs Summary ---\n")
-        for scenario_k, total_val in df_totals.items():
-            f.write(f"  {scenario_k:12s} Total Cost: {total_val:8.3f} Billion EUR/year\n")
-        f.write("=" * 115 + "\n")
-
-    print(f"Saved Figure 9a cost breakdown text file -> {txt_out_path}")
-
-
     def per_bus_capex(net: pypsa.Network) -> pd.DataFrame:
         """Extracts capital costs per bus across all network components, including H2 stores."""
         frames = []
@@ -393,42 +424,42 @@ else:
         res["bus"] = res["bus"].apply(lambda b: b[:-3] if str(b).endswith(" H2") else str(b))
         return res
         
-
-
+    
+    
     def strip_h2_suffix(b):
         return b[:-3] if b.endswith(" H2") else b
-
+    
     print("\nGenerating Spatial Investment (CAPEX) Maps...")
-
+    
     for scenario_name, path in RESULTS.items():
         if not os.path.exists(path):
             print(f"[SKIP Map] {scenario_name}: File not found at '{path}'")
             continue
-
+    
         n = pypsa.Network(path)
         bus_cost = per_bus_capex(n)
-
+    
         if bus_cost.empty:
             print(f"[SKIP Map] {scenario_name}: No mapped capex components found.")
             continue
-
+    
         pivot = bus_cost.pivot_table(index="bus", columns="category",
                                       values="cost", aggfunc="sum", fill_value=0.0)
-
+    
         pivot.index = [strip_h2_suffix(b) for b in pivot.index]
         pivot = pivot.groupby(level=0).sum()
-
+    
         buses = n.buses.loc[n.buses.index.intersection(pivot.index)]
         fig, ax = plt.subplots(figsize=(10, 8))
         total_by_bus = pivot.sum(axis=1)
         max_cost = total_by_bus.max() if total_by_bus.max() > 0 else 1.0
-
+    
         for _, row in n.lines.iterrows():
             if row.bus0 in buses.index and row.bus1 in buses.index:
                 x0, y0 = buses.loc[row.bus0, ["x", "y"]]
                 x1, y1 = buses.loc[row.bus1, ["x", "y"]]
                 ax.plot([x0, x1], [y0, y1], c="gray", lw=0.5, alpha=0.5, zorder=1)
-
+    
         for bus in buses.index:
             x, y = buses.loc[bus, ["x", "y"]]
             total = total_by_bus.get(bus, 0.0)
@@ -436,7 +467,7 @@ else:
             if total < 0.5 * 1e6:
                 ax.scatter(x, y, s=20, c="lightgray", edgecolors="gray", linewidths=0.5, zorder=2)
                 continue
-
+    
             size = 150 + 2500 * (total / max_cost)
             dominant = pivot.loc[bus].idxmax()
             ax.scatter(x, y, s=size, c=CHART_COLORS.get(dominant, "gray"),
@@ -445,7 +476,7 @@ else:
             label_text = f"{total/1e9:.2f}B" if total >= 1e9 else f"{total/1e6:.0f}M"
             ax.annotate(label_text, (x, y), fontsize=7, fontweight="bold",
                         textcoords="offset points", xytext=(4, 4), zorder=4)
-
+    
         legend_handles = [mpatches.Patch(color=c, label=k) for k, c in CHART_COLORS.items() if k in pivot.columns]
         ax.legend(handles=legend_handles, loc="lower left", fontsize=8)
         ax.set_title(f"PyPSA-Libya — {scenario_name}: Spatial Financial Investment Allocation\n"
@@ -453,7 +484,7 @@ else:
         ax.set_xlabel("Longitude")
         ax.set_ylabel("Latitude")
         ax.grid(True, linestyle=":", alpha=0.6)
-
+    
         safe_name = scenario_name.lower().replace(" ", "_")
         out_path = os.path.join(OUT_DIR, f"figure9b_investment_map_{safe_name}.png")
         fig.savefig(out_path, dpi=200, bbox_inches="tight")
@@ -1053,40 +1084,47 @@ print("\n" + "=" * 70)
 print("Computing System LCOE and Net-Cost Allocated LCOH across Scenarios")
 print("=" * 70)
 
-
-# Dynamically construct Baseline Reference Networks (0 TWh H2 Export) for Option B Net-Cost Allocation
-# derived directly from the main RESULTS paths defined at the top
+# ------------------------------------------------------------------
+# Define Baseline Network Paths Explicitly (No-H2 Export Reference)
+# ------------------------------------------------------------------
 BASELINE_RESULTS = {}
 for scenario_name, path in RESULTS.items():
-    # Insert 'No_Hydrogen_H2_0' folder before 'postnetworks' and switch export suffix to '0export.nc'
-    path_0export = path.replace(r"\postnetworks", r"\No_Hydrogen_H2_0\postnetworks")
-    path_0export = re.sub(r'(\d+)export\.nc$', r'0export.nc', path_0export)
+    # Dynamically derive 0-export baseline path if not manually specified
+    if r"\No_Hydrogen_H2_0" not in path:
+        path_0export = path.replace(r"\postnetworks", r"\No_Hydrogen_H2_0\postnetworks")
+        path_0export = re.sub(r'(\d+)export\.nc$', r'0export.nc', path_0export)
+    else:
+        path_0export = path
     BASELINE_RESULTS[scenario_name] = path_0export
-    
-    
+
+
 DEFAULT_EXPORT_H2_MWH = 70 * 1e6      # 70 TWh export target in MWh
 DEFAULT_DOMESTIC_AC_MWH = 52.04 * 1e6 # 52.04 TWh AC domestic demand in MWh
 
 # Hydrogen Heating Values:
-# Lower Heating Value (LHV): 33.33 kWh/kg = 0.03333 MWh/kg
-# Higher Heating Value (HHV): 39.41 kWh/kg = 0.03941 MWh/kg
-H2_LHV_MWH_PER_KG = 0.03333           
-H2_HHV_MWH_PER_KG = 0.03941           
+H2_LHV_MWH_PER_KG = 0.03333           # Lower Heating Value (33.33 kWh/kg)
+H2_HHV_MWH_PER_KG = 0.03941           # Higher Heating Value (39.41 kWh/kg)
 
 lcoe_results = {}
 lcoh_results_main = {}
 lcoh_results_summary = {}
 
 for scenario_name, export_path in RESULTS.items():
-    if not os.path.exists(export_path) or scenario_name not in scenario_costs:
+    if not os.path.exists(export_path):
+        print(f"[SKIP LCOE/LCOH] Export file not found for {scenario_name}: {export_path}")
         continue
 
     # ------------------------------------------------------------------
     # A. Combined System-Wide Levelized Cost of Energy (LCOE) Calculation
     # ------------------------------------------------------------------
+    print(f"Processing Export Network LCOE/LCOH for {scenario_name}...")
     n_export = pypsa.Network(export_path)
-    total_system_cost_eur = scenario_costs[scenario_name].sum()
-    
+
+    # Compute Total Export System Cost independently
+    capex_exp = capex_by_category(n_export).sum()
+    opex_exp = operating_cost(n_export)
+    total_system_cost_eur = capex_exp + opex_exp
+
     # Extract Domestic AC Load Served
     domestic_ac_mwh = 0.0
     ac_loads = n_export.loads[n_export.loads.carrier == "AC"]
@@ -1108,7 +1146,7 @@ for scenario_name, export_path in RESULTS.items():
     # Total Multi-Carrier System Energy Demand (Electricity + H2 Export)
     total_system_energy_mwh = domestic_ac_mwh + exported_h2_mwh
 
-    # Calculate Overall System LCOE across all energy served
+    # Calculate Overall System LCOE
     lcoe_system_eur_per_mwh = total_system_cost_eur / total_system_energy_mwh
     
     lcoe_results[scenario_name] = {
@@ -1120,27 +1158,27 @@ for scenario_name, export_path in RESULTS.items():
     }
 
     # ------------------------------------------------------------------
-    # B. Net-Cost Allocated LCOH Calculation (Option B - Table Split)
+    # B. Net-Cost Allocated LCOH Calculation (Baseline Deduction)
     # ------------------------------------------------------------------
     base_path = BASELINE_RESULTS.get(scenario_name)
     if base_path and os.path.exists(base_path):
-        print(f"Loading 0-Export baseline network for net LCOH: {scenario_name}...")
+        print(f"Loading Baseline (No-H2 Export) network for {scenario_name}...")
         n_base = pypsa.Network(base_path)
         
-        # Calculate annualized baseline cost for 0 TWh H2 export
+        # Compute baseline cost (0 TWh H2 Export)
         capex_base = capex_by_category(n_base).sum()
         opex_base = operating_cost(n_base)
         baseline_cost_eur = capex_base + opex_base
         
-        # Incremental H2 cost = Total Export Run Cost - Baseline Run Cost
+        # Incremental Net H2 Cost = Export Run Cost - Baseline Run Cost
         net_h2_cost_eur = total_system_cost_eur - baseline_cost_eur
 
-        # Net LCOH metrics (per MWh, per kg LHV, and per kg HHV)
+        # Net LCOH metrics
         lcoh_eur_per_mwh = net_h2_cost_eur / exported_h2_mwh
         lcoh_eur_per_kg_lhv = lcoh_eur_per_mwh * H2_LHV_MWH_PER_KG
         lcoh_eur_per_kg_hhv = lcoh_eur_per_mwh * H2_HHV_MWH_PER_KG
 
-        # Table 1: Cost Breakdown & Export Volume
+        # Table 1: Cost Allocation Breakdown
         lcoh_results_main[scenario_name] = {
             "Export Run Cost [B EUR]": total_system_cost_eur / 1e9,
             "Baseline Cost [B EUR]": baseline_cost_eur / 1e9,
@@ -1149,17 +1187,17 @@ for scenario_name, export_path in RESULTS.items():
             "Net LCOH [EUR/MWh]": lcoh_eur_per_mwh,
         }
 
-        # Table 2: Dedicated Unit Conversion Metrics
+        # Table 2: Unit Summary Metrics
         lcoh_results_summary[scenario_name] = {
             "Net LCOH [EUR/MWh]": lcoh_eur_per_mwh,
             "Net LCOH LHV [EUR/kg]": lcoh_eur_per_kg_lhv,
             "Net LCOH HHV [EUR/kg]": lcoh_eur_per_kg_hhv,
         }
     else:
-        print(f"[WARNING] Baseline network file not found for {scenario_name} at: {base_path}")
+        print(f"[WARNING] Baseline file missing for {scenario_name} at: {base_path}")
 
 # ------------------------------------------------------------------
-# Save Reports to File
+# Save Summaries to Text Files
 # ------------------------------------------------------------------
 if lcoe_results:
     lcoe_df = pd.DataFrame(lcoe_results).T
@@ -1184,14 +1222,14 @@ if lcoh_results_main:
     lcoh_main_df = pd.DataFrame(lcoh_results_main).T
     lcoh_summary_df = pd.DataFrame(lcoh_results_summary).T
 
-    print("\n" + "=" * 50 + "\nNET ALLOCATED LCOH RESULTS (OPTION B)\n" + "=" * 50)
+    print("\n" + "=" * 50 + "\nNET ALLOCATED LCOH RESULTS\n" + "=" * 50)
     print(lcoh_main_df.to_string())
     print("\n" + lcoh_summary_df.to_string())
 
     lcoh_txt_path = os.path.join(OUT_DIR, "LCOH_summary_results.txt")
     with open(lcoh_txt_path, "w", encoding="utf-8") as f:
         f.write("=" * 95 + "\n")
-        f.write("PyPSA-Libya: Net Levelized Cost of Hydrogen (LCOH) Export Results (Option B)\n")
+        f.write("PyPSA-Libya: Net Levelized Cost of Hydrogen (LCOH) Export Results\n")
         f.write("=" * 95 + "\n\n")
         f.write("--- Table 1: Cost Allocation & Net LCOH Breakdown ---\n")
         f.write(lcoh_main_df.to_string())
@@ -1206,7 +1244,6 @@ if lcoh_results_main:
         f.write(f" - Assumed H2 Higher Heating Value (HHV) = {H2_HHV_MWH_PER_KG} MWh/kg (39.41 kWh/kg)\n")
         f.write("=" * 95 + "\n")
     print(f"\nSaved Net LCOH summary report -> {lcoh_txt_path}")
-    
     
 
 
@@ -2220,22 +2257,21 @@ print("=" * 70)
 # ---------------------------------------------------------------------
 # Dynamic User-Adjustable Parameters
 # ---------------------------------------------------------------------
-DISCOUNT_RATE = 0.071                         # Financial discount rate (7.1%)
-YEARS = np.arange(2030, 2051)                 # 21-year operational horizon (2030–2050 inclusive)
+DISCOUNT_RATE = 0.071                          # Financial discount rate (7.1%)
+YEARS = np.arange(2030, 2051)                  # 21-year operational horizon (2030–2050 inclusive)
 NUM_YEARS = len(YEARS)
 
-H2_TARGET_TONS = 70.0 * 1e6 * 1000           # 70 TWh -> ~70 Million Tons -> in kg equivalent (70 Billion kg)
+H2_TARGET_TONS = 70.0 * 1e6 * 1000            # 70 TWh -> ~70 Million Tons -> in kg equivalent (70 Billion kg)
 
 ### Fixed Price of H2 for all hydrogen types (all three scenarios on price).
 BENCHMARK_PRICE_PER_KG = 2.00  # EUR/kg standard price
 
 ### Dynamic revenue margin over levelized cost (1 Euro/kg higher than LCOH LHV)
-
 REVENUE_MARGIN_EUR_PER_KG = 1.00
 
 DESAL_COST_EUR_PER_M3 = 1.50                  # Reverse Osmosis desalination cost (€/m3)
-DESAL_ENERGY_KWH_PER_M3 = 3.5                 # Desalination energy overhead (kWh/m3)
-ELECTROLYZER_SEC_KWH_PER_KG = 52.5            # Electrolyzer specific electricity consumption (kWh/kg H2)
+DESAL_ENERGY_KWH_PER_M3 = 3.5                  # Desalination energy overhead (kWh/m3)
+ELECTROLYZER_SEC_KWH_PER_KG = 52.5             # Electrolyzer specific electricity consumption (kWh/kg H2)
 
 WATER_M3_PER_KG_H2 = 0.009                    # Stoichiometric water requirement (~9 L/kg H2 = 0.009 m3/kg)
 
@@ -2251,9 +2287,11 @@ margin_npv_results_main = {}
 margin_npv_results_summary = {}
 
 for scenario_name, export_path in RESULTS.items():
-    if not os.path.exists(export_path) or scenario_name not in scenario_costs:
+    if not os.path.exists(export_path):
+        print(f"[SKIP NPV] Export path not found for {scenario_name}: {export_path}")
         continue
 
+    print(f"Processing NPV Analysis for {scenario_name}...")
     n_export = pypsa.Network(export_path)
 
     # 1. Physical Hydrogen & Water Metrics
@@ -2271,14 +2309,24 @@ for scenario_name, export_path in RESULTS.items():
     water_desal_cost_eur = water_required_m3 * DESAL_COST_EUR_PER_M3
 
     # 2. Financial System Costs & Net-Cost Allocated LCOH LHV (EUR/kg)
-    annual_system_cost_eur = scenario_costs[scenario_name].sum()
-    
-    base_path = BASELINE_RESULTS.get(scenario_name)
+    capex_exp = capex_by_category(n_export).sum()
+    opex_exp = operating_cost(n_export)
+    annual_system_cost_eur = capex_exp + opex_exp
+
+    # Dynamically locate and compute Baseline Run Costs independently
+    if r"\No_Hydrogen_H2_0" not in export_path:
+        base_path = export_path.replace(r"\postnetworks", r"\No_Hydrogen_H2_0\postnetworks")
+        base_path = re.sub(r'(\d+)export\.nc$', r'0export.nc', base_path)
+    else:
+        base_path = export_path
+
     net_h2_cost_annual_eur = annual_system_cost_eur
-    if base_path and os.path.exists(base_path):
+    if os.path.exists(base_path) and base_path != export_path:
         n_base = pypsa.Network(base_path)
         baseline_cost_annual_eur = capex_by_category(n_base).sum() + operating_cost(n_base)
         net_h2_cost_annual_eur = annual_system_cost_eur - baseline_cost_annual_eur
+    else:
+        print(f"[WARNING NPV] Baseline path not found or matched export network for {scenario_name}: {base_path}")
 
     # LCOH LHV in EUR/kg for the scenario
     lcoh_lhv_eur_per_kg = (net_h2_cost_annual_eur / exported_h2_mwh) * H2_LHV_MWH_PER_KG
@@ -2332,7 +2380,6 @@ for scenario_name, export_path in RESULTS.items():
         "H2 Exported [M Tons/yr]": h2_exported_kg / 1e9,
     }
 
-    # Removed NPV Net Allocated to leave NPV Total System as the final column
     margin_npv_results_summary[scenario_name] = {
         "PV System Cost [B EUR]": pv_system_cost_eur / 1e9,
         "PV Net H2 Cost [B EUR]": pv_net_h2_cost_eur / 1e9,
@@ -2341,7 +2388,7 @@ for scenario_name, export_path in RESULTS.items():
     }
 
 # ---------------------------------------------------------------------
-# Export Standard Benchmark NPV Text File (Renamed File)
+# Export Standard Benchmark NPV Text File
 # ---------------------------------------------------------------------
 if npv_results_main:
     npv_main_df = pd.DataFrame(npv_results_main).T
@@ -2410,7 +2457,6 @@ if margin_npv_results_main:
         f.write("=" * 105 + "\n")
 
     print(f"\nSaved +1 Euro/kg margin NPV summary report -> {margin_txt_path}")
-    
     
     
 

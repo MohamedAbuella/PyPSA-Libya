@@ -61,37 +61,62 @@ os.makedirs(OUT_DIR, exist_ok=True)
 PAPER_DIR = os.path.join(OUT_DIR, "Paper_Figures")
 os.makedirs(PAPER_DIR, exist_ok=True)
 
-def save_paper_pdf(fig, ax, filename):
+
+def save_paper_pdf(fig, ax, filename, is_map=False):
     """
-    Automatically clears the title and saves a high-res PDF to the Paper_Figures folder.
-    Optimizes map file sizes by rasterizing geographic layers while keeping text as vectors.
+    Saves the publication PDF to Paper_Figures.
+
+    For map figures:
+      - Rasterizes geographic/background layers and transmission lines
+      - Keeps markers, labels, annotations, legends and text as vectors
+      - Uses 300 dpi for the rasterized map layer
+
+    This keeps PDF file sizes reasonable while preserving publication quality.
     """
-    original_title = ax.get_title() # Store the title
-    ax.set_title("")                # Clear the title for the paper version
-    
-    # Apply naming logic
+    original_title = ax.get_title()
+    ax.set_title("")
+
+    # ------------------------------------------------------------
+    # Standard naming
+    # ------------------------------------------------------------
     clean_name = re.sub(r'^figure\d+[a-z]?_', '', filename)
+
     if not clean_name.startswith('fig_'):
         clean_name = 'fig_' + clean_name
+
     if not clean_name.endswith('.pdf'):
         clean_name += '.pdf'
-        
+
     pdf_path = os.path.join(PAPER_DIR, clean_name)
-    
-    # --- OPTIMIZATION FOR MAPS ---
-    # If the file is a map, we rasterize layers with low z-orders (the map/lines)
-    # but keep z-orders >= 3 (the bubbles and text) as vector.
-    if "map" in filename.lower():
-        # Geographic features in setup_map_ax use zorder 0-1. 
-        # Transmission lines in the script use zorder 1.
-        # Bubbles start at zorder 3.
-        ax.set_rasterization_zorder(2.5) 
-    
-    # Save with dpi=300 to ensure the rasterized map background looks sharp
-    fig.savefig(pdf_path, format='pdf', dpi=300, bbox_inches="tight")
-    
-    ax.set_title(original_title)    # Restore title for the PNG/display
-    print(f" Saved Paper PDF (Optimized): {clean_name}")
+
+    # ------------------------------------------------------------
+    # MAP PDF OPTIMIZATION
+    # ------------------------------------------------------------
+    if is_map:
+        # Rasterize everything below zorder 4.
+        #
+        # zorder 0-1 : Cartopy LAND/OCEAN/BORDERS/COASTLINE
+        # zorder 2-3 : transmission/network lines
+        # zorder 4+  : bubbles, markers, labels, annotations
+        #
+        # Thus the expensive geographic geometry becomes one raster
+        # image while important scientific annotations remain vectors.
+        ax.set_rasterization_zorder(4.0)
+
+    # ------------------------------------------------------------
+    # Save PDF
+    # ------------------------------------------------------------
+    fig.savefig(
+        pdf_path,
+        format="pdf",
+        dpi=300,
+        bbox_inches="tight"
+    )
+
+    # Restore original title for normal PNG/display output
+    ax.set_title(original_title)
+
+    print(f" Saved Paper PDF: {clean_name}")
     
     
 
@@ -407,7 +432,7 @@ for stage_name, path in STAGES:
     ax.set_title(f"PyPSA-Libya — {stage_name} (buses={len(macro_buses)}, lines={n_branches})")
     out_path = os.path.join(OUT_DIR, f"network_topology_{stage_name}.png")
     fig.savefig(out_path, dpi=150, bbox_inches="tight")
-    save_paper_pdf(fig, ax, f"network_topology_{stage_name}")
+    save_paper_pdf(fig, ax, f"network_topology_{stage_name}", is_map=True)
     plt.close(fig)
     print(f"  {stage_name:18s} buses={len(macro_buses):4d}  lines={n_branches:4d} -> saved")
 
@@ -518,7 +543,7 @@ for idx, (bus_id, bus_row) in enumerate(macro_buses.iterrows()):
 
 ax.set_title(f"PyPSA-Libya — Solved Power Capacity by Bus ({CLUSTERS} Clusters, {HOURS}h)")
 fig.savefig(os.path.join(OUT_DIR, "solved_capacity_map.png"), dpi=150, bbox_inches="tight")
-save_paper_pdf(fig, ax, "solved_capacity_map")
+save_paper_pdf(fig, ax, "solved_capacity_map", is_map=True)
 plt.close(fig)
 
 # ---------------------------------------------------------------------
@@ -830,7 +855,7 @@ if hasattr(n, "buses_t") and not n.buses_t.marginal_price.empty:
     ax.set_title("PyPSA-Libya — Spatial Distribution of Top 10 Highest LMP Nodes")
     out_lmp_map_png = os.path.join(OUT_DIR, "lmp_locations_map.png")
     fig.savefig(out_lmp_map_png, dpi=150, bbox_inches="tight")
-    save_paper_pdf(fig, ax, "lmp_locations_map")
+    save_paper_pdf(fig, ax, "lmp_locations_map", is_map=True)
     plt.close(fig)
     print(f"  saved LMP locations map        -> {out_lmp_map_png}")
 
@@ -1007,7 +1032,7 @@ ax.set_title(f"PyPSA-Libya — Transmission Bottlenecks Map\nLine labels highlig
 
 out_map_png = os.path.join(OUT_DIR, "transmission_line_bottlenecks_map.png")
 fig.savefig(out_map_png, dpi=150, bbox_inches="tight")
-save_paper_pdf(fig, ax, "transmission_line_bottlenecks_map")
+save_paper_pdf(fig, ax, "transmission_line_bottlenecks_map", is_map=True)
 plt.close(fig)
 print(f"  saved Line Bottlenecks Map     -> {out_map_png}")
 
