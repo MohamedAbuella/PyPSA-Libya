@@ -32,8 +32,8 @@ CASE = "LCO2"
 # CASE = "NoLCO2"
 
 #####SWITCH 2: TEMPORAL RESOLUTION (6 or 3) ---
-HOURS = 6
-# HOURS = 3
+# HOURS = 6
+HOURS = 3
 
 USE_CCL = False
 
