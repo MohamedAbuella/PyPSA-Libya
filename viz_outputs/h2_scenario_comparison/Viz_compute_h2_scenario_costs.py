@@ -44,8 +44,8 @@ from matplotlib.lines import Line2D
 
 
 ##### H2 export, year, 3-hrs 
-
-RESULTS = {
+  
+RESULTS = {    
     "Scenario A": r"Output\libya_h2export_test\scenario_a\3hrs\postnetworks\elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc",
     "Scenario B": r"Output\libya_h2export_test\scenario_b\3hrs\postnetworks\elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc",
     "Scenario C": r"Output\libya_h2export_test\scenario_c\3hrs\postnetworks\elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc",
@@ -1078,7 +1078,7 @@ for scenario_name, path in RESULTS.items():
 
 
 # =====================================================================
-# 3. LCOE & LCOH (Levelized Cost Analysis) Computation & Text Exports
+# 3. LCOE & LCOH (LEVELIZED COST ANALYSIS) COMPUTATION & EXPORT
 # =====================================================================
 print("\n" + "=" * 70)
 print("Computing System LCOE and Net-Cost Allocated LCOH across Scenarios")
@@ -1089,7 +1089,6 @@ print("=" * 70)
 # ------------------------------------------------------------------
 BASELINE_RESULTS = {}
 for scenario_name, path in RESULTS.items():
-    # Dynamically derive 0-export baseline path if not manually specified
     if r"\No_Hydrogen_H2_0" not in path:
         path_0export = path.replace(r"\postnetworks", r"\No_Hydrogen_H2_0\postnetworks")
         path_0export = re.sub(r'(\d+)export\.nc$', r'0export.nc', path_0export)
@@ -1120,12 +1119,10 @@ for scenario_name, export_path in RESULTS.items():
     print(f"Processing Export Network LCOE/LCOH for {scenario_name}...")
     n_export = pypsa.Network(export_path)
 
-    # Compute Total Export System Cost independently
     capex_exp = capex_by_category(n_export).sum()
     opex_exp = operating_cost(n_export)
     total_system_cost_eur = capex_exp + opex_exp
 
-    # Extract Domestic AC Load Served
     domestic_ac_mwh = 0.0
     ac_loads = n_export.loads[n_export.loads.carrier == "AC"]
     if not ac_loads.empty and not n_export.loads_t.p.empty:
@@ -1134,7 +1131,6 @@ for scenario_name, export_path in RESULTS.items():
     if domestic_ac_mwh <= 0:
         domestic_ac_mwh = DEFAULT_DOMESTIC_AC_MWH
 
-    # Extract Exported H2 Energy
     exported_h2_mwh = 0.0
     h2_export_loads = n_export.loads[n_export.loads.carrier.str.contains("H2|h2|export", case=False, na=False)]
     if not h2_export_loads.empty and not n_export.loads_t.p.empty:
@@ -1143,10 +1139,7 @@ for scenario_name, export_path in RESULTS.items():
     if exported_h2_mwh <= 0:
         exported_h2_mwh = DEFAULT_EXPORT_H2_MWH
 
-    # Total Multi-Carrier System Energy Demand (Electricity + H2 Export)
     total_system_energy_mwh = domestic_ac_mwh + exported_h2_mwh
-
-    # Calculate Overall System LCOE
     lcoe_system_eur_per_mwh = total_system_cost_eur / total_system_energy_mwh
     
     lcoe_results[scenario_name] = {
@@ -1165,20 +1158,16 @@ for scenario_name, export_path in RESULTS.items():
         print(f"Loading Baseline (No-H2 Export) network for {scenario_name}...")
         n_base = pypsa.Network(base_path)
         
-        # Compute baseline cost (0 TWh H2 Export)
         capex_base = capex_by_category(n_base).sum()
         opex_base = operating_cost(n_base)
         baseline_cost_eur = capex_base + opex_base
         
-        # Incremental Net H2 Cost = Export Run Cost - Baseline Run Cost
         net_h2_cost_eur = total_system_cost_eur - baseline_cost_eur
 
-        # Net LCOH metrics
         lcoh_eur_per_mwh = net_h2_cost_eur / exported_h2_mwh
         lcoh_eur_per_kg_lhv = lcoh_eur_per_mwh * H2_LHV_MWH_PER_KG
         lcoh_eur_per_kg_hhv = lcoh_eur_per_mwh * H2_HHV_MWH_PER_KG
 
-        # Table 1: Cost Allocation Breakdown
         lcoh_results_main[scenario_name] = {
             "Export Run Cost [B EUR]": total_system_cost_eur / 1e9,
             "Baseline Cost [B EUR]": baseline_cost_eur / 1e9,
@@ -1187,7 +1176,6 @@ for scenario_name, export_path in RESULTS.items():
             "Net LCOH [EUR/MWh]": lcoh_eur_per_mwh,
         }
 
-        # Table 2: Unit Summary Metrics
         lcoh_results_summary[scenario_name] = {
             "Net LCOH [EUR/MWh]": lcoh_eur_per_mwh,
             "Net LCOH LHV [EUR/kg]": lcoh_eur_per_kg_lhv,
@@ -1197,13 +1185,10 @@ for scenario_name, export_path in RESULTS.items():
         print(f"[WARNING] Baseline file missing for {scenario_name} at: {base_path}")
 
 # ------------------------------------------------------------------
-# Save Summaries to Text Files
+# Save LCOE & Pure LCOH Summaries (Restored to Original Format)
 # ------------------------------------------------------------------
 if lcoe_results:
     lcoe_df = pd.DataFrame(lcoe_results).T
-    print("\n" + "=" * 50 + "\nSYSTEM LCOE RESULTS\n" + "=" * 50)
-    print(lcoe_df.to_string())
-
     lcoe_txt_path = os.path.join(OUT_DIR, "LCOE_summary_results.txt")
     with open(lcoe_txt_path, "w", encoding="utf-8") as f:
         f.write("=" * 85 + "\n")
@@ -1222,10 +1207,6 @@ if lcoh_results_main:
     lcoh_main_df = pd.DataFrame(lcoh_results_main).T
     lcoh_summary_df = pd.DataFrame(lcoh_results_summary).T
 
-    print("\n" + "=" * 50 + "\nNET ALLOCATED LCOH RESULTS\n" + "=" * 50)
-    print(lcoh_main_df.to_string())
-    print("\n" + lcoh_summary_df.to_string())
-
     lcoh_txt_path = os.path.join(OUT_DIR, "LCOH_summary_results.txt")
     with open(lcoh_txt_path, "w", encoding="utf-8") as f:
         f.write("=" * 95 + "\n")
@@ -1243,10 +1224,126 @@ if lcoh_results_main:
         f.write(f" - Assumed H2 Lower Heating Value (LHV) = {H2_LHV_MWH_PER_KG} MWh/kg (33.33 kWh/kg)\n")
         f.write(f" - Assumed H2 Higher Heating Value (HHV) = {H2_HHV_MWH_PER_KG} MWh/kg (39.41 kWh/kg)\n")
         f.write("=" * 95 + "\n")
-    print(f"\nSaved Net LCOH summary report -> {lcoh_txt_path}")
+    print(f"\nSaved standalone Net LCOH summary report -> {lcoh_txt_path}")
+
+
+# =====================================================================
+# 3.1 FINANCIAL ASSESSMENT, IRR & PAYBACK COMPUTATION
+# =====================================================================
+print("\n" + "=" * 70)
+print("Evaluating Financial Cash Flows, Project IRR & Payback Period across Scenarios")
+print("=" * 70)
+
+import numpy_financial as npf
+
+YEARS = np.arange(2030, 2051)                 
+PROJECT_LIFETIME_YEARS = len(YEARS)
+DEFAULT_WACC = 0.071             
+
+def overnight_capex_total(n: pypsa.Network, discount_rate: float = DEFAULT_WACC, lifetime: int = PROJECT_LIFETIME_YEARS) -> float:
+    ann_factor = (discount_rate * (1 + discount_rate)**lifetime) / (((1 + discount_rate)**lifetime) - 1)
+    annualized_capex_total = capex_by_category(n).sum()
+    return annualized_capex_total / ann_factor
+
+irr_payback_results = []
+
+for scenario_name, export_path in RESULTS.items():
+    if not os.path.exists(export_path):
+        print(f"[SKIP Financial/IRR] {scenario_name}: File not found at {export_path}")
+        continue
+
+    n_exp = pypsa.Network(export_path)
+    ann_capex_exp = capex_by_category(n_exp).sum()
+    opex_exp = operating_cost(n_exp)
+    overnight_capex_exp = overnight_capex_total(n_exp)
+
+    exported_h2_mwh = 0.0
+    h2_export_loads = n_exp.loads[n_exp.loads.carrier.str.contains("H2|h2|export", case=False, na=False)]
+    if not h2_export_loads.empty and not n_exp.loads_t.p.empty:
+        weights = n_exp.snapshot_weightings.generators
+        exported_h2_mwh = n_exp.loads_t.p[h2_export_loads.index].mul(weights, axis=0).sum().sum()
+    if exported_h2_mwh <= 0:
+        exported_h2_mwh = DEFAULT_EXPORT_H2_MWH
+
+    exported_h2_kg = exported_h2_mwh / H2_LHV_MWH_PER_KG
+
+    base_path = BASELINE_RESULTS.get(scenario_name)
+    if base_path and os.path.exists(base_path):
+        n_base = pypsa.Network(base_path)
+        ann_capex_base = capex_by_category(n_base).sum()
+        opex_base = operating_cost(n_base)
+        overnight_capex_base = overnight_capex_total(n_base)
+    else:
+        ann_capex_base = 0.0
+        overnight_capex_base = 0.0
+        opex_base = 0.0
+
+    total_ann_cost_exp = ann_capex_exp + opex_exp
+    total_ann_cost_base = ann_capex_base + opex_base
+    net_ann_cost = total_ann_cost_exp - total_ann_cost_base
+    net_lcoh_eur_mwh = net_ann_cost / exported_h2_mwh
+    net_lcoh_eur_kg = net_lcoh_eur_mwh * H2_LHV_MWH_PER_KG
+
+    selling_price_eur_kg = net_lcoh_eur_kg + 1.00
+    annual_revenue = exported_h2_kg * selling_price_eur_kg
+
+    net_overnight_capex = max(0.0, overnight_capex_exp - overnight_capex_base)
+    net_annual_opex = max(0.0, opex_exp - opex_base)
+    annual_net_cash_inflow = annual_revenue - net_annual_opex
+
+    cash_flows = [-net_overnight_capex] + [annual_net_cash_inflow] * PROJECT_LIFETIME_YEARS
+
+    # Calculate Project IRR
+    try:
+        irr_val = npf.irr(cash_flows) * 100.0
+    except Exception:
+        irr_val = np.nan
+
+    # Calculate Payback Period (Breakeven Point in Years)
+    if annual_net_cash_inflow > 0 and net_overnight_capex > 0:
+        payback_years = net_overnight_capex / annual_net_cash_inflow
+    else:
+        payback_years = np.nan
+
+    net_cash_flow_m = (annual_net_cash_inflow - (net_overnight_capex / PROJECT_LIFETIME_YEARS)) / 1e6
+
+    irr_payback_results.append({
+        "Scenario": scenario_name,
+        "Selling Price [EUR/kg]": selling_price_eur_kg,
+        "Annual Revenue [B EUR]": annual_revenue / 1e9,
+        "Net Cash Flow [M EUR]": net_cash_flow_m,
+        "Project IRR (%)": irr_val,
+        "Payback Period [Years]": payback_years
+    })
+
+
+# ------------------------------------------------------------------
+# SAVE SEPARATE IRR & PAYBACK SUMMARY REPORT
+# ------------------------------------------------------------------
+if irr_payback_results:
+    df_irr_payback = pd.DataFrame(irr_payback_results).set_index("Scenario")
+
+    irr_txt_path = os.path.join(OUT_DIR, "IRR_Payback_summary.txt")
+    with open(irr_txt_path, "w", encoding="utf-8") as f:
+        f.write("=" * 95 + "\n")
+        f.write("PyPSA-Libya: Financial Cash Flow, Project IRR & Payback Assessment Summary\n")
+        f.write("=" * 95 + "\n\n")
+        
+        f.write("--- Table 1: Project IRR & Payback Period Summary ---\n")
+        f.write(df_irr_payback.to_string())
+        f.write("\n\n" + "=" * 95 + "\n")
+        
+        f.write("Notes:\n")
+        f.write(" - Fixed Selling Price benchmark set at Net LCOH + 1.00 EUR/kg off-take premium.\n")
+        f.write(f" - Discount Rate (WACC) = {DEFAULT_WACC * 100:.1f}%, Project Lifetime = {PROJECT_LIFETIME_YEARS} years.\n")
+        f.write(" - Cash flow vector for Project IRR (%): Year 0 = -Net Overnight CAPEX, Years 1..N = Revenue - Net OPEX.\n")
+        f.write(" - Payback Period [Years] = Net Overnight CAPEX / Annual Net Operating Cash Inflow.\n")
+        f.write("=" * 95 + "\n")
+
+    print(f"\nSaved separate IRR & Payback summary report -> {irr_txt_path}")
     
-
-
+    
+    
 
 # =====================================================================
 # 4. AUGUST MONTHLY DISPATCH TIME-SERIES CHARTS (6-HOUR / 3-HOUR RESOLUTION)
@@ -2257,11 +2354,10 @@ print("=" * 70)
 # ---------------------------------------------------------------------
 # Dynamic User-Adjustable Parameters
 # ---------------------------------------------------------------------
-DISCOUNT_RATE = 0.071                          # Financial discount rate (7.1%)
-YEARS = np.arange(2030, 2051)                  # 21-year operational horizon (2030–2050 inclusive)
-NUM_YEARS = len(YEARS)
+DISCOUNT_RATE = DEFAULT_WACC                   # Financial discount rate (7.1%)                 
+NUM_YEARS = PROJECT_LIFETIME_YEARS # 21-year operational horizon (2030–2050 inclusive)
 
-H2_TARGET_TONS = 70.0 * 1e6 * 1000            # 70 TWh -> ~70 Million Tons -> in kg equivalent (70 Billion kg)
+H2_TARGET_TONS = DEFAULT_EXPORT_H2_MWH          # 70 TWh -> ~70 Million Tons -> in kg equivalent (70 Billion kg)
 
 ### Fixed Price of H2 for all hydrogen types (all three scenarios on price).
 BENCHMARK_PRICE_PER_KG = 2.00  # EUR/kg standard price

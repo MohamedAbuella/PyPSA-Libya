@@ -1,0 +1,18 @@
+===============================================================================================
+PyPSA-Libya: Financial Cash Flow, Project IRR & Payback Assessment Summary
+===============================================================================================
+
+--- Table 1: Project IRR & Payback Period Summary ---
+            Selling Price [EUR/kg]  Annual Revenue [B EUR]  Net Cash Flow [M EUR]  Project IRR (%)  Payback Period [Years]
+Scenario                                                                                                                  
+Scenario A                4.800427               10.081905            5994.266319        10.233546                8.508838
+Scenario B                2.733324                5.740554            2667.405217        25.911891                3.828676
+Scenario C                2.479592                5.207665            2509.845405        32.498069                3.068755
+
+===============================================================================================
+Notes:
+ - Fixed Selling Price benchmark set at Net LCOH + 1.00 EUR/kg off-take premium.
+ - Discount Rate (WACC) = 7.1%, Project Lifetime = 21 years.
+ - Cash flow vector for Project IRR (%): Year 0 = -Net Overnight CAPEX, Years 1..N = Revenue - Net OPEX.
+ - Payback Period [Years] = Net Overnight CAPEX / Annual Net Operating Cash Inflow.
+===============================================================================================
