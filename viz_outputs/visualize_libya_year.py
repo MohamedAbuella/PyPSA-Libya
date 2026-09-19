@@ -403,38 +403,7 @@ ELEC_PATH = f"networks/{RUN_NAME}/elec.nc"
 base_n = pypsa.Network(BASE_PATH) if os.path.exists(BASE_PATH) else (pypsa.Network(ELEC_PATH) if os.path.exists(ELEC_PATH) else None)
 
 
-# ---------------------------------------------------------------------
-# PART 1 — Topology at Pipeline Stages
-# ---------------------------------------------------------------------
 
-STAGES = [
-    ("base",                 f"networks/{RUN_NAME}/base.nc"),
-    ("elec",                 f"networks/{RUN_NAME}/elec.nc"),
-    ("elec_s",                f"networks/{RUN_NAME}/elec_s.nc"),
-    (f"elec_s_{CLUSTERS}",    f"networks/{RUN_NAME}/elec_s_{CLUSTERS}.nc"),
-    (f"elec_s_{CLUSTERS}_ec", f"networks/{RUN_NAME}/elec_s_{CLUSTERS}_ec.nc"),
-]
-
-print("\nPART 1: Network topology at pipeline stages")
-print("-" * 70)
-
-for stage_name, path in STAGES:
-    if not os.path.exists(path):
-        print(f"  [skip] {stage_name}: file not found at {path}")
-        continue
-    n_stage = pypsa.Network(path)
-    macro_buses = n_stage.buses[~n_stage.buses.index.str.contains("low voltage|battery|H2", case=False)]
-    
-    fig = plt.figure(figsize=(10, 8))
-    ax = setup_map_ax(fig)
-    n_branches = draw_base_lines(base_n if base_n is not None else n_stage, ax, color="tab:orange", alpha=0.8, linewidth=1.1)
-    ax.scatter(macro_buses.x, macro_buses.y, s=20, c="#3b82f6", edgecolors="black", linewidths=0.3, zorder=3)
-    ax.set_title(f"PyPSA-Libya — {stage_name} (buses={len(macro_buses)}, lines={n_branches})")
-    out_path = os.path.join(OUT_DIR, f"network_topology_{stage_name}.png")
-    fig.savefig(out_path, dpi=150, bbox_inches="tight")
-    save_paper_pdf(fig, ax, f"network_topology_{stage_name}", is_map=True)
-    plt.close(fig)
-    print(f"  {stage_name:18s} buses={len(macro_buses):4d}  lines={n_branches:4d} -> saved")
 
 # ---------------------------------------------------------------------
 # PART 2 — Solved Network Capacity & Map
@@ -444,6 +413,21 @@ print("\nPART 2: Solved network capacity results")
 print("-" * 70)
 
 print(f"Loading solved network from: {SOLVED_PATH}")
+
+# Mappings and Color Palette
+CAPEX_CARRIER_MAP_ELEC = {
+    "solar": "Solar PV",
+    "onwind": "Onshore Wind",
+    "offwind": "Offshore Wind",
+    "CCGT": "CCGT",
+    "OCGT": "OCGT",
+    "oil": "Oil",
+    "heavy fuel oil": "Oil",
+    "battery": "Battery",
+    "H2 Fuel Cell": "H2 Fuel Cell",
+    "H2": "H2 Storage",
+}
+
 n = pypsa.Network(SOLVED_PATH)
 
 dt_hours = (n.snapshots[1] - n.snapshots[0]).total_seconds() / 3600.0 if len(n.snapshots) > 1 and isinstance(n.snapshots, pd.DatetimeIndex) else float(HOURS)
@@ -478,14 +462,19 @@ def get_clean_power_capacity_df(network):
 cap_df = get_clean_power_capacity_df(n)
 
 if not cap_df.empty:
-    all_power_cap = cap_df.groupby("carrier")["capacity"].sum().sort_values()
-    all_power_cap = all_power_cap[all_power_cap > 1e-2]
-    fig, ax = plt.subplots(figsize=(9, 5))
-    bars = ax.barh(all_power_cap.index, all_power_cap.values, color=[colors.get(c, "gray") for c in all_power_cap.index])
-    ax.set_xlabel("Optimal Installed Power Capacity (MW)")
-    ax.set_title("PyPSA-Libya — Optimal Power Capacity by Carrier (MW)")
+    # Aggregate power capacities, filter tiny values, and convert MW -> GW
+    all_power_cap_mw = cap_df.groupby("carrier")["capacity"].sum().sort_values()
+    all_power_cap_gw = all_power_cap_mw[all_power_cap_mw > 1e-2] / 1000.0
     
-    ax.bar_label(bars, fmt='{:,.1f} MW', padding=5, fontsize=9, fontweight='normal')
+    # Map raw carrier names to clean capitalized labels
+    formatted_labels = [CAPEX_CARRIER_MAP_ELEC.get(c, c.capitalize()) for c in all_power_cap_gw.index]
+
+    fig, ax = plt.subplots(figsize=(9, 5))
+    bars = ax.barh(formatted_labels, all_power_cap_gw.values, color=[colors.get(c, "gray") for c in all_power_cap_gw.index])
+    ax.set_xlabel("Optimal Installed Power Capacity (GW)")
+    ax.set_title("PyPSA-Libya — Optimal Power Capacity by Carrier (GW)")
+    
+    ax.bar_label(bars, fmt='{:,.2f} GW', padding=5, fontsize=9, fontweight='normal')
     ax.margins(x=0.20)
     
     ax.set_axisbelow(True)
@@ -496,74 +485,35 @@ if not cap_df.empty:
     save_paper_pdf(fig, ax, "solved_capacity_by_carrier")
     plt.close(fig)
 
-# Solved Capacity Map
-fig = plt.figure(figsize=(11, 8))
-ax = setup_map_ax(fig)
-draw_base_lines(base_n if base_n is not None else n, ax, color="#888888", alpha=0.5, linewidth=0.9)
-
-macro_buses = n.buses[~n.buses.index.str.contains("low voltage|battery|H2", case=False)]
-
-if not cap_df.empty:
-    gen_by_bus = cap_df.groupby(["bus", "carrier"])["capacity"].sum().unstack(fill_value=0)
-    total_cap_by_bus = gen_by_bus.sum(axis=1)
-    dominant_carrier_by_bus = gen_by_bus.idxmax(axis=1)
-    for bus_id, cap in total_cap_by_bus.items():
-        if cap <= 0.1: continue
-        x, y = find_bus_coords(n, bus_id)
-        if x is None: continue
-        color = colors.get(dominant_carrier_by_bus.get(bus_id, "none"), "gray")
-        ax.scatter(x, y, s=max(20, (cap ** 0.5) * 7), c=color, edgecolors="black", linewidths=0.5, zorder=4, alpha=0.85)
-
-stagger_offsets = [
-    (8, 8), (-12, 10), (10, -12), (-12, -10),
-    (12, 0), (-14, 2), (0, 12), (0, -14),
-    (10, -6), (-10, -12)
-]
-
-for idx, (bus_id, bus_row) in enumerate(macro_buses.iterrows()):
-    x, y = bus_row.x, bus_row.y
-    if x is not None and y is not None:
-        match = re.search(r"LY\d+", str(bus_id))
-        clean_bus_label = match.group(0) if match else str(bus_id).split()[0]
-        
-        raw_offset = stagger_offsets[idx % len(stagger_offsets)]
-        safe_offset = get_safe_offset(x, y, raw_offset)
-        
-        ax.annotate(
-            clean_bus_label,
-            (x, y),
-            xytext=safe_offset,
-            textcoords="offset points",
-            fontsize=7.5,
-            fontweight="normal",
-            color="black",
-            arrowprops=dict(arrowstyle="-", color="grey", lw=0.6, alpha=0.75),
-            zorder=6
-        )
-
-ax.set_title(f"PyPSA-Libya — Solved Power Capacity by Bus ({CLUSTERS} Clusters, {HOURS}h)")
-fig.savefig(os.path.join(OUT_DIR, "solved_capacity_map.png"), dpi=150, bbox_inches="tight")
-save_paper_pdf(fig, ax, "solved_capacity_map", is_map=True)
-plt.close(fig)
-
 # ---------------------------------------------------------------------
-# PART 3 — Energy Generation Mix & Renewable Performance (CF & Curtailment)
+# Barplot Update: Physical Generation & Storage Activity in TWh
 # ---------------------------------------------------------------------
-
-print("\nPART 3: Energy Generation, Dispatch Profile & Renewable CF/Curtailment")
-print("-" * 70)
 
 phys_gen_dict = {}
 
-# 1. Generator Energy Production
-if not n.generators.empty:
-    gen_p = n.generators_t.p.groupby(n.generators.carrier.map(map_carrier_name), axis=1).sum()
-    for carrier in gen_p.columns:
-        energy_gwh = (gen_p[carrier] * dt_hours).sum() / 1e3
-        if energy_gwh > 1e-3:
-            phys_gen_dict[carrier] = energy_gwh
+def get_clean_label(raw_carrier):
+    suffix = ""
+    clean_c = raw_carrier
+    if " (discharge)" in raw_carrier:
+        clean_c = raw_carrier.replace(" (discharge)", "")
+        suffix = " (discharge)"
+    elif " (charge)" in raw_carrier:
+        clean_c = raw_carrier.replace(" (charge)", "")
+        suffix = " (charge)"
+    mapped_name = CAPEX_CARRIER_MAP_ELEC.get(clean_c, clean_c.title())
+    return f"{mapped_name}{suffix}"
 
-# 2. Storage Discharging (+) and Charging (-) Energy Separated
+if not n.generators.empty:
+    valid_gens = n.generators[n.generators.carrier != "load shedding"].copy()
+    if not valid_gens.empty:
+        mapped_carriers = valid_gens.carrier.map(map_carrier_name)
+        gen_p = n.generators_t.p[valid_gens.index].groupby(mapped_carriers, axis=1).sum()
+        for carrier in gen_p.columns:
+            # Convert GWh to TWh (/ 1e6 instead of / 1e3)
+            energy_twh = (gen_p[carrier] * dt_hours).sum() / 1e6
+            if energy_twh > 1e-4:
+                phys_gen_dict[carrier] = energy_twh
+
 if not n.storage_units.empty and not n.storage_units_t.p.empty:
     su_p = n.storage_units_t.p
     su_carrier_mapped = n.storage_units.carrier.map(map_carrier_name)
@@ -571,23 +521,28 @@ if not n.storage_units.empty and not n.storage_units_t.p.empty:
         cols = n.storage_units[su_carrier_mapped == carrier].index
         p_carrier = su_p[cols]
 
-        dis_gwh = (p_carrier.clip(lower=0).sum(axis=1) * dt_hours).sum() / 1e3
-        if dis_gwh > 1e-3:
-            phys_gen_dict[f"{carrier} (discharge)"] = dis_gwh
+        dis_twh = (p_carrier.clip(lower=0).sum(axis=1) * dt_hours).sum() / 1e6
+        if dis_twh > 1e-4:
+            phys_gen_dict[f"{carrier} (discharge)"] = dis_twh
 
-        chg_gwh = ((-p_carrier.clip(upper=0)).sum(axis=1) * dt_hours).sum() / 1e3
-        if chg_gwh > 1e-3:
-            phys_gen_dict[f"{carrier} (charge)"] = chg_gwh
+        chg_twh = ((-p_carrier.clip(upper=0)).sum(axis=1) * dt_hours).sum() / 1e6
+        if chg_twh > 1e-4:
+            phys_gen_dict[f"{carrier} (charge)"] = chg_twh
 
-phys_gen_gwh = pd.Series(phys_gen_dict)
+phys_gen_twh = pd.Series(phys_gen_dict)
+
+if "load shedding" in phys_gen_twh.index:
+    phys_gen_twh = phys_gen_twh.drop(index="load shedding")
+
+mapped_x_labels = [get_clean_label(c) for c in phys_gen_twh.index]
 
 fig, ax = plt.subplots(figsize=(9, 5))
-bars = ax.bar(phys_gen_gwh.index, phys_gen_gwh.values, color=[colors.get(c, "gray") for c in phys_gen_gwh.index])
-ax.set_ylabel("Physical Generation / Activity (GWh)")
+bars = ax.bar(mapped_x_labels, phys_gen_twh.values, color=[colors.get(c, "gray") for c in phys_gen_twh.index])
+ax.set_ylabel("Physical Generation / Activity (TWh)")
 ax.set_title("PyPSA-Libya — Physical Energy Generation & Storage Activity")
 plt.xticks(rotation=30, ha='right')
 
-ax.bar_label(bars, fmt='{:,.1f}', padding=4, fontsize=9, fontweight='normal')
+ax.bar_label(bars, fmt='{:,.2f}', padding=4, fontsize=9, fontweight='normal')
 ax.margins(y=0.18)
 
 ax.set_axisbelow(True)
@@ -597,6 +552,169 @@ fig.tight_layout()
 fig.savefig(os.path.join(OUT_DIR, "physical_generation_by_carrier.png"), dpi=150, bbox_inches="tight")
 save_paper_pdf(fig, ax, "physical_generation_by_carrier")
 plt.close(fig)
+
+# ---------------------------------------------------------------------
+# Solved Capacity Map (Labels Filtered to Capacity >= 1 GW)
+# ---------------------------------------------------------------------
+
+fig = plt.figure(figsize=(11, 8))
+ax = setup_map_ax(fig)
+draw_base_lines(base_n if base_n is not None else n, ax, color="#888888", alpha=0.5, linewidth=0.9)
+
+BUBBLE_BASE_SIZE = 40.0
+BUBBLE_MAX_ADD_SIZE = 600.0
+TOP_GAP_PTS = 3.0
+
+if not cap_df.empty:
+    gen_by_bus = cap_df.groupby(["bus", "carrier"])["capacity"].sum().unstack(fill_value=0)
+    total_cap_by_bus = gen_by_bus.sum(axis=1)
+    dominant_carrier_by_bus = gen_by_bus.idxmax(axis=1)
+    max_bus_cap = total_cap_by_bus.max() if total_cap_by_bus.max() > 0 else 1.0
+
+    for bus_id, total_cap in total_cap_by_bus.items():
+        if total_cap <= 0.1:
+            continue
+
+        x, y = find_bus_coords(n, bus_id)
+        if x is None or y is None:
+            continue
+
+        dominant_carrier = dominant_carrier_by_bus.get(bus_id, "none")
+        color = colors.get(dominant_carrier, "gray")
+
+        # Draw bubble for all locations with capacity > 0.1 MW
+        size_bubble = BUBBLE_BASE_SIZE + BUBBLE_MAX_ADD_SIZE * (total_cap / max_bus_cap)
+
+        ax.scatter(
+            x, y,
+            s=size_bubble,
+            c=color,
+            edgecolors="black",
+            linewidths=0.6,
+            zorder=4,
+            alpha=0.85
+        )
+
+        # Annotate capacity label ONLY if total capacity is >= 1 GW (1000 MW)
+        if total_cap >= 1000.0:
+            cap_label_text = f"{total_cap/1e3:.1f}GW"
+            radius_pts = (size_bubble ** 0.5) / 2.0
+            top_offset_pts = radius_pts + TOP_GAP_PTS
+
+            ax.annotate(
+                cap_label_text,
+                (x, y),
+                xytext=(0, top_offset_pts),
+                textcoords="offset points",
+                ha="center",
+                va="bottom",
+                fontsize=7.5,
+                fontweight="normal",
+                color="black",
+                zorder=6
+            )
+
+ax.set_title(f"PyPSA-Libya — Solved Power Capacity Allocation by Bus ({CLUSTERS} Clusters, {HOURS}h)")
+fig.savefig(os.path.join(OUT_DIR, "solved_capacity_map.png"), dpi=150, bbox_inches="tight")
+save_paper_pdf(fig, ax, "solved_capacity_map", is_map=True)
+plt.close(fig)
+
+
+# ---------------------------------------------------------------------
+# PART 3 — Energy Generation Mix & Renewable Performance (CF & Curtailment)
+# ---------------------------------------------------------------------
+
+print("\nPART 3: Energy Generation, Dispatch Profile & Renewable CF/Curtailment")
+print("-" * 70)
+
+
+# Mappings and Color Palette
+CAPEX_CARRIER_MAP_ELEC = {
+    "solar": "Solar PV",
+    "onwind": "Onshore Wind",
+    "offwind": "Offshore Wind",
+    "CCGT": "CCGT",
+    "OCGT": "OCGT",
+    "oil": "Oil",
+    "heavy fuel oil": "Oil",
+    "battery": "Battery",
+    "H2 Fuel Cell": "Fuel Cell",
+    "H2": "H2 Storage",
+}
+
+
+phys_gen_dict = {}
+
+# Helper function to map carrier names using CAPEX_CARRIER_MAP_ELEC
+def get_clean_label(raw_carrier):
+    # Handle suffixes for storage state
+    suffix = ""
+    clean_c = raw_carrier
+    if " (discharge)" in raw_carrier:
+        clean_c = raw_carrier.replace(" (discharge)", "")
+        suffix = " (discharge)"
+    elif " (charge)" in raw_carrier:
+        clean_c = raw_carrier.replace(" (charge)", "")
+        suffix = " (charge)"
+    
+    # Map or fallback to title case
+    mapped_name = CAPEX_CARRIER_MAP_ELEC.get(clean_c, clean_c.title())
+    return f"{mapped_name}{suffix}"
+
+# 1. Generator Energy Production in TWh (MWh / 1e6)
+if not n.generators.empty:
+    valid_gens = n.generators[n.generators.carrier != "load shedding"].copy()
+    if not valid_gens.empty:
+        mapped_carriers = valid_gens.carrier.map(map_carrier_name)
+        gen_p = n.generators_t.p[valid_gens.index].groupby(mapped_carriers, axis=1).sum()
+        for carrier in gen_p.columns:
+            energy_twh = (gen_p[carrier] * dt_hours).sum() / 1e6
+            if energy_twh > 1e-4:  # Filter out negligible/zero generation (< 0.0001 TWh)
+                phys_gen_dict[carrier] = energy_twh
+
+# 2. Storage Discharging (+) and Charging (-) Energy Separated in TWh
+if not n.storage_units.empty and not n.storage_units_t.p.empty:
+    su_p = n.storage_units_t.p
+    su_carrier_mapped = n.storage_units.carrier.map(map_carrier_name)
+    for carrier in su_carrier_mapped.unique():
+        cols = n.storage_units[su_carrier_mapped == carrier].index
+        p_carrier = su_p[cols]
+
+        dis_twh = (p_carrier.clip(lower=0).sum(axis=1) * dt_hours).sum() / 1e6
+        if dis_twh > 1e-4:
+            phys_gen_dict[f"{carrier} (discharge)"] = dis_twh
+
+        chg_twh = ((-p_carrier.clip(upper=0)).sum(axis=1) * dt_hours).sum() / 1e6
+        if chg_twh > 1e-4:
+            phys_gen_dict[f"{carrier} (charge)"] = chg_twh
+
+phys_gen_twh = pd.Series(phys_gen_dict)
+
+# Further ensure load shedding is removed if it enters via mapping
+if "load shedding" in phys_gen_twh.index:
+    phys_gen_twh = phys_gen_twh.drop(index="load shedding")
+
+# Create capitalized / mapped x-axis labels
+mapped_x_labels = [get_clean_label(c) for c in phys_gen_twh.index]
+
+fig, ax = plt.subplots(figsize=(9, 5))
+bars = ax.bar(mapped_x_labels, phys_gen_twh.values, color=[colors.get(c, "gray") for c in phys_gen_twh.index])
+ax.set_ylabel("Physical Generation / Activity (TWh)")
+ax.set_title("PyPSA-Libya — Physical Energy Generation & Storage Activity")
+plt.xticks(rotation=30, ha='right')
+
+# Format labels with 2 decimal places in TWh scale
+ax.bar_label(bars, fmt='{:,.2f}', padding=4, fontsize=9, fontweight='normal')
+ax.margins(y=0.18)
+
+ax.set_axisbelow(True)
+ax.grid(axis='y', linestyle='--', alpha=0.5, color='#cbd5e1')
+
+fig.tight_layout()
+fig.savefig(os.path.join(OUT_DIR, "physical_generation_by_carrier.png"), dpi=150, bbox_inches="tight")
+save_paper_pdf(fig, ax, "physical_generation_by_carrier")
+plt.close(fig)
+
 
 # Total hourly dispatch dataframe creation
 gen_dispatch = n.generators_t.p.T.groupby(n.generators.carrier.map(map_carrier_name)).sum().T / 1e3
@@ -1320,6 +1438,13 @@ except ImportError:
     except Exception:
         project_irr = np.nan
 
+# 4b. Payback Period (Years) = Overnight CAPEX / Annual Net Cash Flow
+if annual_net_cash_flow > 0 and overnight_capex > 0:
+    payback_years = overnight_capex / annual_net_cash_flow
+else:
+    payback_years = np.nan
+
+
 # 5. Output Financial Summary Text File
 npv_txt_path = os.path.join(OUT_DIR, "npv_and_financial_analysis_summary.txt")
 with open(npv_txt_path, "w", encoding="utf-8") as f:
@@ -1345,12 +1470,21 @@ with open(npv_txt_path, "w", encoding="utf-8") as f:
         f.write(f"  INTERNAL RATE OF RETURN(IRR): {project_irr:.2f} %\n")
     else:
         f.write("  INTERNAL RATE OF RETURN(IRR): N/A\n")
+    if pd.notna(payback_years):
+        f.write(f"  PAYBACK PERIOD              : {payback_years:.2f} Years\n")
+    else:
+        f.write("  PAYBACK PERIOD              : N/A\n")
+    f.write("-" * 80 + "\n")
+    f.write("Notes:\n")
+    f.write(" - Payback Period [Years] = Overnight CAPEX / Annual Net Operational Cash Flow.\n")
     f.write("=" * 80 + "\n")
 
 print(f"  Estimated Overnight CAPEX : €{overnight_capex / 1e9:,.3f} Billion")
 print(f"  25-Year Net Present Value : €{final_npv / 1e9:,.3f} Billion")
 if pd.notna(project_irr):
     print(f"  Project IRR               : {project_irr:.2f} %")
+if pd.notna(payback_years):
+    print(f"  Payback Period            : {payback_years:.2f} Years")
 print(f"  Saved Financial Summary    -> {npv_txt_path}")
 
 # 6. Plot 25-Year Cumulative Cash Flow & NPV Progression Line Chart
@@ -1398,7 +1532,7 @@ print(f"  Saved Financial NPV Chart  -> {npv_png_path}")
 
 
 # =====================================================================
-# ELECTRICITY-ONLY COST COMPUTATION & COMPARISON (LCO2 vs NoLCO2)
+# 8. ELECTRICITY-ONLY COST COMPUTATION & COMPARISON (LCO2 vs NoLCO2)
 # =====================================================================
 
 HOURS_STR = f"{HOURS}h"
@@ -1605,6 +1739,266 @@ else:
         f.write("=" * 100 + "\n")
 
     print(f"  Saved text breakdown ({len(df_elec)} rows) -> {txt_out_path}")
+
+
+
+# # =====================================================================
+# PART 9 — OPEX BREAKDOWN ANALYSIS (STACKED BAR CHART - BOTH SCENARIOS)
+# =====================================================================
+
+print("\n" + "=" * 70)
+print(f"PART 9: Computing OPEX Breakdown Analysis (LCO2 vs NoLCO2) [{HOURS_STR}]")
+print("=" * 70)
+
+# Extended OPEX Carrier Map matching diagnosis breakdown standards
+OPEX_CARRIER_MAP = {
+    # Thermal & Primary Fuel Inputs
+    "gas": "Gas",
+    "natural gas": "Gas",
+    "gas supply": "Gas",
+    "gas for industry": "Gas",
+    "gas for industry CC": "Gas",
+    "oil": "Oil",
+    "heavy fuel oil": "Oil",
+    "diesel": "Oil",
+    "CCGT": "CCGT",
+    "OCGT": "OCGT",
+    # Renewable Generation
+    "solar": "Solar PV",
+    "Solar PV": "Solar PV",
+    "onwind": "Onshore Wind",
+    "Offshore Wind": "Offshore Wind",
+    "offwind": "Offshore Wind",
+    # Hydrogen & Industrial Components
+    "H2 Electrolysis": "Electrolysis",
+    "electrolysis": "Electrolysis",
+    "SMR": "SMR",
+    "SMR CC": "SMR with CC",
+    "H2": "H2 Storage",
+    "H2 store": "H2 Storage",
+    "H2 Store": "H2 Storage",
+    "H2 Store Tank": "H2 Storage",
+    "H2 Store Underground": "H2 Storage",
+    "H2 UHS": "H2 Storage",
+    "H2 Fuel Cell": "H2 Fuel Cell",
+    "H2 turbine": "H2 Fuel Cell",
+    "co2 sequestered": "CO2 sequestration",
+    "co2 sequestration": "CO2 sequestration",
+    "H2 pipeline": "H2 pipeline",
+    # Infrastructure & Grid Extensions
+    "electricity distribution grid": "Grid Expansion",
+    "process emissions": "Process Emissions",
+    "load shedding": "Load Shedding",
+    "Haber-Bosch": "Haber-Bosch"
+}
+
+# Unified Color Palette for OPEX Components
+OPEX_CHART_COLORS = {
+    "Gas": "#7f8c8d",                 # Grey/Slate fuel color
+    "Gas Supply": "#7f8c8d",          # Grey/Slate fuel color
+    "Oil": "#8b4513",                 # Brown
+    "Solar PV": "#f5a623",            # Yellow/Orange
+    "Onshore Wind": "#2ecc71",        # Light Green
+    "Offshore Wind": "#1abc9c",       # Dark Teal
+    "Electrolysis": "#7b2d8e",        # Purple
+    "SMR": "#4f4f2f",                 # Olive/Dark Grey
+    "SMR with CC": "#1a5276",         # Dark Blue
+    "H2 Storage": "#3498db",          # Bright Blue
+    "H2 Fuel Cell": "#e67e22",        # Orange
+    "CCGT": "#95a5a6",                # Light Grey
+    "OCGT": "#e74c3c",                # Soft Red
+    "CO2 sequestration": "#0b1f3a",   # Navy Blue
+    "H2 pipeline": "#c0392b",         # Red
+    "CO2 Tax": "#000000",             # Black
+    "Grid Expansion": "#bdc3c7",      # Platinum Grey
+    "Process Emissions": "#d35400",   # Rust
+    "Load Shedding": "#e74c3c",       # Red
+    "Haber-Bosch": "#16a085"          # Green Teal
+}
+
+
+def opex_by_category(network: pypsa.Network) -> pd.Series:
+    """Calculates OPEX grouped by carrier category incorporating marginal operational
+    costs, primary fuel supply costs (Gas/Oil), and component dispatches.
+    """
+    records = []
+    weights = network.snapshot_weightings.generators if hasattr(network, "snapshot_weightings") else 1.0
+
+    def clean_map(carrier_series):
+        return carrier_series.astype(str).str.strip().map(lambda c: OPEX_CARRIER_MAP.get(c, c))
+
+    # 1. Generators OPEX (Primary Fuel Supply Generators like Gas/Oil)
+    if not network.generators.empty and hasattr(network, "generators_t") and not network.generators_t.p.empty:
+        g = network.generators
+        sel_g = [c for c in g.index if c in network.generators_t.p.columns]
+        if sel_g:
+            mc = g.loc[sel_g, "marginal_cost"]
+            cost = network.generators_t.p[sel_g].mul(mc, axis=1).mul(weights, axis=0).sum(axis=0)
+            records.append(pd.DataFrame({
+                "category": clean_map(g.loc[sel_g, "carrier"]),
+                "cost": cost.values
+            }))
+
+    # 2. Links OPEX (Marginal Cost x Primary Input Power p0)
+    if not network.links.empty and hasattr(network, "links_t") and not network.links_t.p0.empty:
+        l = network.links
+        sel_l = [c for c in l.index if c in network.links_t.p0.columns]
+        if sel_l:
+            mc = l.loc[sel_l, "marginal_cost"]
+            cost = network.links_t.p0[sel_l].mul(mc, axis=1).mul(weights, axis=0).sum(axis=0)
+            records.append(pd.DataFrame({
+                "category": clean_map(l.loc[sel_l, "carrier"]),
+                "cost": cost.values
+            }))
+
+    # 3. Stores OPEX
+    if not network.stores.empty and hasattr(network, "stores_t") and hasattr(network.stores_t, "p") and not network.stores_t.p.empty:
+        s = network.stores
+        sel_s = [c for c in s.index if c in network.stores_t.p.columns]
+        if sel_s and "marginal_cost" in s.columns:
+            mc = s.loc[sel_s, "marginal_cost"]
+            cost = network.stores_t.p[sel_s].mul(mc, axis=1).mul(weights, axis=0).sum(axis=0)
+            records.append(pd.DataFrame({
+                "category": clean_map(s.loc[sel_s, "carrier"]),
+                "cost": cost.values
+            }))
+
+    # 4. Storage Units OPEX
+    if not network.storage_units.empty and hasattr(network, "storage_units_t") and not network.storage_units_t.p.empty:
+        su = network.storage_units
+        sel_su = [c for c in su.index if c in network.storage_units_t.p.columns]
+        if sel_su and "marginal_cost" in su.columns:
+            mc = su.loc[sel_su, "marginal_cost"]
+            cost = network.storage_units_t.p[sel_su].clip(lower=0).mul(mc, axis=1).mul(weights, axis=0).sum(axis=0)
+            records.append(pd.DataFrame({
+                "category": clean_map(su.loc[sel_su, "carrier"]),
+                "cost": cost.values
+            }))
+
+    if not records:
+        return pd.Series(dtype=float)
+
+    df_all = pd.concat(records, ignore_index=True)
+    return df_all.groupby("category")["cost"].sum()
+
+
+# Process OPEX for both LCO2 and NoLCO2 cases
+opex_scenario_costs = {}
+
+for current_run_case in cases_to_run:
+    candidate_paths = build_elec_candidates(current_run_case, CLUSTERS, HOURS_STR, RUN_NAME)
+    actual_path = None
+    for p in candidate_paths:
+        if os.path.exists(p):
+            actual_path = p
+            break
+
+    if not actual_path:
+        print(f"  [SKIP OPEX] {current_run_case}: No solved network file found.")
+        continue
+
+    try:
+        print(f"  Extracting OPEX for '{current_run_case}' from '{actual_path}'...")
+        n_opex = pypsa.Network(actual_path)
+        opex_breakdown = opex_by_category(n_opex)
+        
+        # Optional: Add CO2 Tax if defined globally
+        co2_tax_rate = globals().get("CO2_TAX_EUR_PER_TON", 0.0)
+        if co2_tax_rate > 0:
+            vented_mt = globals().get("compute_vented_co2_mt", lambda net: 0.0)(n_opex)
+            co2_tax = vented_mt * 1e6 * co2_tax_rate
+            if co2_tax > 0:
+                opex_breakdown["CO2 Tax"] = co2_tax
+
+        opex_scenario_costs[current_run_case] = opex_breakdown
+    except Exception as e:
+        print(f"  [ERROR OPEX] Failed to process network for {current_run_case}: {e}")
+
+if opex_scenario_costs:
+    # 1. Base Unfiltered DataFrame (in Billion EUR)
+    df_opex_orig = pd.DataFrame(opex_scenario_costs).T / 1e9
+    df_opex_orig = df_opex_orig.fillna(0.0)
+
+    # Ensure fixed row ordering (LCO2, NoLCO2) and update display labels
+    present_cases_opex = [c for c in ["LCO2", "NoLCO2"] if c in df_opex_orig.index]
+    df_opex_orig = df_opex_orig.reindex(present_cases_opex)
+    df_opex_orig = df_opex_orig.rename(index=CASE_DISPLAY_NAMES)
+
+    # 2. Extract top 5 highest shared OPEX components using the UNFILTERED DataFrame
+    top_5_cols = df_opex_orig.max(axis=0).nlargest(5).index.tolist()
+    df_opex_top5 = df_opex_orig[top_5_cols]
+
+    # 3. Create filtered DataFrame for plotting and rest of processing (threshold >= 0.001)
+    df_opex = df_opex_orig.copy()
+    significant_cols = df_opex.columns[df_opex.max(axis=0) >= 0.001]
+    if len(significant_cols) > 0:
+        df_opex = df_opex[significant_cols]
+
+    preferred_order = [
+        "Gas", "Gas Supply", "Oil", "SMR", "H2 Storage", "Grid Expansion",
+        "Process Emissions", "Load Shedding", "Haber-Bosch",
+        "Solar PV", "Onshore Wind", "Offshore Wind", "CCGT", "OCGT",
+        "Electrolysis", "H2 Fuel Cell", "SMR with CC", "CO2 sequestration",
+        "H2 pipeline", "CO2 Tax"
+    ]
+    
+    category_order_opex = [c for c in preferred_order if c in df_opex.columns]
+    for col in df_opex.columns:
+        if col not in category_order_opex:
+            category_order_opex.append(col)
+
+    df_opex = df_opex[category_order_opex]
+
+    # Stacked Bar Chart Generation
+    fig_opex, ax_opex = plt.subplots(figsize=(8, 6))
+    bottom_opex = pd.Series(0.0, index=df_opex.index)
+
+    for cat in category_order_opex:
+        values = df_opex[cat]
+        ax_opex.bar(
+            df_opex.index, values, bottom=bottom_opex,
+            color=OPEX_CHART_COLORS.get(cat, "#7f8c8d"), label=cat,
+            edgecolor="black", linewidth=0.5, width=0.5
+        )
+        bottom_opex += values
+
+    ax_opex.set_ylabel("Annual Operational Cost [Billion EUR]", fontsize=11)
+    ax_opex.set_title(f"PyPSA-Libya: Operational Expenditure (OPEX) Breakdown Comparison ({HOURS_STR})\nLimited CO2 vs Unlimited CO2", fontsize=11, fontweight="bold")
+    ax_opex.legend(loc="upper left", bbox_to_anchor=(1.02, 1.0), fontsize=9)
+    ax_opex.grid(axis="y", linestyle="--", alpha=0.5)
+
+    fig_opex.tight_layout()
+
+    # Save Figure PNG & PDF
+    out_path_opex = os.path.join(OUT_DIR, "fig_opex_cost_by_scenario.png")
+    fig_opex.savefig(out_path_opex, dpi=200, bbox_inches="tight")
+    if "save_paper_pdf" in globals():
+        save_paper_pdf(fig_opex, ax_opex, "figure9d_opex_cost_by_scenario")
+    plt.close(fig_opex)
+    print(f"  Saved OPEX breakdown chart -> {out_path_opex}")
+
+    # Save Summary Text File using df_opex_orig for totals and top 5
+    txt_out_path_opex = os.path.join(OUT_DIR, "Breakdown_opex_cost_summary.txt")
+    df_opex_totals = df_opex_orig.sum(axis=1)
+
+    with open(txt_out_path_opex, "w", encoding="utf-8") as f:
+        f.write("=" * 100 + "\n")
+        f.write(f"PyPSA-Libya: Operational Expenditure (OPEX) Breakdown Summary ({HOURS_STR}) (Billion EUR/year)\n")
+        f.write("=" * 100 + "\n\n")
+        f.write("--- Itemized OPEX Breakdown (Billion EUR/year) ---\n")
+        f.write(df_opex.round(4).to_string())
+        f.write("\n\n" + "-" * 100 + "\n")
+        f.write("--- Top 5 Shared OPEX Components (Billion EUR/year) ---\n")
+        f.write(df_opex_top5.round(4).to_string())
+        f.write("\n\n" + "-" * 100 + "\n")
+        f.write("--- Total OPEX Summary ---\n")
+        for scenario_k, total_val in df_opex_totals.items():
+            f.write(f"  {scenario_k:14s} Total OPEX: {total_val:8.3f} Billion EUR/year\n")
+        f.write("=" * 100 + "\n")
+
+    print(f"  Saved OPEX breakdown text report -> {txt_out_path_opex}\n")
+else:
+    print("  Notice: Could not generate OPEX breakdown because no network files were loaded.")
 
 
 

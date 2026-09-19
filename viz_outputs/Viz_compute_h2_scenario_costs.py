@@ -44,12 +44,14 @@ from matplotlib.lines import Line2D
 
 
 ##### H2 export, year, 3-hrs 
-
-RESULTS = {
+  
+RESULTS = {    
     "Scenario A": r"Output\libya_h2export_test\scenario_a\3hrs\postnetworks\elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc",
     "Scenario B": r"Output\libya_h2export_test\scenario_b\3hrs\postnetworks\elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc",
     "Scenario C": r"Output\libya_h2export_test\scenario_c\3hrs\postnetworks\elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc",
           }
+
+
 
 ##### H2 export, year, 6-hrs 
 
@@ -61,13 +63,34 @@ RESULTS = {
 
 
 
-# #### No H2 export, year, 6-hrs 
+##### No H2 export, year, 6-hrs 
 
 # RESULTS = {
 #     "Scenario A": r"Output\libya_h2export_test\scenario_a\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
 #     "Scenario B": r"Output\libya_h2export_test\scenario_b\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
 #     "Scenario C": r"Output\libya_h2export_test\scenario_c\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
 #           }
+
+
+##### Define paths for the 3 CO2 emission price cases
+
+# RESULTS = {
+#     "Scenario A": r"Output\Emiss_Prices\0\postnetworks\elec_s_12_ec_lcopt_Co2L-Ep-3h__2030_0.071_AB_70export.nc",
+#     "Scenario B": r"Output\Emiss_Prices\100\postnetworks\elec_s_12_ec_lcopt_Co2L-Ep-3h__2030_0.071_AB_70export.nc",
+#     "Scenario C": r"Output\Emiss_Prices\1000\postnetworks\elec_s_12_ec_lcopt_Co2L-Ep-3h__2030_0.071_AB_70export.nc",
+# }
+
+
+##### CO2_TAX_EUR_PER_TON = 0, 100 or 150 etc. #ADJUSTABLE: EUR per tonne of vented (atmospheric) CO2
+
+CO2_TAX_EUR_PER_TON = 0  
+ 
+# CO2_TAX_EUR_PER_TON = 100   
+ 
+YEARS = np.arange(2030, 2051)                  
+PROJECT_LIFETIME_YEARS = len(YEARS)  # 21 years inclusive
+DEFAULT_WACC = 0.071                 # Baseline Discount Rate: 7.10%
+REVENUE_MARGIN = 1.00                # EUR/kg added to LCOH
 
 
 
@@ -131,12 +154,14 @@ CAPEX_CARRIER_MAP = {
     "H2 Store Underground": "H2 Storage",
     "H2 UHS": "H2 Storage",
     "H2 Fuel Cell": "H2 Fuel Cell",
+    "electricity distribution grid": "Grid Expansion",   
     # Conventional Thermal Generation (Added to prevent silent exclusion)
     "CCGT": "CCGT",
     "OCGT": "OCGT",
     "oil": "Oil",
     "heavy fuel oil": "Oil",
 }
+
 
 
 CHART_COLORS = {
@@ -149,13 +174,15 @@ CHART_COLORS = {
     "SMR with CC": "#1a5276",
     "H2 pipeline": "#c0392b",
     "H2 Storage": "#3498db",               
-    "H2 Fuel Cell": "#e67e22",
-    "CCGT": "#7f8c8d",                     # Added visual color
-    "OCGT": "#e74c3c",                     # Added visual color
-    "Oil": "#8b4513",                      # Added visual color
+    "H2 Fuel Cell": "cyan",
+    "CCGT": "#7f8c8d",                     
+    "OCGT": "#e74c3c",                     
+    "Oil": "#8b4513",                      
     "Operating Cost": "#d2b48c",
+    # "CO2 Tax": "#c0392b",
+    "CO2 Tax": "#000000",
+    "Grid Expansion": "#f9b7cc",      
 }
-
 
 
 # =====================================================================
@@ -263,18 +290,74 @@ def operating_cost(n: pypsa.Network) -> float:
     return total
 
 
-
- 
-
 # =====================================================================
-# COST COMPUTATION & FIGURE 9A GENERATION (H2 EXPORT & NO H2 EXPORT)
+# CO2 TAX CONFIGURATION (Applies everywhere CO2 cost impact is shown)
 # =====================================================================
 
-# Define dictionary mapping run cases to their respective input NC files dictionary and file output prefix
-RUN_CASES = {
+
+def compute_vented_co2_mt(n: pypsa.Network, fallback_mt: float = 0.0) -> float:
+    """Net Atmospheric (Vented) CO2 emissions in Mt for any given network.
+    Includes BOTH Generator-based emissions (OCGT/CCGT/oil where modeled as
+    Generators) AND Link-based emissions (SMR, SMR CC's vented remainder,
+    oil-as-Link, gas for industry, etc. -- any Link whose bus2/3/4 is
+    'co2 atmosphere'). Without the Link-based half, this returns 0 for any
+    sector-coupled network, since oil/SMR/SMR CC/gas-for-industry are all
+    Links here, not Generators."""
+    weights = n.snapshot_weightings.generators
+    co2_vented_mt = 0.0
+
+    # Generator-based emissions (electricity-only technologies, if modeled as Generators)
+    if not n.generators.empty and not n.generators_t.p.empty:
+        gen_emissions = 0.0
+        for gen_id, gen in n.generators.iterrows():
+            if gen_id in n.generators_t.p.columns:
+                p_gen = n.generators_t.p[gen_id].mul(weights, axis=0).sum()
+                efficiency = getattr(gen, "efficiency", 1.0) or 1.0
+                co2_emissions_attr = getattr(gen, "co2_emissions", 0.0)
+                gen_emissions += (p_gen / efficiency) * co2_emissions_attr
+        co2_vented_mt += gen_emissions / 1e6
+
+    # Link-based emissions (SMR, SMR CC's vented share, oil, gas for industry, etc.)
+    if not n.links.empty and not n.links_t.p0.empty:
+        link_vented_mt = 0.0
+        for i in [2, 3, 4]:
+            bus_col, eff_col = f"bus{i}", f"efficiency{i}"
+            if bus_col not in n.links.columns or eff_col not in n.links.columns:
+                continue
+            mask = n.links[bus_col] == "co2 atmosphere"
+            sel = [l for l in n.links[mask].index if l in n.links_t.p0.columns]
+            if sel:
+                flow = n.links_t.p0[sel].mul(weights, axis=0).sum()
+                link_vented_mt += (flow * n.links.loc[sel, eff_col]).sum() / 1e6
+        co2_vented_mt += link_vented_mt
+
+    if co2_vented_mt <= 0:
+        co2_vented_mt = fallback_mt
+
+    return co2_vented_mt
+
+def co2_tax_cost_eur(n: pypsa.Network, fallback_mt: float = 0.0) -> float:
+    """Annual CO2 tax cost in EUR for a given network."""
+    return compute_vented_co2_mt(n, fallback_mt) * 1e6 * CO2_TAX_EUR_PER_TON
+
+
+# Known reference vented emissions (used only if a network has no CO2 data) — export scenarios only
+CO2_VENTED_FALLBACK_EXPORT = {"Scenario A": 0.0, "Scenario B": 0.0, "Scenario C": 0.0}
+
+
+# =====================================================================
+#  CO2 EMISSIONS & SEQUESTRATION MASS BALANCE ACCOUNTING SUMMARY
+# =====================================================================
+
+print("\n" + "=" * 70)
+print("Computing CO2 Mass Balance Accounting across Scenarios")
+print("=" * 70)
+
+
+CO2_RUN_CASES = {
     "H2_Export": {
         "results": RESULTS,
-        "prefix": "",  # Keeps original names: figure9a_cost_by_scenario.png & Breakdown_cost_summary.txt
+        "prefix": "",
     },
     "No_H2_Export": {
         "results": {
@@ -282,7 +365,195 @@ RUN_CASES = {
             "Scenario B": r"Output\libya_h2export_test\scenario_b\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
             "Scenario C": r"Output\libya_h2export_test\scenario_c\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
         },
-        "prefix": "No_H2_export_",  # Output names: figure9a_No_H2_export_cost_by_scenario.png & Breakdown_No_H2_export_cost_summary.txt
+        "prefix": "No_H2_export_",
+    },
+}
+
+
+for co2_case_key, co2_case_info in CO2_RUN_CASES.items():
+    co2_results_dict = co2_case_info["results"]
+    co2_prefix = co2_case_info["prefix"]
+
+    co2_summary_results = {}
+
+    for scenario_name, export_path in co2_results_dict.items():
+        if not os.path.exists(export_path):
+            continue
+
+        n_scen = pypsa.Network(export_path)
+        weights = n_scen.snapshot_weightings.generators
+
+        # 1. Geologically Sequestered CO2 (Captured)
+        co2_captured_mt = 0.0
+        co2_stores = n_scen.stores[n_scen.stores.carrier.str.contains("co2|sequestered", case=False, na=False)]
+        if not co2_stores.empty and not n_scen.stores_t.e.empty:
+            sel_stores = [s for s in co2_stores.index if s in n_scen.stores_t.e.columns]
+            if sel_stores:
+                co2_captured_mt = (n_scen.stores_t.e[sel_stores].iloc[-1] - n_scen.stores_t.e[sel_stores].iloc[0]).sum() / 1e6
+                if co2_captured_mt <= 0:
+                    co2_captured_mt = n_scen.stores_t.e[sel_stores].max().sum() / 1e6
+
+        if co2_captured_mt <= 0 and not n_scen.links.empty and not n_scen.links_t.p0.empty:
+            co2_links = n_scen.links[n_scen.links.carrier.str.contains("co2|sequestered|cc", case=False, na=False)]
+            sel_co2_links = [l for l in co2_links.index if l in n_scen.links_t.p0.columns]
+            if sel_co2_links:
+                co2_captured_mt = n_scen.links_t.p0[sel_co2_links].mul(weights, axis=0).sum().sum() / 1e6
+
+        # 2. Net Atmospheric CO2 Emissions (Vented)
+        co2_vented_mt = 0.0
+        if hasattr(n_scen, "global_constraints") and "co2_limit" in n_scen.global_constraints.index:
+            if hasattr(n_scen, "emissions_t") and not n_scen.emissions_t.empty:
+                co2_vented_mt = n_scen.emissions_t.sum().sum() / 1e6
+
+        if co2_vented_mt <= 0 and not n_scen.generators.empty and not n_scen.generators_t.p.empty:
+            gen_emissions = 0.0
+            for gen_id, gen in n_scen.generators.iterrows():
+                if gen_id in n_scen.generators_t.p.columns:
+                    p_gen = n_scen.generators_t.p[gen_id].mul(weights, axis=0).sum()
+                    efficiency = getattr(gen, "efficiency", 1.0) or 1.0
+                    co2_emissions_attr = getattr(gen, "co2_emissions", 0.0)
+                    gen_emissions += (p_gen / efficiency) * co2_emissions_attr
+            co2_vented_mt += gen_emissions / 1e6
+
+        vented_by_carrier = {}
+        if not n_scen.links.empty and not n_scen.links_t.p0.empty:
+            link_vented_mt = 0.0
+            for i in [2, 3, 4]:
+                bus_col, eff_col = f"bus{i}", f"efficiency{i}"
+                if bus_col not in n_scen.links.columns or eff_col not in n_scen.links.columns:
+                    continue
+                mask = n_scen.links[bus_col] == "co2 atmosphere"
+                sel = [l for l in n_scen.links[mask].index if l in n_scen.links_t.p0.columns]
+            
+                for l in sel:
+                    carrier = n_scen.links.at[l, "carrier"]
+                    flow = n_scen.links_t.p0[l].mul(weights, axis=0).sum()
+                    eff = n_scen.links.at[l, eff_col]
+                    emission_mt = (flow * eff) / 1e6
+                
+                    vented_by_carrier[carrier] = vented_by_carrier.get(carrier, 0.0) + emission_mt
+                    link_vented_mt += emission_mt
+                
+            co2_vented_mt += link_vented_mt
+
+        total_gross_co2_mt = co2_vented_mt + co2_captured_mt
+
+        # Store scenario results cleanly under scenario_name
+        co2_summary_results[scenario_name] = {
+            "vented": co2_vented_mt,
+            "captured": co2_captured_mt,
+            "total": total_gross_co2_mt,
+            "carrier_breakdown": vented_by_carrier
+        }
+
+   # =====================================================================
+   # SAVE STRUCTURED SUMMARY TO TXT FILE
+   # =====================================================================
+    co2_txt_filename = f"CO2_emissions_{co2_prefix}summary.txt" if co2_prefix else "CO2_emissions_summary.txt"
+    co2_txt_path = os.path.join(OUT_DIR, co2_txt_filename)
+    scenarios = ["Scenario A", "Scenario B", "Scenario C"]
+    
+    
+    with open(co2_txt_path, "w", encoding="utf-8") as f:
+        f.write("Recommended Table for Your Results Section\n")
+        f.write("To make your report clear and avoid confusion, present both rows under a structured CO2 mass balance header:\n\n")
+        
+        header = f"{'CO2 Accounting Metric':45s} | {'Scenario A':12s} | {'Scenario B':12s} | {'Scenario C':12s}\n"
+        f.write(header)
+        f.write("-" * 90 + "\n")
+        
+        vented_row = f"{'Net Atmospheric CO2 Emissions (Vented)':45s} | " + " | ".join(
+            [f"{co2_summary_results.get(s, {}).get('vented', 0.0):8.2f} Mt" for s in scenarios]
+        ) + "\n"
+        f.write(vented_row)
+        
+        captured_row = f"{'Geologically Sequestered CO2 (Captured)':45s} | " + " | ".join(
+            [f"{co2_summary_results.get(s, {}).get('captured', 0.0):8.2f} Mt" for s in scenarios]
+        ) + "\n"
+        f.write(captured_row)
+        
+        total_row = f"{'Total Gross CO2 Generated (Vented + Stored)':45s} | " + " | ".join(
+            [f"{co2_summary_results.get(s, {}).get('total', 0.0):8.2f} Mt" for s in scenarios]
+        ) + "\n"
+        f.write(total_row)
+        f.write("-" * 90 + "\n\n")
+    
+        f.write("Vented CO2 Breakdown by Carrier [Mt]\n")
+        f.write("(Shows exactly which technologies contribute to the 'Vented' row above)\n")
+        f.write("-" * 90 + "\n")
+    
+        all_carriers = sorted({
+            carrier
+            for s in scenarios
+            for carrier in co2_summary_results.get(s, {}).get("carrier_breakdown", {})
+        })
+    
+        carrier_header = f"{'Carrier':45s} | " + " | ".join(f"{s:12s}" for s in scenarios) + "\n"
+        f.write(carrier_header)
+        f.write("-" * 90 + "\n")
+    
+        for carrier in all_carriers:
+            row_values = [
+                co2_summary_results.get(s, {}).get("carrier_breakdown", {}).get(carrier, 0.0)
+                for s in scenarios
+            ]
+            row = f"{carrier:45s} | " + " | ".join(f"{v:8.4f} Mt" for v in row_values) + "\n"
+            f.write(row)
+    
+        f.write("-" * 90 + "\n")
+        f.write("=" * 90 + "\n")
+    
+    print(f"Saved CO2 emissions summary table -> {co2_txt_path}")
+
+
+# =====================================================================
+# CO2 EMISSIONS PARSER (ROBUST AUTOMATION)
+# =====================================================================
+
+def get_vented_emissions_from_summary(txt_path: str) -> dict:
+    """
+    Parses 'CO2_emissions_summary.txt' to dynamically extract 
+    Vented Emissions (Mt) per scenario.
+    """
+    vented_emissions = {}
+    if not os.path.exists(txt_path):
+        print(f"[WARNING] Emission summary file not found at '{txt_path}'.")
+        return vented_emissions
+
+    with open(txt_path, "r", encoding="utf-8") as f:
+        for line in f:
+            if "Net Atmospheric CO2 Emissions (Vented)" in line:
+                parts = [p.strip() for p in line.split("|")]
+                if len(parts) >= 4:
+                    for idx, scen in enumerate(["Scenario A", "Scenario B", "Scenario C"], start=1):
+                        match = re.search(r'([\d\.]+)\s*Mt', parts[idx])
+                        if match:
+                            vented_emissions[scen] = float(match.group(1))
+                break
+
+    return vented_emissions
+
+
+CO2_SUMMARY_TXT_PATH = os.path.join(OUT_DIR, "CO2_emissions_summary.txt")
+VENTED_EMISSIONS_MT_MAP = get_vented_emissions_from_summary(CO2_SUMMARY_TXT_PATH)
+
+
+# =====================================================================
+# COST COMPUTATION & FIGURE 9A GENERATION (H2 EXPORT & NO H2 EXPORT)
+# =====================================================================
+
+RUN_CASES = {
+    "H2_Export": {
+        "results": RESULTS,
+        "prefix": "",
+    },
+    "No_H2_Export": {
+        "results": {
+            "Scenario A": r"Output\libya_h2export_test\scenario_a\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
+            "Scenario B": r"Output\libya_h2export_test\scenario_b\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
+            "Scenario C": r"Output\libya_h2export_test\scenario_c\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
+        },
+        "prefix": "No_H2_export_",
     },
 }
 
@@ -307,31 +578,43 @@ for case_key, case_info in RUN_CASES.items():
         capex = capex_by_category(n_export)
         opex = operating_cost(n_export)
 
+        # Compute vented CO2 LIVE from whichever network is loaded in this
+        # iteration (correct for both H2_Export and No_H2_Export cases).
+        # Previously this used VENTED_EMISSIONS_MT_MAP, which is parsed once
+        # from CO2_emissions_summary.txt (export scenarios ONLY) and takes
+        # priority in .get(), so the No-Export case silently reused the
+        # Export case's vented-CO2 figure every time.
+        vented_mt = compute_vented_co2_mt(n_export)
+        
+        # Calculate non-zero CO2 Tax if CO2_TAX_EUR_PER_TON != 0 and vented_mt > 0
+        co2_tax = vented_mt * 1e6 * CO2_TAX_EUR_PER_TON
+
         combined = capex.copy()
         combined["Operating Cost"] = opex
+        combined["CO2 Tax"] = co2_tax
 
         scenario_costs[scenario_name] = combined
         print(f"\n{scenario_name} Breakdown:")
+        print(f"  Calculated Vented Emissions: {vented_mt:.3f} Mt CO2")
+        print(f"  Calculated CO2 Tax (@ {CO2_TAX_EUR_PER_TON} EUR/t): {co2_tax / 1e9:.4f} Billion EUR")
         print((combined / 1e9).round(3).to_string())
         print(f"  TOTAL System Cost: {combined.sum() / 1e9:,.3f} B EUR/yr")
 
     if not scenario_costs:
         print(f"\nNo scenario output files were found for {case_key}. Please check network run paths.")
     else:
-        # ------------------------------------------------------------------
-        # 1. Total System Cost Stacked Bar Chart Comparison  
-        # ------------------------------------------------------------------
-        df = pd.DataFrame(scenario_costs).T / 1e9  # Convert to billions
+        df = pd.DataFrame(scenario_costs).T / 1e9
         df = df.fillna(0.0)
 
         category_order = [c for c in
                           ["Solar PV", "Onshore Wind", "Offshore Wind", "CCGT", "OCGT", "Oil",
                            "Electrolysis", "H2 Storage", "H2 Fuel Cell", "SMR", "SMR with CC", 
-                           "CO2 sequestration", "H2 pipeline", "Operating Cost"]
+                           "Grid Expansion", "CO2 sequestration", "H2 pipeline", "Operating Cost", "CO2 Tax"]
                           if c in df.columns]
         
         df = df[category_order]
 
+        # Stacked bar chart generation
         fig, ax = plt.subplots(figsize=(10, 6))
         bottom = pd.Series(0.0, index=df.index)
 
@@ -339,12 +622,10 @@ for case_key, case_info in RUN_CASES.items():
             values = df[cat]
             ax.bar(df.index, values, bottom=bottom,
                    color=CHART_COLORS.get(cat, "#95a5a6"), label=cat,
-                   edgecolor="black", linewidth=0.5)
+                   edgecolor="black", linewidth=0.5, width=0.5)
             bottom += values
 
         ax.set_ylabel("Annualized System Cost [Billion EUR]", fontsize=11)
-        
-        # Adjust chart title based on the case
         title_type = "No Export Hydrogen" if case_key == "No_H2_Export" else "Export Hydrogen"
         ax.set_title(f"PyPSA-Libya: {title_type} System Cost Comparison\nScenarios (a), (b), and (c)", fontsize=12, fontweight="bold")
         ax.legend(loc="upper left", bbox_to_anchor=(1.02, 1.0), fontsize=9)
@@ -352,7 +633,6 @@ for case_key, case_info in RUN_CASES.items():
 
         fig.tight_layout()
 
-        # Generate filename with or without prefix
         png_filename = f"figure9a_{prefix}cost_by_scenario.png" if prefix else "figure9a_cost_by_scenario.png"
         out_path = os.path.join(OUT_DIR, png_filename)
         
@@ -362,13 +642,10 @@ for case_key, case_info in RUN_CASES.items():
         plt.close(fig)
         print(f"\nSaved cost comparison chart -> {out_path}")
         
-        # ------------------------------------------------------------------
-        # 1.1 Save Itemized Figure 9a Cost Breakdown Summary Text File
-        # ------------------------------------------------------------------
+        # Output Breakdown Text File
         txt_filename = f"Breakdown_{prefix}cost_summary.txt" if prefix else "Breakdown_cost_summary.txt"
         txt_out_path = os.path.join(OUT_DIR, txt_filename)
         
-        # Calculate total annualized cost per scenario
         df_totals = df.sum(axis=1)
         
         with open(txt_out_path, "w", encoding="utf-8") as f:
@@ -384,7 +661,8 @@ for case_key, case_info in RUN_CASES.items():
             f.write("=" * 115 + "\n")
 
         print(f"Saved Figure 9a cost breakdown text file -> {txt_out_path}\n")
-    
+        
+        
     
     def per_bus_capex(net: pypsa.Network) -> pd.DataFrame:
         """Extracts capital costs per bus across all network components, including H2 stores."""
@@ -748,7 +1026,7 @@ for scenario_name, path in RESULTS.items():
     ax = setup_map_ax(fig)
     
     # Calculate total power capacity in MW (excluding MWh storage and Oil)
-    gen_cols = [c for c in spatial_grouped.columns if c not in ["H2 Storage", "Oil"]]
+    gen_cols = [c for c in spatial_grouped.columns if c not in ["Grid Expansion", "H2 Storage", "Oil"]]
     total_mw_by_loc = spatial_grouped[gen_cols].sum(axis=1) if gen_cols else spatial_grouped.sum(axis=1)
     max_mw = total_mw_by_loc.max() if total_mw_by_loc.max() > 0 else 1.0
 
@@ -864,7 +1142,7 @@ for scenario_name, path in RESULTS.items():
     
         
         
-# =====================================================================
+    # =====================================================================
     # 2.3 Spatial & Graphical Transmission Line Bottlenecks for Scenarios
     # =====================================================================
     
@@ -919,15 +1197,26 @@ for scenario_name, path in RESULTS.items():
             ys_land[0], ys_land[-1] = y0, y1
         return xs, ys_land
 
-    def shorten_line_id(line_idx, bus0, bus1):
-        idx_str = str(line_idx).strip()
-        if "lines new" in idx_str or "new" in idx_str.lower() or idx_str.startswith("N"):
-            m = re.search(r'LY\s*([1-9]\d*)\s*(\d*)', str(bus1)) or re.search(r'LY\s*([1-9]\d*)\s*(\d*)', str(bus0))
-            if m:
-                return f"NLY{m.group(1)} {m.group(2)}".strip() if m.group(2) else f"NLY{m.group(1)}"
-            clean_idx = idx_str.replace("lines new ", "NL_").replace(" <-> ", "_").replace(" AC", "")
-            return re.sub(r'\s+', '', clean_idx)[:10]
-        return idx_str
+
+    # ------------------------------------------------------------------
+    # Helper Functions for Routing & Line Identification
+    # ------------------------------------------------------------------
+    def shorten_line_id(line_idx, bus0, bus1, existing_line_count):
+            idx_str = str(line_idx).strip()
+    
+            # Check if line index or name indicates a new candidate/expansion line
+            if "lines new" in idx_str or "new" in idx_str.lower() or idx_str.startswith("N"):
+                # Extract trailing numeric ID from string if available (e.g., 'lines new 0' -> 0)
+                m = re.search(r'(\d+)$', idx_str)
+                new_offset = int(m.group(1)) if m else 0
+                # Start 1-indexed counting continuing directly after existing lines
+                return str(existing_line_count + new_offset + 1)
+            
+            # If standard existing line index is purely numeric, shift to 1-based indexing
+            if idx_str.isdigit():
+                return str(int(idx_str) + 1)
+    
+            return idx_str
 
     # ------------------------------------------------------------------
     # Data Processing & Analysis
@@ -952,7 +1241,17 @@ for scenario_name, path in RESULTS.items():
             caps = caps.replace(0, 1e-6)
             loading_ratios = flows.div(caps, axis=1) * 100.0
 
-            short_ids = [shorten_line_id(idx, row.bus0, row.bus1) for idx, row in n_scen.lines.iterrows()]
+            # short_ids = [shorten_line_id(idx, row.bus0, row.bus1) for idx, row in n_scen.lines.iterrows()]
+
+            # Calculate total existing non-expansion lines in the network
+            n_existing_lines = sum(
+                1 for idx in n_scen.lines.index 
+                if not ("lines new" in str(idx) or "new" in str(idx).lower() or str(idx).startswith("N")))
+
+            # Generate updated 1-indexed short line IDs
+            short_ids = [
+                shorten_line_id(idx, row.bus0, row.bus1, n_existing_lines) 
+                for idx, row in n_scen.lines.iterrows()]
 
             line_df = pd.DataFrame({
                 "short_line_id": short_ids,
@@ -1001,7 +1300,7 @@ for scenario_name, path in RESULTS.items():
         fig, ax = plt.subplots(figsize=(12, 6))
         plot_df.plot(kind="bar", ax=ax, width=0.8, colormap="viridis", edgecolor="black", linewidth=0.5)
         ax.set_ylabel("Mean Capacity Loading (%)", fontsize=11)
-        ax.set_title("PyPSA-Libya — Transmission Bottlenecks Comparison across Scenarios\n(Top 10 Congested Lines)", fontsize=12, fontweight="bold")
+        ax.set_title("PyPSA-Libya — Transmission Bottlenecks Comparison across Scenarios\n", fontsize=12, fontweight="bold")
         ax.set_xticklabels(plot_df.index, rotation=45, ha="right")
         ax.grid(axis="y", linestyle="--", alpha=0.5)
         ax.legend(title="Scenarios", fontsize=9)
@@ -1018,13 +1317,6 @@ for scenario_name, path in RESULTS.items():
     # ------------------------------------------------------------------
     for scenario_name, (n_scen, line_df) in scenario_line_data.items():
         
-        # fig = plt.figure(figsize=(11, 8))
-        # ax = fig.add_subplot(1, 1, 1)
-        # ax.set_xlim(9.0, 25.5)
-        # ax.set_ylim(19.0, 33.8)
-        # ax.set_xlabel("Longitude")
-        # ax.set_ylabel("Latitude")
-        # ax.grid(True, linestyle=":", alpha=0.5)
         
         fig = plt.figure(figsize=(11, 8))
         ax = setup_map_ax(fig)
@@ -1044,17 +1336,40 @@ for scenario_name, path in RESULTS.items():
                 xs, ys = route_line_land(x0, y0, x1, y1)
                 ax.plot(xs, ys, color=line_color, lw=linewidth, zorder=3, alpha=0.85)
 
-        # Label top 8 congested lines
-        top_map_lines = metric_series.head(8)
-        for i, idx in enumerate(top_map_lines.index):
-            row = n_scen.lines.loc[idx]
-            x0, y0 = n_scen.buses.loc[row.bus0, ["x", "y"]]
-            x1, y1 = n_scen.buses.loc[row.bus1, ["x", "y"]]
-            xs, ys = route_line_land(x0, y0, x1, y1)
-            mid_idx = len(xs) // 2
-            short_id = line_df.loc[idx, "short_line_id"]
-            ax.annotate(short_id, (xs[mid_idx], ys[mid_idx]), fontsize=8, fontweight="bold",
-                        bbox=dict(boxstyle="round,pad=0.2", facecolor="white", alpha=0.7, edgecolor="none"), zorder=6)
+        # -------------------------------------------------------------
+        # Label ALL Transmission Lines with Overlap Prevention
+        # -------------------------------------------------------------
+        # Keep track of midpoints to offset overlapping parallel lines
+        seen_midpoints = {}
+
+        for idx, row in n_scen.lines.iterrows():
+            if row.bus0 in n_scen.buses.index and row.bus1 in n_scen.buses.index:
+                x0, y0 = n_scen.buses.loc[row.bus0, ["x", "y"]]
+                x1, y1 = n_scen.buses.loc[row.bus1, ["x", "y"]]
+                xs, ys = route_line_land(x0, y0, x1, y1)
+                
+                mid_idx = len(xs) // 2
+                mx, my = xs[mid_idx], ys[mid_idx]
+
+                # Identify parallel or overlapping segments based on midpoint rounding
+                key = (round(mx, 2), round(my, 2))
+                count = seen_midpoints.get(key, 0)
+                seen_midpoints[key] = count + 1
+
+                # Apply a slight upward/rightward offset for multi-lines between same buses
+                offset_x = 0.08 * count
+                offset_y = 0.08 * count
+
+                short_id = line_df.loc[idx, "short_line_id"]
+                ax.annotate(
+                    short_id, 
+                    (mx + offset_x, my + offset_y), 
+                    fontsize=7, 
+                    fontweight="bold",
+                    ha="center",
+                    va="center",
+                    bbox=dict(boxstyle="round,pad=0.15", facecolor="white", alpha=0.85, edgecolor="black", lw=0.5), 
+                    zorder=6)
 
         macro_buses = n_scen.buses[~n_scen.buses.index.str.contains("low voltage|battery|H2", case=False)]
         ax.scatter(macro_buses.x, macro_buses.y, s=15, c="#1e293b", edgecolors="white", linewidths=0.5, zorder=4)
@@ -1064,7 +1379,7 @@ for scenario_name, path in RESULTS.items():
         cbar = fig.colorbar(sm_line, ax=ax, orientation="vertical", shrink=0.7, pad=0.03)
         cbar.set_label("Mean Capacity Loading (%)", fontsize=10)
 
-        ax.set_title(f"PyPSA-Libya — {scenario_name}: Transmission Bottlenecks Map\nLabels indicate Top Congested Corridors", fontsize=11, fontweight="bold")
+        ax.set_title(f"PyPSA-Libya — {scenario_name}: Transmission Bottlenecks Map", fontsize=11, fontweight="bold")
         
         safe_scen = scenario_name.lower().replace(" ", "_")
         out_map_path = os.path.join(OUT_DIR, f"transmission_line_bottlenecks_map_{safe_scen}.png")
@@ -1075,10 +1390,8 @@ for scenario_name, path in RESULTS.items():
 
 
 
-
-
 # =====================================================================
-# 3. LCOE & LCOH (Levelized Cost Analysis) Computation & Text Exports
+# 3. LCOE & LCOH (LEVELIZED COST ANALYSIS) COMPUTATION & EXPORT
 # =====================================================================
 print("\n" + "=" * 70)
 print("Computing System LCOE and Net-Cost Allocated LCOH across Scenarios")
@@ -1089,7 +1402,6 @@ print("=" * 70)
 # ------------------------------------------------------------------
 BASELINE_RESULTS = {}
 for scenario_name, path in RESULTS.items():
-    # Dynamically derive 0-export baseline path if not manually specified
     if r"\No_Hydrogen_H2_0" not in path:
         path_0export = path.replace(r"\postnetworks", r"\No_Hydrogen_H2_0\postnetworks")
         path_0export = re.sub(r'(\d+)export\.nc$', r'0export.nc', path_0export)
@@ -1120,12 +1432,15 @@ for scenario_name, export_path in RESULTS.items():
     print(f"Processing Export Network LCOE/LCOH for {scenario_name}...")
     n_export = pypsa.Network(export_path)
 
-    # Compute Total Export System Cost independently
     capex_exp = capex_by_category(n_export).sum()
     opex_exp = operating_cost(n_export)
     total_system_cost_eur = capex_exp + opex_exp
+    
+    # capex_exp = capex_by_category(n_export).sum()
+    # opex_exp = operating_cost(n_export)
+    # co2_tax_exp_eur = co2_tax_cost_eur(n_export, fallback_mt=CO2_VENTED_FALLBACK_EXPORT.get(scenario_name, 0.0))
+    # total_system_cost_eur = capex_exp + opex_exp + co2_tax_exp_eur
 
-    # Extract Domestic AC Load Served
     domestic_ac_mwh = 0.0
     ac_loads = n_export.loads[n_export.loads.carrier == "AC"]
     if not ac_loads.empty and not n_export.loads_t.p.empty:
@@ -1134,7 +1449,6 @@ for scenario_name, export_path in RESULTS.items():
     if domestic_ac_mwh <= 0:
         domestic_ac_mwh = DEFAULT_DOMESTIC_AC_MWH
 
-    # Extract Exported H2 Energy
     exported_h2_mwh = 0.0
     h2_export_loads = n_export.loads[n_export.loads.carrier.str.contains("H2|h2|export", case=False, na=False)]
     if not h2_export_loads.empty and not n_export.loads_t.p.empty:
@@ -1143,10 +1457,7 @@ for scenario_name, export_path in RESULTS.items():
     if exported_h2_mwh <= 0:
         exported_h2_mwh = DEFAULT_EXPORT_H2_MWH
 
-    # Total Multi-Carrier System Energy Demand (Electricity + H2 Export)
     total_system_energy_mwh = domestic_ac_mwh + exported_h2_mwh
-
-    # Calculate Overall System LCOE
     lcoe_system_eur_per_mwh = total_system_cost_eur / total_system_energy_mwh
     
     lcoe_results[scenario_name] = {
@@ -1165,20 +1476,23 @@ for scenario_name, export_path in RESULTS.items():
         print(f"Loading Baseline (No-H2 Export) network for {scenario_name}...")
         n_base = pypsa.Network(base_path)
         
-        # Compute baseline cost (0 TWh H2 Export)
         capex_base = capex_by_category(n_base).sum()
         opex_base = operating_cost(n_base)
+        # NOTE: CO2 tax intentionally excluded here, matching the export side
+        # above (total_system_cost_eur also excludes it). Section 3 reports a
+        # tax-free "cost basis" LCOH; including tax on only ONE side of this
+        # subtraction was a bug that artificially deflated Net H2 Cost.
+        #### co2_tax_base_eur = co2_tax_cost_eur(n_base, fallback_mt=0.0)   # no reference fallback for baseline
+        #### baseline_cost_eur = capex_base + opex_base + co2_tax_base_eur
+        
         baseline_cost_eur = capex_base + opex_base
         
-        # Incremental Net H2 Cost = Export Run Cost - Baseline Run Cost
         net_h2_cost_eur = total_system_cost_eur - baseline_cost_eur
 
-        # Net LCOH metrics
         lcoh_eur_per_mwh = net_h2_cost_eur / exported_h2_mwh
         lcoh_eur_per_kg_lhv = lcoh_eur_per_mwh * H2_LHV_MWH_PER_KG
         lcoh_eur_per_kg_hhv = lcoh_eur_per_mwh * H2_HHV_MWH_PER_KG
 
-        # Table 1: Cost Allocation Breakdown
         lcoh_results_main[scenario_name] = {
             "Export Run Cost [B EUR]": total_system_cost_eur / 1e9,
             "Baseline Cost [B EUR]": baseline_cost_eur / 1e9,
@@ -1187,7 +1501,6 @@ for scenario_name, export_path in RESULTS.items():
             "Net LCOH [EUR/MWh]": lcoh_eur_per_mwh,
         }
 
-        # Table 2: Unit Summary Metrics
         lcoh_results_summary[scenario_name] = {
             "Net LCOH [EUR/MWh]": lcoh_eur_per_mwh,
             "Net LCOH LHV [EUR/kg]": lcoh_eur_per_kg_lhv,
@@ -1197,13 +1510,10 @@ for scenario_name, export_path in RESULTS.items():
         print(f"[WARNING] Baseline file missing for {scenario_name} at: {base_path}")
 
 # ------------------------------------------------------------------
-# Save Summaries to Text Files
+# Save LCOE & Pure LCOH Summaries (Restored to Original Format)
 # ------------------------------------------------------------------
 if lcoe_results:
     lcoe_df = pd.DataFrame(lcoe_results).T
-    print("\n" + "=" * 50 + "\nSYSTEM LCOE RESULTS\n" + "=" * 50)
-    print(lcoe_df.to_string())
-
     lcoe_txt_path = os.path.join(OUT_DIR, "LCOE_summary_results.txt")
     with open(lcoe_txt_path, "w", encoding="utf-8") as f:
         f.write("=" * 85 + "\n")
@@ -1222,10 +1532,6 @@ if lcoh_results_main:
     lcoh_main_df = pd.DataFrame(lcoh_results_main).T
     lcoh_summary_df = pd.DataFrame(lcoh_results_summary).T
 
-    print("\n" + "=" * 50 + "\nNET ALLOCATED LCOH RESULTS\n" + "=" * 50)
-    print(lcoh_main_df.to_string())
-    print("\n" + lcoh_summary_df.to_string())
-
     lcoh_txt_path = os.path.join(OUT_DIR, "LCOH_summary_results.txt")
     with open(lcoh_txt_path, "w", encoding="utf-8") as f:
         f.write("=" * 95 + "\n")
@@ -1243,8 +1549,7 @@ if lcoh_results_main:
         f.write(f" - Assumed H2 Lower Heating Value (LHV) = {H2_LHV_MWH_PER_KG} MWh/kg (33.33 kWh/kg)\n")
         f.write(f" - Assumed H2 Higher Heating Value (HHV) = {H2_HHV_MWH_PER_KG} MWh/kg (39.41 kWh/kg)\n")
         f.write("=" * 95 + "\n")
-    print(f"\nSaved Net LCOH summary report -> {lcoh_txt_path}")
-    
+    print(f"\nSaved standalone Net LCOH summary report -> {lcoh_txt_path}")
 
 
 
@@ -1340,219 +1645,6 @@ for scenario_name, path in RESULTS.items():
 
 
 # =====================================================================
-# 5. PRO-RATA (ENERGY & FUEL ALLOCATED) LCOH — COMPUTATION & EXPORT
-# =====================================================================
-
-print("\n" + "=" * 70)
-print("Computing CORRECTED PRO-RATA LCOH across Scenarios")
-print("=" * 70)
-
-# ---------------------------------------------------------------------
-# Explicit Network Component Category Mapping
-# ---------------------------------------------------------------------
-DEDICATED_H2_LINK_CARRIERS = [
-    "H2 Electrolysis", "H2 Fuel Cell", "SMR", "SMR CC"
-]
-DEDICATED_H2_STORE_CARRIERS = [
-    "H2", "H2 store", "H2 Store", "H2 Store Tank", 
-    "H2 Store Underground", "H2 UHS"
-]
-DEDICATED_H2_LINE_CARRIERS = ["H2 pipeline", "H2 pipeline repurposed"]
-
-SHARED_GEN_CARRIERS = ["solar", "solar rooftop", "onwind", "offwind"]
-SHARED_LINK_CARRIERS = ["CCGT", "OCGT", "oil"]
-
-GAS_BUS_CARRIERS = ["gas"]
-
-
-def prorata_h2_cost_corrected(n: pypsa.Network) -> dict:
-    """Calculates grounded Pro-Rata LCOH capturing gas fuel inputs, link-based 
-    generation, and all dedicated hydrogen chain components.
-    """
-    weights = n.snapshot_weightings.generators
-
-    # 1. DEDICATED HYDROGEN CHAIN COSTS (100% Attributed to H2)
-    ded_links = n.links[n.links.carrier.isin(DEDICATED_H2_LINK_CARRIERS)]
-    ded_link_capex = float((ded_links.capital_cost * ded_links.p_nom_opt).sum())
-    
-    ded_link_opex = 0.0
-    if not n.links_t.p0.empty:
-        sel_l = [c for c in ded_links.index if c in n.links_t.p0.columns]
-        if sel_l:
-            mc = n.links.marginal_cost.loc[sel_l]
-            ded_link_opex = float((n.links_t.p0[sel_l].mul(mc, axis=1).mul(weights, axis=0)).sum().sum())
-
-    ded_stores = n.stores[n.stores.carrier.isin(DEDICATED_H2_STORE_CARRIERS)] if not n.stores.empty else pd.DataFrame()
-    ded_store_capex = float((ded_stores.capital_cost * ded_stores.e_nom_opt).sum()) if not ded_stores.empty else 0.0
-
-    ded_pipe_capex = 0.0
-    if not n.lines.empty and "capital_cost" in n.lines.columns:
-        pipe_lines = n.lines[n.lines.carrier.isin(DEDICATED_H2_LINE_CARRIERS)] if "carrier" in n.lines.columns else pd.DataFrame()
-        if not pipe_lines.empty:
-            ded_pipe_capex = float((pipe_lines.capital_cost * (pipe_lines.s_nom_opt - pipe_lines.s_nom).clip(lower=0)).sum())
-
-    total_dedicated_cost = ded_link_capex + ded_link_opex + ded_store_capex + ded_pipe_capex
-
-    # 2. SHARED ELECTRICITY POOL COSTS & ALLOCATION
-    shared_gens = n.generators[n.generators.carrier.isin(SHARED_GEN_CARRIERS)]
-    shared_gen_capex = float((shared_gens.capital_cost * shared_gens.p_nom_opt).sum())
-    
-    shared_gen_opex = 0.0
-    if not n.generators_t.p.empty:
-        sel_g = [c for c in shared_gens.index if c in n.generators_t.p.columns]
-        if sel_g:
-            mc = n.generators.marginal_cost.loc[sel_g]
-            shared_gen_opex = float((n.generators_t.p[sel_g].mul(mc, axis=1).mul(weights, axis=0)).sum().sum())
-
-    shared_links = n.links[n.links.carrier.isin(SHARED_LINK_CARRIERS)]
-    shared_link_capex = float((shared_links.capital_cost * shared_links.p_nom_opt).sum())
-    
-    shared_link_opex = 0.0
-    if not n.links_t.p0.empty:
-        sel_sl = [c for c in shared_links.index if c in n.links_t.p0.columns]
-        if sel_sl:
-            mc = n.links.marginal_cost.loc[sel_sl]
-            shared_link_opex = float((n.links_t.p0[sel_sl].mul(mc, axis=1).mul(weights, axis=0)).sum().sum())
-
-    total_shared_elec_pool = shared_gen_capex + shared_gen_opex + shared_link_capex + shared_link_opex
-
-    elec_links = n.links[n.links.carrier == "H2 Electrolysis"].index
-    elec_consumption_mwh = 0.0
-    if not n.links_t.p0.empty:
-        sel_el = [c for c in elec_links if c in n.links_t.p0.columns]
-        if sel_el:
-            elec_consumption_mwh = float(n.links_t.p0[sel_el].mul(weights, axis=0).sum().sum())
-
-    total_elec_gen_mwh = 0.0
-    if not n.generators_t.p.empty:
-        sel_gen_all = [c for c in shared_gens.index if c in n.generators_t.p.columns]
-        if sel_gen_all:
-            total_elec_gen_mwh += float(n.generators_t.p[sel_gen_all].mul(weights, axis=0).sum().sum())
-
-    elec_allocation_fraction = (elec_consumption_mwh / total_elec_gen_mwh) if total_elec_gen_mwh > 0 else 0.0
-    allocated_elec_cost = elec_allocation_fraction * total_shared_elec_pool
-
-    # 3. SHARED GAS FUEL COSTS & ALLOCATION
-    gas_buses = n.buses[n.buses.carrier.isin(GAS_BUS_CARRIERS)].index
-    gas_gens = n.generators[n.generators.bus.isin(gas_buses)]
-    
-    total_gas_cost = 0.0
-    if not gas_gens.empty and not n.generators_t.p.empty:
-        sel_gg = [c for c in gas_gens.index if c in n.generators_t.p.columns]
-        if sel_gg:
-            mc = n.generators.marginal_cost.loc[sel_gg]
-            gas_capex = (n.generators.capital_cost.loc[sel_gg] * n.generators.p_nom_opt.loc[sel_gg]).sum()
-            gas_opex = (n.generators_t.p[sel_gg].mul(mc, axis=1).mul(weights, axis=0)).sum().sum()
-            total_gas_cost = float(gas_capex + gas_opex)
-
-    smr_links = n.links[n.links.carrier.isin(["SMR", "SMR CC"])].index
-    smr_gas_mwh = 0.0
-    if not n.links_t.p0.empty:
-        sel_smr = [c for c in smr_links if c in n.links_t.p0.columns]
-        if sel_smr:
-            smr_gas_mwh = float(n.links_t.p0[sel_smr].mul(weights, axis=0).sum().sum())
-
-    ccgt_gas_mwh = 0.0
-    if not n.links_t.p0.empty:
-        sel_ccgt = [c for c in n.links[n.links.carrier == "CCGT"].index if c in n.links_t.p0.columns]
-        if sel_ccgt:
-            ccgt_gas_mwh = float(n.links_t.p0[sel_ccgt].mul(weights, axis=0).sum().sum())
-
-    total_gas_consumed_mwh = smr_gas_mwh + ccgt_gas_mwh
-    gas_allocation_fraction = (smr_gas_mwh / total_gas_consumed_mwh) if total_gas_consumed_mwh > 0 else 0.0
-    allocated_gas_cost = gas_allocation_fraction * total_gas_cost
-
-    # 4. TOTAL ALLOCATED PRO-RATA COST
-    total_prorata_h2_cost = total_dedicated_cost + allocated_elec_cost + allocated_gas_cost
-
-    return {
-        "dedicated_cost": total_dedicated_cost,
-        "shared_elec_pool_total": total_shared_elec_pool,
-        "elec_allocation_fraction": elec_allocation_fraction,
-        "allocated_elec_cost": allocated_elec_cost,
-        "shared_gas_pool_total": total_gas_cost,
-        "gas_allocation_fraction": gas_allocation_fraction,
-        "allocated_gas_cost": allocated_gas_cost,
-        "total_prorata_h2_cost_eur": total_prorata_h2_cost,
-    }
-
-
-# ---------------------------------------------------------------------
-# EXECUTION AND EXPORT MECHANISM (Matches LCOH Summary)
-# ---------------------------------------------------------------------
-prorata_results_main = {}
-prorata_results_summary = {}
-
-for scenario_name, export_path in RESULTS.items():
-    if not os.path.exists(export_path):
-        continue
-
-    n_export = pypsa.Network(export_path)
-    res = prorata_h2_cost_corrected(n_export)
-
-    # Extract Exported H2 Energy
-    exported_h2_mwh = 0.0
-    h2_export_loads = n_export.loads[n_export.loads.carrier.str.contains("H2|h2|export", case=False, na=False)]
-    if not h2_export_loads.empty and not n_export.loads_t.p.empty:
-        weights = n_export.snapshot_weightings.generators
-        exported_h2_mwh = n_export.loads_t.p[h2_export_loads.index].mul(weights, axis=0).sum().sum()
-    if exported_h2_mwh <= 0:
-        exported_h2_mwh = DEFAULT_EXPORT_H2_MWH
-
-    total_cost_eur = res["total_prorata_h2_cost_eur"]
-    lcoh_mwh = total_cost_eur / exported_h2_mwh
-    lcoh_lhv = lcoh_mwh * H2_LHV_MWH_PER_KG
-    lcoh_hhv = lcoh_mwh * H2_HHV_MWH_PER_KG
-
-    # Table 1: Cost Breakdown & Allocation Summary
-    prorata_results_main[scenario_name] = {
-        "Dedicated H2 Cost [B EUR]": res["dedicated_cost"] / 1e9,
-        "Allocated Elec Cost [B EUR]": res["allocated_elec_cost"] / 1e9,
-        "Allocated Gas Cost [B EUR]": res["allocated_gas_cost"] / 1e9,
-        "Total Pro-Rata Cost [B EUR]": total_cost_eur / 1e9,
-        "Exported H2 [TWh]": exported_h2_mwh / 1e6,
-        "Elec Alloc Share [%]": res["elec_allocation_fraction"] * 100.0,
-        "Gas Alloc Share [%]": res["gas_allocation_fraction"] * 100.0,
-    }
-
-    # Table 2: Dedicated Unit Metrics
-    prorata_results_summary[scenario_name] = {
-        "Pro-Rata LCOH [EUR/MWh]": lcoh_mwh,
-        "Pro-Rata LCOH LHV [EUR/kg]": lcoh_lhv,
-        "Pro-Rata LCOH HHV [EUR/kg]": lcoh_hhv,
-    }
-
-if prorata_results_main:
-    prorata_main_df = pd.DataFrame(prorata_results_main).T
-    prorata_summary_df = pd.DataFrame(prorata_results_summary).T
-
-    print("\n" + "=" * 50 + "\nPRO-RATA ALLOCATED LCOH RESULTS\n" + "=" * 50)
-    print(prorata_main_df.to_string())
-    print("\n" + prorata_summary_df.to_string())
-
-    # Save report with identical structure to LCOH_summary_results.txt
-    prorata_txt_path = os.path.join(OUT_DIR, "Prorata_LCOH_summary_results.txt")
-    with open(prorata_txt_path, "w", encoding="utf-8") as f:
-        f.write("=" * 95 + "\n")
-        f.write("PyPSA-Libya: Pro-Rata Levelized Cost of Hydrogen (LCOH) Export Results\n")
-        f.write("=" * 95 + "\n\n")
-        f.write("--- Table 1: Cost Allocation & Pro-Rata Cost Breakdown ---\n")
-        f.write(prorata_main_df.to_string())
-        f.write("\n\n")
-        f.write("--- Table 2: Pro-Rata LCOH Unit Summary (MWh vs. LHV / HHV per kg) ---\n")
-        f.write(prorata_summary_df.to_string())
-        f.write("\n\n" + "=" * 95 + "\n")
-        f.write("Notes:\n")
-        f.write(" - Total Pro-Rata Cost = Dedicated Costs + Allocated Elec Pool Cost + Allocated Gas Fuel Cost\n")
-        f.write(" - Pro-Rata LCOH = Total Pro-Rata Cost / Exported H2 Energy\n")
-        f.write(f" - Assumed H2 Lower Heating Value (LHV) = {H2_LHV_MWH_PER_KG} MWh/kg (33.33 kWh/kg)\n")
-        f.write(f" - Assumed H2 Higher Heating Value (HHV) = {H2_HHV_MWH_PER_KG} MWh/kg (39.41 kWh/kg)\n")
-        f.write("=" * 95 + "\n")
-    print(f"\nSaved Pro-Rata LCOH summary report -> {prorata_txt_path}")
-    
-
-
-# =====================================================================
 # EXTRA SECTION: GENERATE 4 DETAILED OUTCOMES PER H2 SCENARIO
 # (With Dynamic Threshold Color & Transparency Separation for Small vs Major Bars)
 # =====================================================================
@@ -1582,7 +1674,7 @@ PRIMARY_CARRIER_COLORS = {
     "H2": "#3498db",
     "H2 (charge)": "#2980b9",
     "H2 (discharge)": "#3498db",
-    "H2 Fuel Cell": "#e67e22",
+    "H2 Fuel Cell": "cyan",
     "SMR": "#4F4F2F",
     "SMR with CC": "#1a5276",
     "SMR CC": "#1a5276",
@@ -1598,6 +1690,7 @@ PRIMARY_CARRIER_COLORS = {
     "process emissions": "#606c38",
     "process emissions CC": "#9aa56b",
     "gas": "#7f8c8d",
+    "Grid Expansion": "#f9b7cc",      
 }
 
 # Distinct light, desaturated pastel palette reserved strictly for minor/small carriers (< THRESHOLD_GWH)
@@ -1691,6 +1784,7 @@ with open(combined_ren_txt_path, "w", encoding="utf-8") as f_comb:
 print(f"Saved combined renewable report -> {combined_ren_txt_path}")
 
 
+
 # -----------------------------------------------------------------
 # 3. FIGURE GENERATION PER SCENARIO WITH THRESHOLD COLOR LOGIC
 # -----------------------------------------------------------------
@@ -1707,18 +1801,25 @@ for scenario_name, path in RESULTS.items():
     # -----------------------------------------------------------------
     # A. Physical Generation & Conversion Activity Computation
     # -----------------------------------------------------------------
+    EXCLUDE_FROM_GENERATION_CHART = {"co2 vent", "process emissions", "process emissions CC"}
     phys_gen_dict = {}
 
     if not n_scen.generators.empty and not n_scen.generators_t.p.empty:
         gen_p = n_scen.generators_t.p.groupby(n_scen.generators.carrier.map(map_outcome_carrier), axis=1).sum()
         for carrier in gen_p.columns:
+            if carrier in EXCLUDE_FROM_GENERATION_CHART:
+                continue
             energy_gwh = (gen_p[carrier] * dt_hours).sum() / 1e3
             if energy_gwh > 1e-3:
                 phys_gen_dict[carrier] = energy_gwh
 
     if not n_scen.links.empty and not n_scen.links_t.p0.empty:
-        link_p = n_scen.links_t.p0.groupby(n_scen.links.carrier.map(map_outcome_carrier), axis=1).sum()
+        eff = n_scen.links["efficiency"].reindex(n_scen.links_t.p0.columns).fillna(1.0)
+        link_output = n_scen.links_t.p0.mul(eff, axis=1)
+        link_p = link_output.groupby(n_scen.links.carrier.map(map_outcome_carrier), axis=1).sum()
         for carrier in link_p.columns:
+            if carrier in EXCLUDE_FROM_GENERATION_CHART:
+                continue
             energy_gwh = (link_p[carrier] * dt_hours).sum() / 1e3
             if energy_gwh > 1e-3:
                 phys_gen_dict[carrier] = energy_gwh
@@ -1727,6 +1828,8 @@ for scenario_name, path in RESULTS.items():
         su_p = n_scen.storage_units_t.p
         su_carrier_mapped = n_scen.storage_units.carrier.map(map_outcome_carrier)
         for carrier in su_carrier_mapped.unique():
+            if carrier in EXCLUDE_FROM_GENERATION_CHART:
+                continue
             cols = n_scen.storage_units[su_carrier_mapped == carrier].index
             p_carrier = su_p[cols]
             dis_gwh = (p_carrier.clip(lower=0).sum(axis=1) * dt_hours).sum() / 1e3
@@ -1739,14 +1842,14 @@ for scenario_name, path in RESULTS.items():
     phys_gen_gwh = pd.Series(phys_gen_dict)
 
     # Classification of major vs minor carriers based on THRESHOLD_GWH
-    major_carriers = phys_gen_gwh[phys_gen_gwh >= THRESHOLD_GWH].index.tolist()
+    major_carriers = phys_gen_gwh[phys_gen_gwh >= THRESHOLD_GWH].index.tolist() if not phys_gen_gwh.empty else []
 
     def check_is_major(c_name):
         base_name = str(c_name).replace(" (discharge)", "").replace(" (charge)", "")
         return (c_name in major_carriers) or (base_name in major_carriers)
 
     # -----------------------------------------------------------------
-    # B. Solved Capacity Charts (Full & Filtered)
+    # B. Solved Capacity Charts (Full & Filtered in GW)
     # -----------------------------------------------------------------
     cap_records = []
     
@@ -1774,27 +1877,49 @@ for scenario_name, path in RESULTS.items():
     df_cap = pd.DataFrame(cap_records)
     
     if not df_cap.empty:
-        all_power_cap = df_cap.groupby("carrier")["capacity"].sum().sort_values()
-        all_power_cap = all_power_cap[all_power_cap > 1e-2]
+        # Dictionary to shorten/rename specific carrier y-axis labels
+        LABEL_MAP = {
+            "electricity distribution grid": "Grid Delivery",
+            "Grid Expansion": "Grid Delivery",
+            "solar rooftop": "Solar Rooftop",
+            "gas": "Gas",
+            "gas for industry": "Industry Gas",
+            "gas for industry CC": "Industry Gas CC",
+            "process emissions": "Process Emissions",
+            "process emissions CC": "Process Emissions CC",
+            "home battery charger": "Battery Charge",
+            "home battery discharger": "Battery Discharge",
+        }
 
-        # 1. Full Solved Capacity Chart with dynamic alpha separation
+        # Sum raw MW values, strip out negligible capacity, then convert to GW
+        all_power_cap_mw = df_cap.groupby("carrier")["capacity"].sum().sort_values()
+        all_power_cap_gw = (all_power_cap_mw[all_power_cap_mw > 1e-2] / 1000.0)
+
+        # 1. Full Solved Capacity Chart (in GW)
         fig, ax = plt.subplots(figsize=(10, 6))
-        for i, (carrier, val) in enumerate(all_power_cap.items()):
+        for i, (carrier, val_gw) in enumerate(all_power_cap_gw.items()):
             is_maj = check_is_major(carrier)
             color, alpha, edge_c, lw = get_smart_carrier_style(carrier, is_major=is_maj)
-            ax.barh(carrier, val, color=color, alpha=alpha, edgecolor=edge_c, linewidth=lw)
+            ax.barh(carrier, val_gw, color=color, alpha=alpha, edgecolor=edge_c, linewidth=lw)
 
-        ax.set_xlabel("Optimal Installed Power Capacity (MW)")
+        ax.set_xlabel("Optimal Installed Power Capacity (GW)")
         ax.set_title(f"PyPSA-Libya — Solved Power Capacity by Carrier ({scenario_name})", fontsize=12, fontweight="bold")
+        
+        # Apply updated mapped y-tick labels
+        full_yticklabels = [LABEL_MAP.get(c, c) for c in all_power_cap_gw.index]
+        ax.set_yticks(range(len(all_power_cap_gw)))
+        ax.set_yticklabels(full_yticklabels)
+
         ax.margins(x=0.20)
         ax.set_axisbelow(True)
         ax.grid(axis='x', linestyle='--', alpha=0.5, color='#cbd5e1')
         
-        # Add labels after plotting
+        # Annotate with GW formatted to two decimal places
         for p in ax.patches:
             width = p.get_width()
-            ax.annotate(f'{width:,.1f} MW', (width, p.get_y() + p.get_height() / 2.),
-                        xytext=(5, 0), textcoords='offset points', ha='left', va='center', fontsize=9)
+            if width > 0.0001:
+                ax.annotate(f'{width:,.2f} GW', (width, p.get_y() + p.get_height() / 2.),
+                            xytext=(5, 0), textcoords='offset points', ha='left', va='center', fontsize=9)
 
         fig.tight_layout()
         out_cap_png = os.path.join(CARRIERS_DIR, f"{safe_prefix}_solved_capacity_by_carrier.png")
@@ -1802,24 +1927,32 @@ for scenario_name, path in RESULTS.items():
         save_paper_pdf(fig, ax, f"{safe_prefix}_solved_capacity_by_carrier")
         plt.close(fig)
 
-        # 2. Filtered Solved Capacity Chart (Major carriers only)
-        filtered_cap = all_power_cap[all_power_cap.index.map(check_is_major)]
-        if not filtered_cap.empty:
+        # 2. Filtered Solved Capacity Chart (Major carriers only, in GW)
+        filtered_cap_gw = all_power_cap_gw[all_power_cap_gw.index.map(check_is_major)]
+        if not filtered_cap_gw.empty:
             fig, ax = plt.subplots(figsize=(10, 5))
-            for carrier, val in filtered_cap.items():
+            for carrier, val_gw in filtered_cap_gw.items():
                 color, alpha, edge_c, lw = get_smart_carrier_style(carrier, is_major=True)
-                ax.barh(carrier, val, color=color, alpha=alpha, edgecolor=edge_c, linewidth=lw)
+                ax.barh(carrier, val_gw, color=color, alpha=alpha, edgecolor=edge_c, linewidth=lw)
 
-            ax.set_xlabel("Optimal Installed Power Capacity (MW)")
+            ax.set_xlabel("Optimal Installed Power Capacity (GW)")
             ax.set_title(f"PyPSA-Libya — Solved Capacity by Carrier [>= {THRESHOLD_GWH:,.0f} GWh Gen] ({scenario_name})", fontsize=12, fontweight="bold")
+            
+            # Apply updated mapped y-tick labels
+            filt_yticklabels = [LABEL_MAP.get(c, c) for c in filtered_cap_gw.index]
+            ax.set_yticks(range(len(filtered_cap_gw)))
+            ax.set_yticklabels(filt_yticklabels)
+
             ax.margins(x=0.20)
             ax.set_axisbelow(True)
             ax.grid(axis='x', linestyle='--', alpha=0.5, color='#cbd5e1')
 
+            # Annotate with GW formatted to two decimal places
             for p in ax.patches:
                 width = p.get_width()
-                ax.annotate(f'{width:,.1f} MW', (width, p.get_y() + p.get_height() / 2.),
-                            xytext=(5, 0), textcoords='offset points', ha='left', va='center', fontsize=9)
+                if width > 0.0001:
+                    ax.annotate(f'{width:,.2f} GW', (width, p.get_y() + p.get_height() / 2.),
+                                xytext=(5, 0), textcoords='offset points', ha='left', va='center', fontsize=9)
 
             fig.tight_layout()
             out_cap_filt_png = os.path.join(CARRIERS_DIR, f"{safe_prefix}_solved_capacity_by_carrier_filtered.png")
@@ -1828,53 +1961,84 @@ for scenario_name, path in RESULTS.items():
             plt.close(fig)
 
     # -----------------------------------------------------------------
-    # C. Physical Generation Charts (Full & Filtered)
+    # C. Physical Generation Charts (Full & Filtered in TWh)
     # -----------------------------------------------------------------
     if not phys_gen_gwh.empty:
-        # 1. Full Physical Generation Chart
+        # Convert GWh to TWh
+        phys_gen_twh = (phys_gen_gwh / 1000.0).sort_values()
+
+        # Dictionary to shorten/rename specific carrier x-axis labels
+        LABEL_MAP = {
+            "electricity distribution grid": "Grid Delivery",
+            "Grid Expansion": "Grid Delivery",
+            "solar rooftop": "Solar Rooftop",
+            "gas": "Gas",
+            "gas for industry": "Industry Gas",
+            "gas for industry CC": "Industry Gas CC",
+            "process emissions": "Process Emissions",
+            "process emissions CC": "Process Emissions CC",
+            "home battery charger": "Battery Charge",
+            "home battery discharger": "Battery Discharge",
+        }
+
+        # 1. Full Physical Generation Chart (in TWh)
         fig, ax = plt.subplots(figsize=(10, 6))
-        for carrier, val in phys_gen_gwh.items():
+        for carrier, val_twh in phys_gen_twh.items():
             is_maj = check_is_major(carrier)
             color, alpha, edge_c, lw = get_smart_carrier_style(carrier, is_major=is_maj)
-            ax.bar(carrier, val, color=color, alpha=alpha, edgecolor=edge_c, linewidth=lw)
+            ax.bar(carrier, val_twh, color=color, alpha=alpha, edgecolor=edge_c, linewidth=lw)
 
-        ax.set_ylabel("Physical Generation / Conversion Activity (GWh)", fontsize=11)
-        ax.set_title(f"PyPSA-Libya — Physical Energy Generation & Storage Activity ({scenario_name})", fontsize=12, fontweight="bold")
-        plt.xticks(rotation=35, ha='right')
-        ax.margins(y=0.18)
+        ax.set_ylabel("Physical Generation / Conversion Activity (TWh)")
+        ax.set_title(f"PyPSA-Libya — Physical Generation by Carrier ({scenario_name})", fontsize=12, fontweight="bold")
+        
+        # Apply updated mapped x-tick labels
+        full_labels = [LABEL_MAP.get(c, c) for c in phys_gen_twh.index]
+        ax.set_xticks(range(len(phys_gen_twh)))
+        ax.set_xticklabels(full_labels, rotation=45, ha="right")
+        
+        ax.margins(y=0.20)
         ax.set_axisbelow(True)
         ax.grid(axis='y', linestyle='--', alpha=0.5, color='#cbd5e1')
 
+        # Annotate values above bars in TWh
         for p in ax.patches:
             height = p.get_height()
-            ax.annotate(f'{height:,.1f}', (p.get_x() + p.get_width() / 2., height),
-                        xytext=(0, 4), textcoords='offset points', ha='center', va='bottom', fontsize=9)
+            if height > 0.001:
+                ax.annotate(f'{height:,.2f} TWh', (p.get_x() + p.get_width() / 2., height),
+                            xytext=(0, 5), textcoords='offset points', ha='center', va='bottom', fontsize=9)
 
         fig.tight_layout()
         out_gen_png = os.path.join(CARRIERS_DIR, f"{safe_prefix}_physical_generation_by_carrier.png")
         fig.savefig(out_gen_png, dpi=150, bbox_inches="tight")
-        save_paper_pdf(fig, ax, f"{safe_prefix}_physical_generation_by_carrier")        
+        save_paper_pdf(fig, ax, f"{safe_prefix}_physical_generation_by_carrier")
         plt.close(fig)
 
-        # 2. Filtered Physical Generation Chart (Major carriers only)
-        filtered_gen = phys_gen_gwh[phys_gen_gwh >= THRESHOLD_GWH]
-        if not filtered_gen.empty:
-            fig, ax = plt.subplots(figsize=(8, 5))
-            for carrier, val in filtered_gen.items():
+        # 2. Filtered Physical Generation Chart (Major carriers only, in TWh)
+        filtered_gen_twh = phys_gen_twh[phys_gen_twh.index.map(check_is_major)]
+        if not filtered_gen_twh.empty:
+            fig, ax = plt.subplots(figsize=(10, 5))
+            for carrier, val_twh in filtered_gen_twh.items():
                 color, alpha, edge_c, lw = get_smart_carrier_style(carrier, is_major=True)
-                ax.bar(carrier, val, color=color, alpha=alpha, edgecolor=edge_c, linewidth=lw)
+                ax.bar(carrier, val_twh, color=color, alpha=alpha, edgecolor=edge_c, linewidth=lw)
 
-            ax.set_ylabel("Physical Generation / Conversion Activity (GWh)", fontsize=11)
-            ax.set_title(f"PyPSA-Libya — Physical Generation & Activity [>= {THRESHOLD_GWH:,.0f} GWh] ({scenario_name})", fontsize=12, fontweight="bold")
-            plt.xticks(rotation=25, ha='right')
-            ax.margins(y=0.18)
+            ax.set_ylabel("Physical Generation / Conversion Activity (TWh)")
+            ax.set_title(f"PyPSA-Libya — Physical Generation by Carrier [>= {THRESHOLD_GWH:,.0f} GWh] ({scenario_name})", fontsize=12, fontweight="bold")
+            
+            # Apply updated mapped x-tick labels
+            filt_labels = [LABEL_MAP.get(c, c) for c in filtered_gen_twh.index]
+            ax.set_xticks(range(len(filtered_gen_twh)))
+            ax.set_xticklabels(filt_labels, rotation=45, ha="right")
+            
+            ax.margins(y=0.20)
             ax.set_axisbelow(True)
             ax.grid(axis='y', linestyle='--', alpha=0.5, color='#cbd5e1')
 
+            # Annotate values above bars in TWh
             for p in ax.patches:
                 height = p.get_height()
-                ax.annotate(f'{height:,.1f}', (p.get_x() + p.get_width() / 2., height),
-                            xytext=(0, 4), textcoords='offset points', ha='center', va='bottom', fontsize=9)
+                if height > 0.001:
+                    ax.annotate(f'{height:,.2f} TWh', (p.get_x() + p.get_width() / 2., height),
+                                xytext=(0, 5), textcoords='offset points', ha='center', va='bottom', fontsize=9)
 
             fig.tight_layout()
             out_gen_filt_png = os.path.join(CARRIERS_DIR, f"{safe_prefix}_physical_generation_by_carrier_filtered.png")
@@ -2137,329 +2301,667 @@ if water_analysis_results:
 
 
 
-# =====================================================================
-# 7. CO2 EMISSIONS & SEQUESTRATION MASS BALANCE ACCOUNTING SUMMARY
-# =====================================================================
 
+# =====================================================================
+# SECTION 7: FINANCIAL ASSESSMENT, DYNAMIC NPV, IRR & PAYBACK COMPUTATION
+# =====================================================================
 print("\n" + "=" * 70)
-print("Computing CO2 Mass Balance Accounting across Scenarios")
+print("Evaluating Financial Cash Flows, Dynamic NPV, IRR & Payback Period across Scenarios")
 print("=" * 70)
 
-co2_summary_results = {}
+import numpy_financial as npf
+
+# Standard end-of-period discounting vector (t = 1 to 21) -> Sums to ~10.7099
+discount_factors = 1.0 / ((1.0 + DEFAULT_WACC) ** np.arange(1, PROJECT_LIFETIME_YEARS + 1))
+pv_annuity_factor = discount_factors.sum()
+
+# Helper function to compute total overnight CAPEX from network component costs
+def overnight_capex_total(n: pypsa.Network, discount_rate: float = DEFAULT_WACC, lifetime: int = PROJECT_LIFETIME_YEARS) -> float:
+    ann_factor = (discount_rate * (1 + discount_rate)**lifetime) / (((1 + discount_rate)**lifetime) - 1)
+    annualized_capex_total = capex_by_category(n).sum()
+    return annualized_capex_total / ann_factor
+
+# Pre-populate Baseline (No-H2 Export) network paths explicitly
+BASELINE_RESULTS = {}
+for scenario_name, path in RESULTS.items():
+    if r"\No_Hydrogen_H2_0" not in path:
+        path_0export = path.replace(r"\postnetworks", r"\No_Hydrogen_H2_0\postnetworks")
+        path_0export = re.sub(r'(\d+)export\.nc$', r'0export.nc', path_0export)
+    else:
+        path_0export = path
+    BASELINE_RESULTS[scenario_name] = path_0export
+
+table1_records = []
+table2_records = []
+table3_records = []
 
 for scenario_name, export_path in RESULTS.items():
     if not os.path.exists(export_path):
+        print(f"[SKIP Financial Analysis] {scenario_name}: File not found at {export_path}")
         continue
 
-    n_scen = pypsa.Network(export_path)
-    weights = n_scen.snapshot_weightings.generators
-
-    # 1. Geologically Sequestered CO2 (Captured)
-    co2_captured_mt = 0.0
+    # Load Export Network & System Costs
+    n_exp = pypsa.Network(export_path)
+    ann_capex_exp = capex_by_category(n_exp).sum()
+    opex_exp = operating_cost(n_exp)
     
-    # Check Stores for Sequestered CO2
-    co2_stores = n_scen.stores[n_scen.stores.carrier.str.contains("co2|sequestered", case=False, na=False)]
-    if not co2_stores.empty and not n_scen.stores_t.e.empty:
-        sel_stores = [s for s in co2_stores.index if s in n_scen.stores_t.e.columns]
-        if sel_stores:
-            # Net accumulation or maximum state of sequestered storage over the year (tonnes -> Mt)
-            co2_captured_mt = (n_scen.stores_t.e[sel_stores].iloc[-1] - n_scen.stores_t.e[sel_stores].iloc[0]).sum() / 1e6
-            if co2_captured_mt <= 0:
-                co2_captured_mt = n_scen.stores_t.e[sel_stores].max().sum() / 1e6
-
-    # Fallback to Link activity if store tracking isn't explicitly used
-    if co2_captured_mt <= 0 and not n_scen.links.empty and not n_scen.links_t.p0.empty:
-        co2_links = n_scen.links[n_scen.links.carrier.str.contains("co2|sequestered|cc", case=False, na=False)]
-        sel_co2_links = [l for l in co2_links.index if l in n_scen.links_t.p0.columns]
-        if sel_co2_links:
-            # Sum flow through sequestration links (assuming efficiency/bus mapping in tonnes -> Mt)
-            co2_captured_mt = n_scen.links_t.p0[sel_co2_links].mul(weights, axis=0).sum().sum() / 1e6
-
-    # 2. Net Atmospheric CO2 Emissions (Vented)
-    co2_vented_mt = 0.0
+    # CO2 Tax on Net Atmospheric (Vented) Emissions only — captured/sequestered CO2 is not taxed
+    # Computed LIVE (this file only ever processes the export network here,
+    # so this was numerically correct before too, but this keeps it robust
+    # and consistent with the fix applied to the cost/OPEX breakdown loops).
+    vented_mt = compute_vented_co2_mt(n_exp)
+    co2_tax_annual_eur = vented_mt * 1e6 * CO2_TAX_EUR_PER_TON   
+    export_run_cost_eur = ann_capex_exp + opex_exp   # tax-free cost, captured BEFORE tax is added below
+    opex_exp += co2_tax_annual_eur
     
-    # Calculate emissions from Global Constraints / Carriers / Generator activity
-    if hasattr(n_scen, "global_constraints") and "co2_limit" in n_scen.global_constraints.index:
-        # Check carrier emissions or emission constraints
-        if hasattr(n_scen, "emissions_t") and not n_scen.emissions_t.empty:
-            co2_vented_mt = n_scen.emissions_t.sum().sum() / 1e6
+    total_ann_cost_exp = ann_capex_exp + opex_exp
 
-    if co2_vented_mt <= 0 and not n_scen.generators.empty and not n_scen.generators_t.p.empty:
-        # Sum generator emissions using efficiency and CO2 intensity attributes
-        gen_emissions = 0.0
-        for gen_id, gen in n_scen.generators.iterrows():
-            if gen_id in n_scen.generators_t.p.columns:
-                p_gen = n_scen.generators_t.p[gen_id].mul(weights, axis=0).sum()
-                efficiency = getattr(gen, "efficiency", 1.0) or 1.0
-                co2_emissions_attr = getattr(gen, "co2_emissions", 0.0)
-                gen_emissions += (p_gen / efficiency) * co2_emissions_attr
-        co2_vented_mt = gen_emissions / 1e6
-
-    # Fallback directly to scenario reference baselines if raw time-series flags are unassigned
-    if co2_vented_mt <= 0:
-        fallback_emissions = {"Scenario A": 10.00, "Scenario B": 10.00, "Scenario C": 75.56}
-        co2_vented_mt = fallback_emissions.get(scenario_name, 0.0)
-
-    if co2_captured_mt <= 0:
-        fallback_captured = {"Scenario A": 15.27, "Scenario B": 33.58, "Scenario C": 0.01}
-        co2_captured_mt = fallback_captured.get(scenario_name, 0.0)
-
-    # 3. Total Gross CO2 Generated
-    total_gross_co2_mt = co2_vented_mt + co2_captured_mt
-
-    co2_summary_results[scenario_name] = {
-        "vented": co2_vented_mt,
-        "captured": co2_captured_mt,
-        "total": total_gross_co2_mt
-    }
-
-# Save structured summary to text file
-co2_txt_path = os.path.join(OUT_DIR, "CO2_eimissions_summary.txt")
-
-scenarios = ["Scenario A", "Scenario B", "Scenario C"]
-
-with open(co2_txt_path, "w", encoding="utf-8") as f:
-    f.write("Recommended Table for Your Results Section\n")
-    f.write("To make your report clear and avoid confusion, present both rows under a structured CO2 mass balance header:\n\n")
-    
-    header = f"{'CO2 Accounting Metric':45s} | {'Scenario A':12s} | {'Scenario B':12s} | {'Scenario C':12s}\n"
-    f.write(header)
-    f.write("-" * 90 + "\n")
-    
-    vented_row = f"{'Net Atmospheric CO2 Emissions (Vented)':45s} | " + " | ".join(
-        [f"{co2_summary_results.get(s, {}).get('vented', 0.0):8.2f} Mt" for s in scenarios]
-    ) + "\n"
-    f.write(vented_row)
-    
-    captured_row = f"{'Geologically Sequestered CO2 (Captured)':45s} | " + " | ".join(
-        [f"{co2_summary_results.get(s, {}).get('captured', 0.0):8.2f} Mt" for s in scenarios]
-    ) + "\n"
-    f.write(captured_row)
-    
-    total_row = f"{'Total Gross CO2 Generated (Vented + Stored)':45s} | " + " | ".join(
-        [f"{co2_summary_results.get(s, {}).get('total', 0.0):8.2f} Mt" for s in scenarios]
-    ) + "\n"
-    f.write(total_row)
-    f.write("-" * 90 + "\n")
-
-print(f"Saved CO2 emissions summary table -> {co2_txt_path}")
-
-
-
-# =====================================================================
-# 8. DYNAMIC NET PRESENT VALUE (NPV) & REVENUE ANALYSIS
-# =====================================================================
-
-print("\n" + "=" * 70)
-print("Computing Dynamic Multi-Year Net Present Value (NPV) across Scenarios")
-print("=" * 70)
-
-# ---------------------------------------------------------------------
-# Dynamic User-Adjustable Parameters
-# ---------------------------------------------------------------------
-DISCOUNT_RATE = 0.071                          # Financial discount rate (7.1%)
-YEARS = np.arange(2030, 2051)                  # 21-year operational horizon (2030–2050 inclusive)
-NUM_YEARS = len(YEARS)
-
-H2_TARGET_TONS = 70.0 * 1e6 * 1000            # 70 TWh -> ~70 Million Tons -> in kg equivalent (70 Billion kg)
-
-### Fixed Price of H2 for all hydrogen types (all three scenarios on price).
-BENCHMARK_PRICE_PER_KG = 2.00  # EUR/kg standard price
-
-### Dynamic revenue margin over levelized cost (1 Euro/kg higher than LCOH LHV)
-REVENUE_MARGIN_EUR_PER_KG = 1.00
-
-DESAL_COST_EUR_PER_M3 = 1.50                  # Reverse Osmosis desalination cost (€/m3)
-DESAL_ENERGY_KWH_PER_M3 = 3.5                  # Desalination energy overhead (kWh/m3)
-ELECTROLYZER_SEC_KWH_PER_KG = 52.5             # Electrolyzer specific electricity consumption (kWh/kg H2)
-
-WATER_M3_PER_KG_H2 = 0.009                    # Stoichiometric water requirement (~9 L/kg H2 = 0.009 m3/kg)
-
-# Compute dynamic discount factors across horizon: 1 / (1 + r)^t
-discount_factors = 1.0 / ((1.0 + DISCOUNT_RATE) ** np.arange(NUM_YEARS))
-
-# Data containers for Standard Fixed-Price Benchmark (Fixed_H2Price_NPV_summary.txt)
-npv_results_main = {}
-npv_results_summary = {}
-
-# Data containers for Dynamic Cost + 1 EUR/kg Margin Scenario (Revenue_1EUR_NPV_summary.txt)
-margin_npv_results_main = {}
-margin_npv_results_summary = {}
-
-for scenario_name, export_path in RESULTS.items():
-    if not os.path.exists(export_path):
-        print(f"[SKIP NPV] Export path not found for {scenario_name}: {export_path}")
-        continue
-
-    print(f"Processing NPV Analysis for {scenario_name}...")
-    n_export = pypsa.Network(export_path)
-
-    # 1. Physical Hydrogen & Water Metrics
+    # Exported H2 Energy & Mass Calculation
     exported_h2_mwh = 0.0
-    h2_export_loads = n_export.loads[n_export.loads.carrier.str.contains("H2|h2|export", case=False, na=False)]
-    if not h2_export_loads.empty and not n_export.loads_t.p.empty:
-        weights = n_export.snapshot_weightings.generators
-        exported_h2_mwh = n_export.loads_t.p[h2_export_loads.index].mul(weights, axis=0).sum().sum()
+    h2_export_loads = n_exp.loads[n_exp.loads.carrier.str.contains("H2|h2|export", case=False, na=False)]
+    if not h2_export_loads.empty and not n_exp.loads_t.p.empty:
+        weights = n_exp.snapshot_weightings.generators
+        exported_h2_mwh = n_exp.loads_t.p[h2_export_loads.index].mul(weights, axis=0).sum().sum()
     if exported_h2_mwh <= 0:
         exported_h2_mwh = DEFAULT_EXPORT_H2_MWH
 
-    # Calculate actual physical H2 produced in kg based on electrolyzer efficiency / LHV
-    h2_exported_kg = exported_h2_mwh / H2_LHV_MWH_PER_KG
-    water_required_m3 = h2_exported_kg * WATER_M3_PER_KG_H2
-    water_desal_cost_eur = water_required_m3 * DESAL_COST_EUR_PER_M3
+    exported_h2_kg = exported_h2_mwh / H2_LHV_MWH_PER_KG
+    exported_h2_mtons = exported_h2_kg / 1e9
 
-    # 2. Financial System Costs & Net-Cost Allocated LCOH LHV (EUR/kg)
-    capex_exp = capex_by_category(n_export).sum()
-    opex_exp = operating_cost(n_export)
-    annual_system_cost_eur = capex_exp + opex_exp
-
-    # Dynamically locate and compute Baseline Run Costs independently
-    if r"\No_Hydrogen_H2_0" not in export_path:
-        base_path = export_path.replace(r"\postnetworks", r"\No_Hydrogen_H2_0\postnetworks")
-        base_path = re.sub(r'(\d+)export\.nc$', r'0export.nc', base_path)
-    else:
-        base_path = export_path
-
-    net_h2_cost_annual_eur = annual_system_cost_eur
-    if os.path.exists(base_path) and base_path != export_path:
+    # Load Baseline (0-Export Reference) Network
+    base_path = BASELINE_RESULTS.get(scenario_name)
+    if base_path and os.path.exists(base_path) and base_path != export_path:
         n_base = pypsa.Network(base_path)
-        baseline_cost_annual_eur = capex_by_category(n_base).sum() + operating_cost(n_base)
-        net_h2_cost_annual_eur = annual_system_cost_eur - baseline_cost_annual_eur
+        ann_capex_base = capex_by_category(n_base).sum()
+        opex_base = operating_cost(n_base)
+        overnight_capex_base = overnight_capex_total(n_base)
     else:
-        print(f"[WARNING NPV] Baseline path not found or matched export network for {scenario_name}: {base_path}")
+        ann_capex_base = 0.0
+        opex_base = 0.0
+        overnight_capex_base = 0.0
 
-    # LCOH LHV in EUR/kg for the scenario
-    lcoh_lhv_eur_per_kg = (net_h2_cost_annual_eur / exported_h2_mwh) * H2_LHV_MWH_PER_KG
+    total_ann_cost_base = ann_capex_base + opex_base
+    net_ann_cost = total_ann_cost_exp - total_ann_cost_base
+    net_lcoh_eur_mwh = net_ann_cost / exported_h2_mwh
+    lcoh_lhv_cost = net_lcoh_eur_mwh * H2_LHV_MWH_PER_KG
+    
+    # Compute LCOH margin base WITHOUT CO2 tax
+    net_ann_cost_pretax = (total_ann_cost_exp - co2_tax_annual_eur) - total_ann_cost_base
+    lcoh_lhv_cost_pretax = (net_ann_cost_pretax / exported_h2_mwh) * H2_LHV_MWH_PER_KG
+    selling_price = lcoh_lhv_cost_pretax + REVENUE_MARGIN   # price does NOT track the CO2 tax
 
-    # =================================================================
-    # A. Standard Benchmark NPV Calculation (Fixed Benchmark Price)
-    # =================================================================
-    annual_gross_rev_bench = h2_exported_kg * BENCHMARK_PRICE_PER_KG
-    annual_net_cash_bench = annual_gross_rev_bench - annual_system_cost_eur
 
-    pv_system_cost_eur = annual_system_cost_eur * discount_factors.sum()
-    pv_gross_rev_bench = annual_gross_rev_bench * discount_factors.sum()
-    npv_total_bench = annual_net_cash_bench * discount_factors.sum()
+    # # Dynamic Selling Price (+1 EUR/kg margin over Net LCOH LHV)
+    # selling_price = lcoh_lhv_cost + REVENUE_MARGIN
 
-    pv_net_h2_cost_eur = net_h2_cost_annual_eur * discount_factors.sum()
-    npv_net_alloc_bench = (annual_gross_rev_bench - net_h2_cost_annual_eur) * discount_factors.sum()
+    # Table 1: Annual Operational Metrics
+    annual_cost_b = total_ann_cost_exp / 1e9
+    annual_revenue_b = (exported_h2_kg * selling_price) / 1e9
+    annual_net_cash_flow_b = annual_revenue_b - annual_cost_b
 
-    npv_results_main[scenario_name] = {
-        "Annual Cost [B EUR/yr]": annual_system_cost_eur / 1e9,
-        "Annual Revenue [B EUR/yr]": annual_gross_rev_bench / 1e9,
-        "Annual Net Cash Flow [B EUR/yr]": annual_net_cash_bench / 1e9,
-        "H2 Exported [M Tons/yr]": h2_exported_kg / 1e9,
-        "Water Demand [M m3/yr]": water_required_m3 / 1e6,
-        "Water Desal Cost [M EUR/yr]": water_desal_cost_eur / 1e6,
-    }
+    # Table 2: Multi-Year Discounted Valuation Metrics
+    pv_system_cost = annual_cost_b * pv_annuity_factor
+    pv_net_h2_cost = (net_ann_cost / 1e9) * pv_annuity_factor
+    pv_gross_revenue = annual_revenue_b * pv_annuity_factor
+    npv_total_system = pv_gross_revenue - pv_system_cost
 
-    npv_results_summary[scenario_name] = {
-        "PV System Cost [B EUR]": pv_system_cost_eur / 1e9,
-        "PV Net H2 Cost [B EUR]": pv_net_h2_cost_eur / 1e9,
-        "PV Gross Revenue [B EUR]": pv_gross_rev_bench / 1e9,
-        "NPV Total System [B EUR]": npv_total_bench / 1e9,
-        "NPV Net Allocated [B EUR]": npv_net_alloc_bench / 1e9,
-    }
+    # Table 3: Incremental Cash Inflows, Project IRR & Payback Period
+    overnight_capex_exp = overnight_capex_total(n_exp)
+    net_overnight_capex = max(0.0, overnight_capex_exp - overnight_capex_base)
+    net_annual_opex = max(0.0, opex_exp - opex_base)
+    annual_net_cash_inflow = (annual_revenue_b * 1e9) - net_annual_opex
 
-    # =================================================================
-    # B. Dynamic Revenue Margin Scenario (Price = LCOH LHV + 1 EUR/kg)
-    # =================================================================
-    scenario_dynamic_price_per_kg = lcoh_lhv_eur_per_kg + REVENUE_MARGIN_EUR_PER_KG
-    annual_gross_rev_margin = h2_exported_kg * scenario_dynamic_price_per_kg
-    annual_net_cash_margin = annual_gross_rev_margin - annual_system_cost_eur
+    # Project IRR Cash Flow Vector: [-Net Overnight CAPEX, Net Annual Cash Inflow * 21 Years]
+    cash_flows = [-net_overnight_capex] + [annual_net_cash_inflow] * PROJECT_LIFETIME_YEARS
 
-    pv_gross_rev_margin = annual_gross_rev_margin * discount_factors.sum()
-    npv_total_margin = annual_net_cash_margin * discount_factors.sum()
+    try:
+        irr_val = npf.irr(cash_flows) * 100.0
+    except Exception:
+        irr_val = np.nan
 
-    margin_npv_results_main[scenario_name] = {
-        "LCOH LHV Cost [EUR/kg]": lcoh_lhv_eur_per_kg,
-        "Selling Price (+1 EUR) [EUR/kg]": scenario_dynamic_price_per_kg,
-        "Annual Cost [B EUR/yr]": annual_system_cost_eur / 1e9,
-        "Annual Revenue [B EUR/yr]": annual_gross_rev_margin / 1e9,
-        "Annual Net Cash Flow [B EUR/yr]": annual_net_cash_margin / 1e9,
-        "H2 Exported [M Tons/yr]": h2_exported_kg / 1e9,
-    }
+    if annual_net_cash_inflow > 0 and net_overnight_capex > 0:
+        payback_years = net_overnight_capex / annual_net_cash_inflow
+    else:
+        payback_years = np.nan
 
-    margin_npv_results_summary[scenario_name] = {
-        "PV System Cost [B EUR]": pv_system_cost_eur / 1e9,
-        "PV Net H2 Cost [B EUR]": pv_net_h2_cost_eur / 1e9,
-        "PV Gross Revenue (+1 EUR) [B EUR]": pv_gross_rev_margin / 1e9,
-        "NPV Total System [B EUR]": npv_total_margin / 1e9,
-    }
+    net_cash_flow_b = (annual_net_cash_inflow - (net_overnight_capex / PROJECT_LIFETIME_YEARS)) / 1e9
 
-# ---------------------------------------------------------------------
-# Export Standard Benchmark NPV Text File
-# ---------------------------------------------------------------------
-if npv_results_main:
-    npv_main_df = pd.DataFrame(npv_results_main).T
-    npv_summary_df = pd.DataFrame(npv_results_summary).T
+    # Append Records
+    table1_records.append({
+        "Scenario": scenario_name,
+        "LCOH LHV [EUR/kg]": lcoh_lhv_cost_pretax,
+        "Price (+1) [EUR/kg]": selling_price,
+        "Export Cost [B EUR/yr]": export_run_cost_eur / 1e9,
+        "CO2 Tax [B EUR/yr]": co2_tax_annual_eur / 1e9,   
+        "Ann. Cost [B EUR/yr]": annual_cost_b,
+        "Ann. Revenue [B EUR/yr]": annual_revenue_b,
+        "Ann. Net Cash Flow [B EUR/yr]": annual_net_cash_flow_b,
+        # "H2 Exported [M Tons/yr]": exported_h2_mtons,
+    })
 
-    npv_txt_path = os.path.join(OUT_DIR, "Fixed_H2Price_NPV_summary.txt")
-    with open(npv_txt_path, "w", encoding="utf-8") as f:
-        f.write("=" * 105 + "\n")
-        f.write("PyPSA-Libya: Dynamic Net Present Value (NPV) & Multi-Year Financial Assessment Summary\n")
-        f.write("=" * 105 + "\n\n")
-        
-        f.write("--- Configured Dynamic Financial & Physical Parameters ---\n")
-        f.write(f"  Discount Rate (r):                  {DISCOUNT_RATE * 100:.2f}%\n")
-        f.write(f"  Operational Horizon:                 {YEARS[0]} - {YEARS[-1]} ({NUM_YEARS} years inclusive)\n")
-        f.write(f"  Sum of Discount Factors:             {discount_factors.sum():.4f}\n")
-        f.write(f"  Benchmark H2 Price:                  {BENCHMARK_PRICE_PER_KG:.2f} EUR/kg\n")
-        f.write(f"  Stoichiometric Water Requirement:    {WATER_M3_PER_KG_H2 * 1000:.1f} L/kg H2 ({WATER_M3_PER_KG_H2} m3/kg)\n")
-        f.write(f"  Desalination Unit Cost:              {DESAL_COST_EUR_PER_M3:.2f} EUR/m3\n\n")
+    table2_records.append({
+        "Scenario": scenario_name,
+        "PV System Cost [B EUR]": pv_system_cost,
+        "PV Net H2 Cost [B EUR]": pv_net_h2_cost,
+        "PV Gross Revenue (+1 EUR) [B EUR]": pv_gross_revenue,
+        "NPV Total System [B EUR]": npv_total_system,
+    })
 
-        f.write("--- Table 1: Annual Operational Cash Flows & Physical Water Overhead ---\n")
-        f.write(npv_main_df.to_string())
-        f.write("\n\n")
+    table3_records.append({
+        "Scenario": scenario_name,
+        "Price [EUR/kg]": selling_price,
+        "Annual Revenue [B EUR]": annual_revenue_b,
+        "Net Cash Flow [B EUR]": net_cash_flow_b,
+        "Project IRR (%)": irr_val,
+        "Payback Period [Years]": payback_years
+    })
 
-        f.write(f"--- Table 2: Multi-Year Discounted Valuation Summary ({YEARS[0]}-{YEARS[-1]}) ---\n")
-        f.write(npv_summary_df.to_string())
-        f.write("\n\n" + "=" * 105 + "\n")
-        f.write("Notes:\n")
-        f.write(f" - PV stands for Present Value (discounted cash flows over the {YEARS[0]}–{YEARS[-1]} horizon at r = {DISCOUNT_RATE * 100:.2f}%).\n")
-        f.write(f" - Selling Price is set to a fixed benchmark rate of {BENCHMARK_PRICE_PER_KG:.2f} EUR/kg across all scenarios.\n")
-        f.write("=" * 105 + "\n")
+# ------------------------------------------------------------------
+# WRITE COMBINED SUMMARY REPORT: NPV_IRR_Payback_summary.txt
+# ------------------------------------------------------------------
+if table1_records:
+    df_t1 = pd.DataFrame(table1_records).set_index("Scenario")
+    df_t2 = pd.DataFrame(table2_records).set_index("Scenario")
+    df_t3 = pd.DataFrame(table3_records).set_index("Scenario")
 
-    print(f"\nSaved standard benchmark NPV summary report -> {npv_txt_path}")
-
-# ---------------------------------------------------------------------
-# Export 1 Euro/kg Revenue Margin NPV Text File
-# ---------------------------------------------------------------------
-if margin_npv_results_main:
-    margin_main_df = pd.DataFrame(margin_npv_results_main).T
-    margin_summary_df = pd.DataFrame(margin_npv_results_summary).T
-
-    print("\n" + "=" * 50 + "\nNPV RESULTS WITH +1 EURO/KG REVENUE MARGIN\n" + "=" * 50)
-    print(margin_main_df.to_string())
-    print("\n" + margin_summary_df.to_string())
-
-    margin_txt_path = os.path.join(OUT_DIR, "Fixed_Revenue_NPV_summary.txt")
-    with open(margin_txt_path, "w", encoding="utf-8") as f:
+    summary_txt_path = os.path.join(OUT_DIR, "NPV_IRR_Payback_summary.txt")
+    with open(summary_txt_path, "w", encoding="utf-8") as f:
         f.write("=" * 105 + "\n")
         f.write("PyPSA-Libya: NPV Analysis with +1 Euro/kg Revenue Margin over Scenario LCOH Cost\n")
         f.write("=" * 105 + "\n\n")
-        
-        f.write("--- Configured Dynamic Financial & Margin Parameters ---\n")
-        f.write(f"  Discount Rate (r):                  {DISCOUNT_RATE * 100:.2f}%\n")
-        f.write(f"  Operational Horizon:                 {YEARS[0]} - {YEARS[-1]} ({NUM_YEARS} years inclusive)\n")
-        f.write(f"  Revenue Margin Added to LCOH:        +{REVENUE_MARGIN_EUR_PER_KG:.2f} EUR/kg H2\n\n")
 
-        f.write("--- Table 1: Scenario Specific LCOH, Dynamic Selling Price & Annual Cash Flows ---\n")
-        f.write(margin_main_df.to_string())
-        f.write("\n\n")
-        
-        f.write(f"--- Table 2: Multi-Year Discounted Valuation Summary ({YEARS[0]}-{YEARS[-1]}) ---\n")
-        f.write(margin_summary_df.to_string())
+        f.write("--- Configured Dynamic Financial & Margin Parameters ---\n")
+        f.write(f"  Discount Rate (r):                    {DEFAULT_WACC * 100:.2f}%\n")
+        f.write(f"  Operational Horizon:                 2030 - 2050 ({PROJECT_LIFETIME_YEARS} years inclusive)\n")
+        f.write(f"  Revenue Margin Added to LCOH:        +{REVENUE_MARGIN:.2f} EUR/kg H2\n\n")
+
+        f.write("--- Table 1: Scenario Specific LCOH, Dynamic Price & Annual Cash Flows ---\n")
+        f.write(df_t1.to_string())
+        f.write("\n\n" + "-" * 105 + "\n\n")
+
+        f.write("--- Table 2: Multi-Year Discounted Valuation Summary (2030-2050) ---\n")
+        f.write(df_t2.to_string())
+        f.write("\n\n" + "-" * 105 + "\n\n")
+
+        f.write("--- Table 3: Financial Cash Flow, Project IRR & Payback Assessment Summary ---\n")
+        f.write(df_t3.to_string())
         f.write("\n\n" + "=" * 105 + "\n")
+
         f.write("Notes:\n")
-        f.write(f" - PV stands for Present Value (discounted cash flows over the {YEARS[0]}–{YEARS[-1]} horizon at r = {DISCOUNT_RATE * 100:.2f}%).\n")        
-        f.write(f" - Selling Price is computed dynamically per scenario as (Net LCOH LHV + {REVENUE_MARGIN_EUR_PER_KG:.2f} EUR/kg).\n")
+        f.write(" - PV stands for Present Value (discounted cash flows over the 2030–2050 horizon at r = 7.10%).\n")
+        f.write(" - Price is computed dynamically per scenario as (Net LCOH LHV + 1.00 EUR/kg).\n")
+        f.write(" - Cash flow vector for Project IRR (%): Year 0 = -Net Overnight CAPEX, Years 1..N = Annual Net Cash Inflow.\n")
+        f.write(" - Payback Period [Years] = Net Overnight CAPEX / Annual Net Operating Cash Inflow.\n")
+        f.write(f"  CO2 Tax Rate Applied:                +{CO2_TAX_EUR_PER_TON:.2f} EUR/tonne (on Net Atmospheric/Vented CO2 only)\n\n")
         f.write("=" * 105 + "\n")
 
-    print(f"\nSaved +1 Euro/kg margin NPV summary report -> {margin_txt_path}")
-    
-    
+    print(f"\nSaved combined NPV, IRR & Payback summary report -> {summary_txt_path}")
 
+
+
+# =====================================================================
+# 8. ELECTRICITY-ONLY PHYSICAL GENERATION BY CARRIER (SCENARIOS A, B, C)
+# =====================================================================
+
+print("\n" + "=" * 70)
+print("PART 8: ELECTRICITY-ONLY PHYSICAL GENERATION BY CARRIER (SCENARIOS A, B, C)")
+print("=" * 70)
+
+
+#Target Subfolder Path Configuration (Nested inside 'Energy Carriers Analysis')
+CARRIERS_DIR = os.path.join(OUT_DIR, "Energy Carriers Analysis")
+os.makedirs(CARRIERS_DIR, exist_ok=True)
+
+# Directory setup for electricity-only figures inside CARRIERS_DIR
+ELEC_ONLY_DIR = os.path.join(CARRIERS_DIR, "electricity_only_generation")
+os.makedirs(ELEC_ONLY_DIR, exist_ok=True)
+
+def map_carrier_name(carrier_str):
+    """
+    Standardized carrier mapping unified with diagnosis_only_electricity_carriers.py.
+    Ensures precise carrier naming consistency across all charts and outputs.
+    """
+    c = str(carrier_str).strip()
+    c_lower = c.lower()
+    
+    if "battery" in c_lower:
+        return "battery"
+    elif "h2" in c_lower or "hydrogen" in c_lower:
+        return "H2"
+    elif "wind" in c_lower:
+        if "off" in c_lower:
+            return "offwind"
+        return "onwind"
+    elif "solar" in c_lower or "pv" in c_lower:
+        return "solar"
+    elif "ccgt" in c_lower:
+        return "CCGT"
+    elif "ocgt" in c_lower:
+        return "OCGT"
+    elif "oil" in c_lower or "heavy fuel" in c_lower:
+        return "oil"
+    elif "smr" in c_lower:
+        return "SMR"
+    return c
+
+ELEC_CARRIER_COLORS = {
+    "solar": "#f5a623",
+    "onwind": "#2ecc71",
+    "offwind": "#1abc9c",
+    "CCGT": "#7f8c8d",
+    "OCGT": "#e74c3c",
+    "oil": "#8b4513",
+    "battery": "#3498db",
+    "H2 Fuel Cell": "cyan",
+    "H2": "#e67e22"
+}
+
+ELEC_CARRIER_LABELS = {
+    "solar": "Solar PV",
+    "onwind": "Onshore Wind",
+    "offwind": "Offshore Wind",
+    "CCGT": "CCGT",
+    "OCGT": "OCGT",
+    "oil": "Oil",
+    "gas": "Gas",
+    "battery": "Battery Storage",
+    "H2 Fuel Cell": "H2 Fuel Cell",
+    "H2": "Fuel Cell"
+}
+
+for scenario_name, path in RESULTS.items():
+    if not os.path.exists(path):
+        print(f"[SKIP Part 8] {scenario_name}: File not found at '{path}'")
+        continue
+
+    print(f"\nProcessing Electricity-Only Generation for {scenario_name}...")
+    n = pypsa.Network(path)
+
+    # Calculate actual temporal resolution (dt in hours)
+    if len(n.snapshots) > 1 and isinstance(n.snapshots, pd.DatetimeIndex):
+        dt_hours = (n.snapshots[1] - n.snapshots[0]).total_seconds() / 3600.0
+    else:
+        dt_hours = 3.0
+
+    elec_gen_dict = {}
+
+    # 1. Generators (Pure Electricity Generation)
+    if not n.generators.empty and not n.generators_t.p.empty:
+        gen_mapped_carriers = n.generators.carrier.map(map_carrier_name)
+        gen_p = n.generators_t.p.groupby(gen_mapped_carriers, axis=1).sum()
+        for carrier in gen_p.columns:
+            energy_gwh = (gen_p[carrier] * dt_hours).sum() / 1e3
+            if energy_gwh > 1e-3:
+                elec_gen_dict[carrier] = elec_gen_dict.get(carrier, 0.0) + energy_gwh
+
+    # 2. Links Generating Electricity (CCGT, OCGT, Gas Links delivering to AC buses)
+    # Extract output electricity using net electrical efficiency (p0 * efficiency)
+    if not n.links.empty and not n.links_t.p0.empty:
+        ac_buses = set(n.buses[n.buses.carrier == "AC"].index) if "carrier" in n.buses.columns else set(n.buses.index)
+        for link_id, link in n.links.iterrows():
+            if link.bus1 in ac_buses and link_id in n.links_t.p0.columns:
+                c_mapped = map_carrier_name(link.carrier)
+                efficiency = getattr(link, "efficiency", 1.0) or 1.0
+                elec_output_gw = n.links_t.p0[link_id] * efficiency
+                energy_gwh = (elec_output_gw * dt_hours).sum() / 1e3
+                if energy_gwh > 1e-3:
+                    elec_gen_dict[c_mapped] = elec_gen_dict.get(c_mapped, 0.0) + energy_gwh
+
+    # 3. Storage Units Discharging Activity
+    if not n.storage_units.empty and not n.storage_units_t.p.empty:
+        su_mapped_carriers = n.storage_units.carrier.map(map_carrier_name)
+        for carrier in su_mapped_carriers.unique():
+            cols = n.storage_units[su_mapped_carriers == carrier].index
+            p_carrier = n.storage_units_t.p[cols]
+            dis_gwh = (p_carrier.clip(lower=0).sum(axis=1) * dt_hours).sum() / 1e3
+            if dis_gwh > 1e-3:
+                c_key = "battery" if "battery" in carrier.lower() else carrier
+                elec_gen_dict[c_key] = elec_gen_dict.get(c_key, 0.0) + dis_gwh
+
+# Print exact numerical summary for verification
+    print("-" * 55)
+    print(f"  Physical Generation Breakdown ({scenario_name}):")
+    total_elec_gwh = sum(elec_gen_dict.values())
+    for k, v in elec_gen_dict.items():
+        print(f"    {ELEC_CARRIER_LABELS.get(k, k):25s}: {v:10,.2f} GWh ({(v/total_elec_gwh)*100:5.1f}%)")
+    print(f"    {'TOTAL GENERATION':25s}: {total_elec_gwh:10,.2f} GWh")
+    print("-" * 55)
+
+    # Plot Figure: Electricity Generation by Carrier Bar Chart
+    s_df = pd.Series(elec_gen_dict).sort_values(ascending=False)
+    
+    # Filter out Load Shedding from the plotted Series
+    drop_keys = [c for c in s_df.index if str(c).strip().lower() in ["load shedding", "load_shedding"]]
+    s_df_plot = s_df.drop(labels=drop_keys, errors="ignore")
+    
+    # Convert values from GWh to TWh for plotting
+    s_df_twh = s_df_plot / 1000.0
+    
+    fig, ax = plt.subplots(figsize=(9, 5.5))
+    x_labels = [ELEC_CARRIER_LABELS.get(c, c) for c in s_df_twh.index]
+    
+    bars = ax.bar(
+        x_labels,
+        s_df_twh.values,
+        color=[ELEC_CARRIER_COLORS.get(c, "#7f8c8d") for c in s_df_twh.index],
+        edgecolor="black",
+        linewidth=0.7,
+        alpha=0.9
+    )
+
+    # Add numeric TWh labels above bars (regular font weight, 2 decimal places)
+    for bar in bars:
+        height = bar.get_height()
+        if height > 0:
+            ax.annotate(
+                f"{height:,.2f} TWh",
+                xy=(bar.get_x() + bar.get_width() / 2, height),
+                xytext=(0, 4),
+                textcoords="offset points",
+                ha="center", va="bottom",
+                fontsize=8.5, fontweight="normal"
+            )
+
+    ax.set_ylabel("Electricity Generation [TWh]", fontsize=11)
+    ax.set_title(f"PyPSA-Libya — {scenario_name}: Physical Electricity Generation by Carrier", fontsize=11.5, fontweight="bold")
+    ax.grid(axis="y", linestyle="--", alpha=0.5)
+    ax.set_axisbelow(True)
+
+    # Rotate x-axis labels 45 degrees and align right
+    ax.set_xticks(range(len(x_labels)))
+    ax.set_xticklabels(x_labels, rotation=45, ha="right", rotation_mode="anchor")
+
+    fig.tight_layout()
+
+    safe_scen = scenario_name.replace(" ", "_")
+    out_fig_path = os.path.join(ELEC_ONLY_DIR, f"{safe_scen}_electricity_only_generation_by_carrier.png")
+    fig.savefig(out_fig_path, dpi=200, bbox_inches="tight")
+    save_paper_pdf(fig, ax, f"{safe_scen}_electricity_only_generation_by_carrier")
+    plt.close(fig)
+    print(f"Saved figure -> {out_fig_path}")
+
+print("\n" + "=" * 70)
+print("Execution Complete. All Scenario Cost & Physical Generation Figures Generated.")
+print("=" * 70)
+
+
+
+# =====================================================================
+# 9. OPEX BREAKDOWN ANALYSIS (STACKED BAR CHART - ALL SCENARIOS)
+# =====================================================================
+
+print("\n" + "=" * 70)
+print("Computing OPEX Breakdown across Scenarios")
+print("=" * 70)
+
+# Extended OPEX Carrier Map matching diagnosis breakdown standards
+OPEX_CARRIER_MAP = {
+    # Thermal & Primary Fuel Inputs
+    "gas": "Gas",
+    "natural gas": "Gas",
+    "gas supply": "Gas",
+    "gas for industry": "Gas",
+    "gas for industry CC": "Gas",
+    "oil": "Oil",
+    "heavy fuel oil": "Oil",
+    "diesel": "Oil",
+    "CCGT": "CCGT",
+    "OCGT": "OCGT",
+    # Renewable Generation
+    "solar": "Solar PV",
+    "Solar PV": "Solar PV",
+    "onwind": "Onshore Wind",
+    "Offshore Wind": "Offshore Wind",
+    "offwind": "Offshore Wind",
+    # Hydrogen & Industrial Components
+    "H2 Electrolysis": "Electrolysis",
+    "electrolysis": "Electrolysis",
+    "SMR": "SMR",
+    "SMR CC": "SMR with CC",
+    "H2": "H2 Storage",
+    "H2 store": "H2 Storage",
+    "H2 Store": "H2 Storage",
+    "H2 Store Tank": "H2 Storage",
+    "H2 Store Underground": "H2 Storage",
+    "H2 UHS": "H2 Storage",
+    "H2 Fuel Cell": "H2 Fuel Cell",
+    "H2 turbine": "H2 Fuel Cell",
+    "co2 sequestered": "CO2 sequestration",
+    "co2 sequestration": "CO2 sequestration",
+    "H2 pipeline": "H2 pipeline",
+    # Infrastructure & Grid Extensions
+    "electricity distribution grid": "Grid Expansion",
+    "process emissions": "Process Emissions",
+    "load shedding": "Load Shedding",
+    "Haber-Bosch": "Haber-Bosch"
+}
+
+# Unified Color Palette
+OPEX_CHART_COLORS = {
+    "Gas": "#7f8c8d",                 # Grey/Slate fuel color
+    "Gas Supply": "#7f8c8d",          # Grey/Slate fuel color
+    "Oil": "#8b4513",                 # Brown
+    "Solar PV": "#f5a623",            # Yellow/Orange
+    "Onshore Wind": "#2ecc71",        # Light Green
+    "Offshore Wind": "#1abc9c",       # Dark Teal
+    "Electrolysis": "#7b2d8e",        # Purple
+    "SMR": "#4f4f2f",                 # Olive/Dark Grey
+    "SMR with CC": "#1a5276",         # Dark Blue
+    "H2 Storage": "#3498db",          # Bright Blue
+    "H2 Fuel Cell": "cyan",           # Cyan
+    "CCGT": "#95a5a6",                # Light Grey
+    "OCGT": "#e74c3c",                # Soft Red
+    "CO2 sequestration": "#0b1f3a",   # Navy Blue
+    "H2 pipeline": "#c0392b",         # Red
+    "CO2 Tax": "#000000",             # Black
+    "Grid Expansion": "#f9b7cc",      # Pink
+    "Process Emissions": "#d35400",   # Rust
+    "Load Shedding": "#e74c3c",       # Red
+    "Haber-Bosch": "#16a085"          # Green Teal
+}
+
+
+def opex_by_category(n: pypsa.Network) -> pd.Series:
+    """Calculates OPEX grouped by carrier category incorporating marginal operational
+    costs, primary fuel supply costs (Gas/Oil), and component dispatches using mapped carriers.
+    """
+    records = []
+    weights = n.snapshot_weightings.generators
+
+    def clean_map(carrier_series):
+        return carrier_series.astype(str).str.strip().map(lambda c: OPEX_CARRIER_MAP.get(c, c))
+
+    # 1. Generators OPEX (Primary Fuel Supply Generators like Gas/Oil)
+    if not n.generators.empty and not n.generators_t.p.empty:
+        g = n.generators
+        sel_g = [c for c in g.index if c in n.generators_t.p.columns]
+        if sel_g:
+            mc = g.loc[sel_g, "marginal_cost"]
+            cost = n.generators_t.p[sel_g].mul(mc, axis=1).mul(weights, axis=0).sum(axis=0)
+            records.append(pd.DataFrame({
+                "category": clean_map(g.loc[sel_g, "carrier"]), 
+                "cost": cost.values
+            }))
+
+    # 2. Links OPEX (Marginal Cost x Primary Input Power p0)
+    if not n.links.empty and not n.links_t.p0.empty:
+        l = n.links
+        sel_l = [c for c in l.index if c in n.links_t.p0.columns]
+        if sel_l:
+            mc = l.loc[sel_l, "marginal_cost"]
+            cost = n.links_t.p0[sel_l].mul(mc, axis=1).mul(weights, axis=0).sum(axis=0)
+            records.append(pd.DataFrame({
+                "category": clean_map(l.loc[sel_l, "carrier"]), 
+                "cost": cost.values
+            }))
+
+    # 3. Stores OPEX
+    if not n.stores.empty and hasattr(n, "stores_t") and hasattr(n.stores_t, "p") and not n.stores_t.p.empty:
+        s = n.stores
+        sel_s = [c for c in s.index if c in n.stores_t.p.columns]
+        if sel_s and "marginal_cost" in s.columns:
+            mc = s.loc[sel_s, "marginal_cost"]
+            cost = n.stores_t.p[sel_s].mul(mc, axis=1).mul(weights, axis=0).sum(axis=0)
+            records.append(pd.DataFrame({
+                "category": clean_map(s.loc[sel_s, "carrier"]), 
+                "cost": cost.values
+            }))
+
+    # 4. Storage Units OPEX
+    if not n.storage_units.empty and not n.storage_units_t.p.empty:
+        su = n.storage_units
+        sel_su = [c for c in su.index if c in n.storage_units_t.p.columns]
+        if sel_su and "marginal_cost" in su.columns:
+            mc = su.loc[sel_su, "marginal_cost"]
+            cost = n.storage_units_t.p[sel_su].clip(lower=0).mul(mc, axis=1).mul(weights, axis=0).sum(axis=0)
+            records.append(pd.DataFrame({
+                "category": clean_map(su.loc[sel_su, "carrier"]), 
+                "cost": cost.values
+            }))
+
+    if not records:
+        return pd.Series(dtype=float)
+
+    df_all = pd.concat(records, ignore_index=True)
+    return df_all.groupby("category")["cost"].sum()
+
+
+OPEX_RUN_CASES = {
+    "H2_Export": {
+        "results": RESULTS,
+        "prefix": "",
+        "title_label": "Export Hydrogen"
+    },
+    "No_H2_Export": {
+        "results": {
+            "Scenario A": r"Output\libya_h2export_test\scenario_a\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
+            "Scenario B": r"Output\libya_h2export_test\scenario_b\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
+            "Scenario C": r"Output\libya_h2export_test\scenario_c\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
+        },
+        "prefix": "No_H2_export_",
+        "title_label": "No Export Hydrogen"
+    },
+}
+
+for case_key, case_info in OPEX_RUN_CASES.items():
+    results_dict = case_info["results"]
+    prefix = case_info["prefix"]
+    title_label = case_info["title_label"]
+
+    opex_scenario_costs = {}
+
+    for scenario_name, path in results_dict.items():
+        if not os.path.exists(path):
+            print(f"[SKIP OPEX] {scenario_name} ({case_key}): File not found at '{path}'")
+            continue
+
+        print(f"Extracting OPEX for {scenario_name} ({case_key})...")
+        n_scen = pypsa.Network(path)
+
+        opex_breakdown = opex_by_category(n_scen)
+        
+        # Compute vented CO2 LIVE from whichever network is loaded (correct
+        # for both H2_Export and No_H2_Export cases) -- see note above.
+        vented_mt = compute_vented_co2_mt(n_scen)
+        co2_tax = vented_mt * 1e6 * CO2_TAX_EUR_PER_TON
+        
+        if co2_tax > 0:
+            opex_breakdown["CO2 Tax"] = co2_tax
+
+        opex_scenario_costs[scenario_name] = opex_breakdown
+
+    if opex_scenario_costs:
+        # 1. Full OPEX DataFrame (Unfiltered)
+        df_opex_full = pd.DataFrame(opex_scenario_costs).T / 1e9  # Convert EUR to Billion EUR
+        df_opex_full = df_opex_full.fillna(0.0)
+
+        preferred_order = [
+            "Gas", "Gas Supply", "Oil", "SMR", "H2 Storage", "Grid Expansion",
+            "Process Emissions", "Load Shedding", "Haber-Bosch",
+            "Solar PV", "Onshore Wind", "Offshore Wind", "CCGT", "OCGT",
+            "Electrolysis", "H2 Fuel Cell", "SMR with CC", "CO2 sequestration",
+            "H2 pipeline", "CO2 Tax"
+        ]
+        
+        category_order_opex = [c for c in preferred_order if c in df_opex_full.columns]
+        for col in df_opex_full.columns:
+            if col not in category_order_opex:
+                category_order_opex.append(col)
+
+        df_opex_full = df_opex_full[category_order_opex]
+
+        # 2. Filtered OPEX DataFrame for Visualizations & Significant Components (>= 0.001 Billion EUR)
+        significant_cols = df_opex_full.columns[df_opex_full.max(axis=0) >= 0.001]
+        df_opex_filtered = df_opex_full[significant_cols]
+
+        # 3. Stacked Bar Chart Generation
+        fig_opex, ax_opex = plt.subplots(figsize=(10, 6))
+        bottom_opex = pd.Series(0.0, index=df_opex_filtered.index)
+
+        for cat in df_opex_filtered.columns:
+            values = df_opex_filtered[cat]
+            ax_opex.bar(
+                df_opex_filtered.index, values, bottom=bottom_opex,
+                color=OPEX_CHART_COLORS.get(cat, "#7f8c8d"), label=cat,
+                edgecolor="black", linewidth=0.5, width=0.5
+            )
+            bottom_opex += values
+
+        ax_opex.set_ylabel("Annual Operational Cost [Billion EUR]", fontsize=11)
+        ax_opex.set_title(f"PyPSA-Libya: Operational Expenditure (OPEX) Breakdown\nScenarios (a), (b), and (c) ({title_label})", fontsize=12, fontweight="bold")
+        ax_opex.legend(loc="upper left", bbox_to_anchor=(1.02, 1.0), fontsize=9, frameon=True)
+        ax_opex.grid(axis="y", linestyle="--", alpha=0.5)
+
+        fig_opex.tight_layout()
+
+        # Save Figures
+        png_filename_opex = f"figure9d_{prefix}opex_cost_by_scenario.png" if prefix else "figure9d_opex_cost_by_scenario.png"
+        out_path_opex = os.path.join(OUT_DIR, png_filename_opex)
+        
+        fig_opex.savefig(out_path_opex, dpi=200, bbox_inches="tight")
+        pdf_key_opex = f"{prefix}opex_cost_by_scenario" if prefix else "opex_cost_by_scenario"
+        save_paper_pdf(fig_opex, ax_opex, pdf_key_opex)
+        plt.close(fig_opex)
+        print(f"Saved OPEX breakdown chart -> {out_path_opex}")
+
+        # 4. Output Detailed Text Summary File
+        txt_filename_opex = f"Breakdown_{prefix}opex_cost_summary.txt" if prefix else "Breakdown_opex_cost_summary.txt"
+        txt_out_path_opex = os.path.join(OUT_DIR, txt_filename_opex)
+        df_opex_totals = df_opex_full.sum(axis=1)
+
+        # Build Top 10 OPEX Components Table (6-column layout: Carrier & OPEX per Scenario)
+        top10_scenario_dfs = []
+        for scenario_k in df_opex_full.index:
+            top10_s = df_opex_full.loc[scenario_k].nlargest(10).reset_index()
+            top10_s.columns = pd.MultiIndex.from_tuples([
+                (scenario_k, "Carrier"),
+                (scenario_k, "OPEX [Billion EUR]")
+            ])
+            top10_scenario_dfs.append(top10_s)
+
+        df_top10_table = pd.concat(top10_scenario_dfs, axis=1)
+        df_top10_table.index = range(1, 11)  # Rank 1 to 10
+        df_top10_table.index.name = "Rank"
+
+        with open(txt_out_path_opex, "w", encoding="utf-8") as f:
+            f.write("=" * 105 + "\n")
+            f.write(f"PyPSA-Libya: Operational Expenditure (OPEX) Breakdown Summary ({title_label}) (Billion EUR/year)\n")
+            f.write("=" * 105 + "\n\n")
+            f.write("--- Itemized OPEX Breakdown (>= 0.001 Billion EUR/year) ---\n")
+            f.write(df_opex_filtered.round(4).to_string())
+            f.write("\n\n" + "-" * 105 + "\n")
+            f.write("--- Top 10 OPEX Components Ranked by Scenario ---\n")
+            f.write(df_top10_table.to_string())
+            f.write("\n\n" + "-" * 105 + "\n")
+            f.write("--- Total OPEX Summary ---\n")
+            for scenario_k, total_val in df_opex_totals.items():
+                f.write(f"  {scenario_k:12s} Total OPEX: {total_val:8.3f} Billion EUR/year\n")
+            f.write("=" * 105 + "\n")
+
+        print(f"Saved OPEX breakdown text report -> {txt_out_path_opex}\n")
+        
+        
+        
 # =====================================================================
 # FINAL PART: ORGANIZE TXT SUMMARIES FOR LATEX
 # =====================================================================
@@ -2495,3 +2997,4 @@ print(f" - Paper-ready PDFs (Directly saved): Created during run")
 print(f" - Summary TXT files copied: {table_count}")
 print(f" Output Location: ./{PAPER_DIR}/")
 print("=" * 70)
+
