@@ -33,39 +33,47 @@ from matplotlib.lines import Line2D
 # PATH CONFIGURATION
 # =====================================================================
 
-
-#### H2 export, month, 3-hrs 
+##### H2 export, week
 
 # RESULTS = {
-   
-#     "Scenario A": r"Output\Month_libya_h2export_test\scenario_a\3hrs\postnetworks\elec_s_36_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc",
-#     "Scenario B": r"Output\Month_libya_h2export_test\scenario_b\3hrs\postnetworks\elec_s_36_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc",
-#     "Scenario C": r"Output\Month_libya_h2export_test\scenario_c\3hrs\postnetworks\elec_s_36_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc",
+#     "Scenario A": r"Output\libya_h2export_test\scenario_a\postnetworks\elec_s_12_ec_lcopt_Co2L-3h_144h_2030_0.071_AB_0.25export.nc",
+#     "Scenario B": r"Output\libya_h2export_test\scenario_b\postnetworks\elec_s_12_ec_lcopt_Co2L-3h_144h_2030_0.071_AB_0.25export.nc",
+#     "Scenario C": r"Output\libya_h2export_test\scenario_c\postnetworks\elec_s_12_ec_lcopt_Co2L-3h_144h_2030_0.071_AB_0.25export.nc",
 #           }
 
 
 
-#### H2 export, month, 6-hrs 
+##### H2 export, year, 3-hrs 
+
+# RESULTS = {
+#     "Scenario A": r"Output\libya_h2export_test\scenario_a\3hrs\postnetworks\elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc",
+#     "Scenario B": r"Output\libya_h2export_test\scenario_b\3hrs\postnetworks\elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc",
+#     "Scenario C": r"Output\libya_h2export_test\scenario_c\3hrs\postnetworks\elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc",
+#           }
+
+
+
+##### H2 export, year, 6-hrs 
+
+# RESULTS = {
+#     "Scenario A": r"Output\libya_h2export_test\scenario_a\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_70export.nc",
+#     "Scenario B": r"Output\libya_h2export_test\scenario_b\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_70export.nc",
+#     "Scenario C": r"Output\libya_h2export_test\scenario_c\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_70export.nc",
+#           }
+
+
+
+##### No H2 export, year, 6-hrs 
 
 RESULTS = {
-    "Scenario A": r"Output\Month_libya_h2export_test\scenario_a\postnetworks\elec_s_36_ec_lcopt_Co2L-6h__2030_0.071_AB_70export.nc",
-    "Scenario B": r"Output\Month_libya_h2export_test\scenario_b\postnetworks\elec_s_36_ec_lcopt_Co2L-6h__2030_0.071_AB_70export.nc",
-    "Scenario C": r"Output\Month_libya_h2export_test\scenario_c\postnetworks\elec_s_36_ec_lcopt_Co2L-6h__2030_0.071_AB_70export.nc",
+    "Scenario A": r"Output\libya_h2export_test\scenario_a\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
+    "Scenario B": r"Output\libya_h2export_test\scenario_b\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
+    "Scenario C": r"Output\libya_h2export_test\scenario_c\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
           }
 
 
 
-# ## No H2 export, month, 6-hrs 
-
-# RESULTS = {
-#     "Scenario A": r"Output\Month_libya_h2export_test\scenario_a\No_Hydrogen_H2_0\postnetworks\elec_s_36_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
-#     "Scenario B": r"Output\Month_libya_h2export_test\scenario_b\No_Hydrogen_H2_0\postnetworks\elec_s_36_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
-#     "Scenario C": r"Output\Month_libya_h2export_test\scenario_c\No_Hydrogen_H2_0\postnetworks\elec_s_36_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
-#           }
-
-
-
-OUT_DIR = "viz_outputs/Month_h2_scenario_comparison"
+OUT_DIR = "viz_outputs/h2_scenario_comparison"
 os.makedirs(OUT_DIR, exist_ok=True)
 
 #### Map raw PyPSA carrier names -> display categories
@@ -106,9 +114,9 @@ CHART_COLORS = {
     "H2 pipeline": "#c0392b",
     "H2 Storage": "#3498db",               
     "H2 Fuel Cell": "#e67e22",
-    "CCGT": "#7f8c8d",                     # Added visual color
+    "CCGT": "#b03a2e",                     # Added visual color
     "OCGT": "#e74c3c",                     # Added visual color
-    "Oil": "#8b4513",                      # Added visual color
+    "Oil": "#7f8c8d",                      # Added visual color
     "Operating Cost": "#d2b48c",
 }
 
@@ -150,8 +158,7 @@ def setup_map_ax(fig):
         return ax
     
     
-    
-    
+
 # =====================================================================
 # COST EXTRACTION FUNCTIONS (FIXED)
 # =====================================================================
@@ -587,6 +594,7 @@ else:
         
         
         
+        
 # =====================================================================
     # 2.3 Spatial & Graphical Transmission Line Bottlenecks for Scenarios
     # =====================================================================
@@ -805,17 +813,13 @@ print("\n" + "=" * 70)
 print("Computing System LCOE and Net-Cost Allocated LCOH across Scenarios")
 print("=" * 70)
 
+# Paths to Baseline Reference Networks (0 TWh H2 Export) for Option B Net-Cost Allocation
+BASELINE_RESULTS = {
+    "Scenario A": r"Output\libya_h2export_test\scenario_a\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
+    "Scenario B": r"Output\libya_h2export_test\scenario_b\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
+    "Scenario C": r"Output\libya_h2export_test\scenario_c\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-6h__2030_0.071_AB_0export.nc",
+          }
 
-# Dynamically construct Baseline Reference Networks (0 TWh H2 Export) for Option B Net-Cost Allocation
-# derived directly from the main RESULTS paths defined at the top
-BASELINE_RESULTS = {}
-for scenario_name, path in RESULTS.items():
-    # Insert 'No_Hydrogen_H2_0' folder before 'postnetworks' and switch export suffix to '0export.nc'
-    path_0export = path.replace(r"\postnetworks", r"\No_Hydrogen_H2_0\postnetworks")
-    path_0export = re.sub(r'(\d+)export\.nc$', r'0export.nc', path_0export)
-    BASELINE_RESULTS[scenario_name] = path_0export
-    
-    
     
 DEFAULT_EXPORT_H2_MWH = 70 * 1e6      # 70 TWh export target in MWh
 DEFAULT_DOMESTIC_AC_MWH = 52.04 * 1e6 # 52.04 TWh AC domestic demand in MWh
@@ -1052,11 +1056,10 @@ for scenario_name, path in RESULTS.items():
     plt.close(fig)
     print(f"  Saved August bar chart -> {out_path}")
     
-    
 
 
 # =====================================================================
-# 4. PRO-RATA (ENERGY & FUEL ALLOCATED) LCOH — COMPUTATION & EXPORT
+# 5. PRO-RATA (ENERGY & FUEL ALLOCATED) LCOH — COMPUTATION & EXPORT
 # =====================================================================
 
 print("\n" + "=" * 70)
@@ -1265,403 +1268,3 @@ if prorata_results_main:
         f.write(f" - Assumed H2 Higher Heating Value (HHV) = {H2_HHV_MWH_PER_KG} MWh/kg (39.41 kWh/kg)\n")
         f.write("=" * 95 + "\n")
     print(f"\nSaved Pro-Rata LCOH summary report -> {prorata_txt_path}")
-    
-    
-
-
-# =====================================================================
-# EXTRA SECTION: GENERATE 4 DETAILED OUTCOMES PER H2 SCENARIO
-# (With Dynamic Threshold Color & Transparency Separation for Small vs Major Bars)
-# =====================================================================
-
-print("\n" + "=" * 70)
-print("Generating Energy Carriers Analysis Outcomes")
-print("=" * 70)
-
-# 1. Target Subfolder Path Configuration
-CARRIERS_DIR = os.path.join(OUT_DIR, "Energy Carriers Analysis")
-os.makedirs(CARRIERS_DIR, exist_ok=True)
-
-### User-adjustable threshold in GWh defining major vs small bars
-# THRESHOLD_GWH = 3000
-THRESHOLD_GWH = 1500
-
-# Master Primary Color Palette aligned with Figure 9a (Major Bars)
-PRIMARY_CARRIER_COLORS = {
-    "Solar PV": "#f5a623",
-    "solar": "#f5a623",
-    "Onshore Wind": "#2ecc71",
-    "onwind": "#2ecc71",
-    "Offshore Wind": "#1abc9c",
-    "offwind": "#1abc9c",
-    "Electrolysis": "#7b2d8e",
-    "H2 Electrolysis": "#7b2d8e",
-    "H2 Storage": "#3498db",
-    "H2": "#3498db",
-    "H2 (charge)": "#2980b9",
-    "H2 (discharge)": "#3498db",
-    "H2 Fuel Cell": "#e67e22",
-    "SMR": "#4F4F2F",
-    "SMR with CC": "#1a5276",
-    "SMR CC": "#1a5276",
-    "H2 pipeline": "#c0392b",
-    "CCGT": "#b03a2e",
-    "OCGT": "#e74c3c",
-    "Oil": "#8b4513",
-    "oil": "#8b4513",
-    "CO2 sequestration": "#0b1f3a",
-    "electricity distribution grid": "#f9b7cc",
-    "solar rooftop": "#e6007e",
-    "gas for industry CC": "#16a085",
-    "process emissions": "#606c38",
-    "process emissions CC": "#9aa56b",
-    "gas": "#7f8c8d",
-}
-
-# Distinct light, desaturated pastel palette reserved strictly for minor/small carriers (< THRESHOLD_GWH)
-LIGHT_PASTEL_PALETTE = [
-    "#e2e8f0", "#cbd5e1", "#f1f5f9", "#fee2e2", "#ffedd5",
-    "#fef3c7", "#ecfccb", "#dcfce7", "#e0e7ff", "#f3e8ff"
-]
-
-def get_smart_carrier_style(carrier_name, is_major=True):
-    """Returns (color, alpha, edgecolor, linewidth) to visually separate major vs minor bars."""
-    if is_major:
-        color = PRIMARY_CARRIER_COLORS.get(carrier_name)
-        if not color:
-            hash_val = sum(ord(c) for c in str(carrier_name))
-            color = plt.cm.tab10(hash_val % 10)
-        return color, 0.95, "black", 0.6
-    else:
-        # Use desaturated pastel palette and light alpha for minor/small bars
-        hash_val = sum(ord(c) for c in str(carrier_name))
-        light_color = LIGHT_PASTEL_PALETTE[hash_val % len(LIGHT_PASTEL_PALETTE)]
-        return light_color, 0.50, "#64748b", 0.8
-
-def map_outcome_carrier(carrier_str):
-    """Normalizes raw PyPSA carrier strings to display categories."""
-    c = str(carrier_str).strip()
-    return CAPEX_CARRIER_MAP.get(c, c)
-
-
-# -----------------------------------------------------------------
-# 2. COMBINED RENEWABLE CF & CURTAILMENT TEXT REPORT
-# -----------------------------------------------------------------
-combined_ren_txt_path = os.path.join(CARRIERS_DIR, "Renewable_cf_and_curtailment.txt")
-
-with open(combined_ren_txt_path, "w", encoding="utf-8") as f_comb:
-    f_comb.write("=" * 95 + "\n")
-    f_comb.write(" PyPSA-Libya — Combined Renewable Capacity Factor (CF) & Curtailment Report\n")
-    f_comb.write("=" * 95 + "\n\n")
-
-    for scenario_name, path in RESULTS.items():
-        if not os.path.exists(path):
-            continue
-
-        n_scen = pypsa.Network(path)
-        dt_hours = (n_scen.snapshots[1] - n_scen.snapshots[0]).total_seconds() / 3600.0 if len(n_scen.snapshots) > 1 else 1.0
-        total_physical_hours = len(n_scen.snapshots) * dt_hours
-
-        renewable_carriers = [c for c in ["solar", "solar rooftop", "onwind", "offwind"] if c in n_scen.generators.carrier.unique()]
-        cf_curtailment_results = []
-
-        for carrier in renewable_carriers:
-            gens = n_scen.generators[n_scen.generators.carrier == carrier]
-            if gens.empty:
-                continue
-            
-            p_nom = gens["p_nom_opt"].fillna(gens.get("p_nom", 0)) if "p_nom_opt" in gens.columns else gens.get("p_nom", 0)
-            total_cap_mw = p_nom.sum()
-            actual_gen_gwh = (n_scen.generators_t.p[gens.index].sum().sum() * dt_hours) / 1e3
-            
-            if hasattr(n_scen.generators_t, "p_max_pu") and not n_scen.generators_t.p_max_pu.empty:
-                cols_in_pu = [col for col in gens.index if col in n_scen.generators_t.p_max_pu.columns]
-                potential_gen_gwh = (n_scen.generators_t.p_max_pu[cols_in_pu] * p_nom.loc[cols_in_pu]).sum().sum() * dt_hours / 1e3 if cols_in_pu else actual_gen_gwh
-            else:
-                potential_gen_gwh = actual_gen_gwh
-                
-            curtailed_gwh = max(0.0, potential_gen_gwh - actual_gen_gwh)
-            curtailment_rate_pct = (curtailed_gwh / potential_gen_gwh * 100.0) if potential_gen_gwh > 0 else 0.0
-            max_possible_gen_gwh = (total_cap_mw * total_physical_hours) / 1e3
-            capacity_factor_pct = (actual_gen_gwh / max_possible_gen_gwh * 100.0) if max_possible_gen_gwh > 0 else 0.0
-            
-            cf_curtailment_results.append({
-                "carrier": map_outcome_carrier(carrier),
-                "capacity_mw": total_cap_mw,
-                "potential_gwh": potential_gen_gwh,
-                "actual_gwh": actual_gen_gwh,
-                "curtailed_gwh": curtailed_gwh,
-                "capacity_factor_pct": capacity_factor_pct,
-                "curtailment_rate_pct": curtailment_rate_pct
-            })
-
-        df_renewables = pd.DataFrame(cf_curtailment_results)
-
-        f_comb.write(f"===============================================================================================\n")
-        f_comb.write(f" PyPSA-Libya — Renewable Capacity Factor (CF) & Curtailment Report ({scenario_name})\n")
-        f_comb.write(f"===============================================================================================\n\n")
-        f_comb.write(f"{'CARRIER':15s} | {'CAPACITY (MW)':14s} | {'POTENTIAL (GWh)':16s} | {'ACTUAL (GWh)':14s} | {'CURTAILED (GWh)':16s} | {'CF (%)':8s} | {'CURTAIL %':10s}\n")
-        f_comb.write("-" * 95 + "\n")
-        for _, row in df_renewables.iterrows():
-            f_comb.write(f"{row['carrier']:15s} | {row['capacity_mw']:14,.1f} | {row['potential_gwh']:16,.1f} | {row['actual_gwh']:14,.1f} | {row['curtailed_gwh']:16,.1f} | {row['capacity_factor_pct']:7.2f}% | {row['curtailment_rate_pct']:9.2f}%\n")
-        f_comb.write("-" * 95 + "\n\n\n")
-
-print(f"Saved combined renewable report -> {combined_ren_txt_path}")
-
-
-# -----------------------------------------------------------------
-# 3. FIGURE GENERATION PER SCENARIO WITH THRESHOLD COLOR LOGIC
-# -----------------------------------------------------------------
-for scenario_name, path in RESULTS.items():
-    if not os.path.exists(path):
-        print(f"[SKIP Outcomes] {scenario_name}: File not found at '{path}'")
-        continue
-
-    print(f"\nProcessing Energy Carriers Analysis figures for: {scenario_name}...")
-    n_scen = pypsa.Network(path)
-    safe_prefix = scenario_name.replace(" ", "_")
-    dt_hours = (n_scen.snapshots[1] - n_scen.snapshots[0]).total_seconds() / 3600.0 if len(n_scen.snapshots) > 1 else 1.0
-
-    # -----------------------------------------------------------------
-    # A. Physical Generation & Conversion Activity Computation
-    # -----------------------------------------------------------------
-    phys_gen_dict = {}
-
-    if not n_scen.generators.empty and not n_scen.generators_t.p.empty:
-        gen_p = n_scen.generators_t.p.groupby(n_scen.generators.carrier.map(map_outcome_carrier), axis=1).sum()
-        for carrier in gen_p.columns:
-            energy_gwh = (gen_p[carrier] * dt_hours).sum() / 1e3
-            if energy_gwh > 1e-3:
-                phys_gen_dict[carrier] = energy_gwh
-
-    if not n_scen.links.empty and not n_scen.links_t.p0.empty:
-        link_p = n_scen.links_t.p0.groupby(n_scen.links.carrier.map(map_outcome_carrier), axis=1).sum()
-        for carrier in link_p.columns:
-            energy_gwh = (link_p[carrier] * dt_hours).sum() / 1e3
-            if energy_gwh > 1e-3:
-                phys_gen_dict[carrier] = energy_gwh
-
-    if not n_scen.storage_units.empty and not n_scen.storage_units_t.p.empty:
-        su_p = n_scen.storage_units_t.p
-        su_carrier_mapped = n_scen.storage_units.carrier.map(map_outcome_carrier)
-        for carrier in su_carrier_mapped.unique():
-            cols = n_scen.storage_units[su_carrier_mapped == carrier].index
-            p_carrier = su_p[cols]
-            dis_gwh = (p_carrier.clip(lower=0).sum(axis=1) * dt_hours).sum() / 1e3
-            if dis_gwh > 1e-3:
-                phys_gen_dict[f"{carrier} (discharge)"] = dis_gwh
-            chg_gwh = ((-p_carrier.clip(upper=0)).sum(axis=1) * dt_hours).sum() / 1e3
-            if chg_gwh > 1e-3:
-                phys_gen_dict[f"{carrier} (charge)"] = chg_gwh
-
-    phys_gen_gwh = pd.Series(phys_gen_dict)
-
-    # Classification of major vs minor carriers based on THRESHOLD_GWH
-    major_carriers = phys_gen_gwh[phys_gen_gwh >= THRESHOLD_GWH].index.tolist()
-
-    def check_is_major(c_name):
-        base_name = str(c_name).replace(" (discharge)", "").replace(" (charge)", "")
-        return (c_name in major_carriers) or (base_name in major_carriers)
-
-    # -----------------------------------------------------------------
-    # B. Solved Capacity Charts (Full & Filtered)
-    # -----------------------------------------------------------------
-    cap_records = []
-    
-    if not n_scen.generators.empty:
-        gen_df = n_scen.generators[n_scen.generators.carrier != "load shedding"].copy()
-        cap = gen_df["p_nom_opt"].fillna(gen_df.get("p_nom", 0)) if "p_nom_opt" in gen_df.columns else gen_df.get("p_nom", 0)
-        for idx, row in gen_df.iterrows():
-            if cap.loc[idx] > 1e-3:
-                cap_records.append({"carrier": map_outcome_carrier(row.carrier), "capacity": cap.loc[idx]})
-    
-    if not n_scen.links.empty:
-        link_df = n_scen.links.copy()
-        cap = link_df["p_nom_opt"].fillna(link_df.get("p_nom", 0)) if "p_nom_opt" in link_df.columns else link_df.get("p_nom", 0)
-        for idx, row in link_df.iterrows():
-            if cap.loc[idx] > 1e-3:
-                cap_records.append({"carrier": map_outcome_carrier(row.carrier), "capacity": cap.loc[idx]})
-
-    if not n_scen.storage_units.empty:
-        su_df = n_scen.storage_units.copy()
-        cap = su_df["p_nom_opt"].fillna(su_df.get("p_nom", 0)) if "p_nom_opt" in su_df.columns else su_df.get("p_nom", 0)
-        for idx, row in su_df.iterrows():
-            if cap.loc[idx] > 1e-3:
-                cap_records.append({"carrier": map_outcome_carrier(row.carrier), "capacity": cap.loc[idx]})
-
-    df_cap = pd.DataFrame(cap_records)
-    
-    if not df_cap.empty:
-        all_power_cap = df_cap.groupby("carrier")["capacity"].sum().sort_values()
-        all_power_cap = all_power_cap[all_power_cap > 1e-2]
-
-        # 1. Full Solved Capacity Chart with dynamic alpha separation
-        fig, ax = plt.subplots(figsize=(10, 6))
-        for i, (carrier, val) in enumerate(all_power_cap.items()):
-            is_maj = check_is_major(carrier)
-            color, alpha, edge_c, lw = get_smart_carrier_style(carrier, is_major=is_maj)
-            ax.barh(carrier, val, color=color, alpha=alpha, edgecolor=edge_c, linewidth=lw)
-
-        ax.set_xlabel("Optimal Installed Power Capacity (MW)")
-        ax.set_title(f"PyPSA-Libya — Solved Power Capacity by Carrier ({scenario_name})", fontsize=12, fontweight="bold")
-        ax.margins(x=0.20)
-        ax.set_axisbelow(True)
-        ax.grid(axis='x', linestyle='--', alpha=0.5, color='#cbd5e1')
-        
-        # Add labels after plotting
-        for p in ax.patches:
-            width = p.get_width()
-            ax.annotate(f'{width:,.1f} MW', (width, p.get_y() + p.get_height() / 2.),
-                        xytext=(5, 0), textcoords='offset points', ha='left', va='center', fontsize=9)
-
-        fig.tight_layout()
-        out_cap_png = os.path.join(CARRIERS_DIR, f"{safe_prefix}_solved_capacity_by_carrier.png")
-        fig.savefig(out_cap_png, dpi=150, bbox_inches="tight")
-        plt.close(fig)
-
-        # 2. Filtered Solved Capacity Chart (Major carriers only)
-        filtered_cap = all_power_cap[all_power_cap.index.map(check_is_major)]
-        if not filtered_cap.empty:
-            fig, ax = plt.subplots(figsize=(10, 5))
-            for carrier, val in filtered_cap.items():
-                color, alpha, edge_c, lw = get_smart_carrier_style(carrier, is_major=True)
-                ax.barh(carrier, val, color=color, alpha=alpha, edgecolor=edge_c, linewidth=lw)
-
-            ax.set_xlabel("Optimal Installed Power Capacity (MW)")
-            ax.set_title(f"PyPSA-Libya — Solved Capacity by Carrier [>= {THRESHOLD_GWH:,.0f} GWh Gen] ({scenario_name})", fontsize=12, fontweight="bold")
-            ax.margins(x=0.20)
-            ax.set_axisbelow(True)
-            ax.grid(axis='x', linestyle='--', alpha=0.5, color='#cbd5e1')
-
-            for p in ax.patches:
-                width = p.get_width()
-                ax.annotate(f'{width:,.1f} MW', (width, p.get_y() + p.get_height() / 2.),
-                            xytext=(5, 0), textcoords='offset points', ha='left', va='center', fontsize=9)
-
-            fig.tight_layout()
-            out_cap_filt_png = os.path.join(CARRIERS_DIR, f"{safe_prefix}_solved_capacity_by_carrier_filtered.png")
-            fig.savefig(out_cap_filt_png, dpi=150, bbox_inches="tight")
-            plt.close(fig)
-
-    # -----------------------------------------------------------------
-    # C. Physical Generation Charts (Full & Filtered)
-    # -----------------------------------------------------------------
-    if not phys_gen_gwh.empty:
-        # 1. Full Physical Generation Chart
-        fig, ax = plt.subplots(figsize=(10, 6))
-        for carrier, val in phys_gen_gwh.items():
-            is_maj = check_is_major(carrier)
-            color, alpha, edge_c, lw = get_smart_carrier_style(carrier, is_major=is_maj)
-            ax.bar(carrier, val, color=color, alpha=alpha, edgecolor=edge_c, linewidth=lw)
-
-        ax.set_ylabel("Physical Generation / Conversion Activity (GWh)", fontsize=11)
-        ax.set_title(f"PyPSA-Libya — Physical Energy Generation & Storage Activity ({scenario_name})", fontsize=12, fontweight="bold")
-        plt.xticks(rotation=35, ha='right')
-        ax.margins(y=0.18)
-        ax.set_axisbelow(True)
-        ax.grid(axis='y', linestyle='--', alpha=0.5, color='#cbd5e1')
-
-        for p in ax.patches:
-            height = p.get_height()
-            ax.annotate(f'{height:,.1f}', (p.get_x() + p.get_width() / 2., height),
-                        xytext=(0, 4), textcoords='offset points', ha='center', va='bottom', fontsize=9)
-
-        fig.tight_layout()
-        out_gen_png = os.path.join(CARRIERS_DIR, f"{safe_prefix}_physical_generation_by_carrier.png")
-        fig.savefig(out_gen_png, dpi=150, bbox_inches="tight")
-        plt.close(fig)
-
-        # 2. Filtered Physical Generation Chart (Major carriers only)
-        filtered_gen = phys_gen_gwh[phys_gen_gwh >= THRESHOLD_GWH]
-        if not filtered_gen.empty:
-            fig, ax = plt.subplots(figsize=(8, 5))
-            for carrier, val in filtered_gen.items():
-                color, alpha, edge_c, lw = get_smart_carrier_style(carrier, is_major=True)
-                ax.bar(carrier, val, color=color, alpha=alpha, edgecolor=edge_c, linewidth=lw)
-
-            ax.set_ylabel("Physical Generation / Conversion Activity (GWh)", fontsize=11)
-            ax.set_title(f"PyPSA-Libya — Physical Generation & Activity [>= {THRESHOLD_GWH:,.0f} GWh] ({scenario_name})", fontsize=12, fontweight="bold")
-            plt.xticks(rotation=25, ha='right')
-            ax.margins(y=0.18)
-            ax.set_axisbelow(True)
-            ax.grid(axis='y', linestyle='--', alpha=0.5, color='#cbd5e1')
-
-            for p in ax.patches:
-                height = p.get_height()
-                ax.annotate(f'{height:,.1f}', (p.get_x() + p.get_width() / 2., height),
-                            xytext=(0, 4), textcoords='offset points', ha='center', va='bottom', fontsize=9)
-
-            fig.tight_layout()
-            out_gen_filt_png = os.path.join(CARRIERS_DIR, f"{safe_prefix}_physical_generation_by_carrier_filtered.png")
-            fig.savefig(out_gen_filt_png, dpi=150, bbox_inches="tight")
-            plt.close(fig)
-
-    # -----------------------------------------------------------------
-    # D. Renewable Performance Chart (UNIFIED CARRIER COLORS)
-    # -----------------------------------------------------------------
-    renewable_carriers = [c for c in ["solar", "solar rooftop", "onwind", "offwind"] if c in n_scen.generators.carrier.unique()]
-    cf_curtailment_results = []
-
-    for carrier in renewable_carriers:
-        gens = n_scen.generators[n_scen.generators.carrier == carrier]
-        if gens.empty:
-            continue
-        
-        p_nom = gens["p_nom_opt"].fillna(gens.get("p_nom", 0)) if "p_nom_opt" in gens.columns else gens.get("p_nom", 0)
-        total_cap_mw = p_nom.sum()
-        actual_gen_gwh = (n_scen.generators_t.p[gens.index].sum().sum() * dt_hours) / 1e3
-        
-        if hasattr(n_scen.generators_t, "p_max_pu") and not n_scen.generators_t.p_max_pu.empty:
-            cols_in_pu = [col for col in gens.index if col in n_scen.generators_t.p_max_pu.columns]
-            potential_gen_gwh = (n_scen.generators_t.p_max_pu[cols_in_pu] * p_nom.loc[cols_in_pu]).sum().sum() * dt_hours / 1e3 if cols_in_pu else actual_gen_gwh
-        else:
-            potential_gen_gwh = actual_gen_gwh
-            
-        curtailed_gwh = max(0.0, potential_gen_gwh - actual_gen_gwh)
-        curtailment_rate_pct = (curtailed_gwh / potential_gen_gwh * 100.0) if potential_gen_gwh > 0 else 0.0
-        max_possible_gen_gwh = (total_cap_mw * len(n_scen.snapshots) * dt_hours) / 1e3
-        capacity_factor_pct = (actual_gen_gwh / max_possible_gen_gwh * 100.0) if max_possible_gen_gwh > 0 else 0.0
-        
-        cf_curtailment_results.append({
-            "carrier": map_outcome_carrier(carrier),
-            "capacity_factor_pct": capacity_factor_pct,
-            "curtailment_rate_pct": curtailment_rate_pct
-        })
-
-    df_ren_plot = pd.DataFrame(cf_curtailment_results)
-
-    if not df_ren_plot.empty:
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
-        
-        # Shared carrier color list for both subplots
-        carrier_colors = [get_smart_carrier_style(c, is_major=True)[0] for c in df_ren_plot["carrier"]]
-
-        # Left Subfigure: Capacity Factor
-        bars1 = ax1.bar(df_ren_plot["carrier"], df_ren_plot["capacity_factor_pct"], 
-                        color=carrier_colors, width=0.5)
-        ax1.set_ylabel("Capacity Factor (%)")
-        ax1.set_title("Capacity Factor (CF) by Carrier")
-        ax1.bar_label(bars1, fmt='%.2f%%', padding=3, fontsize=9)
-        ax1.margins(y=0.2)
-        ax1.set_axisbelow(True)
-        ax1.grid(axis='y', linestyle='--', alpha=0.5, color='#cbd5e1')
-
-        # Right Subfigure: Curtailment Rate (matching technology colors)
-        bars2 = ax2.bar(df_ren_plot["carrier"], df_ren_plot["curtailment_rate_pct"], 
-                        color=carrier_colors, width=0.5)
-        ax2.set_ylabel("Curtailment Rate (%)")
-        ax2.set_title("Curtailment Rate (%) by Carrier")
-        ax2.bar_label(bars2, fmt='%.2f%%', padding=3, fontsize=9)
-        ax2.margins(y=0.2)
-        ax2.set_axisbelow(True)
-        ax2.grid(axis='y', linestyle='--', alpha=0.5, color='#cbd5e1')
-
-        fig.suptitle(f"PyPSA-Libya — Renewable Energy Performance & Curtailment ({scenario_name})", fontsize=12, fontweight='bold')
-        fig.tight_layout()
-        ren_png_path = os.path.join(CARRIERS_DIR, f"{safe_prefix}_renewable_cf_and_curtailment.png")
-        fig.savefig(ren_png_path, dpi=150, bbox_inches="tight")
-        plt.close(fig)
-
-print(f"\nAll updated outputs successfully generated in: {CARRIERS_DIR}")
-
-

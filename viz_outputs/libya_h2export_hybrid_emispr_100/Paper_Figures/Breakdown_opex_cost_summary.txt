@@ -1,0 +1,27 @@
+====================================================================================================
+PyPSA-Libya: Operational Expenditure (OPEX) Breakdown Summary (Export Hydrogen) (Billion EUR/year)
+====================================================================================================
+
+--- Itemized OPEX Breakdown (>= 0.001 Billion EUR/year) ---
+category     Gas     Oil  SMR with CC  CO2 Tax
+Hybrid    2.7755  0.6218       0.2044   0.7943
+
+----------------------------------------------------------------------------------------------------
+--- Top 10 Shared OPEX Components (Billion EUR/year) ---
+                Hybrid
+category              
+Gas             2.7755
+CO2 Tax         0.7943
+Oil             0.6218
+SMR with CC     0.2044
+H2 Storage      0.0007
+Onshore Wind    0.0006
+Grid Expansion  0.0005
+Solar PV        0.0003
+CCGT            0.0002
+co2 vent        0.0002
+
+----------------------------------------------------------------------------------------------------
+--- Total OPEX Summary ---
+  Hybrid       Total OPEX:    4.399 Billion EUR/year
+====================================================================================================
