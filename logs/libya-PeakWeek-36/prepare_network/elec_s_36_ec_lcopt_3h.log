@@ -1,4 +1,0 @@
-INFO:pypsa.io:Imported network elec_s_36_ec.nc has buses, carriers, generators, lines, links, loads, storage_units, stores
-INFO:__main__:N-1 security margin of lines set to 0.7
-INFO:__main__:Resampling the network to 3h
-INFO:pypsa.io:Exported network 'elec_s_36_ec_lcopt_3h.nc' contains: links, lines, buses, loads, carriers, stores, storage_units, generators

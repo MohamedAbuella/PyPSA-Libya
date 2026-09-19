@@ -1,6 +1,0 @@
-INFO:pypsa.io:Imported network elec_s.nc has buses, carriers, generators, lines, loads
-INFO:_helpers:Added year suffixes to carrier names for clustering
-INFO:_helpers:Restored base carrier names
-INFO:pypsa.io:Exported network 'elec_s_100.nc' contains: buses, lines, carriers, loads, generators
-INFO:pyogrio._io:Created 17 records
-INFO:pyogrio._io:Created 12 records

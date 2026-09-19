@@ -1,8 +1,0 @@
-INFO:pypsa.io:Imported network elec_s.nc has buses, carriers, generators, lines, loads
-INFO:_helpers:Added year suffixes to carrier names for clustering
-ERROR:__main__:Desired number of clusters (117) higher than the number of buses (111)
-ERROR:_helpers:An error happened in module 'C:\\Users\\Mhdella\\Documents\\pypsa-libya\\scripts\\cluster_network.py', function '<module>': name 'clustering' is not defined
-Traceback (most recent call last):
-  File "C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\scripts\tmp11br1u7m.cluster_network.py", line 834, in <module>
-    update_p_nom_max(clustering.network)
-NameError: name 'clustering' is not defined

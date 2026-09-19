@@ -1,2 +1,0 @@
-INFO:pypsa.io:Imported network elec_s_36.nc has buses, carriers, generators, lines, loads
-INFO:pypsa.io:Exported network 'elec_s_36_ec.nc' contains: loads, buses, generators, carriers, lines, stores, links

@@ -1,4 +1,0 @@
-INFO:pypsa.io:Imported network base.nc has buses, lines, transformers
-INFO:__main__:Merging demand data from paths data/ssp2-2.6/2030/era5_2013/Africa.nc into the load data frame
-INFO:__main__:Load data scaled with scaling factor 1.
-INFO:__main__:Demand_profiles csv file created for the corresponding snapshots.

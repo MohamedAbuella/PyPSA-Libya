@@ -1,9 +1,0 @@
-INFO:pypsa.io:Imported network elec.nc has buses, carriers, generators, lines, loads, transformers
-INFO:_helpers:Added year suffixes to carrier names for clustering
-INFO:__main__:Mapping all network lines onto a single 380kV layer
-INFO:__main__:Simplifying connected link components
-INFO:__main__:Removing stubs
-INFO:_helpers:Restored base carrier names
-INFO:pypsa.io:Exported network 'elec_s.nc' contains: loads, carriers, lines, buses, generators
-INFO:pyogrio._io:Created 71 records
-INFO:pyogrio._io:Created 32 records
