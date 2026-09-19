@@ -96,6 +96,18 @@ logger = create_logger(__name__)
 pypsa.pf.logger.setLevel(logging.WARNING)
 
 
+def add_emission_price(n, price):
+    """Add a CO2 price by raising marginal_cost on every CO2-emitting Link
+    (any link whose output bus is the atmospheric CO2 sink), proportional
+    to its emission factor (efficiency2, tCO2 per MWh of input p0)."""
+    co2_links = n.links[n.links.bus2 == "co2 atmosphere"]
+    if not co2_links.empty:
+        n.links.loc[co2_links.index, "marginal_cost"] += (
+            co2_links["efficiency2"] * price
+        )
+        
+        
+
 def get_load_shedding_capacity(n, safety_margin=1.2):
     """
     Calculate required load shedding p_nom per bus based on the
@@ -215,10 +227,17 @@ def add_CCL_constraints(n, config):
     """
     agg_p_nom_limits = config["electricity"].get("agg_p_nom_limits")
 
+    # try:
+        # agg_p_nom_minmax = read_csv_nafix(
+        #     snakemake.input.agg_p_nom_minmax, index_col=list(range(2)), header=[0, 1]
+        # )[snakemake.wildcards.planning_horizons]
+        
     try:
+        horizon = getattr(snakemake.wildcards, "planning_horizons", str(snakemake.config["costs"]["year"]))
         agg_p_nom_minmax = read_csv_nafix(
             snakemake.input.agg_p_nom_minmax, index_col=list(range(2)), header=[0, 1]
-        )[snakemake.wildcards.planning_horizons]
+        )[horizon]
+    
     except IOError:
         logger.exception(
             "Need to specify the path to a .csv file containing "

@@ -274,6 +274,23 @@ logger = logging.getLogger(__name__)
 spatial = SimpleNamespace()
 
 
+def add_emission_price_sector(n, price):
+    """EUR/tCO2 price on NET ATMOSPHERIC (vented) emissions only.
+    Applies to any Link whose bus2/bus3/bus4 is 'co2 atmosphere' —
+    covers SMR, SMR CC's vented share, and any other vented-CO2 link —
+    while leaving sequestered CO2 (routed to spatial.co2.nodes) untaxed."""
+    if not price:
+        return
+    for i in [2, 3, 4]:
+        bus_col, eff_col = f"bus{i}", f"efficiency{i}"
+        if bus_col not in n.links.columns or eff_col not in n.links.columns:
+            continue
+        mask = n.links[bus_col] == "co2 atmosphere"
+        if mask.any():
+            n.links.loc[mask, "marginal_cost"] += n.links.loc[mask, eff_col].fillna(0) * price
+            logger.info(f"CO2 price {price} EUR/t applied to {mask.sum()} link(s) via {bus_col}")
+            
+
 def add_carrier_buses(n: pypsa.Network, carrier: str, nodes: list = None) -> None:
     """
     Add buses to connect e.g. coal, nuclear and oil plants.
@@ -4030,6 +4047,9 @@ if __name__ == "__main__":
             break
 
     co2 = snakemake.params.co2
+    
+    add_emission_price_sector(n, co2.get("emission_price", 0))  
+
     if co2["budget"]["enable"]:
         add_co2_budget(n, co2, investment_year)
 
@@ -4043,5 +4063,7 @@ if __name__ == "__main__":
     sanitize_locations(n)
 
     n.export_to_netcdf(snakemake.output[0])
+    
+    
 
     # TODO changes in case of myopic oversight
