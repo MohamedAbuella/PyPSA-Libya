@@ -14,15 +14,13 @@
 # two blocks marked CHANGED FOR SCENARIO A.
 
 run:
-  name: "libya_h2export_scenario_b_3h"   # <-- CHANGED: distinct run name so
-                                        # scenario a doesn't collide with
-                                        # b or c in resources/networks/results
+  name: "libya_h2export_scenario_c_3h"
 
 countries: ["LY"]  
 
 scenario:
   clusters: [12]
-  opts: [Co2L-3h] #[Co2L-6h]
+  opts: [Co2L-3h] # [Co2L-6h]
   planning_horizons: [2030]
   sopts: [""]
   demand: ["AB"]
@@ -86,12 +84,15 @@ sector:
     underground_storage:
       enabled: true
 
-    # =========== CHANGED FOR SCENARIO B ===========
-    production_technologies:   # <-- electrolysis + SMR CC, per the paper's
-      - H2 Electrolysis         #     scenario (b) definition
+    # =========== CHANGED FOR SCENARIO C ===========
+    production_technologies:   # <-- all three technologies, per the
+      - H2 Electrolysis         #     paper's scenario (c) definition
+      - SMR
       - SMR CC
-    # Plain (uncontrolled-emissions) SMR intentionally excluded — only
-    # electrolysis and carbon-captured SMR are choosable technologies.
+    # Everything available — the model freely chooses the cost-optimal mix
+    # across all three, which is why scenario (c) is typically the
+    # cheapest of the three (unconstrained SMR is the lowest-cost option
+    # when nothing forces a cleaner mix).
 
 industry:
   h2_fuel_cell: true
@@ -111,16 +112,10 @@ export:
     unload_time: 24
 
 
-# =========== CHANGED FOR SCENARIO B ===========
+# =========== CHANGED FOR SCENARIO C ===========
 policy_config:
   hydrogen:
-    temporal_matching: "no_temporal_matching"   # <-- the paper's text only
-      # explicitly attaches the "yearly matching constraint" to scenario
-      # (a); it's not stated for (b)/(c), so left at the loosest default
-      # here. If you want to test whether that assumption changes results
-      # meaningfully, applying "year" here too is a reasonable robustness
-      # check — just be aware it's YOUR addition, not literally what the
-      # paper describes for this scenario.
+    temporal_matching: "no_temporal_matching"
     spatial_matching: false
     additionality: false
 
@@ -150,8 +145,10 @@ augmented_line_connection:
   new_line_type: ["HVAC"]
   min_expansion: 1
 
+
 co2:
-  limit: 1.0e7
+  limit: 1.0e12  # 1.0e9 instead of 1.0e7
+
 costs:
   year: 2030
 
@@ -168,7 +165,7 @@ solving:
       parallel: "on"
       solver: "ipm"
       run_crossover: "off"              
-      user_bound_scale: -14 
+      user_bound_scale: -20 
       primal_feasibility_tolerance: 1e-3
       dual_feasibility_tolerance: 1e-3
       ipm_optimality_tolerance: 1e-3
