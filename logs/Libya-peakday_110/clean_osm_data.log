@@ -1,0 +1,19 @@
+INFO:__main__:Process OSM lines
+WARNING:pyogrio._io:Skipping field refs: unsupported OGR type: 13
+INFO:__main__:Add OSM cables to data
+WARNING:pyogrio._io:Skipping field refs: unsupported OGR type: 13
+INFO:__main__:Filter lines by voltage, frequency, circuits and geometry
+INFO:__main__:Select lines and cables in the region of interest
+INFO:__main__:Setting lines country name using the GADM shapes
+INFO:__main__:Saving lines output
+INFO:pyogrio._io:Created 900 records
+INFO:__main__:Process OSM substations
+WARNING:pyogrio._io:Skipping field refs: unsupported OGR type: 13
+INFO:__main__:Setting substations country name using the GADM shapes
+INFO:__main__:Saving substations output
+INFO:pyogrio._io:Created 1,925 records
+INFO:__main__:Process OSM generators
+WARNING:pyogrio._io:Skipping field refs: unsupported OGR type: 13
+INFO:__main__:Setting generators country name using the GADM shapes
+INFO:__main__:Saving generators output
+INFO:pyogrio._io:Created 91 records

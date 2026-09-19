@@ -1,0 +1,6 @@
+WARNING:pypsa.network.io:Importing network from PyPSA version v0.0.0 while current version is v0.35.2. Read the release notes at https://pypsa.readthedocs.io/en/latest/release_notes.html to prepare your network for import.
+INFO:pypsa.network.io:New version 1.2.4 available! (Current: 0.35.2)
+INFO:pypsa.network.io:Imported network 'PyPSA-Earth' has buses, lines, transformers
+INFO:__main__:Merging demand data from paths data/ssp2-2.6/2030/era5_2013/Africa.nc into the load data frame
+INFO:__main__:Load data scaled with scaling factor 1.
+INFO:__main__:Demand_profiles csv file created for the corresponding snapshots.

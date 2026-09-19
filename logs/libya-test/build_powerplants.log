@@ -1,0 +1,16 @@
+WARNING:pypsa.network.io:Importing network from PyPSA version v0.0.0 while current version is v0.35.2. Read the release notes at https://pypsa.readthedocs.io/en/latest/release_notes.html to prepare your network for import.
+INFO:pypsa.network.io:New version 1.2.4 available! (Current: 0.35.2)
+INFO:pypsa.network.io:Imported network 'PyPSA-Earth' has buses, lines, transformers
+INFO:powerplantmatching.collection:Create combined dataset for GEM, GEO, GPD
+INFO:powerplantmatching.data:In newer versions of the dataset, the sheet 'Below Threshold' does not exist anymore.
+INFO:powerplantmatching.cleaning:Aggregating blocks in data source 'GEM'.
+INFO:powerplantmatching.cleaning:Aggregating blocks in data source 'GEO'.
+INFO:powerplantmatching.cleaning:Aggregating blocks in data source 'GPD'.
+INFO:powerplantmatching.matching:Comparing data sources `GEM` and `GEO`
+INFO:powerplantmatching.matching:Comparing data sources `GEM` and `GPD`
+INFO:powerplantmatching.matching:Comparing data sources `GEO` and `GPD`
+INFO:powerplantmatching.cleaning:Aggregating blocks in data source 'GEO'.
+INFO:powerplantmatching.cleaning:Aggregating blocks in data source 'GPD'.
+INFO:powerplantmatching.data:In newer versions of the dataset, the sheet 'Below Threshold' does not exist anymore.
+INFO:powerplantmatching.cleaning:Aggregating blocks in data source 'GEM'.
+INFO:powerplantmatching.core:Adding stored geo-position from C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\powerplantmatching\package_data\parsed_locations.csv

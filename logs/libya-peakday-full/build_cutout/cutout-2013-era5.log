@@ -1,0 +1,38 @@
+INFO:__main__:Preparing cutout with parameters {'module': 'era5', 'dx': 0.3, 'dy': 0.3, 'x': slice(9.0, 26.0, None), 'y': slice(19.0, 34.0, None), 'time': slice(Timestamp('2013-08-21 00:00:00'), Timestamp('2013-08-21 23:00:00'), None)}.
+INFO:atlite.cutout:Building new cutout cutouts\cutout-2013-era5.nc
+INFO:atlite.data:Storing temporary files in C:\Users\Mhdella\AppData\Local\Temp\tmpmhxuksak
+INFO:atlite.data:Calculating and writing with module era5:
+INFO:atlite.datasets.era5:Requesting data for feature influx...
+INFO:atlite.datasets.era5:Requesting data for feature height...
+INFO:atlite.datasets.era5:Requesting data for feature temperature...
+INFO:atlite.datasets.era5:Requesting data for feature wind...
+INFO:atlite.datasets.era5:Requesting data for feature runoff...
+INFO:atlite.datasets.era5:CDS: Downloading variables
+	surface_net_solar_radiation (['2013']-['08'])
+	surface_solar_radiation_downwards (['2013']-['08'])
+	toa_incident_solar_radiation (['2013']-['08'])
+	total_sky_direct_solar_radiation_at_surface (['2013']-['08'])
+
+INFO:multiurl.base:Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-08-03/4ab2e59e01f3c0cdb8c96a81cb42f0a5.grib
+INFO:atlite.datasets.era5:CDS: Downloading variables
+	2m_temperature (['2013']-['08'])
+	soil_temperature_level_4 (['2013']-['08'])
+	2m_dewpoint_temperature (['2013']-['08'])
+
+INFO:multiurl.base:Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-08-03/8e17f13e24db84f2e3b52a32dcd1d5e6.grib
+INFO:atlite.datasets.era5:CDS: Downloading variables
+	runoff (['2013']-['08'])
+
+INFO:multiurl.base:Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-08-03/4c7dccce2d1f324458dc4b8f80d88a7.grib
+INFO:atlite.datasets.era5:CDS: Downloading variables
+	10m_u_component_of_wind (['2013']-['08'])
+	10m_v_component_of_wind (['2013']-['08'])
+	100m_u_component_of_wind (['2013']-['08'])
+	100m_v_component_of_wind (['2013']-['08'])
+	forecast_surface_roughness (['2013']-['08'])
+
+INFO:multiurl.base:Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-08-03/122d7192f76c86dafd18d27e362bd4d1.grib
+INFO:atlite.datasets.era5:CDS: Downloading variables
+	geopotential (['2013']-['08'])
+
+INFO:multiurl.base:Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-08-03/1d976aabe7c3f8603f7bb6e8e9366a31.grib

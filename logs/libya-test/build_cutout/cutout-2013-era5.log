@@ -1,0 +1,38 @@
+INFO:__main__:Preparing cutout with parameters {'module': 'era5', 'dx': 0.3, 'dy': 0.3, 'x': slice(9.0, 26.0, None), 'y': slice(19.0, 34.0, None), 'time': slice(Timestamp('2013-01-01 00:00:00'), Timestamp('2013-01-01 23:00:00'), None)}.
+INFO:atlite.cutout:Building new cutout cutouts\cutout-2013-era5.nc
+INFO:atlite.data:Storing temporary files in C:\Users\Mhdella\AppData\Local\Temp\tmp0rg7u5uv
+INFO:atlite.data:Calculating and writing with module era5:
+INFO:atlite.datasets.era5:Requesting data for feature height...
+INFO:atlite.datasets.era5:Requesting data for feature influx...
+INFO:atlite.datasets.era5:Requesting data for feature temperature...
+INFO:atlite.datasets.era5:Requesting data for feature runoff...
+INFO:atlite.datasets.era5:Requesting data for feature wind...
+INFO:atlite.datasets.era5:CDS: Downloading variables
+	10m_u_component_of_wind (['2013']-['01'])
+	10m_v_component_of_wind (['2013']-['01'])
+	100m_u_component_of_wind (['2013']-['01'])
+	100m_v_component_of_wind (['2013']-['01'])
+	forecast_surface_roughness (['2013']-['01'])
+
+INFO:multiurl.base:Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-2/2026-08-01/15fa49ec14a4128419f66bb2e9aa8737.grib
+INFO:atlite.datasets.era5:CDS: Downloading variables
+	runoff (['2013']-['01'])
+
+INFO:multiurl.base:Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-08-01/fdb048ee42b0f783bb7fd831a39f82de.grib
+INFO:atlite.datasets.era5:CDS: Downloading variables
+	geopotential (['2013']-['01'])
+
+INFO:multiurl.base:Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-3/2026-08-01/679c28a30ea729758dbdc9ebdd0a6edf.grib
+INFO:atlite.datasets.era5:CDS: Downloading variables
+	2m_temperature (['2013']-['01'])
+	soil_temperature_level_4 (['2013']-['01'])
+	2m_dewpoint_temperature (['2013']-['01'])
+
+INFO:multiurl.base:Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-08-01/4ced2cd22a75bd2201133302caf93a48.grib
+INFO:atlite.datasets.era5:CDS: Downloading variables
+	surface_net_solar_radiation (['2013']-['01'])
+	surface_solar_radiation_downwards (['2013']-['01'])
+	toa_incident_solar_radiation (['2013']-['01'])
+	total_sky_direct_solar_radiation_at_surface (['2013']-['01'])
+
+INFO:multiurl.base:Downloading https://object-store.os-api.cci2.ecmwf.int:443/cci2-prod-cache-1/2026-08-01/8a43c73f8f3cec1196ecc71011e41787.grib

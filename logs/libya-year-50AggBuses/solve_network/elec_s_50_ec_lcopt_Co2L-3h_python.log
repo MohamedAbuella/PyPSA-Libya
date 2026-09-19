@@ -1,0 +1,33 @@
+INFO:pypsa.io:Imported network elec_s_50_ec_lcopt_Co2L-3h.nc has buses, carriers, generators, global_constraints, lines, loads, storage_units
+INFO:__main__:setting CHP constraints
+INFO:__main__:no h2 temporal constraint set
+INFO:linopy.model: Solve problem using Highs solver
+INFO:linopy.model:Solver logs written to `logs\libya-year-50AggBuses\solve_network\elec_s_50_ec_lcopt_Co2L-3h_solver.log`.
+INFO:linopy.model:Solver options:
+ - threads: 8
+ - solver: ipm
+ - run_crossover: off
+ - small_matrix_value: 1e-6
+ - large_matrix_value: 1e15
+ - primal_feasibility_tolerance: 1e-3
+ - dual_feasibility_tolerance: 1e-3
+ - ipm_optimality_tolerance: 1e-3
+ - parallel: on
+ - random_seed: 123
+INFO:linopy.io:Writing objective.
+INFO:linopy.io: Writing time: 0.25s
+INFO:linopy.solvers:Log file at C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\shadow\tmpwugvju2f\logs\libya-year-50AggBuses\solve_network\elec_s_50_ec_lcopt_Co2L-3h_solver.log
+WARNING:linopy.solvers:Solution status unknown. Trying to parse solution.
+WARNING:linopy.solvers:Solution parsed successfully.
+INFO:linopy.constants: Optimization successful: 
+Status: ok
+Termination condition: unknown
+Solution: 30588 primals, 70672 duals
+Objective: 5.18e+09
+Solver model: available
+Solver message: Unknown
+
+INFO:pypsa.optimization.optimize:The shadow-prices of the constraints Generator-fix-p-lower, Generator-fix-p-upper, Generator-ext-p-lower, Generator-ext-p-upper, Line-ext-s-lower, Line-ext-s-upper, StorageUnit-ext-p_dispatch-lower, StorageUnit-ext-p_dispatch-upper, StorageUnit-ext-p_store-lower, StorageUnit-ext-p_store-upper, StorageUnit-ext-state_of_charge-lower, StorageUnit-ext-state_of_charge-upper, Kirchhoff-Voltage-Law, StorageUnit-energy_balance were not assigned to the network.
+INFO:pypsa.io:Exported network 'elec_s_50_ec_lcopt_Co2L-3h.nc' contains: lines, loads, generators, carriers, global_constraints, buses, storage_units
+INFO:__main__:Objective function: 5179288042.415167
+INFO:__main__:Objective constant: 2320457305.4203506

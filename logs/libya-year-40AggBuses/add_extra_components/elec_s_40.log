@@ -1,0 +1,2 @@
+INFO:pypsa.io:Imported network elec_s_40.nc has buses, carriers, generators, lines, loads
+INFO:pypsa.io:Exported network 'elec_s_40_ec.nc' contains: carriers, buses, storage_units, loads, links, generators, stores, lines

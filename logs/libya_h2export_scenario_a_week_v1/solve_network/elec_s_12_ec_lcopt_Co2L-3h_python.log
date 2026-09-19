@@ -1,0 +1,33 @@
+INFO:pypsa.io:Imported network elec_s_12_ec_lcopt_Co2L-3h.nc has buses, carriers, generators, global_constraints, lines, links, loads, storage_units, stores
+INFO:__main__:setting CHP constraints
+INFO:__main__:setting h2 export to yearly matching constraint without additionality
+INFO:linopy.model: Solve problem using Highs solver
+INFO:linopy.model:Solver logs written to `logs\libya_h2export_scenario_a_week_v1\solve_network\elec_s_12_ec_lcopt_Co2L-3h_solver.log`.
+INFO:linopy.model:Solver options:
+ - threads: 12
+ - solver: ipm
+ - run_crossover: off
+ - small_matrix_value: 1e-6
+ - large_matrix_value: 1e15
+ - primal_feasibility_tolerance: 1e-3
+ - dual_feasibility_tolerance: 1e-3
+ - ipm_optimality_tolerance: 1e-3
+ - parallel: on
+ - random_seed: 123
+ - user_bound_scale: -14
+INFO:linopy.io: Writing time: 0.23s
+INFO:linopy.solvers:Log file at C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\shadow\tmpjq3pg7kg\logs\libya_h2export_scenario_a_week_v1\solve_network\elec_s_12_ec_lcopt_Co2L-3h_solver.log
+WARNING:linopy.solvers:Solution status unknown. Trying to parse solution.
+WARNING:linopy.solvers:Solution parsed successfully.
+INFO:linopy.constants: Optimization successful: 
+Status: ok
+Termination condition: unknown
+Solution: 9346 primals, 20067 duals
+Objective: 2.24e+09
+Solver model: available
+Solver message: Unknown
+
+INFO:pypsa.optimization.optimize:The shadow-prices of the constraints Generator-fix-p-lower, Generator-fix-p-upper, Generator-ext-p-lower, Generator-ext-p-upper, Line-ext-s-lower, Line-ext-s-upper, Link-ext-p-lower, Link-ext-p-upper, Store-ext-e-lower, Store-ext-e-upper, StorageUnit-ext-p_dispatch-lower, StorageUnit-ext-p_dispatch-upper, StorageUnit-ext-p_store-lower, StorageUnit-ext-p_store-upper, StorageUnit-ext-state_of_charge-lower, StorageUnit-ext-state_of_charge-upper, Kirchhoff-Voltage-Law, StorageUnit-energy_balance, Store-energy_balance, H2_temporal_matching were not assigned to the network.
+INFO:pypsa.io:Exported network 'elec_s_12_ec_lcopt_Co2L-3h.nc' contains: generators, carriers, loads, global_constraints, stores, buses, lines, storage_units, links
+INFO:__main__:Objective function: 2236373158.286479
+INFO:__main__:Objective constant: 2251526389.8399057

@@ -1,0 +1,23 @@
+WARNING:pypsa.network.io:Importing network from PyPSA version v0.0.0 while current version is v0.35.2. Read the release notes at https://pypsa.readthedocs.io/en/latest/release_notes.html to prepare your network for import.
+INFO:pypsa.network.io:New version 1.2.4 available! (Current: 0.35.2)
+INFO:pypsa.network.io:Imported network 'PyPSA-Earth' has buses, lines, transformers
+INFO:__main__:Adding 44 existing generators with capacities [GW] 
+carrier
+CCGT    14.29
+oil      6.28
+Name: p_nom, dtype: float64
+INFO:__main__:Added extendable {'CCGT', 'OCGT'} generators.
+INFO:__main__:solar: existing from powerplants = 0.61 GW, IRENA target = 0.01 GW, gap filled = 0.00 GW (0.0% of total).
+ERROR:_helpers:An error happened in module 'C:\\Users\\Mhdella\\anaconda3\\envs\\pypsa-earth\\lib\\site-packages\\pypsa\\network\\transform.py', function 'add': DataFrame p_max_pu has an index which does not align with the passed network snapshots.
+Traceback (most recent call last):
+  File "C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\scripts\tmpadpjlk1i.add_electricity.py", line 1266, in <module>
+    attach_wind_and_solar(
+  File "C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\scripts\tmpadpjlk1i.add_electricity.py", line 677, in attach_wind_and_solar
+    n.madd(
+  File "C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\deprecation.py", line 260, in _inner
+    return function(*args, **kwargs)
+  File "C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pypsa\network\transform.py", line 385, in madd
+    return self.add(class_name=class_name, name=names, suffix=suffix, **kwargs)
+  File "C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pypsa\network\transform.py", line 183, in add
+    raise ValueError(msg.format(f"DataFrame {k}", "network snapshots"))
+ValueError: DataFrame p_max_pu has an index which does not align with the passed network snapshots.

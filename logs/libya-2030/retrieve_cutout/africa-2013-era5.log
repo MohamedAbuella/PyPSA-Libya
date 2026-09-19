@@ -1,0 +1,30 @@
+WARNING:__main__:DISCLAIMER LICENSES: the use of PyPSA-Earth is conditioned 
+         to the acceptance of its multiple licenses.
+         The use of the code automatically implies that you accept all the licenses.
+         See our documentation for more information. 
+         Link: https://pypsa-earth.readthedocs.io/en/latest/introduction.html#licence
+INFO:__main__:Bundles to be downloaded:
+	bundle_cutouts_mainland_africa
+INFO:__main__:Downloading bundle bundle_cutouts_mainland_africa - Host zenodo
+INFO:__main__:Downloading resource 'cutouts' from cloud 'https://sandbox.zenodo.org/records/323567/files/bundle_cutouts_africa.zip?download=1'
+INFO:__main__:Extracting resources
+INFO:__main__:Downloaded resource 'cutouts' from cloud 'https://sandbox.zenodo.org/records/323567/files/bundle_cutouts_africa.zip?download=1'.
+INFO:__main__:Bundle successfully loaded and unzipped:
+	bundle_cutouts_mainland_africa
+INFO:atlite.cutout:Building new cutout cutouts\africa-2013-era5.nc
+ERROR:_helpers:An error happened in module 'C:\\Users\\Mhdella\\anaconda3\\envs\\pypsa-earth\\lib\\site-packages\\atlite\\cutout.py', function '__init__': Arguments 'time' and 'module' must be specified. Spatial bounds must either be passed via argument 'bounds' or 'x' and 'y'.
+Traceback (most recent call last):
+  File "C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\atlite\cutout.py", line 181, in __init__
+    x = cutoutparams.pop("x")
+KeyError: 'x'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\scripts\tmplg_r8h_q.retrieve_databundle_light.py", line 1142, in <module>
+    check_retrieved_cutout_match(snakemake)
+  File "C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\scripts\tmplg_r8h_q.retrieve_databundle_light.py", line 1066, in check_retrieved_cutout_match
+    cutout = atlite.Cutout(snakemake.output[0])
+  File "C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\atlite\cutout.py", line 186, in __init__
+    raise TypeError(
+TypeError: Arguments 'time' and 'module' must be specified. Spatial bounds must either be passed via argument 'bounds' or 'x' and 'y'.

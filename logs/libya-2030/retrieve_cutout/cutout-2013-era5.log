@@ -1,0 +1,14 @@
+WARNING:__main__:DISCLAIMER LICENSES: the use of PyPSA-Earth is conditioned 
+         to the acceptance of its multiple licenses.
+         The use of the code automatically implies that you accept all the licenses.
+         See our documentation for more information. 
+         Link: https://pypsa-earth.readthedocs.io/en/latest/introduction.html#licence
+INFO:__main__:Bundles to be downloaded:
+	bundle_cutouts_mainland_africa
+INFO:__main__:Downloading bundle bundle_cutouts_mainland_africa - Host zenodo
+INFO:__main__:Downloading resource 'cutouts' from cloud 'https://sandbox.zenodo.org/records/323567/files/bundle_cutouts_africa.zip?download=1'
+INFO:__main__:Extracting resources
+INFO:__main__:Downloaded resource 'cutouts' from cloud 'https://sandbox.zenodo.org/records/323567/files/bundle_cutouts_africa.zip?download=1'.
+INFO:__main__:Bundle successfully loaded and unzipped:
+	bundle_cutouts_mainland_africa
+INFO:__main__:Retrieved cutout successfully matches the region

@@ -1,0 +1,37 @@
+WARNING:pypsa.network.io:Importing network from PyPSA version v0.0.0 while current version is v0.35.2. Read the release notes at https://pypsa.readthedocs.io/en/latest/release_notes.html to prepare your network for import.
+INFO:pypsa.network.io:New version 1.2.4 available! (Current: 0.35.2)
+INFO:pypsa.network.io:Imported network 'PyPSA-Earth' has buses, carriers, generators, lines, loads, transformers
+INFO:_helpers:Added year suffixes to carrier names for clustering
+INFO:__main__:Mapping all network lines onto a single 380kV layer
+INFO:__main__:Simplifying connected link components
+INFO:__main__:Removing stubs
+INFO:__main__:clustering preparation (hac): aggregating 0 buses of type solar.
+INFO:__main__:clustering preparation (hac): aggregating 0 buses of type onwind.
+ERROR:_helpers:An error happened in module 'C:\\Users\\Mhdella\\anaconda3\\envs\\pypsa-earth\\lib\\site-packages\\pandas\\core\\indexes\\base.py', function 'get_loc': 'p'
+Traceback (most recent call last):
+  File "C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pandas\core\indexes\base.py", line 3812, in get_loc
+    return self._engine.get_loc(casted_key)
+  File "pandas/_libs/index.pyx", line 167, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 196, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7096, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'p'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\scripts\tmp4h7qdy6v.simplify_network.py", line 1150, in <module>
+    n, busmap_hac = aggregate_to_substations(n, aggregation_strategies, buses_i)
+  File "C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\scripts\tmp4h7qdy6v.simplify_network.py", line 670, in aggregate_to_substations
+    clustering = get_clustering_from_busmap(
+  File "C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pypsa\clustering\spatial.py", line 596, in get_clustering_from_busmap
+    new_static, new_dynamic = aggregateoneport(
+  File "C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pypsa\clustering\spatial.py", line 300, in aggregateoneport
+    data = n.get_switchable_as_dense(c, attr)
+  File "C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pypsa\network\descriptors.py", line 132, in get_switchable_as_dense
+    static = self.static(component)[attr]
+  File "C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pandas\core\frame.py", line 4113, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pandas\core\indexes\base.py", line 3819, in get_loc
+    raise KeyError(key) from err
+KeyError: 'p'

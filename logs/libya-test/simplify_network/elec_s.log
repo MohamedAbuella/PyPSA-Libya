@@ -1,0 +1,11 @@
+INFO:pypsa.io:Imported network elec.nc has buses, carriers, generators, lines, loads, transformers
+INFO:_helpers:Added year suffixes to carrier names for clustering
+INFO:__main__:Mapping all network lines onto a single 380kV layer
+INFO:__main__:Simplifying connected link components
+INFO:__main__:Removing stubs
+INFO:__main__:Dropped 2 buses. A resulted load discrepancy is 1e+00% and 1e+00% for average load and generation capacity, respectively
+INFO:__main__:Merged 5 buses. Load attached to a single bus with discrepancies of 0.0E+00% and 0.0E+00% for load and generation capacity, respectively
+INFO:_helpers:Restored base carrier names
+INFO:pypsa.io:Exported network 'elec_s.nc' contains: carriers, lines, loads, buses, generators
+INFO:pyogrio._io:Created 111 records
+INFO:pyogrio._io:Created 47 records

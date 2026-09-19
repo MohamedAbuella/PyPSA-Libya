@@ -1,0 +1,31 @@
+INFO:pypsa.io:Imported network elec_s_50_ec_lcopt_Co2L-CCL-3h.nc has buses, carriers, generators, global_constraints, lines, loads, storage_units
+INFO:__main__:Adding per carrier generation capacity constraints for individual countries
+INFO:__main__:setting CHP constraints
+INFO:__main__:no h2 temporal constraint set
+INFO:linopy.model: Solve problem using Highs solver
+INFO:linopy.model:Solver logs written to `logs\Libya-peakday_50_CCL\solve_network\elec_s_50_ec_lcopt_Co2L-CCL-3h_solver.log`.
+INFO:linopy.model:Solver options:
+ - threads: 4
+ - solver: ipm
+ - run_crossover: on
+ - small_matrix_value: 1e-6
+ - large_matrix_value: 1e15
+ - primal_feasibility_tolerance: 1e-6
+ - dual_feasibility_tolerance: 1e-6
+ - ipm_optimality_tolerance: 1e-6
+ - parallel: on
+ - random_seed: 123
+INFO:linopy.io: Writing time: 0.22s
+INFO:linopy.solvers:Log file at C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\shadow\tmp40033glo\logs\Libya-peakday_50_CCL\solve_network\elec_s_50_ec_lcopt_Co2L-CCL-3h_solver.log
+INFO:linopy.constants: Optimization successful: 
+Status: ok
+Termination condition: optimal
+Solution: 4607 primals, 10423 duals
+Objective: 7.61e+11
+Solver model: available
+Solver message: Optimal
+
+INFO:pypsa.optimization.optimize:The shadow-prices of the constraints Generator-fix-p-lower, Generator-fix-p-upper, Generator-ext-p-lower, Generator-ext-p-upper, Line-ext-s-lower, Line-ext-s-upper, StorageUnit-ext-p_dispatch-lower, StorageUnit-ext-p_dispatch-upper, StorageUnit-ext-p_store-lower, StorageUnit-ext-p_store-upper, StorageUnit-ext-state_of_charge-lower, StorageUnit-ext-state_of_charge-upper, Kirchhoff-Voltage-Law, StorageUnit-energy_balance, agg_p_nom_min, agg_p_nom_max were not assigned to the network.
+INFO:pypsa.io:Exported network 'elec_s_50_ec_lcopt_Co2L-CCL-3h.nc' contains: buses, loads, lines, generators, carriers, storage_units, global_constraints
+INFO:__main__:Objective function: 760733743331.8577
+INFO:__main__:Objective constant: 2068689962.3445125

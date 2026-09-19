@@ -1,0 +1,112 @@
+Running HiGHS 1.15.1 (git hash: n/a): Copyright (c) 2026 under MIT licence terms
+Includes third-party software components, see THIRD_PARTY_NOTICES.md for full details
+LP linopy-problem-10lvc41s has 22508 rows; 9940 cols; 46866 nonzeros
+Coefficient ranges:
+  Matrix  [1e-02, 2e+03]
+  Cost    [1e+00, 1e+10]
+  Bound   [2e+09, 2e+09]
+  RHS     [2e-01, 3e+06]
+WARNING: Problem has some excessively large costs
+WARNING: Problem has some excessively large column bounds
+WARNING: Problem has some excessively large row bounds
+WARNING:    Consider scaling the objective by 1e-5, or setting the user_objective_scale option to -14
+WARNING:    Consider scaling the    bounds by 1e-4, or setting the user_bound_scale option to -12
+Presolving model
+11797 rows, 9064 cols, 34726 nonzeros 0s
+Dependent equations search running on 2733 equations with time limit of 1000.00s
+Dependent equations search removed 0 rows and 0 nonzeros in 0.00s (limit = 1000.00s)
+11522 rows, 8789 cols, 35324 nonzeros 0s
+Presolve reductions: rows 11522(-10986); columns 8789(-1151); nonzeros 35324(-11542) 
+Solving the presolved LP
+IPX model has 11522 rows, 8789 columns and 35324 nonzeros
+Input
+    Number of variables:                                8789
+    Number of free variables:                           909
+    Number of constraints:                              11522
+    Number of equality constraints:                     2733
+    Number of matrix entries:                           35324
+    Matrix range:                                       [1e-02, 2e+03]
+    RHS range:                                          [2e-01, 1e+06]
+    Objective range:                                    [1e+01, 1e+10]
+    Bounds range:                                       [3e-01, 3e+06]
+Preprocessing
+    Dualized model:                                     no
+    Number of dense columns:                            0
+    Range of scaling factors:                           [3.12e-02, 4.00e+00]
+    Scaled cost norm:                                   1.095e+10
+    Scaled bounds norm:                                 2.61552e+06
+IPX version 1.0
+Interior point solve
+ Iter       primal obj         dual obj       pinf       dinf       gap      time
+   0   -5.38923949e+13  -1.33016664e+17   8.79e-03   9.54e-01  2.00e+00       0.0
+   1   -1.13064933e+15  -5.38676495e+16   1.73e-03   1.83e-01  1.92e+00       0.0
+ Constructing starting basis...
+ Iter       primal obj         dual obj       pinf       dinf       gap      time
+   2   -7.65476193e+14  -2.26477229e+16   3.56e-04   3.89e-02  1.87e+00       0.2
+   3   -1.48907378e+14  -7.50589370e+15   8.86e-05   7.76e-03  1.92e+00       0.2
+   4    1.34889451e+14  -3.15260908e+15   1.10e-05   2.32e-03  2.18e+00       0.3
+   5    7.72606600e+13  -1.24980589e+15   2.74e-06   8.42e-04  2.26e+00       0.3
+   6    5.44479518e+13  -5.13693058e+14   8.64e-07   1.88e-04  2.47e+00       0.3
+   7    3.03846583e+13  -2.15768271e+14   3.72e-07   6.39e-05  2.66e+00       0.3
+   8    2.44579220e+13  -1.45361920e+14   2.77e-07   3.37e-05  2.81e+00       0.3
+   9    8.08697945e+12  -3.17671052e+13   6.63e-08   6.34e-06  3.37e+00       0.4
+  10    2.42389308e+12  -6.77507116e+12   7.21e-09   1.45e-06  4.23e+00       0.4
+  11    1.62801572e+12   3.28558653e+11   3.61e-10   5.77e-08  1.33e+00       0.4
+  12    1.32823426e+12   4.69536411e+11   1.14e-10   3.92e-08  9.55e-01       0.4
+  13    1.24696259e+12   5.28450835e+11   3.42e-11   2.60e-08  8.09e-01       0.4
+  14    9.82178402e+11   6.75851556e+11   1.03e-11   9.74e-09  3.70e-01       0.5
+  15    8.53657709e+11   7.30064264e+11   2.07e-12   2.69e-09  1.56e-01       0.5
+  16    8.02070504e+11   7.47884091e+11   6.31e-13   9.48e-10  6.99e-02       0.5
+  17    7.89701829e+11   7.52996502e+11   3.58e-13   4.61e-10  4.76e-02       0.5
+  18    7.74520555e+11   7.56679771e+11   8.76e-14   1.72e-10  2.33e-02       0.5
+  19    7.68339220e+11   7.58156254e+11   1.55e-14   8.40e-11  1.33e-02       0.5
+  20    7.64548906e+11   7.59341820e+11   2.40e-15   3.31e-11  6.83e-03       0.6
+  21    7.64020640e+11   7.59732140e+11   1.51e-15   1.56e-11  5.63e-03       0.6
+  22    7.63671156e+11   7.59761367e+11   9.79e-16   1.46e-11  5.13e-03       0.6
+  23    7.62215776e+11   7.60377616e+11   4.45e-16   1.70e-12  2.41e-03       0.6
+  24    7.62020513e+11   7.60378278e+11   3.56e-16   1.64e-12  2.16e-03       0.6
+  25    7.61548359e+11   7.60412407e+11   2.67e-16   1.19e-12  1.49e-03       0.6
+  26    7.60990264e+11   7.60479751e+11   8.90e-17   6.10e-13  6.71e-04       0.6
+  27    7.60843536e+11   7.60508707e+11   8.90e-17   3.96e-13  4.40e-04       0.7
+  28    7.60751403e+11   7.60537266e+11   8.90e-17   1.74e-13  2.82e-04       0.7
+  29    7.60699048e+11   7.60572694e+11   8.90e-17   5.65e-14  1.66e-04       0.7
+  30    7.60668415e+11   7.60575834e+11   1.78e-16   3.45e-14  1.22e-04       0.7
+  31    7.60625037e+11   7.60586316e+11   1.78e-16   1.46e-14  5.09e-05       0.8
+  32    7.60608123e+11   7.60592731e+11   3.12e-16   3.55e-15  2.02e-05       0.8
+  33    7.60601256e+11   7.60595793e+11   3.56e-16   6.97e-16  7.18e-06       0.8
+  34    7.60599247e+11   7.60596436e+11   8.90e-17   2.36e-16  3.70e-06       0.8
+  35    7.60597488e+11   7.60596639e+11   1.34e-16   1.80e-16  1.12e-06       0.8
+  36*   7.60597088e+11   7.60596750e+11   2.23e-16   1.74e-16  4.44e-07       0.8
+  37*   7.60596876e+11   7.60596787e+11   1.78e-16   1.74e-16  1.17e-07       0.9
+  38*   7.60596817e+11   7.60596798e+11   1.34e-16   1.74e-16  2.45e-08       0.9
+  39*   7.60596804e+11   7.60596802e+11   1.78e-16   1.74e-16  2.18e-09       0.9
+  40*   7.60596803e+11   7.60596803e+11   1.34e-16   1.74e-16  3.08e-10       0.9
+  41*   7.60596803e+11   7.60596803e+11   1.78e-16   1.74e-16  5.82e-11       0.9
+Running crossover as requested
+    Primal residual before push phase:                  1.86e-02
+    Dual residual before push phase:                    2.32e-02
+    Number of dual pushes required:                     7918
+    Number of primal pushes required:                   7
+Summary
+    Runtime:                                            0.93s
+    Status interior point solve:                        optimal
+    Status crossover:                                   optimal
+    objective value:                                    7.60596803e+11
+    interior solution primal residual (abs/rel):        4.66e-10 / 1.78e-16
+    interior solution dual residual (abs/rel):          5.04e-06 / 4.60e-16
+    interior solution objective gap (abs/rel):          4.43e+01 / 5.82e-11
+    basic solution primal infeasibility:                0.00e+00
+    basic solution dual infeasibility:                  0.00e+00
+Ipx: IPM       optimal
+Ipx: Crossover optimal
+
+Performed postsolve
+Solving the original LP from the solution after postsolve
+
+Model name          : linopy-problem-10lvc41s
+Model status        : Optimal
+IPM       iterations: 41
+Crossover iterations: 3541
+Objective value     :  7.6059680291e+11
+P-D objective error :  2.2870224362e-14
+HiGHS run time      :          0.94

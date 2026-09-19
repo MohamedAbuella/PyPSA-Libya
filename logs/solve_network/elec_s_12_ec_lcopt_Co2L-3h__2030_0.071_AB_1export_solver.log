@@ -1,0 +1,74 @@
+Running HiGHS 1.15.1 (git hash: n/a): Copyright (c) 2026 under MIT licence terms
+Includes third-party software components, see THIRD_PARTY_NOTICES.md for full details
+LP linopy-problem-ut0jm5um has 88653 rows; 43182 cols; 184841 nonzeros
+Assessing costs and bounds after applying user_bound_scale option value of -14
+Coefficient ranges:
+  Matrix  [5e-03, 6e+02]
+  Cost    [1e+00, 2e+07]
+  Bound   [1e+05, 1e+05]
+  RHS     [6e-05, 9e+05]
+WARNING: User-scaled problem has some excessively large costs
+WARNING: User-scaled problem has some excessively small row bounds
+WARNING:    Consider scaling the objective by 1e-2, or setting the user_objective_scale option to -4
+Presolving model
+32438 rows, 28485 cols, 99835 nonzeros 0s
+24498 rows, 21217 cols, 95163 nonzeros 0s
+Dependent equations search running on 4191 equations with time limit of 1000.00s
+Dependent equations search removed 0 rows and 0 nonzeros in 0.00s (limit = 1000.00s)
+23990 rows, 19307 cols, 91353 nonzeros 0s
+Presolve reductions: rows 23990(-64663); columns 19307(-23875); nonzeros 91353(-93488) 
+Solving the presolved LP
+IPX model has 23990 rows, 19307 columns and 91353 nonzeros
+Input
+    Number of variables:                                19307
+    Number of free variables:                           2169
+    Number of constraints:                              23990
+    Number of equality constraints:                     4191
+    Number of matrix entries:                           91353
+    Matrix range:                                       [4e-05, 6e+02]
+    RHS range:                                          [1e-04, 1e+04]
+    Objective range:                                    [7e-04, 2e+07]
+    Bounds range:                                       [6e-05, 9e+05]
+Preprocessing
+    Dualized model:                                     no
+    Number of dense columns:                            0
+    Range of scaling factors:                           [6.25e-02, 1.28e+02]
+    Scaled cost norm:                                   1.56429e+07
+    Scaled bounds norm:                                 896254
+IPX version 1.0
+Interior point solve
+ Iter       primal obj         dual obj       pinf       dinf       gap      time
+   0   -1.20125499e+08  -1.49379327e+13   1.97e-03   8.96e-01  2.00e+00       0.2
+   1   -6.46594865e+11  -4.40913936e+12   1.48e-03   2.64e-01  1.49e+00       0.2
+   2   -6.61846694e+10  -1.73323672e+12   6.84e-04   2.35e-01  1.85e+00       0.3
+ Constructing starting basis...
+ Iter       primal obj         dual obj       pinf       dinf       gap      time
+   3    2.78053842e+11  -9.51748144e+11   3.44e-04   1.03e-01  3.65e+00       0.8
+   4    2.96465717e+11  -6.51028040e+11   2.17e-04   5.10e-02  5.34e+00       0.8
+   5    2.02325625e+11  -4.92984045e+11   7.90e-05   2.80e-02  4.78e+00       0.9
+   6    1.32660581e+11  -3.53920931e+11   2.33e-05   1.07e-02  4.40e+00       1.0
+   7    9.45977738e+10  -2.53872817e+11   6.05e-06   3.64e-03  4.38e+00       1.2
+   8    7.51095466e+10  -1.83433774e+11   1.88e-06   1.84e-03  4.77e+00       1.5
+   9    7.38418538e+10  -1.28512713e+11   9.34e-07   3.29e-04  7.40e+00       1.7
+  10    4.36895288e+10  -3.93813645e+10   2.76e-07   6.57e-05  3.86e+01       1.9
+  11    3.09457227e+10  -3.58381055e+10   9.65e-08   5.86e-05  2.73e+01       2.0
+  12    9.52627770e+09  -1.65111166e+10   7.38e-09   2.30e-05  7.46e+00       2.0
+  13    5.13773523e+09  -6.65737786e+09   2.91e-09   8.65e-06  1.55e+01       2.1
+  14    4.48442723e+09  -3.08145300e+09   1.86e-09   2.91e-06  1.08e+01       2.2
+  15    3.84591262e+09   3.68212453e+09   1.51e-09   1.38e-06  4.35e-02       2.3
+  16    3.63995355e+09   4.03118148e+11   1.40e-09   1.42e-07  1.96e+00       2.4
+  17    3.51005279e+09   1.39992037e+14   1.35e-09   5.23e-08  2.00e+00       2.5
+  18    3.49898068e+09   3.35513803e+18   1.34e-09   3.27e-05  2.00e+00       2.5
+  19    3.49743185e+09   1.08445125e+24   1.34e-09   4.29e+00  2.00e+00       2.5
+Summary
+    Runtime:                                            2.53s
+    Status interior point solve:                        primal infeas
+    Status crossover:                                   not run
+WARNING: Ipx: IPM       primal infeasible
+Model name          : linopy-problem-ut0jm5um
+Model status        : Infeasible
+IPM       iterations: 19
+Objective value     :  0.0000000000e+00
+HiGHS run time      :          2.53
+WARNING: Solution optimality conditions: After removing user scaling
+After solving the user-scaled model, the unscaled solution has objective value 0

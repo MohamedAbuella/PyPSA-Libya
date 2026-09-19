@@ -1,0 +1,14 @@
+INFO:pypsa.io:Imported network elec_s.nc has buses, carriers, generators, loads
+INFO:_helpers:Added year suffixes to carrier names for clustering
+WARNING:__main__:Keyword argument feature is only valid for algorithm `hac`. Given feature `solar+onwind` will be ignored.
+ERROR:_helpers:An error happened in module 'C:\\Users\\Mhdella\\Documents\\pypsa-libya\\scripts\\cluster_network.py', function 'distribute_clusters': Number of clusters must be 110 <= n_clusters <= 110 for this selection of countries.
+Traceback (most recent call last):
+  File "C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\scripts\tmp4ko1_e75.cluster_network.py", line 869, in <module>
+    clustering = clustering_for_n_clusters(
+  File "C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\scripts\tmp4ko1_e75.cluster_network.py", line 557, in clustering_for_n_clusters
+    busmap = busmap_for_n_clusters(
+  File "C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\scripts\tmp4ko1_e75.cluster_network.py", line 460, in busmap_for_n_clusters
+    n_clusters = distribute_clusters(
+  File "C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\scripts\tmp4ko1_e75.cluster_network.py", line 324, in distribute_clusters
+    n_clusters >= len(N) and n_clusters <= N.sum()
+AssertionError: Number of clusters must be 110 <= n_clusters <= 110 for this selection of countries.

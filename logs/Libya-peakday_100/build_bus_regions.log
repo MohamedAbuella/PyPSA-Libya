@@ -1,0 +1,3 @@
+INFO:pypsa.io:Imported network base.nc has buses, lines, transformers
+INFO:pyogrio._io:Created 22 records
+INFO:pyogrio._io:Created 68 records
