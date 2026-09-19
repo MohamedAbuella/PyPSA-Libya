@@ -1,0 +1,92 @@
+WARNING:pypsa.io:The following Load have buses which are not defined:
+Index(['LY0 0 low-temperature heat for industry',
+       'LY0 1 low-temperature heat for industry',
+       'LY0 10 low-temperature heat for industry',
+       'LY0 2 low-temperature heat for industry',
+       'LY0 3 low-temperature heat for industry',
+       'LY0 4 low-temperature heat for industry',
+       'LY0 5 low-temperature heat for industry',
+       'LY0 6 low-temperature heat for industry',
+       'LY0 7 low-temperature heat for industry',
+       'LY0 8 low-temperature heat for industry',
+       'LY0 9 low-temperature heat for industry',
+       'LY1 0 low-temperature heat for industry'],
+      dtype='object', name='name')
+INFO:pypsa.io:Imported network elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_1export.nc has buses, carriers, generators, global_constraints, lines, links, loads, stores
+WARNING:pypsa.consistency:Encountered nan's in static data for columns ['efficiency3', 'efficiency2'] of component 'Link'.
+WARNING:pypsa.consistency:The following buses have carriers which are not defined:
+Index(['H2 export bus'], dtype='object', name='Bus')
+WARNING:pypsa.consistency:Encountered nan's in static data for columns ['y', 'x'] of component 'Bus'.
+WARNING:pypsa.consistency:The following loads have bus which are not defined:
+Index(['LY0 0 low-temperature heat for industry',
+       'LY0 1 low-temperature heat for industry',
+       'LY0 10 low-temperature heat for industry',
+       'LY0 2 low-temperature heat for industry',
+       'LY0 3 low-temperature heat for industry',
+       'LY0 4 low-temperature heat for industry',
+       'LY0 5 low-temperature heat for industry',
+       'LY0 6 low-temperature heat for industry',
+       'LY0 7 low-temperature heat for industry',
+       'LY0 8 low-temperature heat for industry',
+       'LY0 9 low-temperature heat for industry',
+       'LY1 0 low-temperature heat for industry'],
+      dtype='object', name='Load')
+WARNING:pypsa.consistency:The following loads have carriers which are not defined:
+Index(['H2 export load'], dtype='object', name='Load')
+WARNING:pypsa.consistency:Encountered nan's in static data for columns ['efficiency3', 'efficiency2'] of component 'Link'.
+WARNING:pypsa.consistency:The following buses have carriers which are not defined:
+Index(['H2 export bus'], dtype='object', name='Bus')
+WARNING:pypsa.consistency:Encountered nan's in static data for columns ['y', 'x'] of component 'Bus'.
+WARNING:pypsa.consistency:The following loads have bus which are not defined:
+Index(['LY0 0 low-temperature heat for industry',
+       'LY0 1 low-temperature heat for industry',
+       'LY0 10 low-temperature heat for industry',
+       'LY0 2 low-temperature heat for industry',
+       'LY0 3 low-temperature heat for industry',
+       'LY0 4 low-temperature heat for industry',
+       'LY0 5 low-temperature heat for industry',
+       'LY0 6 low-temperature heat for industry',
+       'LY0 7 low-temperature heat for industry',
+       'LY0 8 low-temperature heat for industry',
+       'LY0 9 low-temperature heat for industry',
+       'LY1 0 low-temperature heat for industry'],
+      dtype='object', name='Load')
+WARNING:pypsa.consistency:The following loads have carriers which are not defined:
+Index(['H2 export load'], dtype='object', name='Load')
+INFO:__main__:setting CHP constraints
+INFO:__main__:setting h2 export to yearly matching constraint without additionality
+INFO:linopy.model: Solve problem using Highs solver
+INFO:linopy.model:Solver logs written to `logs/solve_network/elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_1export_solver.log`.
+INFO:linopy.model:Solver options:
+ - threads: 12
+ - solver: ipm
+ - run_crossover: off
+ - small_matrix_value: 1e-6
+ - large_matrix_value: 1e15
+ - primal_feasibility_tolerance: 1e-3
+ - dual_feasibility_tolerance: 1e-3
+ - ipm_optimality_tolerance: 1e-3
+ - parallel: on
+ - random_seed: 123
+ - user_bound_scale: -14
+INFO:linopy.io:Writing objective.
+INFO:linopy.io: Writing time: 0.32s
+INFO:linopy.solvers:Log file at C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\shadow\tmpo1fdtdrs\logs\solve_network\elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_1export_solver.log
+WARNING:linopy.constants:Optimization potentially failed: 
+Status: warning
+Termination condition: infeasible
+Solution: 0 primals, 0 duals
+Objective: nan
+Solver model: available
+Solver message: Infeasible
+
+WARNING:__main__:Solving status 'warning' with termination condition 'infeasible'
+ERROR:_helpers:An error happened in module 'C:\\Users\\Mhdella\\anaconda3\\envs\\pypsa-earth\\lib\\site-packages\\linopy\\model.py', function 'compute_infeasibilities': Computing infeasibilities is only supported for Gurobi and Xpress solvers. Current solver model type: Highs
+Traceback (most recent call last):
+  File "C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\shadow\tmpo1fdtdrs\.snakemake\scripts\tmp3keelg20.solve_network.py", line 1264, in <module>
+    n = solve_network(
+  File "C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\shadow\tmpo1fdtdrs\.snakemake\scripts\tmp3keelg20.solve_network.py", line 1202, in solve_network
+    labels = n.model.compute_infeasibilities()
+  File "C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\linopy\model.py", line 1355, in compute_infeasibilities
+    raise NotImplementedError(
+NotImplementedError: Computing infeasibilities is only supported for Gurobi and Xpress solvers. Current solver model type: Highs

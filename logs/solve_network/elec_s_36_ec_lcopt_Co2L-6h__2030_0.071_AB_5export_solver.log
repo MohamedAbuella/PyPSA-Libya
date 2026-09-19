@@ -1,0 +1,137 @@
+Running HiGHS 1.15.1 (git hash: n/a): Copyright (c) 2026 under MIT licence terms
+Includes third-party software components, see THIRD_PARTY_NOTICES.md for full details
+LP linopy-problem-_d8gih2d has 608246 rows; 294963 cols; 1290366 nonzeros
+Coefficient ranges:
+  Matrix  [5e-03, 5e+02]
+  Cost    [6e-01, 7e+06]
+  Bound   [2e+09, 2e+09]
+  RHS     [2e-01, 1e+12]
+WARNING: Problem has some excessively large costs
+WARNING: Problem has some excessively large column bounds
+WARNING: Problem has some excessively large row bounds
+WARNING:    Consider scaling the objective by 1e-1, or setting the user_objective_scale option to -3
+WARNING:    Consider scaling the    bounds by 1e-6, or setting the user_bound_scale option to -20
+Presolving model
+237962 rows, 199521 cols, 734814 nonzeros 0s
+186697 rows, 152720 cols, 699252 nonzeros 0s
+Dependent equations search running on 28423 equations with time limit of 1000.00s
+Dependent equations search removed 0 rows and 0 nonzeros in 0.00s (limit = 1000.00s)
+182378 rows, 139339 cols, 672544 nonzeros 1s
+Presolve reductions: rows 182378(-425868); columns 139339(-155624); nonzeros 672544(-617822) 
+Solving the presolved LP
+IPX model has 182378 rows, 139339 columns and 672544 nonzeros
+Input
+    Number of variables:                                139339
+    Number of free variables:                           22970
+    Number of constraints:                              182378
+    Number of equality constraints:                     28423
+    Number of matrix entries:                           672544
+    Matrix range:                                       [9e-05, 5e+02]
+    RHS range:                                          [2e-01, 2e+08]
+    Objective range:                                    [4e-04, 7e+06]
+    Bounds range:                                       [1e+00, 1e+12]
+Preprocessing
+    Dualized model:                                     no
+    Number of dense columns:                            0
+    Range of scaling factors:                           [6.25e-02, 6.40e+01]
+    Scaled cost norm:                                   7.06452e+06
+    Scaled bounds norm:                                 1.5625e+10
+IPX version 1.0
+Interior point solve
+ Iter       primal obj         dual obj       pinf       dinf       gap      time
+   0   -2.81048642e+12  -2.16081312e+17   7.21e-04   9.19e-01  2.00e+00       1.6
+ Constructing starting basis...
+ Iter       primal obj         dual obj       pinf       dinf       gap      time
+   1   -2.28493080e+15  -2.27394783e+17   6.69e-04   2.87e-01  1.96e+00       5.2
+   2    9.18280143e+15  -2.51203839e+17   3.69e-04   8.95e-02  2.15e+00       6.8
+   3    5.79801059e+15  -2.20335146e+17   1.40e-04   3.51e-02  2.11e+00       9.4
+   4    3.03907536e+15  -1.48469095e+17   6.95e-05   1.51e-02  2.08e+00      11.4
+   5    2.20315586e+15  -1.12781895e+17   3.11e-05   9.59e-03  2.08e+00      13.0
+   6    1.95945358e+15  -6.44702344e+16   1.27e-05   4.35e-03  2.13e+00      14.8
+   7    1.96051321e+15  -3.27706988e+16   3.25e-06   1.78e-03  2.25e+00      16.1
+   8    1.84497538e+15  -1.25525858e+16   3.66e-07   5.74e-04  2.69e+00      17.0
+   9    1.51545563e+15  -8.47438293e+15   4.44e-08   3.71e-04  2.87e+00      17.8
+  10    1.50880763e+15  -7.40996859e+15   3.49e-08   3.07e-04  3.02e+00      18.6
+  11    1.22768168e+15  -4.07884904e+15   2.84e-09   1.50e-04  3.72e+00      19.5
+  12    1.18276639e+15  -3.56566825e+15   2.42e-09   1.28e-04  3.99e+00      20.3
+  13    1.15901470e+15  -3.30954987e+15   1.92e-09   1.15e-04  4.16e+00      21.1
+  14    1.20431264e+15  -2.45853126e+15   2.32e-10   5.82e-05  5.84e+00      21.9
+  15    5.54880899e+14  -1.45880739e+14   2.44e-16   8.62e-06  3.43e+00      22.8
+  16    4.87632916e+14  -1.73766036e+14   2.44e-16   7.03e-06  4.21e+00      24.2
+  17    2.40789651e+14  -1.26704813e+14   1.53e-16   2.04e-06  6.44e+00      25.3
+  18    6.74145844e+13  -2.68367673e+13   2.86e-16   4.08e-07  4.65e+00      28.1
+  19    5.93367551e+13  -1.73784594e+13   2.45e-16   2.41e-07  3.66e+00      30.7
+  20    3.79588824e+13  -8.73412624e+12   1.37e-16   9.49e-08  3.20e+00      32.9
+  21    1.46297416e+13  -4.92852782e+12   4.40e-17   4.98e-08  4.03e+00      35.8
+  22    1.15494007e+13  -3.04152232e+12   1.22e-16   2.74e-08  3.43e+00      37.6
+  23    8.95753232e+12  -2.02024772e+12   1.22e-16   1.72e-08  3.16e+00      39.3
+  24    7.15843176e+12  -1.32027363e+12   1.22e-16   1.08e-08  2.90e+00      41.2
+  25    6.01213386e+12  -9.63713418e+11   6.10e-17   7.72e-09  2.76e+00      43.1
+  26    4.76119286e+12  -6.39768843e+11   6.10e-17   4.91e-09  2.62e+00      45.0
+  27    3.70561604e+12  -4.46955831e+11   6.10e-17   3.37e-09  2.55e+00      47.0
+  28    1.84511626e+12  -3.20812776e+11   4.80e-18   2.41e-09  2.84e+00      49.1
+  29    1.21775560e+12  -2.07065352e+11   1.22e-16   1.53e-09  2.82e+00      51.9
+  30    6.97952115e+11  -1.24820244e+11   1.22e-16   9.02e-10  2.87e+00      55.0
+  31    4.70149256e+11  -8.79756877e+10   5.72e-18   6.25e-10  2.92e+00      57.4
+  32    1.01581919e+11  -5.67953975e+10   1.22e-16   3.94e-10  7.07e+00      59.6
+  33    5.66408202e+10  -2.89641056e+10   6.10e-17   1.59e-10  6.19e+00      65.6
+  34    3.62053982e+10  -1.71995030e+10   1.53e-17   7.21e-11  5.62e+00      69.6
+  35    3.21549942e+10  -1.53926631e+10   2.29e-17   5.95e-11  5.67e+00      72.6
+  36    2.09704466e+10  -7.19759482e+09   6.10e-17   2.21e-11  4.09e+00      75.8
+  37    1.91191825e+10  -6.02816132e+09   6.10e-17   1.53e-11  3.84e+00      81.2
+  38    1.09660621e+10  -2.91213574e+09   6.10e-17   5.30e-12  3.45e+00      85.0
+  39    1.01910555e+10  -2.81546766e+09   1.22e-16   4.79e-12  3.53e+00      92.6
+  40    8.81273138e+09  -2.12199536e+09   4.58e-17   2.94e-12  3.27e+00      95.9
+  41    5.44475994e+09  -9.53647822e+08   6.10e-17   1.23e-12  2.85e+00      99.0
+  42    4.99745020e+09  -7.01893273e+08   6.10e-17   7.94e-13  2.65e+00     102.2
+  43    3.14626835e+09  -3.54017673e+07   9.16e-17   2.28e-13  2.05e+00     105.3
+  44    2.23355495e+09   1.77855769e+08   2.44e-16   8.82e-14  1.70e+00     108.2
+  45    2.02456232e+09   2.83799264e+08   3.05e-16   5.82e-14  1.51e+00     111.8
+  46    1.36398837e+09   4.86557773e+08   2.44e-16   2.66e-14  9.48e-01     116.4
+  47    1.17270269e+09   5.23935834e+08   6.10e-16   1.84e-14  7.65e-01     119.8
+  48    1.11504060e+09   6.07610300e+08   7.32e-16   5.93e-15  5.89e-01     123.1
+  49    9.25215375e+08   6.39360085e+08   7.32e-16   3.51e-15  3.65e-01     126.5
+  50    8.87727882e+08   6.53039386e+08   9.77e-16   2.40e-15  3.05e-01     130.4
+  51    8.25875417e+08   6.71225512e+08   9.77e-16   1.55e-15  2.07e-01     133.1
+  52    8.06113906e+08   6.81574354e+08   9.77e-16   1.12e-15  1.67e-01     136.6
+  53    7.84044251e+08   6.91153528e+08   1.46e-15   7.27e-16  1.26e-01     139.8
+  54    7.58587094e+08   6.98554784e+08   1.95e-15   9.37e-16  8.24e-02     142.7
+  55    7.44235137e+08   7.02033426e+08   1.95e-15   5.58e-16  5.84e-02     146.7
+  56    7.28928845e+08   7.03584951e+08   1.46e-15   5.54e-16  3.54e-02     149.7
+  57    7.24294724e+08   7.04042052e+08   1.95e-15   6.82e-16  2.84e-02     152.6
+  58    7.23584943e+08   7.04194196e+08   1.95e-15   7.11e-16  2.72e-02     155.6
+  59    7.21097212e+08   7.04689237e+08   1.95e-15   5.87e-16  2.30e-02     158.6
+  60    7.13816987e+08   7.05184117e+08   1.95e-15   6.49e-16  1.22e-02     161.6
+  61    7.13814500e+08   7.05196184e+08   1.95e-15   4.80e-16  1.21e-02     164.8
+  62    7.11514318e+08   7.06245039e+08   1.95e-15   9.52e-16  7.43e-03     167.4
+  63    7.09216778e+08   7.06922322e+08   1.46e-15   5.75e-16  3.24e-03     170.5
+  64    7.08408747e+08   7.07067168e+08   1.46e-15   5.25e-16  1.90e-03     174.7
+  65    7.07913789e+08   7.07137352e+08   1.46e-15   5.03e-16  1.10e-03     177.6
+  66*   7.07700994e+08   7.07174696e+08   1.95e-15   6.92e-16  7.44e-04     180.9
+Summary
+    Runtime:                                            180.92s
+    Status interior point solve:                        optimal
+    Status crossover:                                   not run
+    objective value:                                    7.07700994e+08
+    interior solution primal residual (abs/rel):        1.22e-04 / 1.22e-16
+    interior solution dual residual (abs/rel):          4.89e-09 / 6.92e-16
+    interior solution objective gap (abs/rel):          5.20e+05 / 7.36e-04
+Ipx: IPM       optimal
+WARNING: Solution optimality conditions: Before postsolve
+num/max      0 /        0 (relative      0 /        0) primal infeasibilities     (tolerance = 1e-03)
+num/max      0 /        0 (relative      0 /        0)   dual infeasibilities     (tolerance = 1e-03)
+num/max   4421 / 2.78e-05 (relative      0 / 1.57e-11) primal residual errors     (tolerance = 1e-07)
+num/max      0 / 2.14e-09 (relative      0 / 3.14e-14)   dual residual errors     (tolerance = 1e-07)
+                                         1 / 0.000359  P-D objective error        (tolerance = 1e-07)
+WARNING: LP solver claims optimality, but with
+WARNING:                     0.000359 relative P-D objective error    (tolerance = 1e-07)
+WARNING: Model status changed from "Optimal" to "Unknown" since relative violation of tolerances is 3.59e+03
+
+Performed postsolve
+
+Model name          : linopy-problem-_d8gih2d
+Model status        : Unknown
+IPM       iterations: 66
+Objective value     :  7.0770099422e+08
+P-D objective error :  3.5926242812e-04
+HiGHS run time      :        181.00

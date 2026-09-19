@@ -1,0 +1,402 @@
+Running HiGHS 1.15.1 (git hash: n/a): Copyright (c) 2026 under MIT licence terms
+Includes third-party software components, see THIRD_PARTY_NOTICES.md for full details
+LP linopy-problem-t20ok85h has 4736772 rows; 2298518 cols; 10029554 nonzeros
+Assessing costs and bounds after applying user_bound_scale option value of -14
+Coefficient ranges:
+  Matrix  [5e-03, 6e+02]
+  Cost    [3e-02, 3e+05]
+  Bound   [1e+05, 1e+05]
+  RHS     [6e-05, 9e+05]
+WARNING: User-scaled problem has some excessively small row bounds
+Presolving model
+1762470 rows, 1540862 cols, 5554694 nonzeros 4s
+1346460 rows, 1159892 cols, 5070326 nonzeros 7s
+Dependent equations search running on 217791 equations with time limit of 1000.00s
+Dependent equations search removed 0 rows and 0 nonzeros in 0.04s (limit = 1000.00s)
+1320367 rows, 1061031 cols, 4945380 nonzeros 12s
+Presolve reductions: rows 1320367(-3416405); columns 1061031(-1237487); nonzeros 4945380(-5084174) 
+Solving the presolved LP
+IPX model has 1320367 rows, 1061031 columns and 4945380 nonzeros
+Input
+    Number of variables:                                1061031
+    Number of free variables:                           112439
+    Number of constraints:                              1320367
+    Number of equality constraints:                     217791
+    Number of matrix entries:                           4945380
+    Matrix range:                                       [2e-03, 6e+02]
+    RHS range:                                          [1e-04, 1e+04]
+    Objective range:                                    [3e-04, 3e+05]
+    Bounds range:                                       [6e-05, 9e+05]
+Preprocessing
+    Dualized model:                                     no
+    Number of dense columns:                            315
+    Range of scaling factors:                           [6.25e-02, 2.00e+00]
+    Scaled cost norm:                                   301107
+    Scaled bounds norm:                                 896254
+IPX version 1.0
+Interior point solve
+ Iter       primal obj         dual obj       pinf       dinf       gap      time
+   0    5.28127992e+07  -3.27623363e+11   3.43e-03   1.02e+00  2.00e+00      21.1
+   1   -7.05601401e+09  -1.86072661e+11   3.42e-03   5.11e-01  1.85e+00      56.2
+ Constructing starting basis...
+ Iter       primal obj         dual obj       pinf       dinf       gap      time
+    Start  factorization   9: nonzeros in basis =   2108654                 160.5
+    Start  factorization  15: nonzeros in basis =   2147384                 233.7
+    Start  factorization  20: nonzeros in basis =   2167255                 306.5
+    Start  factorization  25: nonzeros in basis =   2193447                 382.2
+    Start  factorization  29: nonzeros in basis =   2203267                 455.0
+   2   -2.31633933e+11  -1.41769328e+11   3.06e-03   2.13e-01  4.81e-01     560.4
+    Start  factorization  36: nonzeros in basis =   2203598                 622.3
+    Start  factorization  40: nonzeros in basis =   2212205                 688.0
+    Start  factorization  44: nonzeros in basis =   2217023                 755.8
+    Start  factorization  50: nonzeros in basis =   2250297                 823.9
+    Start  factorization  55: nonzeros in basis =   2281884                 892.7
+   3    2.94745185e+11  -1.51700064e+11   2.16e-03   1.20e-01  6.24e+00     946.3
+    Start  factorization  62: nonzeros in basis =   2406580                1023.2
+   4    5.31030440e+11  -1.68238608e+11   9.98e-04   8.93e-02  3.85e+00    1107.4
+    Start  factorization  67: nonzeros in basis =   2488386                1179.9
+   5    5.58584706e+11  -1.68885600e+11   2.96e-04   2.39e-02  3.73e+00    1296.1
+    Start  factorization  74: nonzeros in basis =   2525502                1366.2
+   6    5.64290206e+11  -2.61891395e+11   2.84e-04   1.03e-02  5.46e+00    1435.2
+   7    5.71898378e+11  -2.26844284e+11   5.57e-05   4.64e-03  4.63e+00    1511.2
+   8    5.45494449e+11  -1.69885740e+11   2.65e-06   1.37e-03  3.81e+00    1592.7
+   9    4.64717016e+11  -8.29231854e+10   5.13e-07   4.06e-04  2.87e+00    1680.5
+    Start  factorization  80: nonzeros in basis =   2678204                1759.1
+  10    4.04117513e+11  -8.15505542e+10   2.28e-07   3.75e-04  3.01e+00    1846.3
+    Start  factorization  83: nonzeros in basis =   2723515                1907.2
+  11    3.83348338e+11  -7.80001559e+10   1.58e-07   1.84e-04  3.02e+00    2147.5
+    Start  factorization  88: nonzeros in basis =   2725959                2226.4
+  12    2.27015491e+11  -7.06410916e+10   2.92e-08   1.53e-04  3.81e+00    2396.9
+    Start  factorization  90: nonzeros in basis =   2727373                2462.3
+  13    1.54349331e+11  -3.11653889e+10   1.15e-08   3.88e-05  3.01e+00    2612.0
+    Start  factorization  92: nonzeros in basis =   2732977                2685.7
+    Start  factorization  94: nonzeros in basis =   2732546                2752.0
+    Start  factorization  96: nonzeros in basis =   2743100                2836.2
+    Start  factorization  98: nonzeros in basis =   2753695                2928.4
+    Start  factorization 100: nonzeros in basis =   2764388                3012.6
+    Start  factorization 102: nonzeros in basis =   2775810                3104.9
+    Start  factorization 104: nonzeros in basis =   2786510                3197.3
+    Start  factorization 106: nonzeros in basis =   2800070                3296.6
+    Start  factorization 107: nonzeros in basis =   2813059                3370.5
+    Start  factorization 109: nonzeros in basis =   2819230                3436.2
+  14    5.34662951e+10  -1.28736420e+10   2.03e-09   1.21e-05  3.27e+00    3620.7
+    Start  factorization 113: nonzeros in basis =   2824835                3702.8
+    Start  factorization 115: nonzeros in basis =   2831018                3779.2
+    Start  factorization 118: nonzeros in basis =   2845918                3861.2
+    Start  factorization 121: nonzeros in basis =   2848512                3938.3
+    Start  factorization 123: nonzeros in basis =   2845627                4021.2
+    Start  factorization 125: nonzeros in basis =   2842755                4102.4
+    Start  factorization 127: nonzeros in basis =   2839753                4181.5
+    Start  factorization 129: nonzeros in basis =   2836537                4271.5
+    Start  factorization 131: nonzeros in basis =   2833627                4348.2
+    Start  factorization 133: nonzeros in basis =   2830512                4422.3
+    Start  factorization 135: nonzeros in basis =   2831129                4487.9
+    Start  factorization 137: nonzeros in basis =   2831550                4563.4
+    Start  factorization 139: nonzeros in basis =   2833149                4627.5
+    Start  factorization 142: nonzeros in basis =   2838570                4712.1
+    Start  factorization 145: nonzeros in basis =   2844532                4795.3
+    Start  factorization 147: nonzeros in basis =   2847059                4860.9
+    Start  factorization 149: nonzeros in basis =   2849717                4923.8
+    Start  factorization 151: nonzeros in basis =   2851447                4985.2
+    Start  factorization 153: nonzeros in basis =   2852405                5051.1
+    Start  factorization 155: nonzeros in basis =   2852283                5120.8
+    Start  factorization 157: nonzeros in basis =   2852352                5193.1
+    Start  factorization 159: nonzeros in basis =   2854333                5254.3
+    Start  factorization 161: nonzeros in basis =   2853806                5317.4
+    Start  factorization 163: nonzeros in basis =   2855049                5404.7
+    Start  factorization 165: nonzeros in basis =   2856917                5470.2
+    Start  factorization 167: nonzeros in basis =   2858520                5543.7
+    Start  factorization 169: nonzeros in basis =   2861159                5617.4
+    Start  factorization 171: nonzeros in basis =   2861581                5684.1
+    Start  factorization 173: nonzeros in basis =   2864084                5755.8
+    Start  factorization 176: nonzeros in basis =   2867563                5848.5
+    Start  factorization 178: nonzeros in basis =   2870908                5918.8
+    Start  factorization 180: nonzeros in basis =   2874426                5984.7
+  15    2.05471387e+10  -4.96747990e+09   4.11e-10   2.75e-06  3.28e+00    6239.1
+    Start  factorization 186: nonzeros in basis =   2913678                6306.9
+    Start  factorization 190: nonzeros in basis =   2922381                6372.0
+    Start  factorization 196: nonzeros in basis =   2926169                6445.3
+    Start  factorization 201: nonzeros in basis =   2929541                6519.1
+    Start  factorization 205: nonzeros in basis =   2932383                6581.6
+    Start  factorization 210: nonzeros in basis =   2935401                6649.8
+    Start  factorization 213: nonzeros in basis =   2944220                6717.1
+    Start  factorization 216: nonzeros in basis =   2947236                6783.9
+    Start  factorization 220: nonzeros in basis =   2951334                6859.2
+    Start  factorization 228: nonzeros in basis =   2954078                6921.6
+    Start  factorization 233: nonzeros in basis =   2957102                6990.5
+    Start  factorization 237: nonzeros in basis =   2960556                7061.1
+    Finish factorization 240: fill factor =   1.21                         7121.6
+    Start  factorization 245: nonzeros in basis =   2968293                7218.0
+    Start  factorization 250: nonzeros in basis =   2973233                7290.4
+    Start  factorization 253: nonzeros in basis =   2977145                7357.4
+    Start  factorization 255: nonzeros in basis =   2993282                7466.6
+    Start  factorization 257: nonzeros in basis =   3006500                7613.6
+    Start  factorization 259: nonzeros in basis =   3008879                7681.9
+    Start  factorization 261: nonzeros in basis =   3014412                7770.7
+  16    6.52125184e+09  -1.96217521e+09   1.06e-10   9.92e-07  3.72e+00    8004.3
+    Start  factorization 265: nonzeros in basis =   3029434                8069.7
+    Start  factorization 269: nonzeros in basis =   3033389                8146.7
+    Start  factorization 273: nonzeros in basis =   3038188                8243.4
+  17    2.17921768e+09  -4.79564533e+08   2.61e-11   1.99e-07  3.13e+00    8401.5
+    Start  factorization 276: nonzeros in basis =   3054709                8492.8
+  18    7.47144749e+08  -2.55174254e+08   6.60e-12   1.09e-07  4.07e+00    8662.1
+    Start  factorization 278: nonzeros in basis =   3104075                8744.4
+  19    7.30127681e+08  -2.61565117e+08   6.48e-12   1.07e-07  4.23e+00    8932.6
+    Start  factorization 279: nonzeros in basis =   3105430                9007.4
+  20    4.93035609e+08  -2.03631281e+08   2.62e-12   8.17e-08  4.81e+00    9148.6
+  21    4.81903593e+08  -2.06077096e+08   2.54e-12   8.06e-08  4.99e+00    9387.1
+    Start  factorization 281: nonzeros in basis =   3116155                9449.4
+  22    4.38454141e+08  -1.66436877e+08   1.86e-12   5.85e-08  4.45e+00    9599.9
+  23    3.49291731e+08  -1.04233121e+08   6.78e-13   2.86e-08  3.70e+00    9816.2
+  24    3.39902589e+08  -1.01488064e+08   6.56e-13   2.43e-08  3.70e+00   10062.6
+  25    3.05634220e+08  -8.47968865e+07   5.77e-13   1.91e-08  3.54e+00   10295.8
+  26    1.63154704e+08  -7.03830760e+07   2.40e-13   1.57e-08  5.03e+00   10528.6
+  27    1.20926014e+08  -3.67496010e+07   1.56e-13   7.35e-09  3.75e+00   10773.0
+  28    1.17213810e+08  -3.24343034e+07   1.51e-13   6.07e-09  3.53e+00   11033.8
+  29    4.36959868e+07  -2.78750974e+07   4.15e-14   5.22e-09  9.05e+00   11271.6
+  30    3.32551212e+07  -2.15846012e+07   2.60e-14   3.90e-09  9.40e+00   11536.6
+  31    2.32253611e+07  -1.29924141e+07   1.65e-14   2.27e-09  7.08e+00   11786.8
+    Start  factorization 291: nonzeros in basis =   3178584               11848.4
+  32    5.95262915e+06  -1.04470123e+07   2.74e-15   1.82e-09  7.30e+00   12020.1
+    Start  factorization 292: nonzeros in basis =   3204939               12087.3
+  33    5.83995499e+06  -3.29212601e+06   1.69e-15   4.27e-10  7.17e+00   12280.4
+    Start  factorization 293: nonzeros in basis =   3237044               12370.3
+  34    1.38929356e+06  -5.70630848e+05   2.84e-16   6.49e-11  4.79e+00   12589.2
+    Start  factorization 296: nonzeros in basis =   3351892               12702.1
+    Finish factorization 297: fill factor =   1.29                        12763.5
+    Finish factorization 298: fill factor =   1.29                        12823.6
+    Start  factorization 299: nonzeros in basis =   3357205               12885.5
+    Start  factorization 300: nonzeros in basis =   3358814               12956.5
+  35    1.43093635e+06  -2.99980615e+05   1.33e-15   1.74e-11  3.06e+00   13200.9
+    Start  factorization 302: nonzeros in basis =   3384072               13287.1
+    Start  factorization 303: nonzeros in basis =   3385930               13368.5
+  36    1.37185776e+06  -2.50753201e+05   1.21e-15   1.27e-11  2.89e+00   13616.8
+    Start  factorization 305: nonzeros in basis =   3387978               13684.6
+    Start  factorization 306: nonzeros in basis =   3389569               13753.2
+    Start  factorization 307: nonzeros in basis =   3391280               13817.7
+  37    9.36864840e+05  -8.69469662e+04   3.17e-15   3.17e-12  2.41e+00   14053.3
+    Start  factorization 311: nonzeros in basis =   3435577               14136.2
+    Start  factorization 313: nonzeros in basis =   3442219               14229.4
+    Start  factorization 314: nonzeros in basis =   3444204               14299.5
+    Start  factorization 315: nonzeros in basis =   3446115               14366.6
+  38    8.93430408e+05  -8.68416845e+04   2.63e-15   2.68e-12  2.43e+00   14612.9
+    Start  factorization 318: nonzeros in basis =   3453203               14741.5
+  39    6.26942502e+05  -4.66311571e+04   1.45e-14   9.11e-13  2.32e+00   14998.0
+    Start  factorization 320: nonzeros in basis =   3456329               15058.0
+    Start  factorization 322: nonzeros in basis =   3459982               15183.8
+    Start  factorization 323: nonzeros in basis =   3461674               15263.7
+  40    5.40873971e+05  -3.86158836e+04   8.05e-15   7.92e-13  2.31e+00   15467.4
+    Start  factorization 324: nonzeros in basis =   3469623               15538.6
+    Start  factorization 325: nonzeros in basis =   3471089               15613.6
+  41    4.30107187e+05  -1.08842921e+04   2.20e-14   7.92e-13  2.10e+00   15833.6
+    Start  factorization 327: nonzeros in basis =   3487960               15914.1
+  42    3.66466984e+05   4.93110086e+03   1.27e-14   7.92e-13  1.95e+00   16206.7
+    Finish factorization 329: fill factor =   1.30                        16268.4
+    Start  factorization 330: nonzeros in basis =   3518097               16331.1
+    Start  factorization 332: nonzeros in basis =   3521412               16456.5
+  43    3.59633754e+05   1.85383026e+04   1.17e-14   7.92e-13  1.80e+00   16725.6
+    Start  factorization 333: nonzeros in basis =   3526104               16812.6
+  44    2.57420373e+05   4.15055324e+04   2.52e-14   7.92e-13  1.44e+00   17136.4
+    Start  factorization 336: nonzeros in basis =   3530864               17258.5
+    Start  factorization 338: nonzeros in basis =   3533843               17369.6
+    Start  factorization 340: nonzeros in basis =   3534867               17499.5
+  45    2.30413290e+05   5.29329284e+04   4.91e-14   7.92e-13  1.25e+00   17847.9
+    Start  factorization 343: nonzeros in basis =   3545599               17963.0
+    Start  factorization 344: nonzeros in basis =   3545323               18030.0
+    Start  factorization 345: nonzeros in basis =   3546835               18100.1
+    Start  factorization 346: nonzeros in basis =   3550009               18192.3
+  46    2.17388758e+05   5.77954822e+04   5.27e-14   7.92e-13  1.16e+00   18496.1
+    Start  factorization 348: nonzeros in basis =   3557078               18589.1
+    Start  factorization 349: nonzeros in basis =   3559647               18662.9
+    Start  factorization 351: nonzeros in basis =   3559875               18755.7
+  47    2.02423482e+05   6.25104267e+04   5.87e-14   7.92e-13  1.06e+00   19059.1
+    Finish factorization 352: fill factor =   1.29                        19120.0
+    Start  factorization 354: nonzeros in basis =   3566896               19253.8
+  48    1.87809922e+05   7.34169799e+04   6.34e-14   7.92e-13  8.76e-01   19596.2
+    Start  factorization 356: nonzeros in basis =   3575394               19671.1
+    Start  factorization 358: nonzeros in basis =   3576070               19767.5
+    Start  factorization 360: nonzeros in basis =   3579310               19887.7
+  49    1.86420602e+05   7.39595735e+04   6.91e-14   7.92e-13  8.64e-01   20129.0
+    Start  factorization 362: nonzeros in basis =   3580257               20191.5
+  50    1.83456300e+05   7.49626906e+04   8.21e-14   7.92e-13  8.40e-01   20426.0
+    Start  factorization 364: nonzeros in basis =   3585062               20492.1
+  51    1.75756681e+05   7.65588942e+04   9.72e-14   7.92e-13  7.86e-01   20722.5
+    Start  factorization 366: nonzeros in basis =   3590010               20806.9
+  52    1.74291320e+05   7.73352395e+04   1.01e-13   7.92e-13  7.71e-01   21004.4
+    Start  factorization 367: nonzeros in basis =   3592909               21073.7
+  53    1.70419340e+05   7.78855902e+04   1.07e-13   7.92e-13  7.45e-01   21299.1
+    Start  factorization 369: nonzeros in basis =   3592888               21362.0
+  54    1.66751542e+05   8.10472491e+04   1.11e-13   7.92e-13  6.92e-01   21583.0
+    Start  factorization 371: nonzeros in basis =   3597960               21665.8
+  55    1.63231209e+05   8.22261710e+04   1.15e-13   7.92e-13  6.60e-01   21845.9
+    Finish factorization 372: fill factor =   1.29                        21907.3
+    Start  factorization 373: nonzeros in basis =   3600961               21981.7
+  56    1.56078013e+05   8.36263928e+04   1.23e-13   7.92e-13  6.05e-01   22162.7
+    Start  factorization 374: nonzeros in basis =   3603075               22255.0
+  57    1.51615380e+05   8.65961677e+04   1.29e-13   7.92e-13  5.46e-01   22445.0
+    Start  factorization 376: nonzeros in basis =   3621227               22516.7
+    Finish factorization 378: fill factor =   1.29                        22576.8
+  58    1.50343299e+05   8.72290283e+04   1.17e-13   7.92e-13  5.31e-01   22751.9
+    Start  factorization 379: nonzeros in basis =   3622720               22821.2
+  59    1.47160543e+05   8.86286887e+04   9.14e-14   7.92e-13  4.96e-01   22980.5
+    Start  factorization 380: nonzeros in basis =   3626777               23049.8
+  60    1.46724031e+05   9.09895036e+04   9.98e-14   7.92e-13  4.69e-01   23206.4
+    Start  factorization 382: nonzeros in basis =   3627132               23293.3
+  61    1.44252126e+05   9.36171679e+04   8.83e-14   7.92e-13  4.26e-01   23435.9
+    Start  factorization 383: nonzeros in basis =   3630255               23519.5
+  62    1.40290660e+05   9.46996373e+04   1.28e-13   7.92e-13  3.88e-01   23673.6
+    Start  factorization 385: nonzeros in basis =   3630794               23751.1
+  63    1.38160441e+05   9.55654223e+04   1.49e-13   7.92e-13  3.64e-01   23938.6
+    Start  factorization 387: nonzeros in basis =   3630686               24000.9
+  64    1.36823629e+05   9.59247696e+04   1.31e-13   7.92e-13  3.51e-01   24186.0
+    Start  factorization 389: nonzeros in basis =   3632394               24268.4
+  65    1.36462484e+05   9.64129183e+04   1.48e-13   7.92e-13  3.44e-01   24442.1
+    Start  factorization 391: nonzeros in basis =   3633875               24513.5
+  66    1.34486768e+05   9.89122227e+04   1.18e-13   6.94e-14  3.05e-01   24664.3
+    Start  factorization 392: nonzeros in basis =   3639307               24738.0
+  67    1.32744956e+05   9.93968313e+04   9.35e-14   5.97e-14  2.87e-01   24937.3
+    Start  factorization 394: nonzeros in basis =   3639903               24998.2
+  68    1.30848459e+05   1.00085635e+05   8.11e-14   6.80e-14  2.66e-01   25164.0
+    Start  factorization 396: nonzeros in basis =   3640653               25236.8
+  69    1.27556708e+05   1.01595202e+05   6.03e-14   5.28e-14  2.27e-01   25379.3
+    Start  factorization 398: nonzeros in basis =   3645188               25493.6
+  70    1.25873549e+05   1.02214442e+05   5.20e-14   8.80e-14  2.07e-01   25661.4
+    Start  factorization 400: nonzeros in basis =   3647028               25737.5
+  71    1.21359802e+05   1.03275439e+05   3.33e-14   6.61e-14  1.61e-01   25885.9
+    Start  factorization 402: nonzeros in basis =   3648105               25949.3
+    Start  factorization 404: nonzeros in basis =   3650112               26039.7
+    Start  factorization 406: nonzeros in basis =   3649609               26128.2
+    Start  factorization 408: nonzeros in basis =   3651854               26190.3
+  72    1.19239388e+05   1.04033907e+05   2.29e-14   9.54e-14  1.36e-01   26332.5
+    Start  factorization 409: nonzeros in basis =   3654304               26401.3
+  73    1.18681488e+05   1.04417915e+05   1.87e-14   8.06e-14  1.28e-01   26600.2
+    Start  factorization 411: nonzeros in basis =   3660628               26663.1
+  74    1.18597415e+05   1.04477580e+05   1.66e-14   7.50e-14  1.27e-01   26863.0
+    Start  factorization 413: nonzeros in basis =   3663426               26950.1
+  75    1.17464727e+05   1.04828259e+05   1.25e-14   8.70e-14  1.14e-01   27101.7
+    Start  factorization 415: nonzeros in basis =   3664173               27162.2
+  76    1.17160801e+05   1.05597688e+05   1.25e-14   6.23e-14  1.04e-01   27310.1
+  77    1.15071869e+05   1.06255134e+05   6.23e-15   1.42e-13  7.97e-02   27505.9
+    Start  factorization 417: nonzeros in basis =   3667428               27592.0
+  78    1.14948276e+05   1.06366149e+05   6.23e-15   6.20e-14  7.76e-02   27756.2
+    Start  factorization 418: nonzeros in basis =   3668474               27837.1
+  79    1.14079946e+05   1.06748477e+05   6.23e-15   8.59e-14  6.64e-02   28007.9
+    Start  factorization 419: nonzeros in basis =   3670513               28079.6
+    Start  factorization 420: nonzeros in basis =   3673132               28148.4
+  80    1.13988015e+05   1.06812893e+05   6.23e-15   5.07e-14  6.50e-02   28321.1
+    Start  factorization 422: nonzeros in basis =   3675603               28409.2
+  81    1.13055439e+05   1.06951053e+05   4.16e-15   6.07e-14  5.55e-02   28579.2
+    Start  factorization 423: nonzeros in basis =   3678186               28660.8
+  82    1.12756032e+05   1.07043862e+05   4.16e-15   3.27e-14  5.20e-02   28864.0
+    Start  factorization 425: nonzeros in basis =   3683437               28956.0
+  83    1.12286272e+05   1.07278933e+05   6.23e-15   5.16e-14  4.56e-02   29172.5
+    Start  factorization 427: nonzeros in basis =   3690301               29260.5
+  84    1.12225873e+05   1.07378900e+05   6.23e-15   5.32e-14  4.41e-02   29486.0
+    Start  factorization 429: nonzeros in basis =   3695207               29563.8
+    Start  factorization 431: nonzeros in basis =   3698150               29639.0
+  85    1.11788068e+05   1.07474562e+05   4.16e-15   5.44e-14  3.93e-02   29786.9
+    Start  factorization 432: nonzeros in basis =   3702317               29895.6
+  86    1.11760964e+05   1.07485961e+05   4.16e-15   6.93e-14  3.90e-02   30074.6
+    Start  factorization 434: nonzeros in basis =   3704782               30136.6
+    Start  factorization 435: nonzeros in basis =   3707939               30206.4
+  87    1.11244468e+05   1.07574898e+05   4.16e-15   5.13e-14  3.35e-02   30350.8
+    Start  factorization 436: nonzeros in basis =   3710384               30439.6
+  88    1.11066281e+05   1.07589818e+05   4.16e-15   5.02e-14  3.18e-02   30604.1
+    Start  factorization 437: nonzeros in basis =   3712505               30683.8
+  89    1.10982650e+05   1.07614357e+05   4.16e-15   8.09e-14  3.08e-02   30853.0
+    Start  factorization 438: nonzeros in basis =   3713838               30919.3
+  90    1.10769987e+05   1.07721734e+05   4.16e-15   7.45e-14  2.79e-02   31083.6
+    Start  factorization 439: nonzeros in basis =   3715138               31151.2
+  91    1.10609360e+05   1.07818208e+05   4.16e-15   5.25e-14  2.56e-02   31317.3
+    Finish factorization 440: fill factor =   1.32                        31378.2
+  92    1.10367317e+05   1.07978858e+05   4.16e-15   6.77e-14  2.19e-02   31533.7
+    Start  factorization 441: nonzeros in basis =   3716861               31614.5
+  93    1.10337471e+05   1.07992842e+05   4.16e-15   7.99e-14  2.15e-02   31814.4
+  94    1.10055303e+05   1.08094542e+05   4.16e-15   7.16e-14  1.80e-02   32046.8
+    Finish factorization 444: fill factor =   1.32                        32107.2
+  95    1.09857147e+05   1.08155788e+05   4.16e-15   9.22e-14  1.56e-02   32283.7
+    Start  factorization 445: nonzeros in basis =   3722593               32344.5
+  96    1.09772335e+05   1.08184811e+05   4.16e-15   4.84e-14  1.46e-02   32528.9
+    Start  factorization 446: nonzeros in basis =   3724418               32600.2
+  97    1.09626059e+05   1.08258864e+05   4.16e-15   6.96e-14  1.25e-02   32805.3
+  98    1.09566328e+05   1.08297935e+05   4.16e-15   6.51e-14  1.16e-02   33061.2
+  99    1.09486999e+05   1.08345945e+05   4.16e-15   6.82e-14  1.05e-02   33310.4
+    Finish factorization 449: fill factor =   1.32                        33370.4
+ 100    1.09483265e+05   1.08362921e+05   6.23e-15   6.13e-14  1.03e-02   33582.3
+    Start  factorization 450: nonzeros in basis =   3725944               33651.6
+ 101    1.09469470e+05   1.08390787e+05   6.23e-15   4.67e-14  9.90e-03   33875.4
+    Start  factorization 451: nonzeros in basis =   3726916               33945.1
+ 102    1.09460597e+05   1.08411250e+05   6.23e-15   6.26e-14  9.63e-03   34170.2
+ 103    1.09384148e+05   1.08457641e+05   6.23e-15   6.27e-14  8.51e-03   34444.9
+    Start  factorization 453: nonzeros in basis =   3730991               34513.7
+    Start  factorization 454: nonzeros in basis =   3734988               34588.2
+    Start  factorization 455: nonzeros in basis =   3739841               34667.0
+    Start  factorization 456: nonzeros in basis =   3745008               34754.6
+ 104    1.09365142e+05   1.08466966e+05   6.23e-15   4.57e-14  8.25e-03   34951.7
+    Start  factorization 458: nonzeros in basis =   3749733               35059.3
+ 105    1.09303506e+05   1.08537771e+05   6.23e-15   6.21e-14  7.03e-03   35240.8
+    Start  factorization 459: nonzeros in basis =   3751965               35325.0
+ 106    1.09287749e+05   1.08541376e+05   4.16e-15   5.80e-14  6.85e-03   35541.1
+    Start  factorization 461: nonzeros in basis =   3755754               35624.2
+ 107    1.09272304e+05   1.08548258e+05   6.23e-15   9.95e-14  6.65e-03   35810.1
+    Start  factorization 462: nonzeros in basis =   3757265               35884.5
+ 108    1.09226885e+05   1.08570173e+05   6.23e-15   5.58e-14  6.03e-03   36074.1
+    Start  factorization 463: nonzeros in basis =   3758468               36146.1
+ 109    1.09224362e+05   1.08597025e+05   6.23e-15   6.80e-14  5.76e-03   36355.0
+    Start  factorization 464: nonzeros in basis =   3759434               36437.3
+ 110    1.09161393e+05   1.08632766e+05   4.16e-15   6.55e-14  4.85e-03   36648.8
+    Start  factorization 465: nonzeros in basis =   3761083               36734.4
+ 111    1.09139305e+05   1.08636940e+05   4.16e-15   7.77e-14  4.61e-03   36967.8
+    Start  factorization 466: nonzeros in basis =   3762522               37054.6
+ 112    1.09126068e+05   1.08649828e+05   4.16e-15   5.85e-14  4.37e-03   37282.2
+    Start  factorization 467: nonzeros in basis =   3763688               37360.8
+ 113    1.09085300e+05   1.08679225e+05   6.23e-15   5.63e-14  3.73e-03   37591.8
+    Start  factorization 468: nonzeros in basis =   3765060               37671.9
+ 114    1.09029359e+05   1.08704995e+05   4.16e-15   4.88e-14  2.98e-03   37878.1
+    Start  factorization 469: nonzeros in basis =   3766093               37951.2
+ 115    1.09010634e+05   1.08705770e+05   4.16e-15   8.17e-14  2.80e-03   38149.8
+    Start  factorization 470: nonzeros in basis =   3769703               38210.7
+ 116    1.08959283e+05   1.08728416e+05   4.16e-15   9.85e-14  2.12e-03   38403.6
+    Start  factorization 471: nonzeros in basis =   3773533               38467.1
+ 117    1.08958391e+05   1.08729794e+05   4.16e-15   1.00e-13  2.10e-03   38711.0
+    Start  factorization 472: nonzeros in basis =   3774911               38781.6
+ 118    1.08955448e+05   1.08729956e+05   6.23e-15   6.83e-14  2.07e-03   39020.6
+ 119    1.08943658e+05   1.08733531e+05   6.23e-15   7.15e-14  1.93e-03   39259.9
+ 120    1.08936798e+05   1.08737877e+05   6.23e-15   8.46e-14  1.83e-03   39501.7
+ 121    1.08919462e+05   1.08745924e+05   6.23e-15   6.19e-14  1.59e-03   39752.0
+ 122    1.08917942e+05   1.08748022e+05   6.23e-15   8.26e-14  1.56e-03   40033.6
+ 123    1.08908779e+05   1.08754243e+05   6.23e-15   1.05e-13  1.42e-03   40312.0
+ 124    1.08895326e+05   1.08756285e+05   4.16e-15   5.42e-14  1.28e-03   40622.9
+ 125*   1.08873389e+05   1.08765489e+05   4.16e-15   6.90e-14  9.92e-04   40953.5
+Summary
+    Runtime:                                            40953.63s
+    Status interior point solve:                        optimal
+    Status crossover:                                   not run
+    objective value:                                    1.08873389e+05
+    interior solution primal residual (abs/rel):        4.89e-09 / 5.46e-15
+    interior solution dual residual (abs/rel):          1.19e-07 / 3.96e-13
+    interior solution objective gap (abs/rel):          1.05e+02 / 9.67e-04
+Ipx: IPM       optimal
+WARNING: Solution optimality conditions: Before postsolve
+num/max      0 /        0 (relative      0 /        0) primal infeasibilities     (tolerance = 1e-03)
+num/max      0 /        0 (relative      0 /        0)   dual infeasibilities     (tolerance = 1e-03)
+num/max      0 / 4.41e-09 (relative      0 / 1.73e-12) primal residual errors     (tolerance = 1e-07)
+num/max      0 / 1.45e-08 (relative      0 / 1.03e-13)   dual residual errors     (tolerance = 1e-07)
+                                         1 /  0.00047  P-D objective error        (tolerance = 1e-07)
+WARNING: LP solver claims optimality, but with
+WARNING:                      0.00047 relative P-D objective error    (tolerance = 1e-07)
+WARNING: Model status changed from "Optimal" to "Unknown" since relative violation of tolerances is  4.7e+03
+
+Performed postsolve
+
+Model name          : linopy-problem-t20ok85h
+Model status        : Unknown
+IPM       iterations: 125
+Objective value     :  1.0887338919e+05
+P-D objective error :  4.2227972546e-04
+HiGHS run time      :      40955.65
+WARNING: Solution optimality conditions: After removing user scaling
+num/max      0 / 5.53e-05 (relative      0 / 2.46e-14) primal infeasibilities     (tolerance = 1e-03)
+num/max      0 /    0.001 (relative      0 / 3.32e-09)   dual infeasibilities     (tolerance = 1e-03)
+                                         1 /  0.00047  P-D objective error        (tolerance = 1e-07)
+After solving the user-scaled model, the unscaled solution has objective value 1783781608.49

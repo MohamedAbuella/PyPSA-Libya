@@ -1,0 +1,121 @@
+Running HiGHS 1.15.1 (git hash: n/a): Copyright (c) 2026 under MIT licence terms
+Includes third-party software components, see THIRD_PARTY_NOTICES.md for full details
+LP linopy-problem-dxu43dvu has 88653 rows; 43182 cols; 184841 nonzeros
+Assessing costs and bounds after applying user_bound_scale option value of -14
+Coefficient ranges:
+  Matrix  [5e-03, 6e+02]
+  Cost    [1e+00, 2e+07]
+  Bound   [1e+05, 1e+05]
+  RHS     [6e-05, 9e+05]
+WARNING: User-scaled problem has some excessively large costs
+WARNING: User-scaled problem has some excessively small row bounds
+WARNING:    Consider scaling the objective by 1e-2, or setting the user_objective_scale option to -4
+Presolving model
+32452 rows, 28527 cols, 99905 nonzeros 0s
+24512 rows, 21259 cols, 95233 nonzeros 0s
+Dependent equations search running on 4205 equations with time limit of 1000.00s
+Dependent equations search removed 0 rows and 0 nonzeros in 0.00s (limit = 1000.00s)
+24004 rows, 19349 cols, 91423 nonzeros 0s
+Presolve reductions: rows 24004(-64649); columns 19349(-23833); nonzeros 91423(-93418) 
+Solving the presolved LP
+IPX model has 24004 rows, 19349 columns and 91423 nonzeros
+Input
+    Number of variables:                                19349
+    Number of free variables:                           2169
+    Number of constraints:                              24004
+    Number of equality constraints:                     4205
+    Number of matrix entries:                           91423
+    Matrix range:                                       [4e-05, 6e+02]
+    RHS range:                                          [1e-04, 1e+04]
+    Objective range:                                    [7e-04, 2e+07]
+    Bounds range:                                       [6e-05, 9e+05]
+Preprocessing
+    Dualized model:                                     no
+    Number of dense columns:                            0
+    Range of scaling factors:                           [6.25e-02, 1.28e+02]
+    Scaled cost norm:                                   1.56429e+07
+    Scaled bounds norm:                                 896254
+IPX version 1.0
+Interior point solve
+ Iter       primal obj         dual obj       pinf       dinf       gap      time
+   0    1.41600192e+07  -1.49378644e+13   1.97e-03   8.96e-01  2.00e+00       0.2
+   1   -6.57112483e+11  -4.41322508e+12   1.48e-03   2.64e-01  1.48e+00       0.2
+   2   -6.83253611e+10  -1.73696566e+12   6.84e-04   2.35e-01  1.85e+00       0.4
+ Constructing starting basis...
+ Iter       primal obj         dual obj       pinf       dinf       gap      time
+   3    2.88761278e+11  -9.53876054e+11   3.35e-04   1.03e-01  3.74e+00       0.8
+   4    3.17477915e+11  -6.62885807e+11   2.07e-04   5.11e-02  5.68e+00       0.9
+   5    2.13334301e+11  -5.07395346e+11   7.54e-05   2.84e-02  4.90e+00       1.0
+   6    1.35693030e+11  -3.61402142e+11   2.13e-05   1.05e-02  4.40e+00       1.1
+   7    9.72288018e+10  -2.56862976e+11   5.72e-06   3.44e-03  4.44e+00       1.4
+   8    7.77661711e+10  -1.94843039e+11   1.82e-06   1.94e-03  4.66e+00       2.0
+   9    7.71752525e+10  -1.38317176e+11   8.72e-07   3.66e-04  7.05e+00       2.2
+  10    4.97309940e+10  -3.36899868e+10   3.10e-07   4.63e-05  1.04e+01       2.3
+  11    3.16331724e+10  -2.97479605e+10   1.10e-07   3.73e-05  6.51e+01       2.4
+  12    8.00900000e+09  -1.40230773e+10   1.61e-08   1.57e-05  7.33e+00       2.5
+  13    2.17326266e+09  -4.70317908e+09   1.25e-09   4.23e-06  5.44e+00       2.6
+  14    8.44164977e+08  -3.08952339e+09   1.30e-15   2.59e-06  3.50e+00       2.7
+  15    5.52817663e+08  -8.27922258e+08   7.79e-16   7.51e-07  1.00e+01       2.8
+  16    3.54994258e+08  -4.01175733e+08   1.30e-16   3.11e-07  3.27e+01       2.9
+  17    3.18497353e+08  -2.81356306e+08   1.52e-16   1.88e-07  3.23e+01       3.0
+  18    2.66261503e+08  -2.23912084e+08   1.80e-16   1.37e-07  2.31e+01       3.1
+  19    2.07909305e+08  -1.80604786e+08   1.96e-16   9.59e-08  2.85e+01       3.2
+  20    1.65641025e+08  -1.19363598e+08   6.14e-17   5.16e-08  1.23e+01       3.2
+  21    9.94648197e+07  -5.45422382e+07   2.38e-17   1.81e-08  6.86e+00       3.3
+  22    6.77313132e+07  -3.17975906e+07   1.30e-16   8.87e-09  5.54e+00       3.4
+  23    4.21579483e+07  -1.81068435e+07   4.06e-17   4.56e-09  5.01e+00       3.4
+  24    1.95106961e+07  -8.42818894e+06   1.30e-16   1.83e-09  5.04e+00       3.5
+  25    6.86799552e+06  -1.84871505e+06   2.44e-17   4.89e-11  3.47e+00       3.5
+  26    4.25439224e+06  -8.06410087e+05   9.74e-17   1.76e-11  2.94e+00       3.7
+  27    2.61901291e+06  -9.23515289e+04   1.30e-16   6.62e-12  2.15e+00       3.8
+  28    1.97640450e+06   1.90310701e+05   2.60e-16   2.88e-12  1.65e+00       3.9
+  29    1.54685437e+06   4.10370577e+05   5.20e-16   1.43e-12  1.16e+00       4.0
+  30    1.39551386e+06   4.59221845e+05   7.79e-16   1.02e-12  1.01e+00       4.1
+  31    1.19086857e+06   5.55576729e+05   1.04e-15   5.83e-13  7.28e-01       4.2
+  32    1.16007054e+06   5.99474685e+05   1.04e-15   3.73e-13  6.37e-01       4.4
+  33    1.06234091e+06   6.45147452e+05   1.04e-15   2.29e-13  4.89e-01       4.5
+  34    9.73526077e+05   6.92864633e+05   1.56e-15   7.77e-14  3.37e-01       4.6
+  35    9.08258478e+05   7.13865511e+05   2.08e-15   3.41e-14  2.40e-01       4.8
+  36    8.53152392e+05   7.22746048e+05   4.16e-15   1.96e-14  1.66e-01       4.9
+  37    8.26995468e+05   7.38258094e+05   6.23e-15   7.11e-15  1.13e-01       5.0
+  38    8.07013231e+05   7.47337828e+05   8.31e-15   3.03e-15  7.68e-02       5.1
+  39    7.77819550e+05   7.51146894e+05   1.66e-14   1.20e-15  3.49e-02       5.1
+  40    7.76370617e+05   7.52426980e+05   1.66e-14   9.01e-16  3.13e-02       5.2
+  41    7.69232835e+05   7.56441169e+05   1.66e-14   3.36e-16  1.68e-02       5.3
+  42    7.63946959e+05   7.58295307e+05   3.33e-14   3.04e-16  7.43e-03       5.3
+  43    7.61315365e+05   7.58932590e+05   3.33e-14   4.31e-16  3.13e-03       5.4
+  44    7.60391656e+05   7.59312042e+05   3.33e-14   3.98e-16  1.42e-03       5.4
+  45    7.60258149e+05   7.59434554e+05   3.33e-14   2.40e-16  1.08e-03       5.5
+  46*   7.60065702e+05   7.59736218e+05   3.33e-14   2.86e-16  4.34e-04       5.5
+Summary
+    Runtime:                                            5.53s
+    Status interior point solve:                        optimal
+    Status crossover:                                   not run
+    objective value:                                    7.60065702e+05
+    interior solution primal residual (abs/rel):        3.04e-08 / 3.39e-14
+    interior solution dual residual (abs/rel):          3.94e-09 / 2.52e-16
+    interior solution objective gap (abs/rel):          3.26e+02 / 4.29e-04
+Ipx: IPM       optimal
+WARNING: Solution optimality conditions: Before postsolve
+num/max      0 /        0 (relative      0 /        0) primal infeasibilities     (tolerance = 1e-03)
+num/max      0 /        0 (relative      0 /        0)   dual infeasibilities     (tolerance = 1e-03)
+num/max      0 /  2.6e-08 (relative      0 / 4.33e-11) primal residual errors     (tolerance = 1e-07)
+num/max      0 /    2e-09 (relative      0 / 1.06e-14)   dual residual errors     (tolerance = 1e-07)
+                                         1 / 0.000206  P-D objective error        (tolerance = 1e-07)
+WARNING: LP solver claims optimality, but with
+WARNING:                     0.000206 relative P-D objective error    (tolerance = 1e-07)
+WARNING: Model status changed from "Optimal" to "Unknown" since relative violation of tolerances is 2.06e+03
+
+Performed postsolve
+
+Model name          : linopy-problem-dxu43dvu
+Model status        : Unknown
+IPM       iterations: 46
+Objective value     :  7.6006570241e+05
+P-D objective error :  2.0637464524e-04
+HiGHS run time      :          5.54
+WARNING: Solution optimality conditions: After removing user scaling
+num/max      0 / 0.000407 (relative      0 / 1.81e-13) primal infeasibilities     (tolerance = 1e-03)
+num/max      0 / 0.000975 (relative      0 / 6.24e-11)   dual infeasibilities     (tolerance = 1e-03)
+                                         1 / 0.000206  P-D objective error        (tolerance = 1e-07)
+After solving the user-scaled model, the unscaled solution has objective value 12452916468.3
