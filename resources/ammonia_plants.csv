@@ -1,0 +1,62 @@
+plant,capacity,x,y,country
+Yara Sluiskil,1700.0,3.84896,51.27186,NL
+OCI Geleen,550.0,5.78497,50.99738,NL
+CF Fertilisers Billingham,590.0,-2.79744,53.28149,GB
+Yara Tertre,420.0,3.80285,50.47842,BE
+BASF Antwerp,650.0,4.27811,51.35583,BE
+Yara Gonfreville,400.0,0.19587,49.47982,FR
+BASF Ludwigshafen,880.0,8.42009,49.51171,DE
+SKW,1300.0,12.5858,51.87746,DE
+Yara Brunsbuettel,750.0,9.20982,53.91152,DE
+Yara Porsgrunn,500.0,9.61922,59.12444,NO
+Fertiberia Puertollano,400.0,-4.0608,38.67276,ES
+Fertiberia Huelva,200.0,-6.94742,37.22572,ES
+Yara Ferrara,600.0,11.57922,44.86206,IT
+Neochim,450.0,25.61547,42.20514,BG
+Azomures,1600.0,24.42361,46.76187,RO
+Nitrogenmuvek,497.0,18.12844,47.16691,HU
+DUSLO,530.0,17.9301,48.18705,SK
+Grupa Azoty,524.0,21.98174,51.45179,PL
+Achema,1100.0,24.32377,55.081,LT
+LAT Nitrogen Linz GmbH,1500.0,14.32533,48.28861,AT
+Kothla-Järve,180.0,27.23381,59.40741,EE
+Kavala Fertilizers,165.0,24.46868,40.94997,GR
+Rivneazot,420.0,26.163,50.70502,UA
+Stirol (Horlivka),1470.0,38.10412,48.29697,UA
+Severodonetsk Azot,1020.0,38.47399,48.94185,UA
+Odessa Port Plant ,1160.0,30.73222,46.4946,UA
+Cherkazy Azot,963.0,32.05719,49.38241,UA
+DneproAZOT,660.0,34.66667,48.49004,UA
+AdvanSix Inc. - Hopewell,540.0,-77.2985,37.2915,US
+"CF Industries Holdings, Inc. - Donaldsonville",3930.0,-90.9925,30.0954,US
+"CF Industries Holdings, Inc. - Sergeant Bluff",1120.0,-96.3517,42.3978,US
+"CF Industries Holdings, Inc. - Verdigris",1100.0,-95.66,36.2536,US
+"CF Industries Holdings, Inc. - Woodward",435.0,-99.4058,36.4247,US
+"CF Industries Holdings, Inc. - Yazoo City",517.0,-90.4075,32.8619,US
+"Coffeyville Resources Nitrogen Fertilizers, LLC - Coffeyville",375.0,-95.618,37.0519,US
+Dakota Gasification Co. - Beulah,355.0,-101.7734,47.2665,US
+Dyno Nobel Inc. - Cheyenne,178.0,-104.7902,41.135,US
+Dyno Nobel Inc. - St. Helens,100.0,-122.8164,45.8572,US
+"Dyno Nobel Louisiana Ammonia, LLC - Waggaman",800.0,-90.2354,29.9373,US
+"East Dubuque Nitrogen Fertilizers, LLC - East Dubuque",360.0,-90.6278,42.4888,US
+Green Valley Chemical Corp. - Creston,32.0,-94.365,41.0598,US
+Iowa Fertilizer Co. - Wever,770.0,-91.228,40.7058,US
+J.R. Simplot Co. - Rock Springs,185.0,-109.2209,41.5947,US
+"Koch Fertilizer, LLC - Beatrice",265.0,-96.7455,40.2736,US
+"Koch Fertilizer, LLC - Dodge City",280.0,-100.0182,37.7611,US
+"Koch Fertilizer, LLC - Enid",930.0,-97.87,36.4063,US
+"Koch Fertilizer, LLC - Fort Dodge",350.0,-94.1751,42.5098,US
+"LSB Industries, Inc. - Cherokee",185.0,-87.967,34.7577,US
+"LSB Industries, Inc. - El Dorado",490.0,-92.664,33.2184,US
+"LSB Industries, Inc. - Pryor Creek",240.0,-95.3107,36.2996,US
+"Mosaic Company, The - Donaldsonville",510.0,-90.9925,30.0954,US
+"NE Nitro Geneva, LLC - Geneva",33.0,-97.5974,40.5308,US
+Nutrien Ltd. - Augusta,765.0,-82.0708,33.3645,US
+Nutrien Ltd. - Borger,490.0,-101.4012,35.6598,US
+Nutrien Ltd. - Gonzales,535.0,-90.9234,30.2132,US
+Nutrien Ltd. - Kenai,280.0,-151.1985,60.5619,US
+Nutrien Ltd. - Kennewick,180.0,-119.1732,46.1978,US
+Nutrien Ltd. - Lima,725.0,-84.112,40.741,US
+OCI Partners LP - Beaumont,332.0,-94.1451,30.0849,US
+"U.S. Nitrogen, LLC - Greeneville",62.0,-82.8197,36.168,US
+Yara Freeport LLC - Freeport,750.0,-95.3601,28.9453,US

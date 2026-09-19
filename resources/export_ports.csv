@@ -1,0 +1,361 @@
+country_full_name,World Port Index Number,Region Name,name,Alternate Port Name,country,World Water Body,Liquified Natural Gas Terminal Depth (m),Harbor Size,Harbor_size_nr,Harbor Type,Harbor Use,y,x,Total_Harbor_size_nr,fraction
+United States,9240.0,US Gulf Coast -- 8650,Houston, ,US,Gulf of Mexico; North Atlantic Ocean,0.0,Large,3,River (Tide Gates),Unknown,29.75,-95.28333300000001,271,0.01107011070110701
+China,60250.0,China Continued -- 59850,Dalian,Dairen; Dalian; Dalian Wan; Ta Cien; Ta Lien,CN,Yellow Sea; North Pacific Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,38.916667,121.666667,58,0.05172413793103448
+Italy,39590.0,Italy West Coast -- 39330,Livorno,Leghorn,IT,Ligurian Sea; Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,43.542,10.29,128,0.0234375
+United States,8280.0,United States E Coast -- 6585,Norfolk, ,US,North Atlantic Ocean,0.0,Large,3,River (Natural),Unknown,36.85,-76.29999999999998,271,0.01107011070110701
+France,38870.0,France South Coast -- 38710,Toulon, ,FR,Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,43.1,5.916667,64,0.046875
+Italy,40470.0,Italy East Coast -- 40390,Taranto, ,IT,Golfo di Taranto; Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,40.466667,17.2,128,0.0234375
+United States,8110.0,United States E Coast -- 6585,Philadelphia, ,US,North Atlantic Ocean,0.0,Large,3,River (Natural),Unknown,39.95,-75.13333299999998,271,0.01107011070110701
+Algeria,45570.0,Algeria -- 45470,Alger,Algiers,DZ,Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,36.766667,3.066667,14,0.21428571428571427
+Italy,39810.0,Italy West Coast Cont -- 39730,Civitavecchia, ,IT,Tyrrhenian Sea; Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,42.102,11.771,128,0.0234375
+Greece,42230.0,Greece East Coast -- 42010,Piraievs,Athens; Dhrapetsdna,GR,Aegean Sea; Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,37.933333,23.65,24,0.125
+Croatia,41010.0,Croatia -- 40877,Rijeka Luka,Baross; Branjoica; Brgud; Fiume; Luka Rijeka; Nazar Sauro; Susacka; Susaka,HR,Adriatic Sea; Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,River (Basins),Unknown,45.333333,14.433333,12,0.25
+Italy,39960.0,Italy West Coast Cont -- 39730,Napoli,Naples,IT,Tyrrhenian Sea; Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,40.833,14.275,128,0.0234375
+Italy,40240.0,Sicilia -- 40090,Siracusa,Syracuse,IT,Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,37.05,15.283333,128,0.0234375
+Italy,40760.0,Italy East Coast -- 40390,Porto Di Lido-Venezia,Porto Di Lido; Venezia; Venice,IT,Adriatic Sea; Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,45.416667,12.433333,128,0.0234375
+Morocco,45793.0, ,Casablanca,Dar El Beida,MA,North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,33.6,-7.616667,14,0.21428571428571427
+Portugal,37990.0,Portugal -- 37930,Lisboa,Lisbon,PT,North Atlantic Ocean,0.0,Large,3,River (Natural),Unknown,38.7,-9.166667,17,0.17647058823529413
+Morocco,45802.0, ,Agadir, ,MA,North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,30.433333,-9.633333,14,0.21428571428571427
+Malaysia,57425.0,Malaysia -- 57400,Tapis Marine Terminal A, ,MY,South China Sea; North Pacific Ocean,0.0,Large,3,Open Roadstead,Unknown,5.516667,105.016667,27,0.1111111111111111
+United States,8210.0,United States E Coast -- 6585,Baltimore, ,US,North Atlantic Ocean,0.0,Large,3,River (Natural),Unknown,39.266667,-76.58333299999998,271,0.01107011070110701
+United States,8080.0,United States E Coast -- 6585,Chester, ,US,North Atlantic Ocean,0.0,Large,3,River (Natural),Unknown,39.85,-75.34999999999998,271,0.01107011070110701
+United States,9150.0,US Gulf Coast -- 8650,Galveston, ,US,Gulf of Mexico; North Atlantic Ocean,0.0,Large,3,Coastal (Natural),Unknown,29.316667,-94.78333300000001,271,0.01107011070110701
+United States,16340.0,United States W Coast -- 16000,Oakland, ,US,North Pacific Ocean,0.0,Large,3,Coastal (Natural),Unknown,37.816667,-122.333333,271,0.01107011070110701
+United States,8860.0,US Gulf Coast -- 8650,New Orleans, ,US,Gulf of Mexico; North Atlantic Ocean,0.0,Large,3,River (Natural),Unknown,29.95,-90.04999999999998,271,0.01107011070110701
+United States,8770.0,US Gulf Coast -- 8650,Mobile, ,US,Gulf of Mexico; North Atlantic Ocean,0.0,Large,3,River (Natural),Unknown,30.683333,-88.116667,271,0.01107011070110701
+United States,16300.0,United States W Coast -- 16000,San Francisco, ,US,North Pacific Ocean,0.0,Large,3,Coastal (Natural),Unknown,37.816667,-122.416667,271,0.01107011070110701
+United States,7640.0,United States E Coast -- 6585,New York City, ,US,North Atlantic Ocean,0.0,Large,3,River (Natural),Unknown,40.7,-74.016667,271,0.01107011070110701
+United States,7630.0,United States E Coast -- 6585,Brooklyn, ,US,North Atlantic Ocean,0.0,Large,3,River (Natural),Unknown,40.666667,-74.016667,271,0.01107011070110701
+Japan,62360.0,Japan -- 61100,Nagasaki, ,JP,East China Sea; North Pacific Ocean,0.0,Large,3,Coastal (Natural),Unknown,32.716667,129.85,139,0.02158273381294964
+Japan,61560.0,Japan -- 61100,Kobe, ,JP,Sea of Japan; North Pacific Ocean,0.0,Large,3,Open Roadstead,Unknown,34.65,135.183333,139,0.02158273381294964
+Egypt,48040.0,Egypt Red Sea -- 47950,As Suways,Port Suez,EG,Gulf of Suez; Red Sea; Indian Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,29.966667,32.55,27,0.1111111111111111
+South Africa,46850.0,South Africa -- 46725,Durban,Port Natal,ZA,Indian Ocean,0.0,Large,3,Coastal (Breakwater),Cargo,-29.866667,31.066667,15,0.2
+Algeria,45640.0,Algeria -- 45470,Oran, ,DZ,Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,35.7,-0.633333,14,0.21428571428571427
+Indonesia,50970.0,Jawa -- 50920,Jakarta,Batavia; Djakarta; Jakarta; Tandjoenpriok,ID,Java Sea; South Pacific Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,-6.1,106.883333,39,0.07692307692307693
+Italy,40500.0,Italy East Coast -- 40390,Brindisi, ,IT,Adriatic Sea; Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,40.65,17.983333,128,0.0234375
+Italy,39520.0,Italy West Coast -- 39330,La Spezia,Spezia,IT,Ligurian Sea; Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,44.1,9.833333,128,0.0234375
+Spain,38550.0,Spain SE Coast -- 38340,Barcelona, ,ES,Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,41.35,2.166667,46,0.06521739130434782
+United States,7250.0,United States E Coast -- 6585,Boston, ,US,North Atlantic Ocean,0.0,Large,3,Coastal (Natural),Unknown,42.35,-71.05,271,0.01107011070110701
+United States,8980.0,US Gulf Coast -- 8650,Loop Terminal, ,US,Gulf of Mexico; North Atlantic Ocean,0.0,Large,3,Open Roadstead,Unknown,28.883333,-90.016667,271,0.01107011070110701
+Canada,2235.0,Canada St Lawrence R -- 1930,Montreal, ,CA,Lake Ontario; Great Lakes,0.0,Large,3,River (Natural),Unknown,45.516667,-73.54999999999998,101,0.0297029702970297
+Japan,61465.0,Japan -- 61100,Mikawa,Makawi,JP,North Pacific Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,34.716667,137.3,139,0.02158273381294964
+Japan,61630.0,Japan -- 61100,Onomichi-Itozaki, ,JP,Sea of Japan; North Pacific Ocean,0.0,Large,3,Coastal (Natural),Unknown,34.383333,133.166667,139,0.02158273381294964
+Italy,40100.0,Sicilia -- 40090,Messina, ,IT,Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,38.2,15.566667,128,0.0234375
+Egypt,45165.0,Egypt Mediterranean -- 45120,Al Iskandariyh (Alexandria), ,EG,Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,31.166667,29.833333,27,0.1111111111111111
+Egypt,45151.0,Egypt Mediterranean -- 45120,Damietta, ,EG,Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,31.483333,31.75,27,0.1111111111111111
+France,35840.0,France NW Coast -- 35720,Port Of Le Havre, ,FR,English Channel; North Atlantic Ocean,0.0,Large,3,River (Tide Gates),Unknown,49.483333,0.116667,64,0.046875
+Japan,61480.0,Japan -- 61100,Nagoya Ko, ,JP,Sea of Japan; North Pacific Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,35.066667,136.866667,139,0.02158273381294964
+Somalia,47160.0,Somalia -- 47120,Muqdisho,Mogadiscio; Mogadishu; Muqdisho,SO,Indian Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,2.033333,45.35,5,0.6
+France,36460.0,France West Coast -- 36450,Rade De Brest, ,FR,North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Military,48.383333,-4.5,64,0.046875
+Portugal,38010.0,Portugal -- 37930,Lagos, ,PT,North Atlantic Ocean,0.0,Large,3, ,Unknown,37.1,-8.616667,17,0.17647058823529413
+Japan,61545.0,Japan -- 61100,Wakayama-Shimotsu Ko,Minami-ku,JP,Sea of Japan; North Pacific Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,34.2,135.133333,139,0.02158273381294964
+Croatia,41320.0,Croatia -- 40877,Split, ,HR,Adriatic Sea; Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,43.5,16.433333,12,0.25
+Morocco,45753.0, ,Tangier-Mediterranean, ,MA,Strait of Gibraltar; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,35.9,-5.516667,14,0.21428571428571427
+Spain,38540.0,Spain SE Coast -- 38340,Tarragona, ,ES,Balearic Sea; Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,41.1,1.233333,46,0.06521739130434782
+Japan,61380.0,Japan -- 61100,Tokyo Ko, ,JP,North Pacific Ocean,0.0,Large,3,Coastal (Natural),Unknown,35.666667,139.75,139,0.02158273381294964
+Malaysia,49930.0,Malaysia -- 49820,Port Klang,Port Kelang; Port Swettenham,MY,Strait of Malacca; Indian Ocean,0.0,Large,3,Coastal (Natural),Unknown,3.0,101.4,27,0.1111111111111111
+China,60190.0,China Continued -- 59850,Tianjin Xin Gang,Tien Ching; Tientsin,CN,Bo Hai; Yellow Sea; North Pacific Ocean,0.0,Large,3,River (Natural),Unknown,38.966667,117.833333,58,0.05172413793103448
+Yemen,48155.0,Yemen Aden -- 48143,Ras Isa Marine Terminal, ,YE,Red Sea; Indian Ocean,0.0,Large,3, ,Unknown,15.133333,42.6,9,0.3333333333333333
+Japan,62120.0,Japan -- 61100,Wakamatsu Ko, ,JP,Korea Strait; North Pacific Ocean,0.0,Large,3,Coastal (Natural),Unknown,33.9,130.816667,139,0.02158273381294964
+Japan,61550.0,Japan -- 61100,Osaka,Sakai,JP,Sea of Japan; North Pacific Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,34.65,135.433333,139,0.02158273381294964
+Egypt,45140.0,Egypt Mediterranean -- 45120,Bur Sa'id,Port Said; Bur Said,EG,Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Canal or Lake,Unknown,31.266667,32.3,27,0.1111111111111111
+India,49560.0,India East Coast -- 49310,Calcutta, ,IN,Bay of Bengal; Indian Ocean,0.0,Large,3,River (Natural),Cargo,22.55,88.33333299999998,34,0.08823529411764706
+India,48840.0,India West Coast -- 48610,Mumbai (Bombay), ,IN,Arabian Sea; Indian Ocean,0.0,Large,3,Coastal (Tide Gates),Cargo,18.966667,72.866667,34,0.08823529411764706
+Lebanon,45030.0,Lebanon -- 45020,Bayrut,Beirut; Beyrouth,LB,Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,33.9,35.5,5,0.6
+Syria,45005.0,Syria -- 45000,Baniyas, ,SY,Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,35.188333333,35.943333333,6,0.5
+Cuba,10320.0,Cuba South Coast -- 10310,Puerto Guantanamo,Deseo; El Deseo,CU,Caribbean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Natural),Unknown,19.983333,-75.13333299999998,34,0.08823529411764706
+Cuba,10540.0,Cuba South Coast -- 10310,Cienfuegos, ,CU,Caribbean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Natural),Unknown,22.15,-80.45,34,0.08823529411764706
+Egypt,48055.0,Egypt Red Sea -- 47950,Ain Sukhna Terminal,Ain Sukhnah; Sumed,EG,Gulf of Suez; Red Sea; Indian Ocean,15.0,Large,3,Open Roadstead,Cargo,29.583333,32.366667,27,0.1111111111111111
+Nigeria,46200.0,Nigeria -- 46120,Pennington Oil Terminal, ,NG,Gulf of Guinea; North Atlantic Ocean,0.0,Large,3,Open Roadstead,Unknown,4.25,5.616667,12,0.25
+United Arab Emirates,48276.0,United Arab Emirates -- 48260,Mina Jabal Ali,Mina Jebel Ali,AE,Persian Gulf; Indian Ocean,15.0,Large,3,Coastal (Breakwater),Cargo,25.016667,55.05,20,0.15
+Portugal,38130.0,Arquipelago Da Madeira -- 38120,Funchal, ,PT,North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,32.633333,-16.916667,17,0.17647058823529413
+Spain,38170.0,Islas Canarias -- 38140,Las Palmas, ,ES,North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,28.15,-15.416667,46,0.06521739130434782
+Cuba,10150.0,Cuba North Coast -- 10030,Nuevitas Bay,Nuevitas; Pastelillo; Puerto Tarafa,CU,North Atlantic Ocean,0.0,Large,3,Coastal (Natural),Unknown,21.55,-77.266667,34,0.08823529411764706
+"Saint Helena, Ascension, and Tristan da Cunha",46690.0,Ascension -- 46660,Jamestown, ,SH,South Atlantic Ocean,0.0,Large,3,Open Roadstead,Unknown,-15.916667,-5.716667,5,0.6
+Russia,44200.0,Russia -- 44030,Novorossiysk, ,RU,Black Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,44.716667,37.783333,44,0.06818181818181818
+Ukraine,43650.0,Ukraine -- 43620,Odesa,Odyessa,UA,Black Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,46.483333,30.733333,18,0.16666666666666666
+Ukraine,43645.0,Ukraine -- 43620,Illichivsk,Sukhoy,UA,Black Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,46.3,30.65,18,0.16666666666666666
+Turkey,43420.0,Turkey Europe -- 43325,Istanbul,Constantinople,TR,Sea of Marmara; Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Canal or Lake,Unknown,41.016667,28.966667,21,0.14285714285714285
+Belgium,31250.0,Belgium -- 31240,Antwerpen,Antwerp; Anvers,BE,North Sea; North Atlantic Ocean,0.0,Large,3,River (Tide Gates),Unknown,51.216667,4.4,9,0.3333333333333333
+Netherlands,31060.0,Netherlands -- 30980,Amsterdam, ,NL,North Sea; North Atlantic Ocean,0.0,Large,3,Canal or Lake,Unknown,52.366667,4.9,19,0.15789473684210525
+Germany,30900.0,Germany -- 30650,Bremen, ,DE,North Sea; North Atlantic Ocean,0.0,Large,3,River (Tide Gates),Unknown,53.133333,8.766667,34,0.08823529411764706
+Germany,30810.0,Germany -- 30650,Bremerhaven, ,DE,North Sea; North Atlantic Ocean,0.0,Large,3,River (Tide Gates),Unknown,53.533333,8.583333,34,0.08823529411764706
+Germany,30780.0,Germany -- 30650,Hamburg, ,DE,North Sea; North Atlantic Ocean,0.0,Large,3,Canal or Lake,Unknown,53.55,9.933333,34,0.08823529411764706
+Sweden,24210.0,Sweden -- 23860,Malmo, ,SE,Baltic Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,55.623333333,12.984722222,59,0.05084745762711865
+Sweden,24020.0,Sweden -- 23860,Goteborg,Gothenburg,SE,Kattegat; North Atlantic Ocean,0.0,Large,3,River (Tide Gates),Unknown,57.709722222,11.954722222,59,0.05084745762711865
+France,37190.0,France West Coast -- 36450,Bordeaux, ,FR,Bay of Biscay; North Atlantic Ocean,0.0,Large,3,River (Tide Gates),Unknown,44.866667,-0.566667,64,0.046875
+United Kingdom,34700.0,England West Coast -- 34580,Manchester, ,GB,Irish Sea; North Atlantic Ocean,0.0,Large,3,River (Tide Gates),Unknown,53.483333,-2.266667,138,0.021739130434782608
+United Kingdom,34690.0,England West Coast -- 34580,Liverpool, ,GB,Irish Sea; North Atlantic Ocean,0.0,Large,3,River (Tide Gates),Unknown,53.416667,-3.0,138,0.021739130434782608
+Germany,28930.0,Germany -- 28826,Kiel, ,DE,Baltic Sea; North Atlantic Ocean,0.0,Large,3,River (Basins),Unknown,54.316667,10.133333,34,0.08823529411764706
+Poland,28710.0,Poland -- 28700,Gdansk,Danzig,PL,Baltic Sea; North Atlantic Ocean,0.0,Large,3,Canal or Lake,Unknown,54.35,18.666667,14,0.21428571428571427
+Argentina,13760.0,Argentina -- 13310,Buenos Aires, ,AR,Rio de la Plata; South Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,-34.6,-58.366667,17,0.17647058823529413
+United States,3620.0,US Lake Erie -- 3400,Detroit, ,US,Lake Erie; Great Lakes,0.0,Large,3,River (Natural),Unknown,42.333333,-83.033333,271,0.01107011070110701
+United States,3430.0,US Lake Erie -- 3400,Buffalo, ,US,Lake Erie; Great Lakes,0.0,Large,3,Coastal (Breakwater),Unknown,42.883333,-78.88333299999998,271,0.01107011070110701
+United Kingdom,31470.0,England East Coast -- 31330,London, ,GB,North Sea; North Atlantic Ocean,0.0,Large,3,River (Basins),Unknown,51.5,-0.0833329999999,138,0.021739130434782608
+Indonesia,51220.0,Jawa -- 50920,Cilacap,Tjilatjap,ID,Indian Ocean,0.0,Large,3,Coastal (Natural),Unknown,-7.733333,109.0,39,0.07692307692307693
+Finland,27560.0,Finland -- 27380,Kokkola,Ykspihlaja,FI,Gulf of Bothnia; Baltic Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Natural),Unknown,63.85,23.016667,40,0.075
+Finland,28230.0,Finland -- 27380,Kotka, ,FI,Gulf of Finland; Baltic Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,60.466667,26.966667,40,0.075
+Ireland,34130.0,Ireland -- 33840,Foynes,Shannon Foynes,IE,North Atlantic Ocean,0.0,Large,3,River (Natural),Unknown,52.616667,-9.116667,12,0.25
+China,57775.0,China -- 57740,Lon Shui Terminal, ,CN,South China Sea; North Pacific Ocean,0.0,Large,3,Open Roadstead,Unknown,20.833333,115.683333,58,0.05172413793103448
+Hong Kong,57840.0,Hong Kong -- 57835,Hong Kong, ,HK,South China Sea; North Pacific Ocean,0.0,Large,3,Coastal (Natural),Unknown,22.266667,114.2,3,1.0
+Finland,28190.0,Finland -- 27380,Helsinki,Helsingfors,FI,Gulf of Finland; Baltic Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,60.166667,24.966667,40,0.075
+Russia,62950.0,Russia -- 62530,Murmansk,Rosta,RU,Barents Sea; Arctic Ocean,0.0,Large,3,River (Natural),Unknown,68.983333,33.05,44,0.06818181818181818
+Netherlands,31140.0,Netherlands -- 30980,Rotterdam, ,NL,North Sea; North Atlantic Ocean,0.0,Large,3,River (Basins),Unknown,51.9,4.483333,19,0.15789473684210525
+Finland,27520.0,Finland -- 27380,Oulu,Uleaborg,FI,Gulf of Bothnia; Baltic Sea; North Atlantic Ocean,0.0,Large,3,River (Natural),Unknown,65.016667,25.4,40,0.075
+Sweden,25380.0,Sweden Cont -- 24975,Stockholm, ,SE,Baltic Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,59.333333,18.05,59,0.05084745762711865
+United States,17730.0,United States W Coast -- 16000,Seattle, ,US,Alaska-Canada coastal waters; North Pacific Ocean,0.0,Large,3,Coastal (Natural),Unknown,47.6,-122.333333,271,0.01107011070110701
+Bulgaria,43510.0,Bulgaria -- 43460,Varna,Stalin,BG,Black Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,43.183333,27.966667,4,0.75
+Norway,23810.0,Norway -- 20620,Oslo,Christiana,NO,Skagerrak; North Atlantic Ocean,0.0,Large,3,Coastal (Natural),Unknown,59.898055556,10.745555556,57,0.05263157894736842
+Germany,28860.0,Germany -- 28826,Rostock, ,DE,Baltic Sea; North Atlantic Ocean,0.0,Large,3,River (Natural),Unknown,54.1,12.133333,34,0.08823529411764706
+United States,16940.0,United States W Coast -- 16000,Portland, ,US,North Pacific Ocean,0.0,Large,3,River (Natural),Unknown,45.516667,-122.666667,271,0.01107011070110701
+France,35950.0,France NW Coast -- 35720,Rade De Cherbourg, ,FR,English Channel; North Atlantic Ocean,0.0,Large,3,Coastal (Tide Gates),Unknown,49.65,-1.633333,64,0.046875
+United Kingdom,31720.0,England East Coast -- 31330,Teesport, ,GB,North Sea; North Atlantic Ocean,0.0,Large,3,River (Tide Gates),Unknown,54.65,-1.133333,138,0.021739130434782608
+United Kingdom,35580.0,England South Coast -- 35220,Southampton, ,GB,English Channel; North Atlantic Ocean,0.0,Large,3,River (Basins),Unknown,50.9,-1.4,138,0.021739130434782608
+Ukraine,43760.0,Ukraine -- 43620,Sevastopol,Syevastopol,UA,Black Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Natural),Unknown,44.616667,33.533333,18,0.16666666666666666
+France,35850.0,France NW Coast -- 35720,Port Of Rouen, ,FR,English Channel; North Atlantic Ocean,0.0,Large,3,River (Natural),Unknown,49.45,1.066667,64,0.046875
+United States,8890.0,US Gulf Coast -- 8650,Tri-City Port, ,US,Lake Michigan; Great Lakes,0.0,Large,3,River (Natural),Unknown,38.716667,-90.2,271,0.01107011070110701
+Estonia,28480.0,Estonia -- 28420,Vanasadam - Port of Tallinn, ,EE,Gulf of Finland; Baltic Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Ferry,59.450128,24.766676,18,0.16666666666666666
+Estonia,28425.0,Estonia -- 28420,Sillamae, ,EE,Gulf of Finland; Baltic Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Cargo,59.42612,27.73945,18,0.16666666666666666
+Italy,40820.0,Italy East Coast -- 40390,Trieste, ,IT,Adriatic Sea; Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,45.651,13.746,128,0.0234375
+United States,3490.0,US Lake Erie -- 3400,Cleveland, ,US,Lake Erie; Great Lakes,0.0,Large,3,Coastal (Breakwater),Unknown,41.5,-81.716667,271,0.01107011070110701
+United Kingdom,33770.0,Northern Ireland -- 33630,Belfast, ,GB,North Atlantic Ocean,0.0,Large,3,River (Basins),Unknown,54.616667,-5.9,138,0.021739130434782608
+Finland,27740.0,Finland -- 27380,Pori, ,FI,Gulf of Bothnia; Baltic Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Natural),Unknown,61.483333,21.8,40,0.075
+Canada,18150.0,Canada West Coast -- 18080,Vancouver, ,CA,Alaska-Canada coastal waters; North Pacific Ocean,0.0,Large,3,Coastal (Natural),Unknown,49.283333,-123.116667,101,0.0297029702970297
+Russia,28370.0,Russia -- 28250,Sankt-Peterburg,Leningrad; Petrograd; St Petersburg,RU,Gulf of Finland; Baltic Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,59.933333,30.3,44,0.06818181818181818
+Thailand,57450.0,Thailand -- 57431,Bangkok,Krung Thep,TH,Gulf of Thailand; South China Sea; North Pacific Ocean,0.0,Large,3,River (Natural),Unknown,13.75,100.5,10,0.3
+China,59970.0,China Continued -- 59850,Shanghai,Shanghai,CN,East China Sea; North Pacific Ocean,0.0,Large,3,River (Natural),Unknown,31.216667,121.5,58,0.05172413793103448
+China,60140.0,China Continued -- 59850,Qingdao Gang,Tsingtao,CN,Yellow Sea; North Pacific Ocean,0.0,Large,3,Open Roadstead,Unknown,36.033333,120.266667,58,0.05172413793103448
+Malaysia,49982.0,Malaysia -- 49820,Johor,Pasir Gudang,MY,Strait of Malacca; Indian Ocean,0.0,Large,3,River (Natural),Unknown,1.433333,103.9,27,0.1111111111111111
+Singapore,50017.0,Singapore -- 49990,Jurong Island, ,SG,Strait of Malacca; Indian Ocean,0.0,Large,3,Coastal (Natural),Unknown,1.283333,103.733333,9,0.3333333333333333
+Brazil,13060.0,Brazil SE Coast -- 12700,Rio Grande,San Pedro Do Sul; Sao Pedro Do Sul,BR,South Atlantic Ocean,0.0,Large,3,River (Natural),Unknown,-32.05,-52.083333,45,0.06666666666666667
+Philippines,58370.0,Philippine Islands -- 57960,Manila, ,PH,South China Sea; North Pacific Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,14.583333,120.966667,22,0.13636363636363635
+Taiwan,57935.0,Taiwan -- 57880,Tan-Shui,Taipei; Tan-shui Kang,TW,East China Sea; North Pacific Ocean,0.0,Large,3,River (Natural),Cargo,25.183333,121.4,17,0.17647058823529413
+Taiwan,57955.0,Peng Hu Lifh Tao -- 57940,Tai-Chung Kang, ,TW,Taiwan Strait; North Pacific Ocean,13.0,Large,3,Coastal (Natural),Cargo,24.3,120.5,17,0.17647058823529413
+Taiwan,57920.0,Taiwan -- 57880,Kao-Hsiung, ,TW,South China Sea; North Pacific Ocean,10.5,Large,3,Coastal (Breakwater),Cargo,22.616667,120.25,17,0.17647058823529413
+Poland,28740.0,Poland -- 28700,Gdynia, ,PL,Baltic Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,54.533333,18.55,14,0.21428571428571427
+Denmark,29230.0,Sjaelland -- 29150,Kobenhavn,Copenhagen,DK,Baltic Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,55.7,12.616667,37,0.08108108108108109
+Latvia,28610.0,Latvia -- 28600,Riga, ,LV,Gulf of Riga; Baltic Sea; North Atlantic Ocean,0.0,Large,3,River (Natural),Unknown,56.95,24.1,7,0.42857142857142855
+Cuba,10100.0,Cuba North Coast -- 10030,Bahai De La Habana,Havana,CU,Gulf of Mexico; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,23.133333,-82.366667,34,0.08823529411764706
+Russia,60610.0,Russia -- 60530,Vladivostok, ,RU,Sea of Japan; North Pacific Ocean,0.0,Large,3,Coastal (Natural),Cargo,43.108888889,131.888333333,44,0.06818181818181818
+Cuba,10270.0,Cuba North Coast -- 10030,Bahia De Sagua De Tanamo,Cayo Mambi; Puerto Tanamo,CU,North Atlantic Ocean,0.0,Large,3,Open Roadstead,Unknown,20.683333,-75.33333299999998,34,0.08823529411764706
+Cuba,10230.0,Cuba North Coast -- 10030,Antilla, ,CU,North Atlantic Ocean,0.0,Large,3,Coastal (Natural),Unknown,20.833333,-75.733333,34,0.08823529411764706
+Taiwan,57890.0,Taiwan -- 57880,Chi-Lung,Keelung,TW,East China Sea; North Pacific Ocean,0.0,Large,3,Coastal (Natural),Cargo,25.133333,121.766667,17,0.17647058823529413
+Japan,61385.0,Japan -- 61100,Kawasaki Ko, ,JP,North Pacific Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,35.5,139.766667,139,0.02158273381294964
+Japan,61390.0,Japan -- 61100,Yokohama Ko, ,JP,North Pacific Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,35.45,139.583333,139,0.02158273381294964
+Brazil,12920.0,Brazil SE Coast -- 12700,Rio De Janeiro, ,BR,South Atlantic Ocean,0.0,Large,3,Coastal (Natural),Unknown,-22.9,-43.166667,45,0.06666666666666667
+Brazil,12855.0,Brazil SE Coast -- 12700,Tubarao, ,BR,South Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,-20.283333,-40.25,45,0.06666666666666667
+India,49455.0,India East Coast -- 49310,Kattupalli Port, ,IN,Bay of Bengal; Indian Ocean,0.0,Large,3, ,Cargo,13.306944444,80.35222222199998,34,0.08823529411764706
+South Korea,60320.0,South Korea -- 60315,Inchon,Chemulpo; Jinsen,KR,Yellow Sea; North Pacific Ocean,0.0,Large,3,River (Basins),Unknown,37.466667,126.616667,19,0.15789473684210525
+Brazil,12970.0,Brazil SE Coast -- 12700,Santos, ,BR,South Atlantic Ocean,0.0,Large,3,Coastal (Natural),Unknown,-23.95,-46.3,45,0.06666666666666667
+South Korea,60390.0,South Korea -- 60315,Busan,Busan; Pusan,KR,Korea Strait; North Pacific Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,35.1,129.033333,19,0.15789473684210525
+India,49450.0,India East Coast -- 49310,Chennai (Madras), ,IN,Bay of Bengal; Indian Ocean,0.0,Large,3,Coastal (Breakwater),Cargo,13.1,80.29999999999998,34,0.08823529411764706
+Australia,54520.0,Australia -- 53290,Fremantle, ,AU,Indian Ocean,0.0,Large,3,Coastal (Breakwater),Cargo,-32.05,115.75,56,0.05357142857142857
+Estonia,28505.0,Estonia -- 28420,Paldiski South Harbor,Paldiski Lounasadam,EE,Gulf of Finland; Baltic Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Cargo,59.333343,24.081111,18,0.16666666666666666
+United States,16080.0,United States W Coast -- 16000,Los Angeles,San Pedro; Terminal Island; Wilmington,US,North Pacific Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,33.75,-118.25,271,0.01107011070110701
+Estonia,28484.0,Estonia -- 28420,Muuga-Port of Tallin,"Muuga Sadam, Novotallinsky",EE,Gulf of Finland; Baltic Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Cargo,59.500042,24.966693,18,0.16666666666666666
+Cote D'Ivoire,46000.0,Ivory Coast -- 45960,Abidjan, ,CI,North Atlantic Ocean,0.0,Large,3,Canal or Lake,Unknown,5.25,-4.016667,3,1.0
+Indonesia,53045.0,New Guinea West Coast - Irian Jaya -- 52900,Kasim Terminal, ,ID,South Pacific Ocean,0.0,Large,3,Open Roadstead,Unknown,-1.3,131.016667,39,0.07692307692307693
+South Africa,46770.0,South Africa -- 46725,Cape Town, ,ZA,South Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,-33.916667,18.416667,15,0.2
+Canada,6545.0,Nova Scotia Cont -- 6070,Canaport (St. John),St. John,CA,Bay of Fundy; North Atlantic Ocean,0.0,Large,3,Open Roadstead,Unknown,45.2,-65.983333,101,0.0297029702970297
+United Kingdom,32170.0,Scotland East Coast -- 31870,Dundee, ,GB,North Sea; North Atlantic Ocean,9.5,Large,3,River (Basins),Cargo,56.466667,-2.95,138,0.021739130434782608
+Canada,6340.0,Nova Scotia Cont -- 6070,Halifax, ,CA,North Atlantic Ocean,0.0,Large,3,Coastal (Natural),Unknown,44.65,-63.583333,101,0.0297029702970297
+Nigeria,46130.0,Nigeria -- 46120,Lagos, ,NG,Bight of Benin; Gulf of Guinea; North Atlantic Ocean,0.0,Large,3,River (Natural),Unknown,6.4,3.4,12,0.25
+Philippines,58960.0,Philippine Islands -- 57960,Cebu, ,PH,Philippine inland seas; North Pacific Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,10.3,123.9,22,0.13636363636363635
+Singapore,50000.0,Singapore -- 49990,Keppel - (East Singapore),Keppel Harbor,SG,Strait of Malacca; Indian Ocean,0.0,Large,3,Coastal (Natural),Unknown,1.283333,103.85,9,0.3333333333333333
+New Zealand,55060.0,New Zealand N Island -- 54990,Auckland, ,NZ,South Pacific Ocean,0.0,Large,3,River (Natural),Unknown,-36.83851,174.77164,18,0.16666666666666666
+Australia,53490.0,Australia -- 53290,Brisbane, ,AU,South Pacific Ocean,0.0,Large,3,River (Natural),Unknown,-27.400043,153.151546,56,0.05357142857142857
+Italy,40115.0,Sicilia -- 40090,Gioia Tauro, ,IT,Tyrrhenian Sea; Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Cargo,38.444,15.89,128,0.0234375
+Venezuela,12185.0,Venezuela -- 11950,Puerto La Cruz, ,VE,Caribbean Sea; North Atlantic Ocean,0.0,Large,3,Open Roadstead,Unknown,10.25,-64.633333,18,0.16666666666666666
+Australia,54030.0,Australia -- 53290,Melbourne, ,AU,Bass Strait; South Pacific Ocean,0.0,Large,3,Coastal (Natural),Unknown,-37.833333,144.966667,56,0.05357142857142857
+Italy,39470.0,Italy West Coast -- 39330,Genova, ,IT,Ligurian Sea; Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Cargo,44.406667,8.861389,128,0.0234375
+Australia,53610.0,Australia -- 53290,Newcastle, ,AU,Tasman Sea; South Pacific Ocean,0.0,Large,3,Coastal (Breakwater),Unknown,-32.916667,151.783333,56,0.05357142857142857
+Turkey,44450.0,Turkey Asia -- 44360,Samsun, ,TR,Black Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Breakwater),Cargo,41.3,36.35,21,0.14285714285714285
+Australia,53650.0,Australia -- 53290,Sydney, ,AU,Tasman Sea; South Pacific Ocean,0.0,Large,3,Coastal (Natural),Cargo,-33.866667,151.2,56,0.05357142857142857
+New Zealand,55150.0,New Zealand N Island -- 54990,Wellington,Port Nicholson,NZ,Cook Strait; South Pacific Ocean,0.0,Large,3,Coastal (Natural),Unknown,-41.283333,174.783333,18,0.16666666666666666
+Turkey,44750.0,Turkey Asia -- 44360,Izmir,Smyrna,TR,Aegean Sea; Mediterranean Sea; North Atlantic Ocean,0.0,Large,3,Coastal (Natural),Cargo,38.454722,27.146389,21,0.14285714285714285
+Gibraltar,38330.0,Gibraltar -- 38320,Europa Point, ,GI,Strait of Gibraltar; North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,36.133333,-5.35,2,1.0
+Kenya,47100.0,Kenya -- 47090,Mombasa,Mvita,KE,Indian Ocean,0.0,Medium,2,Coastal (Tide Gates),Unknown,-4.066667,39.666667,4,0.5
+Senegal,45820.0,Senegal -- 45817,Dakar, ,SN,North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,14.683333,-17.433333,3,0.6666666666666666
+Bermuda,9950.0,Bermuda Islands -- 9930,Ireland Island,Freeport,BM,North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,32.316667,-64.833333,4,0.5
+Iran,48420.0,Iran -- 48410,Khorramshahr, ,IR,Persian Gulf; Indian Ocean,0.0,Medium,2,River (Natural),Unknown,30.433333,48.183333,14,0.14285714285714285
+Mauritania,45812.0,Mauritania -- 45810,Nouadhibou,Etienne; Port Etienne,MR,North Atlantic Ocean,0.0,Medium,2,Coastal (Natural),Unknown,20.916667,-17.05,3,0.6666666666666666
+Kuwait,48357.0,Kuwait -- 48350,Mina Ash Shuaybah,Shuaiba,KW,Persian Gulf; Indian Ocean,0.0,Medium,2,Open Roadstead,Unknown,29.033333,48.166667,5,0.4
+Cambodia,57485.0,Cambodia -- 57478,Kampong Saom,Krong Preah Sihanouk; Sihanoukville,KH,Gulf of Thailand; South China Sea; North Pacific Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,10.633333,103.5,2,1.0
+Malta,40330.0,Malta -- 40320,Valletta Harbors, ,MT,Mediterranean Sea; North Atlantic Ocean,0.0,Medium,2,Coastal (Natural),Unknown,35.9,14.516667,4,0.5
+Saudi Arabia,48340.0,Saudi Arabia Continued -- 48330,Ras  Tannurah,Ras Tanura,SA,Persian Gulf; Indian Ocean,0.0,Medium,2,Open Roadstead,Unknown,26.633333,50.166667,9,0.2222222222222222
+Tunisia,45420.0,Tunisia -- 45360,La Goulette, ,TN,Mediterranean Sea; North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,36.8,10.3,13,0.15384615384615385
+Tunisia,45430.0,Tunisia -- 45360,Tunis, ,TN,Mediterranean Sea; North Atlantic Ocean,0.0,Medium,2,Canal or Lake,Unknown,36.8,10.25,13,0.15384615384615385
+Bahrain,48325.0,Bahrain -- 48305,Mina Salman,Khor Kaliya,BH,Persian Gulf; Indian Ocean,0.0,Medium,2,Coastal (Natural),Unknown,26.2,50.633333,7,0.2857142857142857
+Tanzania,47010.0,Tanzania -- 46965,Dar Es Salaam, ,TZ,Indian Ocean,0.0,Medium,2,Coastal (Natural),Unknown,-6.816667,39.3,5,0.4
+Mozambique,46890.0,Mozambique -- 46860,Beira, ,MZ,Mozambique Channel; Indian Ocean,0.0,Medium,2,Coastal (Natural),Unknown,-19.833333,34.833333,9,0.2222222222222222
+Mozambique,46870.0,Mozambique -- 46860,Maputo,Lourenco Marques,MZ,Indian Ocean,0.0,Medium,2,Canal or Lake,Cargo,-25.962777778,32.544722222,9,0.2222222222222222
+Israel,45080.0,Israel -- 45060,Haifa,Hefa; Khaifa,IL,Mediterranean Sea; North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,32.816667,35.0,4,0.5
+Iraq,48400.0,Iraq -- 48375,Al Basrah, ,IQ,Persian Gulf; Indian Ocean,0.0,Medium,2,River (Natural),Unknown,30.516667,47.833333,3,0.6666666666666666
+Iran,48430.0,Iran -- 48410,Abadan, ,IR,Persian Gulf; Indian Ocean,0.0,Medium,2,River (Natural),Unknown,30.333333,48.283333,14,0.14285714285714285
+Puerto Rico,11170.0,Puerto Rico -- 11080,Ensenada Honda, ,PR,Caribbean Sea; North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,18.233333,-65.633333,10,0.2
+Sudan,47944.0,Sudan -- 47910,Beshayer Oil Terminal, ,SD,Red Sea; Indian Ocean,0.0,Medium,2,Open Roadstead,Unknown,19.4,37.316667,6,0.3333333333333333
+Libya,45280.0,Libya -- 45200,Banghazi,Bengasi,LY,Mediterranean Sea; North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,32.116667,20.05,7,0.2857142857142857
+Kuwait,48361.0,Kuwait -- 48350,Mina Al Ahmadi,Al Fuhayhil,KW,Persian Gulf; Indian Ocean,0.0,Medium,2,Open Roadstead,Unknown,29.066667,48.166667,5,0.4
+Libya,45330.0,Libya -- 45200,Mina Tarabulus (Tripoli),Tripoli,LY,Mediterranean Sea; North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,32.9,13.183333,7,0.2857142857142857
+Tunisia,45435.0,Tunisia -- 45360,Tazerka Oil Terminal, ,TN,Mediterranean Sea; North Atlantic Ocean,0.0,Medium,2,Open Roadstead,Unknown,36.6,11.683333,13,0.15384615384615385
+Bahrain,48320.0,Bahrain -- 48305,Sitrah,Jazirat Sitrah,BH,Persian Gulf; Indian Ocean,0.0,Medium,2,Open Roadstead,Unknown,26.166667,50.666667,7,0.2857142857142857
+Sri Lanka,49290.0,Sri Lanka -- 49210,Trincomalee Harbor, ,LK,Bay of Bengal; Indian Ocean,0.0,Medium,2,Coastal (Natural),Cargo,8.55,81.216667,7,0.2857142857142857
+British Virgin Islands,11350.0,Tortola Island -- 11345,Road Harbor,Road Town,VG,Caribbean Sea; North Atlantic Ocean,0.0,Medium,2,Coastal (Natural),Unknown,18.416667,-64.616667,2,1.0
+The Bahamas,9990.0,Bahama Islands -- 9980,Nassau, ,BS,North Atlantic Ocean,0.0,Medium,2,Coastal (Natural),Unknown,25.083333,-77.34999999999998,3,0.6666666666666666
+Sudan,47940.0,Sudan -- 47910,Port Sudan,Bur Sudan,SD,Red Sea; Indian Ocean,0.0,Medium,2,Coastal (Breakwater),Cargo,19.6,37.233333,6,0.3333333333333333
+Oman,48235.0,Oman -- 48225,Duqm,Al Duqm,OM,Arabian Sea; Indian Ocean,0.0,Medium,2,Coastal (Breakwater),Cargo,19.673252583,57.716908916,6,0.3333333333333333
+Iran,48520.0,Iran -- 48410,Bandar Abbas,Bandar-e Shahid Bahonar,IR,Strait of Hormuz; Indian Ocean,0.0,Medium,2,Coastal (Breakwater),Cargo,27.15,56.2,14,0.14285714285714285
+Pakistan,48590.0,Pakistan -- 48580,Gwadar, ,PK,Arabian Sea; Indian Ocean,0.0,Medium,2,Coastal (Natural),Cargo,25.133333,62.3,5,0.4
+Qatar,48297.0,Qatar -- 48285,Ras Laffan, ,QA,Persian Gulf; Indian Ocean,13.5,Medium,2,Coastal (Breakwater),Cargo,25.916667,51.583333,5,0.4
+Christmas Island,50910.0,Christmas Island -- 50900,Flying Fish Cove, ,CX,Indian Ocean,0.0,Medium,2,Coastal (Natural),Unknown,-10.416667,105.7,2,1.0
+Iran,48470.0,Iran -- 48410,Bushehr, ,IR,Persian Gulf; Indian Ocean,0.0,Medium,2,Coastal (Natural),Unknown,28.983333,50.833333,14,0.14285714285714285
+Uruguay,13120.0,Uruguay -- 13090,Montevideo, ,UY,South Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,-34.9,-56.216667,3,0.6666666666666666
+Romania,43565.0,Romania -- 43540,Danube-Black Sea Canal, ,RO,Black Sea; North Atlantic Ocean,0.0,Medium,2,Canal or Lake,Unknown,44.266667,28.183333,5,0.4
+Macau,57810.0,Macau -- 57805,Macau, ,MO,South China Sea; North Pacific Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,22.183333,113.566667,2,1.0
+Iceland,105.0,Iceland  West Coast -- 60,Grundartangi, ,IS,North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,64.266667,-22.0,6,0.3333333333333333
+Iceland,100.0,Iceland  West Coast -- 60,Reykjavik,Akranes; Grundartangi,IS,North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Cargo,64.15,-21.933333,6,0.3333333333333333
+Falkland Islands (Islas Malvinas),14000.0,Falkland Islands -- 13990,Stanley, ,FK,South Atlantic Ocean,0.0,Medium,2,Coastal (Natural),Unknown,-51.7,-57.833333,2,1.0
+Martinique,11550.0,Martinique -- 11535,Fort De France, ,MQ,Caribbean Sea; North Atlantic Ocean,0.0,Medium,2,Open Roadstead,Unknown,14.6,-61.066667,2,1.0
+Guam,56550.0,Guam -- 56545,Apra Harbor, ,GU,North Pacific Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,13.45,144.616667,2,1.0
+Colombia,11930.0,Colombia North Coast -- 11860,Barranquilla, ,CO,Caribbean Sea; North Atlantic Ocean,0.0,Medium,2,River (Natural),Unknown,10.966667,-74.766667,13,0.15384615384615385
+Guyana,12370.0,Guyana -- 12350,Georgetown,Demerara,GY,North Atlantic Ocean,0.0,Medium,2,River (Natural),Unknown,6.833333,-58.166667,2,1.0
+Vietnam,57580.0,Vietnam -- 57510,Thanh Ho Chi Minh,Saigon,VN,South China Sea; North Pacific Ocean,0.0,Medium,2,River (Natural),Unknown,10.766667,106.716667,8,0.25
+Chile,14500.0,Chile -- 14070,Bahia De Valparaiso, ,CL,South Pacific Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,-33.033333,-71.616667,14,0.14285714285714285
+Mexico,9370.0,Mexico East Coast -- 9350,Tuxpan, ,MX,Gulf of Mexico; North Atlantic Ocean,0.0,Medium,2,River (Natural),Unknown,20.95,-97.4,24,0.08333333333333333
+Mexico,9360.0,Mexico East Coast -- 9350,Tampico, ,MX,Gulf of Mexico; North Atlantic Ocean,0.0,Medium,2,River (Natural),Unknown,22.216667,-97.866667,24,0.08333333333333333
+Trinidad and Tobago,11720.0,Trinidad -- 11705,Port Of Spain, ,TT,Caribbean Sea; North Atlantic Ocean,0.0,Medium,2,Coastal (Natural),Unknown,10.65,-61.516667,6,0.3333333333333333
+Jamaica,10770.0,Jamaica South Coast -- 10730,Kingston, ,JM,Caribbean Sea; North Atlantic Ocean,0.0,Medium,2,Coastal (Natural),Unknown,17.966667,-76.783333,4,0.5
+Guadeloupe,11450.0,Guadeloupe -- 11445,Pointe A Pitre, ,GP,Caribbean Sea; North Atlantic Ocean,0.0,Medium,2,Coastal (Natural),Unknown,16.233333,-61.533333,2,1.0
+Haiti,10880.0,Haiti -- 10810,Port Au Prince, ,HT,Caribbean Sea; North Atlantic Ocean,0.0,Medium,2,Open Roadstead,Unknown,18.55,-72.34999999999998,2,1.0
+Lithuania,28660.0,Lithuania -- 28650,Klaipeda,Memel,LT,Baltic Sea; North Atlantic Ocean,0.0,Medium,2,River (Natural),Unknown,55.716667,21.116667,2,1.0
+Dominican Republic,11035.0,Dominican Republic -- 10950,Andres (Andres Lng Terminal),Boca Chica; Puerto de Andres,DO,Caribbean Sea; North Atlantic Ocean,0.0,Medium,2,Open Roadstead,Unknown,18.433333,-69.633333,11,0.18181818181818182
+Dominican Republic,11040.0,Dominican Republic -- 10950,Santo Domingo,Ciudad Trujillo,DO,Caribbean Sea; North Atlantic Ocean,0.0,Medium,2,River (Natural),Unknown,18.466667,-69.883333,11,0.18181818181818182
+Peru,14950.0,Peru -- 14830,Puerto Del Callao, ,PE,South Pacific Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,-12.05,-77.15,5,0.4
+Puerto Rico,11260.0,Puerto Rico -- 11080,Playa De Ponce, ,PR,Caribbean Sea; North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,17.983333,-66.616667,10,0.2
+Puerto Rico,11270.0,Puerto Rico -- 11080,Playa De Guayanilla, ,PR,Caribbean Sea; North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,18.016667,-66.766667,10,0.2
+Antigua and Barbuda,11430.0,Antigua and Barbuda -- 11426,St Johns, ,AG,Caribbean Sea; North Atlantic Ocean,0.0,Medium,2,Open Roadstead,Unknown,17.116667,-61.85,2,1.0
+Albania,41668.0,Albania -- 41650,Porto Romano,Romano,AL,Adriatic Sea; Mediterranean Sea; North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Cargo,41.383333333,19.416666667,3,0.6666666666666666
+Pakistan,48600.0,Pakistan -- 48580,Karachi, ,PK,Arabian Sea; Indian Ocean,0.0,Medium,2,Coastal (Natural),Cargo,24.783333,66.983333,5,0.4
+Sri Lanka,49255.0,Sri Lanka -- 49210,Hambantota, ,LK,Indian Ocean,0.0,Medium,2, ,Cargo,6.116666667,81.13333333299998,7,0.2857142857142857
+Sri Lanka,49240.0,Sri Lanka -- 49210,Colombo, ,LK,Laccadive Sea; Indian Ocean,0.0,Medium,2,Coastal (Breakwater),Cargo,6.95,79.84999999999998,7,0.2857142857142857
+Panama,9860.0,Panama East Coast -- 9820,Puerto Cristobal, ,PA,Caribbean Sea; North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,9.35,-79.916667,9,0.2222222222222222
+Panama,9865.0,Panama East Coast -- 9820,Puerto Colon, ,PA,Caribbean Sea; North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,9.366667,-79.88333299999998,9,0.2222222222222222
+Chile,14660.0,Chile -- 14070,Antofagasta,Mejillones,CL,South Pacific Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,-23.65,-70.416667,14,0.14285714285714285
+Colombia,15370.0,Colombia West Coast -- 15350,Buenaventura, ,CO,North Pacific Ocean,0.0,Medium,2,Coastal (Natural),Cargo,3.883333,-77.06666699999998,13,0.15384615384615385
+Bahrain,48327.0,Bahrain -- 48305,Khalifa Bin Salman, ,BH,Persian Gulf; Indian Ocean,0.0,Medium,2,Coastal (Breakwater),Cargo,26.183333333,50.7,7,0.2857142857142857
+Ecuador,15275.0,Ecuador -- 15240,Puerto Maritimo De Guayaquil,Puero Nuevo,EC,South Pacific Ocean,0.0,Medium,2,River (Natural),Unknown,-2.283333,-79.9,3,0.6666666666666666
+Mexico,15770.0,Mexico West Coast -- 15700,Manzanillo, ,MX,North Pacific Ocean,14.0,Medium,2,Coastal (Breakwater),Unknown,19.05,-104.316667,24,0.08333333333333333
+Panama,15410.0,Panama West Coast -- 15380,Balboa, ,PA,Gulf of Panama; North Pacific Ocean,0.0,Medium,2,Canal or Lake,Unknown,8.95,-79.56666699999998,9,0.2222222222222222
+Mexico,15810.0,Mexico West Coast -- 15700,Mazatlan, ,MX,North Pacific Ocean,0.0,Medium,2,River (Natural),Cargo,23.2,-106.416667,24,0.08333333333333333
+Mexico,15990.0,Mexico West Coast -- 15700,Ensenada, ,MX,North Pacific Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,31.866667,-116.633333,24,0.08333333333333333
+Bangladesh,49590.0,Bangladesh -- 49570,Chittagong, ,BD,Bay of Bengal; Indian Ocean,0.0,Medium,2,River (Natural),Cargo,22.316666667,91.816666667,3,0.6666666666666666
+Mexico,15760.0,Mexico West Coast -- 15700,Acapulco, ,MX,North Pacific Ocean,0.0,Medium,2,Coastal (Natural),Unknown,16.85,-99.933333,24,0.08333333333333333
+Gabon,46440.0,Gabon -- 46410,Port Gentil, ,GA,Gulf of Guinea; North Atlantic Ocean,0.0,Medium,2,Coastal (Natural),Unknown,-0.7,8.8,6,0.3333333333333333
+Togo,46090.0,Togo -- 46080,Lome,Port De Lome,TG,Bight of Benin; Gulf of Guinea; North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,6.133333,1.283333,2,1.0
+Colombia,11910.0,Colombia North Coast -- 11860,Cartagena, ,CO,Caribbean Sea; North Atlantic Ocean,0.0,Medium,2,Coastal (Natural),Unknown,10.416667,-75.533333,13,0.15384615384615385
+Benin,46110.0,Benin -- 46100,Cotonou,Appi; Kentou; Kotonu,BJ,Bight of Benin; Gulf of Guinea; North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,6.35,2.433333,2,1.0
+Gabon,46430.0,Gabon -- 46410,Libreville, ,GA,Gulf of Guinea; North Atlantic Ocean,0.0,Medium,2,Open Roadstead,Unknown,0.383333,9.45,6,0.3333333333333333
+Cameroon,46280.0,Cameroon -- 46250,Douala,Duala,CM,Gulf of Guinea; North Atlantic Ocean,0.0,Medium,2,River (Natural),Unknown,4.05,9.683333,2,1.0
+Ghana,46040.0,Ghana -- 46010,Takoradi, ,GH,Gulf of Guinea; North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,4.883333,-1.733333,3,0.6666666666666666
+Cyprus,44950.0,Cyprus -- 44890,Limassol, ,CY,Mediterranean Sea; North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Cargo,34.648889,33.019722,4,0.5
+Slovenia,40860.0,Slovenia -- 40850,Koper,Capodistria,SI,Adriatic Sea; Mediterranean Sea; North Atlantic Ocean,0.0,Medium,2,Coastal (Natural),Unknown,45.55,13.733333,2,1.0
+Guinea,45855.0,Guinea -- 45842,Conakry,Conakri; Konakri,GN,North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Cargo,9.519444,-13.716667,2,1.0
+Mexico,9380.0,Mexico East Coast -- 9350,Veracruz, ,MX,Gulf of Mexico; North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,19.2,-96.133333,24,0.08333333333333333
+Malta,40340.0,Malta -- 40320,Marsaxlokk,Marsa Scirocco,MT,Mediterranean Sea; North Atlantic Ocean,0.0,Medium,2,Coastal (Natural),Cargo,35.826667,14.548333,4,0.5
+Curacao,11820.0,Curacao -- 11785,Bullen Baai,Curacao Oil Terminal,CW,Caribbean Sea; North Atlantic Ocean,0.0,Medium,2,Open Roadstead,Unknown,12.183333,-69.033333,5,0.4
+Curacao,11810.0,Curacao -- 11785,Willemstad, ,CW,Caribbean Sea; North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Unknown,12.116667,-68.933333,5,0.4
+Romania,43560.0,Romania -- 43540,Constanta,Constantsa; Constantza,RO,Black Sea; North Atlantic Ocean,0.0,Medium,2,Coastal (Breakwater),Cargo,44.166667,28.65,5,0.4
+Sint Maarten,11372.0,St Martin -- 11355,Coles Bay Oil Terminal, ,SX,Caribbean Sea; North Atlantic Ocean,0.0,Small,1,Open Roadstead,Unknown,18.016667,-63.083333,2,0.5
+Reunion,47690.0,Reunion -- 47670,Port Est, ,RE,Indian Ocean,0.0,Small,1,Coastal (Breakwater),Unknown,-20.933333,55.316667,2,0.5
+Reunion,47695.0,Reunion -- 47670,Port Ouest, ,RE,Indian Ocean,0.0,Small,1,Coastal (Breakwater),Unknown,-20.933333,55.283333,2,0.5
+Madagascar,47630.0,Madagascar -- 47350,Antsiranana,Antsirana; Diego Suarez; Port De La Nievre; Port Nievre,MG,Indian Ocean,0.0,Small,1,Coastal (Breakwater),Unknown,-12.266667,49.283333,2,0.5
+Saint Lucia,11625.0,Saint Lucia -- 11615,Grand Cul De Sac Bay,Cul De Sac,LC,Caribbean Sea; North Atlantic Ocean,0.0,Small,1,Coastal (Natural),Unknown,13.983333,-61.016667,2,0.5
+U.S. Virgin Islands,11310.0,St Thomas -- 11305,Charlotte Amalie,St Thomas Harbor,VI,Caribbean Sea; North Atlantic Ocean,0.0,Small,1,Open Roadstead,Unknown,18.35,-64.933333,3,0.3333333333333333
+Cabo Verde,45910.0,Cape Verde -- 45869,Porto Da Praia, ,CV,North Atlantic Ocean,0.0,Small,1,Coastal (Breakwater),Unknown,14.916667,-23.516667,1,1.0
+Montenegro,41640.0,Serbia and Montenegro -- 41560,Bar, ,ME,Adriatic Sea; Mediterranean Sea; North Atlantic Ocean,0.0,Small,1,Coastal (Breakwater),Unknown,42.083333,19.083333,1,1.0
+Burma,49690.0,Burma (Myanmar) -- 49610,Mergui, ,MM,Andaman Sea; Indian Ocean,0.0,Small,1,River (Natural),Unknown,12.433333,98.6,5,0.2
+Angola,46553.0,Angola -- 46540,Estrela Oil Field, ,AO,South Atlantic Ocean,0.0,Small,1,Open Roadstead,Unknown,-6.45,12.4,8,0.125
+Brunei,51630.0,Brunei -- 51610,Bandar Seri Begawan, ,BN,South China Sea; North Pacific Ocean,0.0,Small,1,River (Natural),Unknown,4.883333,114.883333,2,0.5
+Bosnia and Herzegovina,41415.0,Croatia -- 40877,Neum, ,BA,Adriatic Sea; Mediterranean Sea; North Atlantic Ocean,0.0,Small,1, ,Unknown,42.916667,17.6,1,1.0
+U.S. Virgin Islands,11320.0,St John -- 11315,Cruz Bay, ,VI,North Atlantic Ocean,0.0,Small,1,Coastal (Natural),Unknown,18.333333,-64.8,3,0.3333333333333333
+North Korea,60280.0,North Korea -- 60270,Nampo,Chinnampo,KP,Korea Bay; Yellow Sea; North Pacific Ocean,0.0,Small,1,River (Natural),Unknown,38.716667,125.4,7,0.14285714285714285
+U.S. Virgin Islands,11330.0,St Croix -- 11325,Frederiksted, ,VI,Caribbean Sea; North Atlantic Ocean,0.0,Small,1,Open Roadstead,Unknown,17.716667,-64.883333,3,0.3333333333333333
+North Korea,60310.0,North Korea -- 60270,Haeju Hang,Haeju,KP,Yellow Sea; North Pacific Ocean,0.0,Small,1,Coastal (Breakwater),Unknown,38.0,125.7,7,0.14285714285714285
+Jersey,36040.0,Channel Islands -- 35970,Saint Helier Harbour, ,JE,English Channel; North Atlantic Ocean,0.0,Small,1,Coastal (Breakwater),Unknown,49.183333,-2.116667,1,1.0
+Sint Maarten,11370.0,St Martin -- 11355,Philipsburg,Filipsburg; Grand Bay; Groote Baai,SX,Caribbean Sea; North Atlantic Ocean,0.0,Small,1,Coastal (Natural),Unknown,18.016667,-63.05,2,0.5
+Saint Lucia,11630.0,Saint Lucia -- 11615,Castries, ,LC,Caribbean Sea; North Atlantic Ocean,0.0,Small,1,Coastal (Natural),Unknown,14.016667,-61.0,2,0.5
+Eritrea,47900.0,Eritrea -- 47870,Mitsiwa Harbor,Massaua; Massawa,ER,Red Sea; Indian Ocean,0.0,Small,1,Coastal (Breakwater),Cargo,15.616667,39.466667,2,0.5
+Eritrea,47880.0,Eritrea -- 47870,Assab,Aseb,ER,Red Sea; Indian Ocean,0.0,Small,1,Coastal (Natural),Cargo,13.0,42.75,2,0.5
+Burma,49640.0,Burma (Myanmar) -- 49610,Bassein, ,MM,Andaman Sea; Indian Ocean,0.0,Small,1,River (Natural),Cargo,16.783333333,94.733333333,5,0.2
+Burma,49650.0,Burma (Myanmar) -- 49610,Rangoon, ,MM,Andaman Sea; Indian Ocean,0.0,Small,1,River (Natural),Cargo,16.766667,96.166667,5,0.2
+Burma,49660.0,Burma (Myanmar) -- 49610,Moulmein Harbor, ,MM,Andaman Sea; Indian Ocean,0.0,Small,1,River (Natural),Cargo,16.483333,97.616667,5,0.2
+Nicaragua,9770.0,Nicaragua East Coast -- 9740,Bluefields,El Rama; El Bluff,NI,Caribbean Sea; North Atlantic Ocean,0.0,Small,1,Open Roadstead,Unknown,12.016667,-83.75,2,0.5
+Djibouti,47855.0,Djibouti -- 47840,Doraleh, ,DJ,Gulf of Aden; Indian Ocean,0.0,Small,1,Coastal (Natural),Cargo,11.602777778,43.088611111,2,0.5
+Sierra Leone,45862.0,Sierra Leone -- 45860,Freetown, ,SL,North Atlantic Ocean,0.0,Small,1,Coastal (Natural),Unknown,8.5,-13.233333,1,1.0
+Burma,49620.0,Burma (Myanmar) -- 49610,Sittwe,Akyab,MM,Bay of Bengal; Indian Ocean,0.0,Small,1,Open Roadstead,Cargo,20.133333,92.9,5,0.2
+Angola,46485.0,Angola -- 46478,Takula Terminal, ,AO,South Atlantic Ocean,0.0,Small,1,Open Roadstead,Unknown,-5.216667,11.783333,8,0.125
+Angola,46487.0,Angola -- 46478,Malongo Oil Terminal, ,AO,South Atlantic Ocean,0.0,Small,1,Open Roadstead,Unknown,-5.433333,12.083333,8,0.125
+Suriname,12410.0,Suriname -- 12395,Paramaribo, ,SR,North Atlantic Ocean,0.0,Small,1,River (Natural),Unknown,5.833333,-55.166667,1,1.0
+Angola,46490.0,Angola -- 46478,Cabinda,Kabinda,AO,South Atlantic Ocean,0.0,Small,1,Open Roadstead,Unknown,-5.533333,12.2,8,0.125
+Angola,46547.0,Angola -- 46540,Palanca Terminal, ,AO,South Atlantic Ocean,0.0,Small,1,Open Roadstead,Unknown,-6.95,12.4,8,0.125
+North Korea,60500.0,North Korea Continued -- 60438,Ch'ongjin, ,KP,Sea of Japan; North Pacific Ocean,0.0,Small,1,Coastal (Natural),Unknown,41.766667,129.816667,7,0.14285714285714285
+Congo (Kinshasa),46520.0,Congo -- 46500,Boma, ,CD,South Atlantic Ocean,0.0,Small,1,River (Natural),Unknown,-5.85,13.05,2,0.5
+Isle of Man,33610.0,Isle of Man -- 33580,Douglas, ,IM,Irish Sea; North Atlantic Ocean,0.0,Small,1,Coastal (Breakwater),Unknown,54.15,-4.466667,2,0.5
+Greenland,640.0,Greenland  West Coast -- 545,Nuuk,Godthab,GL,Labrador Sea; North Atlantic Ocean,0.0,Small,1,Coastal (Natural),Cargo,64.183333,-51.75,7,0.14285714285714285
+Georgia,44350.0,Georgia -- 44275,Batumi, ,GE,Black Sea; North Atlantic Ocean,0.0,Small,1,Coastal (Breakwater),Cargo,41.65,41.65,1,1.0
+Vanuatu,57200.0,Vanuatu -- 57160,Luganville,Santo,VU,South Pacific Ocean,0.0,Small,1,Coastal (Natural),Unknown,-15.516667,167.166667,1,1.0
+Greenland,543.0,Greenland East Coast -- 540,Kusanartoq, ,GL,North Atlantic Ocean,0.0,Small,1,Coastal (Natural),Unknown,61.766667,-42.216667,7,0.14285714285714285
+North Korea,60450.0,North Korea Continued -- 60438,Hungnam,Konan,KP,Sea of Japan; North Pacific Ocean,0.0,Small,1,Coastal (Breakwater),Unknown,39.833333,127.616667,7,0.14285714285714285
+North Korea,60510.0,North Korea Continued -- 60438,Najin,Rashin,KP,Sea of Japan; North Pacific Ocean,0.0,Small,1,River (Basins),Unknown,42.233333,130.3,7,0.14285714285714285
+Greenland,760.0,Greenland  West Coast -- 545,Aasiaat,Egedesminde,GL,Baffin Bay; Arctic Ocean,0.0,Small,1,Coastal (Natural),Cargo,68.710833333,-52.868333333,7,0.14285714285714285
+Greenland,810.0,Greenland  West Coast -- 545,Illulissat (Jakobshavn),Iliussat,GL,Baffin Bay; Arctic Ocean,0.0,Small,1,Coastal (Natural),Fishing,69.216667,-51.1,7,0.14285714285714285
+Greenland,840.0,Greenland  West Coast -- 545,Qeqertarsuaq,Godhavn,GL,Baffin Bay; Arctic Ocean,0.0,Small,1,Coastal (Natural),Cargo,69.233333,-53.533333,7,0.14285714285714285
+Greenland,610.0,Greenland  West Coast -- 545,Paamuit (Frederikshab),Frederikshab; Pamiut,GL,Labrador Sea; North Atlantic Ocean,0.0,Small,1,Coastal (Natural),Cargo,62.0,-49.666667,7,0.14285714285714285
+Guernsey,36000.0,Channel Islands -- 35970,Saint Peter Port, ,GG,English Channel; North Atlantic Ocean,0.0,Small,1,Coastal (Breakwater),Unknown,49.45,-2.533333,1,1.0
+Saint Pierre and Miquelon,1750.0,Ile St Pierre -- 1740,Port De St Pierre,St Pierre,PM,North Atlantic Ocean,0.0,Small,1,Coastal (Breakwater),Unknown,46.783333,-56.166667,1,1.0
+Isle of Man,33620.0,Isle of Man -- 33580,Ramsey, ,IM,Irish Sea; North Atlantic Ocean,0.0,Small,1,Coastal (Breakwater),Unknown,54.316667,-4.366667,2,0.5
+Federated States of Micronesia,56590.0,Caroline Islands -- 56560,Pohnpei Harbor,Langar Road,FM,North Pacific Ocean,0.0,Small,1,Coastal (Natural),Unknown,6.983333,158.2,1,1.0
+Greenland,690.0,Greenland  West Coast -- 545,Sisimiut,Holsteinsborg,GL,Davis Strait; North Atlantic Ocean,0.0,Small,1,Coastal (Natural),Cargo,66.916667,-53.7,7,0.14285714285714285
+French Polynesia,55840.0,Society Islands -- 55765,Papeete, ,PF,South Pacific Ocean,0.0,Small,1,Coastal (Natural),Unknown,-17.533333,-149.583333,1,1.0
+Northern Mariana Islands,56520.0,Northern Mariana Is -- 56515,Saipan, ,MP,North Pacific Ocean,0.0,Small,1,Coastal (Natural),Unknown,15.2,145.683333,1,1.0
+North Korea,60440.0,North Korea Continued -- 60438,Wonsan, ,KP,Sea of Japan; North Pacific Ocean,0.0,Small,1,Coastal (Natural),Unknown,39.166667,127.45,7,0.14285714285714285
+North Korea,60520.0,North Korea Continued -- 60438,Senbong,Uki,KP,Sea of Japan; North Pacific Ocean,0.0,Small,1,Coastal (Natural),Unknown,42.333333,130.4,7,0.14285714285714285
+Grenada,11670.0,Grenada -- 11665,St George's, ,GD,Caribbean Sea; North Atlantic Ocean,0.0,Small,1,Coastal (Natural),Unknown,12.05,-61.75,1,1.0
+Liberia,45940.0,Liberia -- 45920,Monrovia, ,LR,North Atlantic Ocean,0.0,Small,1,Coastal (Breakwater),Unknown,6.316667,-10.816667,1,1.0
+Barbados,11690.0,Barbados -- 11675,Bridgetown, ,BB,North Atlantic Ocean,0.0,Small,1,Coastal (Breakwater),Unknown,13.1,-59.633333,1,1.0
+Saint Vincent and the Grenadines (Windward Islands),11640.0,Saint Vincent -- 11637,Kingstown, ,VC,Caribbean Sea; North Atlantic Ocean,0.0,Small,1,Coastal (Natural),Unknown,13.15,-61.233333,1,1.0
+Caribbean Netherlands,11390.0,Saint Eustatius -- 11385,Oranjestad,Orange Baai; Orange Stad,BQ,Caribbean Sea; North Atlantic Ocean,0.0,Small,1,Open Roadstead,Unknown,17.483333,-62.983333,1,1.0
+Madagascar,47540.0,Madagascar -- 47350,Toamasina, ,MG,Indian Ocean,0.0,Small,1,Coastal (Breakwater),Unknown,-18.166667,49.416667,2,0.5
+Mauritius,47720.0,Mauritius -- 47710,Port Louis, ,MU,Indian Ocean,0.0,Small,1,Coastal (Breakwater),Unknown,-20.15,57.5,1,1.0
+Antarctica,63130.0,Antarctica -- 63060,Mcmurdo Station, ,AQ,Ross Sea; South Pacific Ocean,0.0,Small,1,Coastal (Natural),Unknown,-77.84999999999998,166.65,1,1.0
+Brunei,51620.0,Brunei -- 51610,Muara Harbor,Brooketon,BN,South China Sea; North Pacific Ocean,0.0,Small,1,Coastal (Natural),Unknown,5.033333,115.066667,2,0.5
+Guatemala,9625.0,Guatemala East Coast -- 9600,Santo Tomas De Castilla,Puerto Matias De Galves,GT,Caribbean Sea; North Atlantic Ocean,0.0,Small,1,Coastal (Natural),Unknown,15.7,-88.616667,2,0.5
+Guatemala,9620.0,Guatemala East Coast -- 9600,Puerto Barrios, ,GT,Caribbean Sea; North Atlantic Ocean,0.0,Small,1,Open Roadstead,Unknown,15.733333,-88.59999999999998,2,0.5
+New Caledonia,57320.0,New Caledonia -- 57260,Noumea, ,NC,Coral Sea; South Pacific Ocean,0.0,Small,1,Coastal (Natural),Unknown,-22.283333,166.433333,1,1.0
+Fiji,55540.0,Fiji -- 55510,Suva Harbor, ,FJ,South Pacific Ocean,0.0,Small,1,Coastal (Natural),Unknown,-18.133333,178.416667,2,0.5
+Fiji,55550.0,Fiji -- 55510,Levuka, ,FJ,South Pacific Ocean,0.0,Small,1,Coastal (Natural),Unknown,-17.683333,178.833333,2,0.5
+American Samoa,55680.0,American Samoa -- 55675,Pago Pago Harbor, ,AS,South Pacific Ocean,0.0,Small,1,Coastal (Natural),Unknown,-14.283333,-170.666667,1,1.0
+Papua New Guinea,53160.0,New Guinea SE Coast -- 53140,Port Moresby, ,PG,Coral Sea; South Pacific Ocean,0.0,Small,1,Open Roadstead,Unknown,-9.466667,147.133333,6,0.16666666666666666
+Papua New Guinea,56810.0,Bismarck Archipelago -- 56700,Rabaul, ,PG,Bismarck Sea; South Pacific Ocean,0.0,Small,1,Coastal (Natural),Cargo,-4.2,152.183333,6,0.16666666666666666
+Timor-Leste,51440.0,East Timor -- 51430,Dili, ,TL,Banda Sea; South Pacific Ocean,0.0,Small,1,Coastal (Natural),Unknown,-8.533333,125.583333,1,1.0
+Papua New Guinea,56760.0,Bismarck Archipelago -- 56700,Kavieng Harbor, ,PG,South Pacific Ocean,0.0,Small,1,Coastal (Natural),Unknown,-2.583333,150.8,6,0.16666666666666666
+Papua New Guinea,56855.0,Bismarck Archipelago -- 56700,Kieta, ,PG,South Pacific Ocean,0.0,Small,1,Coastal (Natural),Unknown,-6.216667,155.633333,6,0.16666666666666666
+Djibouti,47850.0,Djibouti -- 47840,Djibouti,Jibuti,DJ,Gulf of Aden; Indian Ocean,0.0,Small,1,Coastal (Natural),Cargo,11.6,43.133333,2,0.5
+Nicaragua,15550.0,Nicaragua West Coast -- 15520,Corinto, ,NI,North Pacific Ocean,0.0,Small,1,River (Natural),Cargo,12.483333,-87.166667,2,0.5
+Costa Rica,15480.0,Costa Rica West Coast -- 15470,Golfito, ,CR,North Pacific Ocean,0.0,Small,1,Coastal (Natural),Unknown,8.633333,-83.166667,1,1.0
+Namibia,46640.0,Namibia -- 46635,Walvis Bay,Walvisbaai,NA,South Atlantic Ocean,0.0,Small,1,Coastal (Natural),Unknown,-22.95,14.5,2,0.5
+Solomon Islands,56975.0,Solomon Islands -- 56940,Port Noro,Cutter Pt,SB,Solomon Sea; South Pacific Ocean,0.0,Small,1,Open Roadstead,Unknown,-8.216667,157.183333,2,0.5
+Solomon Islands,57005.0,Solomon Islands -- 56940,Ringgi Cove, ,SB,Solomon Sea; South Pacific Ocean,0.0,Small,1,Coastal (Natural),Unknown,-8.116667,157.1,2,0.5
+Papua New Guinea,53282.0,New Guinea NE Coast -- 53210,Vanimo, ,PG,South Pacific Ocean,0.0,Small,1,Coastal (Natural),Cargo,-2.683333,141.133333,6,0.16666666666666666
+Papua New Guinea,56738.0,Bismarck Archipelago -- 56700,Wewak Harbor, ,PG,Bismarck Sea; South Pacific Ocean,0.0,Small,1,Open Roadstead,Cargo,-3.566667,143.633333,6,0.16666666666666666
+Congo (Kinshasa),46530.0,Congo -- 46500,Matadi, ,CD,South Atlantic Ocean,0.0,Small,1,River (Natural),Unknown,-5.816667,13.45,2,0.5
+Belize,9590.0,Belize -- 9580,Belize City, ,BZ,Caribbean Sea; North Atlantic Ocean,0.0,Small,1,Open Roadstead,Unknown,17.5,-88.183333,1,1.0
+Equatorial Guinea,46320.0,Equatorial Guinea -- 46300,Malabo,Rey Malabo; Santa Isabelle,GQ,Gulf of Guinea; North Atlantic Ocean,0.0,Small,1,Coastal (Natural),Unknown,3.75,8.783333,1,1.0
+Angola,46560.0,Angola -- 46540,Luanda, ,AO,South Atlantic Ocean,0.0,Small,1,Coastal (Natural),Unknown,-8.8,13.25,8,0.125
+Angola,46590.0,Angola -- 46540,Lobito, ,AO,South Atlantic Ocean,0.0,Small,1,Coastal (Natural),Unknown,-12.333333,13.566667,8,0.125
+Angola,46610.0,Angola -- 46540,Namibe,Mocamedes,AO,South Atlantic Ocean,0.0,Small,1,Open Roadstead,Unknown,-15.2,12.15,8,0.125
+Congo (Brazzaville),46470.0,Congo -- 46455,Pointe Noire,Balck Point Bay,CG,South Atlantic Ocean,0.0,Small,1,Coastal (Breakwater),Unknown,-4.783333,11.833333,1,1.0
+Namibia,46650.0,Namibia -- 46635,Luderitz Bay,Angra Pequena,NA,South Atlantic Ocean,0.0,Small,1,Coastal (Breakwater),Unknown,-26.65,15.15,2,0.5
+Seychelles,47220.0,Seychelles -- 47210,Victoria,Mahe; Port Victoria,SC,Indian Ocean,0.0,Small,1,Coastal (Natural),Cargo,-4.623333,55.464167,1,1.0
+Honduras,9650.0,Honduras East Coast -- 9630,Puerto Cortes, ,HN,Caribbean Sea; North Atlantic Ocean,0.0,Small,1,Open Roadstead,Unknown,15.833333,-87.95,1,1.0
+Aruba,11830.0,Aruba -- 11825,Sint Nicolaas Baai,Sint Nicolaashaven; St Nicolass,AW,Caribbean Sea; North Atlantic Ocean,0.0,Small,1,Coastal (Breakwater),Unknown,12.433333,-69.916667,1,1.0
