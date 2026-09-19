@@ -36,10 +36,24 @@ scenario:
   demand:
   - "AB"
 
-snapshots:
-  start: "2013-01-01"
-  end: "2014-01-01"
-  inclusive: "left" # end is not inclusive
+yamlsnapshots:
+  # Winter Week
+  winter_start: "2013-01-15"
+  winter_end: "2013-01-22"
+  
+  # Spring Week
+  spring_start: "2013-04-15"
+  spring_end: "2013-04-22"
+  
+  # Summer Week
+  summer_start: "2013-07-15"
+  summer_end: "2013-07-22"
+  
+  # Autumn Week
+  autumn_start: "2013-10-15"
+  autumn_end: "2013-10-22"
+  
+  inclusive: "left"
 
 results_dir: results/ # solved networks and sector postprocessing (RESDIR in Snakefile)
 summary_dir: results/ # summaries, plots, and copied configs (SDIR in Snakefile)
@@ -191,7 +205,7 @@ electricity:
   # ----------------- Electricity generation -------------------
   extendable_carriers:
     Generator: [solar, onwind, offwind-ac, offwind-dc, OCGT] # Remove 'offwind-ac' and 'offwind-dc' for landlocked countries (e.g., Jordan, Austria, Switzerland)
-    StorageUnit: [] # battery, H2
+    StorageUnit: [] # Hydro, PHS
     Store: [battery, H2]
     Link: [] # H2 pipeline
 
