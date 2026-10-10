@@ -18,7 +18,8 @@ What it checks (for ALL buses of the chosen carrier):
  3. PER-SNAPSHOT SYSTEM CLOSURE   (worst snapshot of the whole carrier system)
  4. TRANSMISSION AUDIT            (line / internal-link losses, sending vs receiving)
  5. CONVERSION-LINK AUDIT         (p_i = -eff_i * p0 consistency + implied losses)
- 6. SANITY FLAGS                  (load shedding, curtailment, loads on undefined
+ 6. CARRIER ELEMENTS DISTRIBUTION PER NODE (nodal breakdown of carrier elements)
+ 7. SANITY FLAGS                  (load shedding, curtailment, loads on undefined
                                    buses, negative generation, ...)
 
 PyPSA sign conventions used (identical to PyPSA itself)
@@ -57,6 +58,7 @@ logging.getLogger("pypsa").setLevel(logging.ERROR)
 # ----------------------------------------------------------------------------
 # USER SETTINGS (used when no command-line arguments are given, e.g. Spyder)
 # ----------------------------------------------------------------------------
+
 ####### Electricity-only ##########
 
 # NC_PATH = r"Output\libya-year-36\LCO2\3h\networks\elec_s_36_ec_lcopt_Co2L-3h.nc"
@@ -93,14 +95,14 @@ NC_PATH = r"Output/libya_h2export_hybrid_emispr_100/3hrs/postnetworks/orig_elec_
 # Desired presentation and iteration order for all network carriers
 CARRIER = [
     "AC",
-    "battery",
     "low voltage",
     "home battery",
+    "battery",
     "gas",
     "gas for industry",
     "H2",
     "H2 export",
-    "NH3",
+    "Ammonia NH3",
     "solid biomass for industry",
     "co2",
     "co2 stored",
@@ -477,9 +479,24 @@ def validate_carrier(n, carrier="AC", tol_mw=TOL_MW, rel_tol=REL_TOL):
     out(f"\n Max |p_i + eff_i*p0| over all audited terminals: {max_eff_err:.3e} MW")
     flags.append(("PASS" if ok_eff else "WARN", f"Link efficiency consistency: max err {max_eff_err:.2e} MW"))
 
-    # ======================================================= 6. SANITY FLAGS
+    # ============================================ 6. CARRIER ELEMENTS DISTRIBUTION PER NODE
     out("\n" + "#" * 100)
-    out(" 6. SANITY FLAGS")
+    out(" 6. CARRIER ELEMENTS DISTRIBUTION PER NODE")
+    out("#" * 100)
+    if not rec.empty:
+        rec_nodal = rec.copy()
+        rec_nodal["net"] = rec_nodal["sup"] - rec_nodal["dem"]
+        pivot_elem = rec_nodal.pivot_table(index="bus", columns="label", values="net", fill_value=0.0)
+        show_elem = pivot_elem.copy()
+        for col in show_elem.columns:
+            show_elem[col] = show_elem[col].map(lambda x: F(x))
+        out(show_elem.to_string())
+    else:
+        out(" No discrete carrier elements registered for this carrier.")
+
+    # ======================================================= 7. SANITY FLAGS
+    out("\n" + "#" * 100)
+    out(" 7. SANITY FLAGS")
     out("#" * 100)
     shed = rec[rec["label"].str.contains("load shedding", case=False, na=False)]["sup"].sum()
     load_total = rec[rec["label"].str.startswith("Load:")]["dem"].sum()
@@ -555,9 +572,7 @@ if __name__ == "__main__":
     if args.carrier:
         carriers_to_run = [c.strip() for c in args.carrier.split(",")]
     elif isinstance(CARRIER, list) and CARRIER:
-        # Filter CARRIER list to only include those present in the network while preserving user order
         carriers_to_run = [c for c in CARRIER if any(str(ac).lower() == str(c).lower() for ac in available_carriers)]
-        # Add any remaining network carriers not explicitly in CARRIER list at the end
         for ac in available_carriers:
             if not any(str(ac).lower() == str(c).lower() for c in carriers_to_run):
                 carriers_to_run.append(ac)
@@ -579,7 +594,6 @@ if __name__ == "__main__":
             print(err_msg)
             all_reports.append(err_msg)
 
-    # Combine all reports separated by page/section breaks
     separator = "\n\n" + "=" * 100 + "\n" + " " * 35 + "NEXT CARRIER REPORT SECTION" + "\n" + "=" * 100 + "\n\n"
     combined_content = separator.join(all_reports)
 

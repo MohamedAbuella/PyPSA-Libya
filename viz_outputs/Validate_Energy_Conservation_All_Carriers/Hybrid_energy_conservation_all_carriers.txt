@@ -110,7 +110,25 @@ electricity distribution grid 12     bus1      low voltage  45.278 TWh       45.
  Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
 
 ####################################################################################################
- 6. SANITY FLAGS
+ 6. CARRIER ELEMENTS DISTRIBUTION PER NODE
+####################################################################################################
+label  Generator: load shedding Generator: onwind Generator: solar   Link: CCGT Link: Fischer-Tropsch Link: H2 Electrolysis Link: H2 Fuel Cell Link: H2 turbine Link: Haber-Bosch Link: battery charger Link: battery discharger Link: electricity distribution grid Link: helmeth    Link: oil
+bus                                                                                                                                                                                                                                                                                            
+LY0 0                 0.000 MWh         5.148 TWh        6.437 TWh  442.407 MWh            -1.281 MWh          -524.115 MWh        122.571 MWh      104.285 MWh       -11.365 GWh             0.000 MWh                0.000 MWh                          -2.322 TWh  -215.155 MWh  697.020 GWh
+LY0 1                 0.000 MWh         1.004 GWh        3.143 GWh  443.747 MWh            -1.274 MWh          -516.064 MWh        122.624 MWh      104.242 MWh       -33.635 GWh             0.000 MWh                0.000 MWh                          -8.343 TWh  -212.934 MWh  403.073 GWh
+LY0 10                0.000 MWh         1.327 GWh      129.893 GWh  442.622 MWh            -1.269 MWh          -526.337 MWh        122.653 MWh      104.265 MWh       -54.997 GWh             0.000 MWh                0.000 MWh                         -12.562 TWh  -213.123 MWh  474.753 GWh
+LY0 2                 0.000 MWh         4.967 GWh        4.114 GWh  445.360 MWh            -1.278 MWh          -516.834 MWh        124.353 MWh      105.649 MWh       -25.172 GWh             0.000 MWh                0.000 MWh                          -6.161 TWh  -212.684 MWh  383.057 GWh
+LY0 3                 0.000 MWh         8.440 TWh        1.019 TWh  442.009 MWh            -1.280 MWh          -528.323 MWh        122.065 MWh      103.914 MWh        -5.257 GWh             0.000 MWh                0.000 MWh                          -1.113 TWh  -215.962 MWh    0.000 MWh
+LY0 4                 0.000 MWh         7.057 TWh        4.375 TWh  441.881 MWh            -1.287 MWh          -528.674 MWh        123.342 MWh      104.954 MWh        -6.858 GWh             0.000 MWh                0.000 MWh                          -1.469 TWh  -216.571 MWh  770.177 GWh
+LY0 5                 0.000 MWh         2.445 GWh        2.447 GWh  447.032 MWh            -1.277 MWh          -510.029 MWh        123.144 MWh      104.671 MWh        -3.872 GWh             0.000 MWh                0.000 MWh                          -1.042 TWh  -212.395 MWh  310.726 GWh
+LY0 6                 0.000 MWh         4.247 TWh       15.057 GWh  447.290 MWh            -1.282 MWh          -507.011 MWh        124.276 MWh      105.580 MWh       -10.143 GWh             0.000 MWh                0.000 MWh                          -2.432 TWh  -212.354 MWh  334.949 GWh
+LY0 7                 0.000 MWh         2.000 GWh      668.153 GWh  446.699 MWh            -1.283 MWh          -505.272 MWh        123.961 MWh      105.315 MWh       -12.452 GWh             0.000 MWh                0.000 MWh                          -2.757 TWh  -212.460 MWh  384.191 GWh
+LY0 8                 0.000 MWh         2.131 GWh        6.876 GWh  447.875 MWh            -1.281 MWh          -506.819 MWh        123.444 MWh      104.907 MWh        -6.506 GWh             0.000 MWh                0.000 MWh                          -1.397 TWh  -212.276 MWh    0.000 MWh
+LY0 9                 0.000 MWh         1.371 GWh        3.529 GWh  445.803 MWh            -1.273 MWh          -517.921 MWh        122.702 MWh      104.278 MWh       -19.404 GWh             0.000 MWh                0.000 MWh                          -4.897 TWh  -212.841 MWh    4.026 TWh
+LY1 0                 0.000 MWh        34.887 GWh       81.118 GWh    0.000 MWh            -1.282 MWh          -498.680 MWh        131.097 MWh      593.598 MWh        -4.127 GWh             0.000 MWh                0.000 MWh                        -782.852 GWh  -209.996 MWh    0.000 MWh
+
+####################################################################################################
+ 7. SANITY FLAGS
 ####################################################################################################
  Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
  Negative generator dispatch: 0.000 MWh
@@ -132,105 +150,6 @@ electricity distribution grid 12     bus1      low voltage  45.278 TWh       45.
   [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
 
   OVERALL ENERGY CONSERVATION FOR 'AC': PASSED  (with warnings)
-====================================================================================================
-
-====================================================================================================
-                                   NEXT CARRIER REPORT SECTION
-====================================================================================================
-
-====================================================================================================
- ENERGY CONSERVATION & NODAL BALANCE VALIDATION  --  CARRIER: BATTERY
-====================================================================================================
- PyPSA version   : 0.30.3
- Snapshots       : 2920  (2013-01-01 00:00:00 -> 2013-12-31 21:00:00), step = 3 h
- Weighting       : sum of weights = 8,760.0 h  (per snapshot: 3.00 - 3.00 h)
- Buses of carrier: 12  ->  LY0 0 battery ... LY1 0 battery
- Objective       : 5.5125 bn EUR/yr
- Unit mode       : ENERGY (MWh / GWh / TWh)
-
-####################################################################################################
- 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)
-####################################################################################################
- Tolerance (max |residual|) : 0.01 MW      Relative tolerance : 1e-06
- Max |residual|             : 0.0000 MW  at bus 'LY0 0 battery', snapshot 2013-01-01 00:00:00
- Sum |residual| energy      : 0.000 MWh  (0.00e+00 of carrier throughput)
- RESULT                     : PASSED
-
- Per-bus ledger (annualised, signed:  + into bus / - out of bus):
-               Generators      Loads Cross-carrier links     Stores Storage units Transfers (lines/internal links)   Residual max|res| MW
-LY0 0 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
-LY0 1 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
-LY0 10 battery  0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
-LY0 2 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
-LY0 3 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
-LY0 4 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
-LY0 5 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
-LY0 6 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
-LY0 7 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
-LY0 8 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
-LY0 9 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
-LY1 0 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
-----------------------------------------------------------------------------------------------------
- TOTAL         | Generators: 0.000 MWh | Loads: 0.000 MWh | Cross-carrier links: 0.000 MWh | Stores: 0.000 MWh | Storage units: 0.000 MWh | Transfers (lines/internal links): 0.000 MWh | Residual: 0.000 MWh
-
-####################################################################################################
- 2. CARRIER-LEVEL ENERGY BALANCE  (BATTERY, all 12 buses aggregated)
-####################################################################################################
- SUPPLY                                                                  Energy     Share
- ----------------------------------------------------------------------------------------
- TOTAL SUPPLY                                                         0.000 MWh
-
- DEMAND                                                                  Energy     Share
- ----------------------------------------------------------------------------------------
- TOTAL DEMAND                                                         0.000 MWh
-
- ========================================================================================
- NET (Supply - Demand) : 0.000 MWh   (0.000e+00 % of the larger side)
- RESULT                : PASSED - supply equals demand
-
-####################################################################################################
- 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)
-####################################################################################################
- Max |system residual| : 0.0000 MW at 2013-01-01 00:00:00
- Mean |system residual|: 0.0000 MW
- Peak supply   : 0.0000 MW at 2013-01-01 00:00:00
- Peak demand   : 0.0000 MW at 2013-01-01 00:00:00
- Min  demand   : 0.0000 MW at 2013-01-01 00:00:00
-
-####################################################################################################
- 4. TRANSMISSION AUDIT (lines and internal transport links)
-####################################################################################################
- Internal transport links (same-carrier at all terminals): 0
- TOTAL transmission losses entering the balance: 0.000 MWh
-
-####################################################################################################
- 5. CONVERSION-LINK AUDIT (links touching this carrier)
-####################################################################################################
-      link carrier  # terminal terminal carrier input @bus0 output @terminal eff (min-max) max|p_i+eff*p0| MW
-   battery charger 12     bus1          battery   0.000 MWh        0.000 MWh 0.9798-0.9798           0.00e+00
-battery discharger 12     bus1               AC   0.000 MWh        0.000 MWh 0.9798-0.9798           0.00e+00
-
- Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
-
-####################################################################################################
- 6. SANITY FLAGS
-####################################################################################################
- Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
- Negative generator dispatch: 0.000 MWh
- WARNING: 12 load(s) are attached to buses that DO NOT EXIST (their demand is IGNORED by the optimisation): 0.000 MWh
-    - low-temperature heat for industry: 0.000 MWh
-
-====================================================================================================
- VERDICT
-====================================================================================================
-  [PASS] Nodal balance: max |residual| = 0.0000 MW
-  [PASS] Carrier balance: net = 0.000 MWh (0.00e+00 %)
-  [PASS] Per-snapshot closure: max |res| = 0.0000 MW
-  [PASS] Link efficiency consistency: max err 0.00e+00 MW
-  [PASS] Load shedding: 0.000 MWh
-  [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
-
-  OVERALL ENERGY CONSERVATION FOR 'BATTERY': PASSED  (with warnings)
 ====================================================================================================
 
 ====================================================================================================
@@ -320,7 +239,25 @@ electricity distribution grid 12     bus1      low voltage  45.278 TWh       45.
  Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
 
 ####################################################################################################
- 6. SANITY FLAGS
+ 6. CARRIER ELEMENTS DISTRIBUTION PER NODE
+####################################################################################################
+label              Generator: load shedding Generator: solar rooftop Link: electricity distribution grid Link: home battery charger Link: home battery discharger     Load: AC Load: industry electricity
+bus                                                                                                                                                                                                      
+LY0 0 low voltage                 0.078 MWh              968.413 GWh                           2.322 TWh               -412.556 GWh                   396.054 GWh   -3.168 TWh               -106.104 GWh
+LY0 1 low voltage                 0.078 MWh                1.052 TWh                           8.343 TWh               -458.378 GWh                   440.043 GWh   -9.063 TWh               -314.578 GWh
+LY0 10 low voltage                0.078 MWh                2.439 TWh                          12.562 TWh               -901.946 GWh                   865.868 GWh  -14.450 TWh               -514.552 GWh
+LY0 2 low voltage                 0.078 MWh              982.656 GWh                           6.161 TWh               -419.760 GWh                   402.969 GWh   -6.891 TWh               -235.352 GWh
+LY0 3 low voltage                 0.078 MWh              280.361 GWh                           1.113 TWh               -146.143 GWh                   140.297 GWh   -1.339 TWh                -48.921 GWh
+LY0 4 low voltage                 0.078 MWh              537.783 GWh                           1.469 TWh               -255.278 GWh                   245.067 GWh   -1.933 TWh                -63.911 GWh
+LY0 5 low voltage                 0.078 MWh              109.744 GWh                           1.042 TWh                -97.690 GWh                    93.782 GWh   -1.112 TWh                -35.945 GWh
+LY0 6 low voltage                 0.078 MWh              508.174 GWh                           2.432 TWh               -237.162 GWh                   227.676 GWh   -2.836 TWh                -94.657 GWh
+LY0 7 low voltage                 0.078 MWh              586.041 GWh                           2.757 TWh               -259.701 GWh                   249.313 GWh   -3.216 TWh               -116.278 GWh
+LY0 8 low voltage                 0.078 MWh              298.394 GWh                           1.397 TWh               -147.717 GWh                   141.808 GWh   -1.628 TWh                -60.612 GWh
+LY0 9 low voltage                 0.078 MWh              649.655 GWh                           4.897 TWh               -385.734 GWh                   370.305 GWh   -5.349 TWh               -181.355 GWh
+LY1 0 low voltage                 0.078 MWh              318.045 GWh                         782.852 GWh               -168.030 GWh                   161.309 GWh   -1.056 TWh                -38.344 GWh
+
+####################################################################################################
+ 7. SANITY FLAGS
 ####################################################################################################
  Load shedding energy       : 0.932 MWh  (0.0000 % of loads on this carrier)
  Negative generator dispatch: 0.000 MWh
@@ -425,7 +362,25 @@ home battery discharger 12     bus1      low voltage   3.811 TWh        3.734 TW
  Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
 
 ####################################################################################################
- 6. SANITY FLAGS
+ 6. CARRIER ELEMENTS DISTRIBUTION PER NODE
+####################################################################################################
+label               Generator: load shedding Link: home battery charger Link: home battery discharger Store: home battery
+bus                                                                                                                      
+LY0 0 home battery                 0.000 MWh                404.221 GWh                  -404.221 GWh          -0.000 MWh
+LY0 1 home battery                 0.000 MWh                449.117 GWh                  -449.117 GWh           0.000 MWh
+LY0 10 home battery                0.000 MWh                883.723 GWh                  -883.723 GWh           0.000 MWh
+LY0 2 home battery                 0.000 MWh                411.279 GWh                  -411.279 GWh           0.000 MWh
+LY0 3 home battery                 0.000 MWh                143.190 GWh                  -143.190 GWh           0.000 MWh
+LY0 4 home battery                 0.000 MWh                250.120 GWh                  -250.120 GWh           0.000 MWh
+LY0 5 home battery                 0.000 MWh                 95.716 GWh                   -95.716 GWh           0.000 MWh
+LY0 6 home battery                 0.000 MWh                232.371 GWh                  -232.371 GWh           0.000 MWh
+LY0 7 home battery                 0.000 MWh                254.454 GWh                  -254.454 GWh           0.000 MWh
+LY0 8 home battery                 0.000 MWh                144.732 GWh                  -144.732 GWh           0.000 MWh
+LY0 9 home battery                 0.000 MWh                377.941 GWh                  -377.941 GWh          -0.000 MWh
+LY1 0 home battery                 0.000 MWh                164.635 GWh                  -164.635 GWh           0.000 MWh
+
+####################################################################################################
+ 7. SANITY FLAGS
 ####################################################################################################
  Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
  Negative generator dispatch: 0.000 MWh
@@ -443,6 +398,123 @@ home battery discharger 12     bus1      low voltage   3.811 TWh        3.734 TW
   [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
 
   OVERALL ENERGY CONSERVATION FOR 'HOME BATTERY': PASSED  (with warnings)
+====================================================================================================
+
+====================================================================================================
+                                   NEXT CARRIER REPORT SECTION
+====================================================================================================
+
+====================================================================================================
+ ENERGY CONSERVATION & NODAL BALANCE VALIDATION  --  CARRIER: BATTERY
+====================================================================================================
+ PyPSA version   : 0.30.3
+ Snapshots       : 2920  (2013-01-01 00:00:00 -> 2013-12-31 21:00:00), step = 3 h
+ Weighting       : sum of weights = 8,760.0 h  (per snapshot: 3.00 - 3.00 h)
+ Buses of carrier: 12  ->  LY0 0 battery ... LY1 0 battery
+ Objective       : 5.5125 bn EUR/yr
+ Unit mode       : ENERGY (MWh / GWh / TWh)
+
+####################################################################################################
+ 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)
+####################################################################################################
+ Tolerance (max |residual|) : 0.01 MW      Relative tolerance : 1e-06
+ Max |residual|             : 0.0000 MW  at bus 'LY0 0 battery', snapshot 2013-01-01 00:00:00
+ Sum |residual| energy      : 0.000 MWh  (0.00e+00 of carrier throughput)
+ RESULT                     : PASSED
+
+ Per-bus ledger (annualised, signed:  + into bus / - out of bus):
+               Generators      Loads Cross-carrier links     Stores Storage units Transfers (lines/internal links)   Residual max|res| MW
+LY0 0 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 1 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 10 battery  0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 2 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 3 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 4 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 5 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 6 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 7 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 8 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 9 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY1 0 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+----------------------------------------------------------------------------------------------------
+ TOTAL         | Generators: 0.000 MWh | Loads: 0.000 MWh | Cross-carrier links: 0.000 MWh | Stores: 0.000 MWh | Storage units: 0.000 MWh | Transfers (lines/internal links): 0.000 MWh | Residual: 0.000 MWh
+
+####################################################################################################
+ 2. CARRIER-LEVEL ENERGY BALANCE  (BATTERY, all 12 buses aggregated)
+####################################################################################################
+ SUPPLY                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+ TOTAL SUPPLY                                                         0.000 MWh
+
+ DEMAND                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+ TOTAL DEMAND                                                         0.000 MWh
+
+ ========================================================================================
+ NET (Supply - Demand) : 0.000 MWh   (0.000e+00 % of the larger side)
+ RESULT                : PASSED - supply equals demand
+
+####################################################################################################
+ 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)
+####################################################################################################
+ Max |system residual| : 0.0000 MW at 2013-01-01 00:00:00
+ Mean |system residual|: 0.0000 MW
+ Peak supply   : 0.0000 MW at 2013-01-01 00:00:00
+ Peak demand   : 0.0000 MW at 2013-01-01 00:00:00
+ Min  demand   : 0.0000 MW at 2013-01-01 00:00:00
+
+####################################################################################################
+ 4. TRANSMISSION AUDIT (lines and internal transport links)
+####################################################################################################
+ Internal transport links (same-carrier at all terminals): 0
+ TOTAL transmission losses entering the balance: 0.000 MWh
+
+####################################################################################################
+ 5. CONVERSION-LINK AUDIT (links touching this carrier)
+####################################################################################################
+      link carrier  # terminal terminal carrier input @bus0 output @terminal eff (min-max) max|p_i+eff*p0| MW
+   battery charger 12     bus1          battery   0.000 MWh        0.000 MWh 0.9798-0.9798           0.00e+00
+battery discharger 12     bus1               AC   0.000 MWh        0.000 MWh 0.9798-0.9798           0.00e+00
+
+ Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
+
+####################################################################################################
+ 6. CARRIER ELEMENTS DISTRIBUTION PER NODE
+####################################################################################################
+label          Generator: load shedding Link: battery charger Link: battery discharger Store: battery
+bus                                                                                                  
+LY0 0 battery                 0.000 MWh             0.000 MWh                0.000 MWh      0.000 MWh
+LY0 1 battery                 0.000 MWh             0.000 MWh                0.000 MWh      0.000 MWh
+LY0 10 battery                0.000 MWh             0.000 MWh                0.000 MWh      0.000 MWh
+LY0 2 battery                 0.000 MWh             0.000 MWh                0.000 MWh      0.000 MWh
+LY0 3 battery                 0.000 MWh             0.000 MWh                0.000 MWh      0.000 MWh
+LY0 4 battery                 0.000 MWh             0.000 MWh                0.000 MWh      0.000 MWh
+LY0 5 battery                 0.000 MWh             0.000 MWh                0.000 MWh      0.000 MWh
+LY0 6 battery                 0.000 MWh             0.000 MWh                0.000 MWh      0.000 MWh
+LY0 7 battery                 0.000 MWh             0.000 MWh                0.000 MWh      0.000 MWh
+LY0 8 battery                 0.000 MWh             0.000 MWh                0.000 MWh      0.000 MWh
+LY0 9 battery                 0.000 MWh             0.000 MWh                0.000 MWh      0.000 MWh
+LY1 0 battery                 0.000 MWh             0.000 MWh                0.000 MWh      0.000 MWh
+
+####################################################################################################
+ 7. SANITY FLAGS
+####################################################################################################
+ Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
+ Negative generator dispatch: 0.000 MWh
+ WARNING: 12 load(s) are attached to buses that DO NOT EXIST (their demand is IGNORED by the optimisation): 0.000 MWh
+    - low-temperature heat for industry: 0.000 MWh
+
+====================================================================================================
+ VERDICT
+====================================================================================================
+  [PASS] Nodal balance: max |residual| = 0.0000 MW
+  [PASS] Carrier balance: net = 0.000 MWh (0.00e+00 %)
+  [PASS] Per-snapshot closure: max |res| = 0.0000 MW
+  [PASS] Link efficiency consistency: max err 0.00e+00 MW
+  [PASS] Load shedding: 0.000 MWh
+  [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
+
+  OVERALL ENERGY CONSERVATION FOR 'BATTERY': PASSED  (with warnings)
 ====================================================================================================
 
 ====================================================================================================
@@ -548,7 +620,25 @@ gas for industry CC 12     bus3       co2 stored   9.373 TWh         1.670 Mt   
  Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
 
 ####################################################################################################
- 6. SANITY FLAGS
+ 6. CARRIER ELEMENTS DISTRIBUTION PER NODE
+####################################################################################################
+label      Generator: gas Generator: load shedding    Link: CCGT     Link: SMR  Link: SMR CC Link: Sabatier Link: gas for industry Link: gas for industry CC Link: helmeth Store: gas
+bus                                                                                                                                                                                  
+LY0 0 gas     626.206 GWh                0.000 MWh  -762.770 MWh  -583.389 MWh   -75.229 GWh    159.550 MWh             -1.036 GWh              -548.927 GWh   172.124 MWh  0.000 MWh
+LY0 1 gas       1.726 TWh                0.000 MWh  -765.082 MWh  -596.103 MWh   -94.369 GWh    159.297 MWh             -1.053 GWh                -1.630 TWh   170.347 MWh  0.000 MWh
+LY0 10 gas    104.623 TWh                0.000 MWh  -763.141 MWh  -604.397 MWh  -101.955 TWh    159.428 MWh             -1.058 GWh                -2.666 TWh   170.498 MWh  0.000 MWh
+LY0 2 gas       1.464 TWh                0.000 MWh  -767.863 MWh  -591.498 MWh  -242.869 GWh    160.906 MWh             -1.048 GWh                -1.219 TWh   170.147 MWh  0.000 MWh
+LY0 3 gas     288.456 GWh                0.000 MWh  -762.084 MWh  -586.702 MWh   -33.931 GWh    159.136 MWh             -1.017 GWh              -252.490 GWh   172.769 MWh  0.000 MWh
+LY0 4 gas     378.134 GWh                0.000 MWh  -761.864 MWh  -575.582 MWh   -45.906 GWh    160.496 MWh             -1.021 GWh              -330.203 GWh   173.256 MWh  0.000 MWh
+LY0 5 gas     233.621 GWh                0.000 MWh  -770.745 MWh  -590.841 MWh   -46.350 GWh    159.410 MWh             -1.008 GWh              -185.230 GWh   169.916 MWh  0.000 MWh
+LY0 6 gas     537.572 GWh                0.000 MWh  -771.190 MWh  -584.035 MWh   -45.930 GWh    160.597 MWh             -1.033 GWh              -489.585 GWh   169.883 MWh  0.000 MWh
+LY0 7 gas     649.087 GWh                0.000 MWh  -770.171 MWh  -582.928 MWh   -45.360 GWh    160.369 MWh             -1.037 GWh              -601.668 GWh   169.968 MWh  0.000 MWh
+LY0 8 gas     355.537 GWh                0.000 MWh  -772.198 MWh  -584.720 MWh   -40.392 GWh    159.636 MWh             -1.023 GWh              -313.096 GWh   169.821 MWh  0.000 MWh
+LY0 9 gas       1.034 TWh                0.000 MWh  -768.626 MWh  -598.328 MWh   -92.386 GWh    159.215 MWh             -1.049 GWh              -939.033 GWh   170.272 MWh  0.000 MWh
+LY1 0 gas     238.541 GWh                0.000 MWh     0.000 MWh  -582.783 MWh   -39.610 GWh    159.343 MWh             -1.006 GWh              -197.671 GWh   167.997 MWh  0.000 MWh
+
+####################################################################################################
+ 7. SANITY FLAGS
 ####################################################################################################
  Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
  Negative generator dispatch: 0.000 MWh
@@ -653,7 +743,25 @@ gas for industry CC 12     bus3       co2 stored   9.373 TWh         1.670 Mt 0.
  Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
 
 ####################################################################################################
- 6. SANITY FLAGS
+ 6. CARRIER ELEMENTS DISTRIBUTION PER NODE
+####################################################################################################
+label                   Generator: load shedding Link: gas for industry Link: gas for industry CC Load: gas for industry
+bus                                                                                                                     
+LY0 0 gas for industry                 0.000 MWh              1.036 GWh               494.034 GWh           -495.070 GWh
+LY0 1 gas for industry                 0.000 MWh              1.053 GWh                 1.467 TWh             -1.468 TWh
+LY0 10 gas for industry                0.000 MWh              1.058 GWh                 2.400 TWh             -2.401 TWh
+LY0 2 gas for industry                 0.000 MWh              1.048 GWh                 1.097 TWh             -1.098 TWh
+LY0 3 gas for industry                 0.000 MWh              1.017 GWh               227.241 GWh           -228.259 GWh
+LY0 4 gas for industry                 0.000 MWh              1.021 GWh               297.183 GWh           -298.203 GWh
+LY0 5 gas for industry                 0.000 MWh              1.008 GWh               166.707 GWh           -167.715 GWh
+LY0 6 gas for industry                 0.000 MWh              1.033 GWh               440.626 GWh           -441.659 GWh
+LY0 7 gas for industry                 0.000 MWh              1.037 GWh               541.501 GWh           -542.538 GWh
+LY0 8 gas for industry                 0.000 MWh              1.023 GWh               281.786 GWh           -282.809 GWh
+LY0 9 gas for industry                 0.000 MWh              1.049 GWh               845.130 GWh           -846.179 GWh
+LY1 0 gas for industry                 0.000 MWh              1.006 GWh               177.904 GWh           -178.909 GWh
+
+####################################################################################################
+ 7. SANITY FLAGS
 ####################################################################################################
  Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
  Negative generator dispatch: 0.000 MWh
@@ -781,7 +889,25 @@ ammonia cracker 12     bus1               H2   1.509 GWh        1.034 GWh   0.68
  Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
 
 ####################################################################################################
- 6. SANITY FLAGS
+ 6. CARRIER ELEMENTS DISTRIBUTION PER NODE
+####################################################################################################
+label     Generator: load shedding Link: Fischer-Tropsch     Link: H2 Link: H2 Electrolysis Link: H2 Fuel Cell Link: H2 turbine Link: Haber-Bosch    Link: SMR Link: SMR CC Link: Sabatier Link: ammonia cracker Load: H2 for industry Store: H2 Store Tank Store: H2 UHS
+bus                                                                                                                                                                                                                                                                      
+LY0 0 H2                 0.000 MWh          -260.136 MWh    0.000 MWh           325.842 MWh       -245.142 MWh     -254.354 MWh       -52.777 GWh  443.376 MWh   51.908 GWh   -199.437 MWh            85.234 MWh             0.000 MWh            0.000 MWh     0.000 MWh
+LY0 1 H2                 0.000 MWh          -258.639 MWh    0.000 MWh           320.837 MWh       -245.248 MWh     -254.248 MWh      -156.191 GWh  453.038 MWh   65.115 GWh   -199.121 MWh            84.980 MWh             0.000 MWh            0.000 MWh     0.000 MWh
+LY0 10 H2                0.000 MWh          -257.651 MWh  -69.994 TWh           327.224 MWh       -245.306 MWh     -254.305 MWh      -255.391 GWh  459.342 MWh   70.349 TWh   -199.285 MWh            85.587 MWh             0.000 MWh           -0.000 MWh     0.000 MWh
+LY0 2 H2                 0.000 MWh          -259.351 MWh   -6.203 GWh           321.316 MWh       -248.706 MWh     -257.680 MWh      -116.893 GWh  449.538 MWh  167.579 GWh   -201.132 MWh            86.190 MWh             0.000 MWh           -0.000 MWh     0.000 MWh
+LY0 3 H2                 0.000 MWh          -259.761 MWh    0.000 MWh           328.458 MWh       -244.130 MWh     -253.449 MWh       -24.413 GWh  445.893 MWh   23.412 GWh   -198.920 MWh            86.546 MWh             0.000 MWh            0.000 MWh     0.000 MWh
+LY0 4 H2                 0.000 MWh          -261.233 MWh    0.000 MWh           328.677 MWh       -246.684 MWh     -255.986 MWh       -31.849 GWh  437.443 MWh   31.675 GWh   -200.621 MWh            86.400 MWh             0.000 MWh           -0.000 MWh     0.000 MWh
+LY0 5 H2                 0.000 MWh          -259.293 MWh    0.000 MWh           317.085 MWh       -246.288 MWh     -255.294 MWh       -17.979 GWh  449.039 MWh   31.982 GWh   -199.263 MWh            88.297 MWh             0.000 MWh            0.000 MWh     0.000 MWh
+LY0 6 H2                 0.000 MWh          -260.287 MWh    0.000 MWh           315.208 MWh       -248.553 MWh     -257.511 MWh       -47.100 GWh  443.866 MWh   31.692 GWh   -200.747 MWh            86.159 MWh             0.000 MWh            0.000 MWh     0.000 MWh
+LY0 7 H2                 0.000 MWh          -260.353 MWh    0.000 MWh           314.128 MWh       -247.922 MWh     -256.867 MWh       -57.824 GWh  443.026 MWh   31.298 GWh   -200.461 MWh            85.480 MWh             0.000 MWh            0.000 MWh     0.000 MWh
+LY0 8 H2                 0.000 MWh          -260.020 MWh    0.000 MWh           315.089 MWh       -246.887 MWh     -255.872 MWh       -30.212 GWh  444.387 MWh   27.870 GWh   -199.545 MWh            86.279 MWh             0.000 MWh            0.000 MWh     0.000 MWh
+LY0 9 H2                 0.000 MWh          -258.362 MWh    0.000 MWh           321.991 MWh       -245.404 MWh     -254.337 MWh       -90.106 GWh  454.730 MWh   63.746 GWh   -199.019 MWh            85.605 MWh             0.000 MWh            0.000 MWh     0.000 MWh
+LY1 0 H2                 0.000 MWh          -260.173 MWh    0.000 MWh           310.029 MWh       -262.194 MWh       -1.448 GWh       -19.167 GWh  442.915 MWh   27.331 GWh   -199.179 MWh            86.920 MWh             0.000 MWh            0.000 MWh     0.000 MWh
+
+####################################################################################################
+ 7. SANITY FLAGS
 ####################################################################################################
  Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
  Negative generator dispatch: 0.000 MWh
@@ -871,7 +997,14 @@ link carrier  # terminal terminal carrier input @bus0 output @terminal eff (min-
  Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
 
 ####################################################################################################
- 6. SANITY FLAGS
+ 6. CARRIER ELEMENTS DISTRIBUTION PER NODE
+####################################################################################################
+label         Generator: load shedding    Link: H2 Load: H2 export
+bus                                                               
+H2 export bus                0.025 MWh  35.000 TWh     -70.000 TWh
+
+####################################################################################################
+ 7. SANITY FLAGS
 ####################################################################################################
  Load shedding energy       : 0.025 MWh  (0.0000 % of loads on this carrier)
  Negative generator dispatch: 0.000 MWh
@@ -889,111 +1022,6 @@ link carrier  # terminal terminal carrier input @bus0 output @terminal eff (min-
   [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
 
   OVERALL ENERGY CONSERVATION FOR 'H2 EXPORT': PASSED  (with warnings)
-====================================================================================================
-
-====================================================================================================
-                                   NEXT CARRIER REPORT SECTION
-====================================================================================================
-
-====================================================================================================
- ENERGY CONSERVATION & NODAL BALANCE VALIDATION  --  CARRIER: NH3
-====================================================================================================
- PyPSA version   : 0.30.3
- Snapshots       : 2920  (2013-01-01 00:00:00 -> 2013-12-31 21:00:00), step = 3 h
- Weighting       : sum of weights = 8,760.0 h  (per snapshot: 3.00 - 3.00 h)
- Buses of carrier: 12  ->  LY0 0 NH3 ... LY1 0 NH3
- Objective       : 5.5125 bn EUR/yr
- Unit mode       : ENERGY (MWh / GWh / TWh)
-
-####################################################################################################
- 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)
-####################################################################################################
- Tolerance (max |residual|) : 0.01 MW      Relative tolerance : 1e-06
- Max |residual|             : 0.0000 MW  at bus 'LY0 10 NH3', snapshot 2013-01-06 12:00:00
- Sum |residual| energy      : 0.000 MWh  (1.36e-15 of carrier throughput)
- RESULT                     : PASSED
-
- Per-bus ledger (annualised, signed:  + into bus / - out of bus):
-           Generators         Loads Cross-carrier links      Stores Storage units Transfers (lines/internal links)    Residual max|res| MW
-LY0 0 NH3   0.000 MWh   -45.832 GWh          45.832 GWh   0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    7.22e-14
-LY0 1 NH3   0.000 MWh  -135.884 GWh         135.884 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    1.00e-13
-LY0 10 NH3  0.000 MWh  -222.263 GWh         222.263 GWh   0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    2.89e-12
-LY0 2 NH3   0.000 MWh  -101.662 GWh         101.662 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    3.51e-13
-LY0 3 NH3   0.000 MWh   -21.132 GWh          21.132 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    9.21e-14
-LY0 4 NH3   0.000 MWh   -27.607 GWh          27.607 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    8.23e-14
-LY0 5 NH3   0.000 MWh   -15.527 GWh          15.527 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    9.01e-14
-LY0 6 NH3   0.000 MWh   -40.888 GWh          40.888 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    1.07e-13
-LY0 7 NH3   0.000 MWh   -50.227 GWh          50.227 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    9.15e-14
-LY0 8 NH3   0.000 MWh   -26.182 GWh          26.182 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    8.22e-14
-LY0 9 NH3   0.000 MWh   -78.337 GWh          78.337 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    9.24e-14
-LY1 0 NH3   0.000 MWh   -16.563 GWh          16.563 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    8.27e-14
-----------------------------------------------------------------------------------------------------
- TOTAL         | Generators: 0.000 MWh | Loads: -782.102 GWh | Cross-carrier links: 782.102 GWh | Stores: -0.000 MWh | Storage units: 0.000 MWh | Transfers (lines/internal links): 0.000 MWh | Residual: 0.000 MWh
-
-####################################################################################################
- 2. CARRIER-LEVEL ENERGY BALANCE  (NH3, all 12 buses aggregated)
-####################################################################################################
- SUPPLY                                                                  Energy     Share
- ----------------------------------------------------------------------------------------
-   Link: Haber-Bosch                                                783.611 GWh    99.22%
-   Store: ammonia store                                               6.180 GWh     0.78%
- TOTAL SUPPLY                                                       789.791 GWh
-
- DEMAND                                                                  Energy     Share
- ----------------------------------------------------------------------------------------
-   Load: NH3                                                        782.102 GWh    99.03%
-   Store: ammonia store                                               6.180 GWh     0.78%
-   Link: ammonia cracker                                              1.509 GWh     0.19%
- TOTAL DEMAND                                                       789.791 GWh
-
- ========================================================================================
- NET (Supply - Demand) : 0.000 MWh   (0.000e+00 % of the larger side)
- RESULT                : PASSED - supply equals demand
-
-####################################################################################################
- 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)
-####################################################################################################
- Max |system residual| : 0.0000 MW at 2013-01-06 12:00:00
- Mean |system residual|: 0.0000 MW
- Peak supply   : 90.4159 MW at 2013-01-03 09:00:00
- Peak demand   : 90.4159 MW at 2013-01-03 09:00:00
- Min  demand   : 89.2811 MW at 2013-12-24 18:00:00
-
-####################################################################################################
- 4. TRANSMISSION AUDIT (lines and internal transport links)
-####################################################################################################
- Internal transport links (same-carrier at all terminals): 0
- TOTAL transmission losses entering the balance: 0.000 MWh
-
-####################################################################################################
- 5. CONVERSION-LINK AUDIT (links touching this carrier)
-####################################################################################################
-   link carrier  # terminal terminal carrier input @bus0 output @terminal   eff (min-max) max|p_i+eff*p0| MW
-    Haber-Bosch 12     bus1              NH3 899.899 GWh      783.611 GWh   0.8708-0.8708           0.00e+00
-    Haber-Bosch 12     bus2               AC 899.899 GWh     -193.787 GWh -0.2153--0.2153           0.00e+00
-ammonia cracker 12     bus1               H2   1.509 GWh        1.034 GWh   0.6849-0.6849           0.00e+00
-
- Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
-
-####################################################################################################
- 6. SANITY FLAGS
-####################################################################################################
- Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
- Negative generator dispatch: 0.000 MWh
- WARNING: 12 load(s) are attached to buses that DO NOT EXIST (their demand is IGNORED by the optimisation): 0.000 MWh
-    - low-temperature heat for industry: 0.000 MWh
-
-====================================================================================================
- VERDICT
-====================================================================================================
-  [PASS] Nodal balance: max |residual| = 0.0000 MW
-  [PASS] Carrier balance: net = 0.000 MWh (0.00e+00 %)
-  [PASS] Per-snapshot closure: max |res| = 0.0000 MW
-  [PASS] Link efficiency consistency: max err 0.00e+00 MW
-  [PASS] Load shedding: 0.000 MWh
-  [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
-
-  OVERALL ENERGY CONSERVATION FOR 'NH3': PASSED  (with warnings)
 ====================================================================================================
 
 ====================================================================================================
@@ -1077,7 +1105,25 @@ solid biomass for industry CC 12     bus3                 co2 stored   0.000 MWh
  Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
 
 ####################################################################################################
- 6. SANITY FLAGS
+ 6. CARRIER ELEMENTS DISTRIBUTION PER NODE
+####################################################################################################
+label                             Generator: load shedding Link: solid biomass for industry Link: solid biomass for industry CC Load: solid biomass for industry
+bus                                                                                                                                                             
+LY0 0 solid biomass for industry                 0.000 MWh                        0.000 MWh                           0.000 MWh                        0.000 MWh
+LY0 1 solid biomass for industry                 0.000 MWh                        0.000 MWh                           0.000 MWh                        0.000 MWh
+LY0 10 solid biomass for industry                0.000 MWh                        0.000 MWh                           0.000 MWh                        0.000 MWh
+LY0 2 solid biomass for industry                 0.000 MWh                        0.000 MWh                           0.000 MWh                        0.000 MWh
+LY0 3 solid biomass for industry                 0.000 MWh                        0.000 MWh                           0.000 MWh                        0.000 MWh
+LY0 4 solid biomass for industry                 0.000 MWh                        0.000 MWh                           0.000 MWh                        0.000 MWh
+LY0 5 solid biomass for industry                 0.000 MWh                        0.000 MWh                           0.000 MWh                        0.000 MWh
+LY0 6 solid biomass for industry                 0.000 MWh                        0.000 MWh                           0.000 MWh                        0.000 MWh
+LY0 7 solid biomass for industry                 0.000 MWh                        0.000 MWh                           0.000 MWh                        0.000 MWh
+LY0 8 solid biomass for industry                 0.000 MWh                        0.000 MWh                           0.000 MWh                        0.000 MWh
+LY0 9 solid biomass for industry                 0.000 MWh                        0.000 MWh                           0.000 MWh                        0.000 MWh
+LY1 0 solid biomass for industry                 0.000 MWh                        0.000 MWh                           0.000 MWh                        0.000 MWh
+
+####################################################################################################
+ 7. SANITY FLAGS
 ####################################################################################################
  Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
  Negative generator dispatch: 0.000 MWh
@@ -1195,7 +1241,14 @@ solid biomass for industry CC 12     bus3                 co2 stored     0.000 t
  Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
 
 ####################################################################################################
- 6. SANITY FLAGS
+ 6. CARRIER ELEMENTS DISTRIBUTION PER NODE
+####################################################################################################
+label          Generator: load shedding Link: CCGT  Link: SMR Link: SMR CC Link: co2 vent Link: gas for industry Link: gas for industry CC   Link: oil Link: process emissions Link: process emissions CC Link: solid biomass for industry CC Load: industry coal emissions Load: industry oil emissions  Store: co2
+bus                                                                                                                                                                                                                                                                                                                 
+co2 atmosphere                  0.000 t  151.843 t  116.512 t   169.549 kt       1.665 Mt              204.419 t                 15.465 kt  635.305 kt               15.108 Mt                   22.800 t                             0.000 t                       0.000 t                     1.663 Mt  -44.694 Mt
+
+####################################################################################################
+ 7. SANITY FLAGS
 ####################################################################################################
  Load shedding energy       : 0.000 t  (0.0000 % of loads on this carrier)
  Negative generator dispatch: 0.000 t
@@ -1320,7 +1373,25 @@ solid biomass for industry CC 12     bus3                 co2 stored     0.000 t
  Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
 
 ####################################################################################################
- 6. SANITY FLAGS
+ 6. CARRIER ELEMENTS DISTRIBUTION PER NODE
+####################################################################################################
+label             Generator: load shedding Link: Fischer-Tropsch Link: SMR CC Link: Sabatier Link: co2 vent Link: gas for industry CC Link: helmeth Link: process emissions CC Link: solid biomass for industry CC Store: co2 stored
+bus                                                                                                                                                                                                                                 
+LY0 0 co2 stored                   0.000 t             -53.438 t    13.406 kt      -31.591 t    -111.120 kt                 97.819 kt     -34.081 t                  205.352 t                             0.000 t        -204.061 t
+LY0 1 co2 stored                   0.000 t             -53.130 t    16.817 kt      -31.541 t    -306.177 kt                290.413 kt     -33.729 t                  203.827 t                             0.000 t        -385.506 t
+LY0 10 co2 stored                  0.000 t             -52.927 t    18.168 Mt      -31.567 t     -18.641 Mt                475.157 kt     -33.759 t                  203.190 t                             0.000 t         -1.176 kt
+LY0 2 co2 stored                   0.000 t             -53.277 t    43.279 kt      -31.859 t    -260.057 kt                217.221 kt     -33.689 t                  204.521 t                             0.000 t        -331.318 t
+LY0 3 co2 stored                   0.000 t             -53.361 t     6.047 kt      -31.509 t     -51.320 kt                 44.994 kt     -34.208 t                  205.646 t                             0.000 t        -119.988 t
+LY0 4 co2 stored                   0.000 t             -53.663 t     8.180 kt      -31.778 t     -67.034 kt                 58.842 kt     -34.305 t                  206.849 t                             0.000 t        -140.306 t
+LY0 5 co2 stored                   0.000 t             -53.265 t     8.260 kt      -31.563 t     -42.034 kt                 33.008 kt     -33.643 t                  205.510 t                             0.000 t        -113.818 t
+LY0 6 co2 stored                   0.000 t             -53.469 t     8.185 kt      -31.798 t     -95.422 kt                 87.244 kt     -33.637 t                  205.679 t                             0.000 t        -190.484 t
+LY0 7 co2 stored                   0.000 t             -53.483 t     8.083 kt      -31.753 t    -115.189 kt                107.217 kt     -33.654 t                  205.347 t                             0.000 t        -202.051 t
+LY0 8 co2 stored                   0.000 t             -53.414 t     7.198 kt      -31.608 t     -63.037 kt                 55.794 kt     -33.625 t                  205.906 t                             0.000 t        -132.474 t
+LY0 9 co2 stored                   0.000 t             -53.074 t    16.463 kt      -31.525 t    -183.957 kt                167.336 kt     -33.714 t                  203.888 t                             0.000 t        -280.615 t
+LY1 0 co2 stored                   0.000 t             -53.445 t     7.058 kt      -31.550 t     -42.453 kt                 35.225 kt     -33.263 t                  206.642 t                             0.000 t        -112.220 t
+
+####################################################################################################
+ 7. SANITY FLAGS
 ####################################################################################################
  Load shedding energy       : 0.000 t  (0.0000 % of loads on this carrier)
  Negative generator dispatch: 0.000 t
@@ -1412,7 +1483,14 @@ process emissions CC 12     bus2       co2 stored    2.736 kt         2.462 kt 0
  Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
 
 ####################################################################################################
- 6. SANITY FLAGS
+ 6. CARRIER ELEMENTS DISTRIBUTION PER NODE
+####################################################################################################
+label             Generator: load shedding Link: process emissions Link: process emissions CC Load: process emissions
+bus                                                                                                                  
+process emissions                  0.000 t              -15.108 Mt                 -227.996 t                1.259 Mt
+
+####################################################################################################
+ 7. SANITY FLAGS
 ####################################################################################################
  Load shedding energy       : 0.000 t  (0.0000 % of loads on this carrier)
  Negative generator dispatch: 0.000 t
@@ -1519,7 +1597,25 @@ Fischer-Tropsch 12     bus3               AC   3.115 GWh      -15.346 MWh -0.004
  Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
 
 ####################################################################################################
- 6. SANITY FLAGS
+ 6. CARRIER ELEMENTS DISTRIBUTION PER NODE
+####################################################################################################
+label      Generator: load shedding Generator: oil Link: Fischer-Tropsch     Link: oil Load: naphtha for industry   Store: oil
+bus                                                                                                                           
+LY0 0 oil                 0.000 MWh    146.668 MWh           207.849 MWh    -1.991 TWh               -379.006 GWh    2.370 TWh
+LY0 1 oil                 0.000 MWh    146.675 MWh           206.653 MWh    -1.152 TWh                 -1.124 TWh    2.275 TWh
+LY0 10 oil                0.000 MWh    146.673 MWh           205.863 MWh    -1.356 TWh                 -1.838 TWh    3.194 TWh
+LY0 2 oil                 0.000 MWh    146.670 MWh           207.221 MWh    -1.094 TWh               -840.682 GWh    1.935 TWh
+LY0 3 oil                 0.000 MWh    146.619 MWh           207.549 MWh     0.000 MWh               -174.746 GWh  174.392 GWh
+LY0 4 oil                 0.000 MWh    146.667 MWh           208.726 MWh    -2.201 TWh               -228.293 GWh    2.428 TWh
+LY0 5 oil                 0.000 MWh    146.672 MWh           207.175 MWh  -887.789 GWh               -128.396 GWh    1.016 TWh
+LY0 6 oil                 0.000 MWh    146.675 MWh           207.969 MWh  -956.998 GWh               -338.117 GWh    1.295 TWh
+LY0 7 oil                 0.000 MWh    146.674 MWh           208.022 MWh    -1.098 TWh               -415.346 GWh    1.513 TWh
+LY0 8 oil                 0.000 MWh    146.624 MWh           207.756 MWh     0.000 MWh               -216.507 GWh  216.153 GWh
+LY0 9 oil                 0.000 MWh    146.664 MWh           206.431 MWh   -11.502 TWh               -647.801 GWh   12.150 TWh
+LY1 0 oil                 0.000 MWh    146.669 MWh           207.878 MWh     0.000 MWh               -136.966 GWh  136.611 GWh
+
+####################################################################################################
+ 7. SANITY FLAGS
 ####################################################################################################
  Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
  Negative generator dispatch: 0.000 MWh
@@ -1615,7 +1711,25 @@ LY1 0 coal   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh 
  Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
 
 ####################################################################################################
- 6. SANITY FLAGS
+ 6. CARRIER ELEMENTS DISTRIBUTION PER NODE
+####################################################################################################
+label       Generator: coal Generator: load shedding Store: coal
+bus                                                             
+LY0 0 coal        0.000 MWh                0.000 MWh  -0.000 MWh
+LY0 1 coal        0.000 MWh                0.000 MWh  -0.000 MWh
+LY0 10 coal       0.000 MWh                0.000 MWh  -0.000 MWh
+LY0 2 coal        0.000 MWh                0.000 MWh  -0.000 MWh
+LY0 3 coal        0.000 MWh                0.000 MWh  -0.000 MWh
+LY0 4 coal        0.000 MWh                0.000 MWh  -0.000 MWh
+LY0 5 coal        0.000 MWh                0.000 MWh  -0.000 MWh
+LY0 6 coal        0.000 MWh                0.000 MWh  -0.000 MWh
+LY0 7 coal        0.000 MWh                0.000 MWh  -0.000 MWh
+LY0 8 coal        0.000 MWh                0.000 MWh  -0.000 MWh
+LY0 9 coal        0.000 MWh                0.000 MWh  -0.000 MWh
+LY1 0 coal        0.000 MWh                0.000 MWh  -0.000 MWh
+
+####################################################################################################
+ 7. SANITY FLAGS
 ####################################################################################################
  Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
  Negative generator dispatch: 0.000 MWh
@@ -1700,7 +1814,14 @@ Earth lignite  0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MW
  Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
 
 ####################################################################################################
- 6. SANITY FLAGS
+ 6. CARRIER ELEMENTS DISTRIBUTION PER NODE
+####################################################################################################
+label         Generator: lignite Generator: load shedding Store: lignite
+bus                                                                     
+Earth lignite          0.000 MWh                0.000 MWh     -0.000 MWh
+
+####################################################################################################
+ 7. SANITY FLAGS
 ####################################################################################################
  Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
  Negative generator dispatch: 0.000 MWh
@@ -1801,7 +1922,25 @@ solid biomass for industry CC 12     bus3                 co2 stored   0.000 MWh
  Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
 
 ####################################################################################################
- 6. SANITY FLAGS
+ 6. CARRIER ELEMENTS DISTRIBUTION PER NODE
+####################################################################################################
+label                Generator: biomass Generator: load shedding Link: solid biomass for industry Link: solid biomass for industry CC Store: biomass
+bus                                                                                                                                                 
+LY0 0 solid biomass           0.000 MWh                0.000 MWh                        0.000 MWh                           0.000 MWh     -0.000 MWh
+LY0 1 solid biomass           0.000 MWh                0.000 MWh                        0.000 MWh                           0.000 MWh     -0.000 MWh
+LY0 10 solid biomass          0.000 MWh                0.000 MWh                        0.000 MWh                           0.000 MWh     -0.000 MWh
+LY0 2 solid biomass           0.000 MWh                0.000 MWh                        0.000 MWh                           0.000 MWh     -0.000 MWh
+LY0 3 solid biomass           0.000 MWh                0.000 MWh                        0.000 MWh                           0.000 MWh     -0.000 MWh
+LY0 4 solid biomass           0.000 MWh                0.000 MWh                        0.000 MWh                           0.000 MWh     -0.000 MWh
+LY0 5 solid biomass           0.000 MWh                0.000 MWh                        0.000 MWh                           0.000 MWh     -0.000 MWh
+LY0 6 solid biomass           0.000 MWh                0.000 MWh                        0.000 MWh                           0.000 MWh     -0.000 MWh
+LY0 7 solid biomass           0.000 MWh                0.000 MWh                        0.000 MWh                           0.000 MWh     -0.000 MWh
+LY0 8 solid biomass           0.000 MWh                0.000 MWh                        0.000 MWh                           0.000 MWh     -0.000 MWh
+LY0 9 solid biomass           0.000 MWh                0.000 MWh                        0.000 MWh                           0.000 MWh     -0.000 MWh
+LY1 0 solid biomass           0.000 MWh                0.000 MWh                        0.000 MWh                           0.000 MWh     -0.000 MWh
+
+####################################################################################################
+ 7. SANITY FLAGS
 ####################################################################################################
  Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
  Negative generator dispatch: 0.000 MWh
@@ -1819,4 +1958,127 @@ solid biomass for industry CC 12     bus3                 co2 stored   0.000 MWh
   [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
 
   OVERALL ENERGY CONSERVATION FOR 'BIOMASS': PASSED  (with warnings)
+====================================================================================================
+
+====================================================================================================
+                                   NEXT CARRIER REPORT SECTION
+====================================================================================================
+
+====================================================================================================
+ ENERGY CONSERVATION & NODAL BALANCE VALIDATION  --  CARRIER: NH3
+====================================================================================================
+ PyPSA version   : 0.30.3
+ Snapshots       : 2920  (2013-01-01 00:00:00 -> 2013-12-31 21:00:00), step = 3 h
+ Weighting       : sum of weights = 8,760.0 h  (per snapshot: 3.00 - 3.00 h)
+ Buses of carrier: 12  ->  LY0 0 NH3 ... LY1 0 NH3
+ Objective       : 5.5125 bn EUR/yr
+ Unit mode       : ENERGY (MWh / GWh / TWh)
+
+####################################################################################################
+ 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)
+####################################################################################################
+ Tolerance (max |residual|) : 0.01 MW      Relative tolerance : 1e-06
+ Max |residual|             : 0.0000 MW  at bus 'LY0 10 NH3', snapshot 2013-01-06 12:00:00
+ Sum |residual| energy      : 0.000 MWh  (1.36e-15 of carrier throughput)
+ RESULT                     : PASSED
+
+ Per-bus ledger (annualised, signed:  + into bus / - out of bus):
+           Generators         Loads Cross-carrier links      Stores Storage units Transfers (lines/internal links)    Residual max|res| MW
+LY0 0 NH3   0.000 MWh   -45.832 GWh          45.832 GWh   0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    7.22e-14
+LY0 1 NH3   0.000 MWh  -135.884 GWh         135.884 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    1.00e-13
+LY0 10 NH3  0.000 MWh  -222.263 GWh         222.263 GWh   0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    2.89e-12
+LY0 2 NH3   0.000 MWh  -101.662 GWh         101.662 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    3.51e-13
+LY0 3 NH3   0.000 MWh   -21.132 GWh          21.132 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    9.21e-14
+LY0 4 NH3   0.000 MWh   -27.607 GWh          27.607 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    8.23e-14
+LY0 5 NH3   0.000 MWh   -15.527 GWh          15.527 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    9.01e-14
+LY0 6 NH3   0.000 MWh   -40.888 GWh          40.888 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    1.07e-13
+LY0 7 NH3   0.000 MWh   -50.227 GWh          50.227 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    9.15e-14
+LY0 8 NH3   0.000 MWh   -26.182 GWh          26.182 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    8.22e-14
+LY0 9 NH3   0.000 MWh   -78.337 GWh          78.337 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    9.24e-14
+LY1 0 NH3   0.000 MWh   -16.563 GWh          16.563 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    8.27e-14
+----------------------------------------------------------------------------------------------------
+ TOTAL         | Generators: 0.000 MWh | Loads: -782.102 GWh | Cross-carrier links: 782.102 GWh | Stores: -0.000 MWh | Storage units: 0.000 MWh | Transfers (lines/internal links): 0.000 MWh | Residual: 0.000 MWh
+
+####################################################################################################
+ 2. CARRIER-LEVEL ENERGY BALANCE  (NH3, all 12 buses aggregated)
+####################################################################################################
+ SUPPLY                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Link: Haber-Bosch                                                783.611 GWh    99.22%
+   Store: ammonia store                                               6.180 GWh     0.78%
+ TOTAL SUPPLY                                                       789.791 GWh
+
+ DEMAND                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Load: NH3                                                        782.102 GWh    99.03%
+   Store: ammonia store                                               6.180 GWh     0.78%
+   Link: ammonia cracker                                              1.509 GWh     0.19%
+ TOTAL DEMAND                                                       789.791 GWh
+
+ ========================================================================================
+ NET (Supply - Demand) : 0.000 MWh   (0.000e+00 % of the larger side)
+ RESULT                : PASSED - supply equals demand
+
+####################################################################################################
+ 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)
+####################################################################################################
+ Max |system residual| : 0.0000 MW at 2013-01-06 12:00:00
+ Mean |system residual|: 0.0000 MW
+ Peak supply   : 90.4159 MW at 2013-01-03 09:00:00
+ Peak demand   : 90.4159 MW at 2013-01-03 09:00:00
+ Min  demand   : 89.2811 MW at 2013-12-24 18:00:00
+
+####################################################################################################
+ 4. TRANSMISSION AUDIT (lines and internal transport links)
+####################################################################################################
+ Internal transport links (same-carrier at all terminals): 0
+ TOTAL transmission losses entering the balance: 0.000 MWh
+
+####################################################################################################
+ 5. CONVERSION-LINK AUDIT (links touching this carrier)
+####################################################################################################
+   link carrier  # terminal terminal carrier input @bus0 output @terminal   eff (min-max) max|p_i+eff*p0| MW
+    Haber-Bosch 12     bus1              NH3 899.899 GWh      783.611 GWh   0.8708-0.8708           0.00e+00
+    Haber-Bosch 12     bus2               AC 899.899 GWh     -193.787 GWh -0.2153--0.2153           0.00e+00
+ammonia cracker 12     bus1               H2   1.509 GWh        1.034 GWh   0.6849-0.6849           0.00e+00
+
+ Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
+
+####################################################################################################
+ 6. CARRIER ELEMENTS DISTRIBUTION PER NODE
+####################################################################################################
+label      Generator: load shedding Link: Haber-Bosch Link: ammonia cracker     Load: NH3 Store: ammonia store
+bus                                                                                                           
+LY0 0 NH3                 0.000 MWh        45.957 GWh          -124.441 MWh   -45.832 GWh            0.000 MWh
+LY0 1 NH3                 0.000 MWh       136.008 GWh          -124.071 MWh  -135.884 GWh           -0.000 MWh
+LY0 10 NH3                0.000 MWh       222.388 GWh          -124.957 MWh  -222.263 GWh            0.000 MWh
+LY0 2 NH3                 0.000 MWh       101.787 GWh          -125.838 MWh  -101.662 GWh           -0.000 MWh
+LY0 3 NH3                 0.000 MWh        21.258 GWh          -126.357 MWh   -21.132 GWh           -0.000 MWh
+LY0 4 NH3                 0.000 MWh        27.733 GWh          -126.144 MWh   -27.607 GWh           -0.000 MWh
+LY0 5 NH3                 0.000 MWh        15.656 GWh          -128.913 MWh   -15.527 GWh           -0.000 MWh
+LY0 6 NH3                 0.000 MWh        41.013 GWh          -125.791 MWh   -40.888 GWh           -0.000 MWh
+LY0 7 NH3                 0.000 MWh        50.352 GWh          -124.800 MWh   -50.227 GWh           -0.000 MWh
+LY0 8 NH3                 0.000 MWh        26.308 GWh          -125.968 MWh   -26.182 GWh           -0.000 MWh
+LY0 9 NH3                 0.000 MWh        78.462 GWh          -124.983 MWh   -78.337 GWh           -0.000 MWh
+LY1 0 NH3                 0.000 MWh        16.690 GWh          -126.903 MWh   -16.563 GWh           -0.000 MWh
+
+####################################################################################################
+ 7. SANITY FLAGS
+####################################################################################################
+ Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
+ Negative generator dispatch: 0.000 MWh
+ WARNING: 12 load(s) are attached to buses that DO NOT EXIST (their demand is IGNORED by the optimisation): 0.000 MWh
+    - low-temperature heat for industry: 0.000 MWh
+
+====================================================================================================
+ VERDICT
+====================================================================================================
+  [PASS] Nodal balance: max |residual| = 0.0000 MW
+  [PASS] Carrier balance: net = 0.000 MWh (0.00e+00 %)
+  [PASS] Per-snapshot closure: max |res| = 0.0000 MW
+  [PASS] Link efficiency consistency: max err 0.00e+00 MW
+  [PASS] Load shedding: 0.000 MWh
+  [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
+
+  OVERALL ENERGY CONSERVATION FOR 'NH3': PASSED  (with warnings)
 ====================================================================================================

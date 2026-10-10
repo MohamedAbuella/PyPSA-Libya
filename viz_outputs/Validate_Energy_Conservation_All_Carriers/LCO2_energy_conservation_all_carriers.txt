@@ -113,7 +113,49 @@ LY1 0     1.121 TWh    -1.088 TWh           0.000 MWh  0.000 MWh   -37.962 GWh  
  Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
 
 ####################################################################################################
- 6. SANITY FLAGS
+ 6. CARRIER ELEMENTS DISTRIBUTION PER NODE
+####################################################################################################
+label  Generator: CCGT Generator: load shedding Generator: oil Generator: onwind Generator: solar        Load:  StorageUnit: H2 StorageUnit: battery
+bus                                                                                                                                                 
+LY0 0        0.000 MWh                0.049 MWh      0.000 MWh       347.354 MWh        3.253 GWh    -1.894 TWh    -431.092 MWh          -10.105 GWh
+LY0 1        0.000 MWh                0.049 MWh      0.000 MWh       574.968 MWh       82.020 GWh    -2.492 TWh    -429.780 MWh          -13.625 GWh
+LY0 10       0.000 MWh                0.049 MWh      0.000 MWh       567.143 GWh        8.455 GWh    -1.701 TWh    -431.172 MWh           -9.853 GWh
+LY0 11       0.000 MWh                0.049 MWh      0.000 MWh       391.750 MWh       14.682 GWh  -811.858 GWh    -430.719 MWh          -12.600 GWh
+LY0 12       0.000 MWh                0.049 MWh      0.000 MWh       239.500 GWh      554.147 GWh  -656.854 GWh    -422.355 MWh          -34.742 GWh
+LY0 13       0.000 MWh                0.049 MWh      0.000 MWh       220.192 MWh       97.014 GWh    -9.100 TWh    -431.146 MWh           -9.956 GWh
+LY0 14       0.000 MWh                0.049 MWh      0.000 MWh       433.288 MWh        3.131 GWh    -1.430 TWh    -431.176 MWh           -9.700 GWh
+LY0 15       0.000 MWh                0.049 MWh      0.000 MWh        43.296 GWh       73.425 GWh  -975.601 GWh    -427.030 MWh           -7.602 GWh
+LY0 16       0.000 MWh                0.049 MWh      0.000 MWh       384.323 MWh        4.622 GWh    -2.354 TWh    -432.386 MWh           -9.326 GWh
+LY0 17       0.000 MWh                0.049 MWh      0.000 MWh        12.069 GWh        5.782 GWh  -812.814 GWh    -430.717 MWh          -12.665 GWh
+LY0 18       0.000 MWh                0.049 MWh      0.000 MWh       305.624 MWh        2.879 GWh    -3.216 TWh    -431.119 MWh          -10.000 GWh
+LY0 19       0.000 MWh                0.049 MWh      0.000 MWh       636.489 MWh       11.153 GWh  -996.700 GWh    -431.216 MWh           -9.698 GWh
+LY0 2        0.000 MWh                0.049 MWh      0.000 MWh         1.983 GWh       19.269 TWh    -2.137 TWh    -406.687 MWh         -718.960 GWh
+LY0 20       0.000 MWh                0.049 MWh      0.000 MWh       637.003 MWh       96.764 GWh  -749.185 GWh    -430.056 MWh          -15.779 GWh
+LY0 21       0.000 MWh                0.049 MWh      0.000 MWh         1.646 GWh        7.568 GWh  -185.043 GWh    -430.662 MWh           -7.721 GWh
+LY0 22       0.000 MWh                0.049 MWh      0.000 MWh         2.204 GWh        3.653 GWh  -217.748 GWh    -430.648 MWh           -7.663 GWh
+LY0 23       0.000 MWh                0.049 MWh      0.000 MWh         1.362 GWh        1.976 GWh  -229.973 GWh    -407.584 MWh          -19.489 GWh
+LY0 24       0.000 MWh                0.049 MWh      0.000 MWh       362.323 MWh       13.478 GWh    -2.657 TWh    -430.720 MWh          -12.677 GWh
+LY0 25       0.000 MWh                0.049 MWh      0.000 MWh       768.017 MWh        7.163 TWh  -638.882 GWh    -429.081 MWh         -241.482 GWh
+LY0 26       0.000 MWh                0.049 MWh      0.000 MWh       993.907 MWh        1.700 TWh    -2.067 TWh    -430.691 MWh          -27.034 GWh
+LY0 27       0.000 MWh                0.049 MWh      0.000 MWh       439.345 MWh       72.622 GWh    -1.535 TWh    -430.717 MWh          -12.267 GWh
+LY0 28       0.000 MWh                0.049 MWh      0.000 MWh       523.269 MWh        4.472 GWh  -622.979 GWh    -430.324 MWh           -7.589 GWh
+LY0 29       0.000 MWh                0.049 MWh      0.000 MWh       668.631 MWh        7.268 GWh  -899.446 GWh    -412.746 MWh           -7.719 GWh
+LY0 3        0.000 MWh                0.049 MWh      0.000 MWh       466.467 MWh        1.499 TWh  -121.133 GWh    -431.247 MWh           -9.787 GWh
+LY0 30       0.000 MWh                0.049 MWh      0.000 MWh         1.878 GWh        2.465 GWh  -241.498 GWh    -420.036 MWh           -7.716 GWh
+LY0 31       0.000 MWh                0.049 MWh      0.000 MWh       651.062 GWh        6.424 TWh  -168.358 GWh    -427.618 MWh         -240.732 GWh
+LY0 32       0.000 MWh                0.049 MWh      0.000 MWh         1.343 GWh       13.083 GWh    -3.224 TWh    -431.233 MWh           -9.590 GWh
+LY0 33       0.000 MWh                0.049 MWh      0.000 MWh       276.838 MWh        1.930 GWh    -1.879 TWh    -431.331 MWh           -9.350 GWh
+LY0 34       0.000 MWh                0.049 MWh      0.000 MWh         1.228 TWh        8.456 GWh  -200.736 GWh    -423.192 MWh          -26.363 GWh
+LY0 4        0.000 MWh                0.049 MWh      0.000 MWh         1.614 TWh       11.052 TWh    -1.244 TWh    -428.973 MWh         -473.106 GWh
+LY0 5        0.000 MWh                0.049 MWh      0.000 MWh       187.963 MWh        2.411 GWh    -4.193 TWh    -431.190 MWh           -9.895 GWh
+LY0 6        0.000 MWh                0.049 MWh      0.000 MWh         7.066 GWh        7.797 GWh    -1.299 TWh    -430.707 MWh          -12.350 GWh
+LY0 7        0.000 MWh                0.049 MWh      0.000 MWh         2.002 TWh       14.405 GWh  -243.998 GWh    -430.661 MWh           -7.601 GWh
+LY0 8        0.000 MWh                0.049 MWh      0.000 MWh       578.878 MWh       19.892 GWh  -845.135 GWh    -430.740 MWh          -12.264 GWh
+LY0 9        0.000 MWh                0.049 MWh      0.000 MWh       620.572 MWh        7.485 GWh  -522.940 GWh    -430.929 MWh           -8.565 GWh
+LY1 0        0.000 MWh                0.049 MWh      0.000 MWh       854.418 GWh      266.946 GWh    -1.088 TWh    -410.423 MWh          -37.552 GWh
+
+####################################################################################################
+ 7. SANITY FLAGS
 ####################################################################################################
  Load shedding energy       : 1.760 MWh  (0.0000 % of loads on this carrier)
  Negative generator dispatch: 0.000 MWh
