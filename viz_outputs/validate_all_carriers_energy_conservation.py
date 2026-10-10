@@ -606,6 +606,7 @@ if __name__ == "__main__":
         
 
 
+
 # =====================================================================
 # SECTION 8: NODAL DISPATCH & ENERGY MIX PIE CHART MAP
 # =====================================================================
@@ -707,7 +708,10 @@ if not n.links.empty and not n.links_t.p0.empty:
 if all_nodal_records:
     df_raw = pd.DataFrame(all_nodal_records)
     
-    target_keywords = ["solar", "wind", "ccgt", "cogt", "oil", "battery", "fuel cell", "eletrolyser", "electrolyser", "h2-turbine", "h2 turbine", "smr", "smr-cc"]
+    # target_keywords = ["solar", "wind", "ccgt", "cogt", "oil", "gas", "battery", "fuel cell", "eletrolyser", "electrolyser", "h2-turbine", "h2 turbine", "smr", "smr-cc"]
+    # exclude_keywords = ["load", "grid", "distribution", "charger", "store", "vent", "cracker", "haber-bosch", "helmeth", "fischer-tropsch", "sabatier"]
+    
+    target_keywords = ["solar", "wind", "ccgt", "cogt", "oil", "gas", "battery", "fuel cell", "eletrolyser", "electrolyser", "h2-turbine", "h2 turbine", "smr", "smr-cc"]
     exclude_keywords = ["load", "grid", "distribution", "charger", "store", "vent", "cracker", "haber-bosch", "helmeth", "fischer-tropsch", "sabatier"]
     
     def is_target_element(label):
@@ -749,6 +753,29 @@ if all_nodal_records:
     nodal_mix = df_filtered.pivot_table(index="bus", columns="carrier_key", values="energy", aggfunc="sum", fill_value=0.0)
 else:
     nodal_mix = pd.DataFrame(index=ac_buses)
+
+# Globally filter out carriers with less than 2% system-wide share
+total_energy_all = nodal_mix.sum().sum() if not nodal_mix.empty else 0.0
+if not nodal_mix.empty and total_energy_all > 0:
+    global_percentages = (nodal_mix.sum() / total_energy_all) * 100.0
+    valid_carriers = global_percentages[global_percentages >= 2.0].index
+    nodal_mix = nodal_mix[[c for c in nodal_mix.columns if c in valid_carriers]]
+
+# Pre-calculate integer-rounded percentages that precisely sum to 100%
+rounded_percentages = {}
+if not nodal_mix.empty and total_energy_all > 0:
+    active_cols = sorted(list(nodal_mix.columns))
+    raw_pcts = {c: (nodal_mix[c].sum() / total_energy_all) * 100.0 for c in active_cols}
+    int_pcts = {c: int(round(p)) for c, p in raw_pcts.items()}
+    diff = 100 - sum(int_pcts.values())
+    if diff != 0:
+        # Adjust the carrier with the largest fractional remainder to ensure sum equals 100%
+        remainders = {c: raw_pcts[c] - int_pcts[c] for c in active_cols}
+        sorted_by_rem = sorted(remainders, key=remainders.get, reverse=True)
+        for i in range(abs(diff)):
+            c_target = sorted_by_rem[i % len(sorted_by_rem)]
+            int_pcts[c_target] += 1 if diff > 0 else -1
+    rounded_percentages = int_pcts
 
 # Initialize Map Axis
 fig = plt.figure(figsize=(11, 8))
@@ -856,12 +883,10 @@ for bus in ac_buses:
     if total_bus_energy <= 0:
         continue
 
-    # Filter out carriers contributing less than 2% of the node's total energy
-    percentages = (slices / total_bus_energy) * 100.0
-    filtered_slices = slices[percentages >= 2.0]
+    filtered_slices = slices[slices > 0]
 
     if filtered_slices.empty:
-        filtered_slices = slices.nlargest(1)
+        continue
 
     for c in filtered_slices.index:
         present_carriers.add(c)
@@ -883,19 +908,26 @@ for bus in ac_buses:
         ax_pie.pie(filtered_slices.values, colors=colors, startangle=90)
         ax_pie.set_aspect("equal")
 
-# Custom legend label formatter for precise capitalization and naming
+# Custom legend label formatter incorporating TWh and integer percentage
 def format_legend_label(carrier_key):
     if carrier_key == "SMR CC":
-        return "SMR+CC"
+        name = "SMR+CC"
     elif carrier_key == "SMR":
-        return "SMR"
+        name = "SMR"
     elif carrier_key == "CCGT":
-        return "CCGT"
+        name = "CCGT"
     elif carrier_key == "Solar PV":
-        return "Solar PV"
-    return str(carrier_key).title()
+        name = "Solar PV"
+    else:
+        name = str(carrier_key).title()
+        
+    energy_mwh = nodal_mix[carrier_key].sum() if not nodal_mix.empty and carrier_key in nodal_mix.columns else 0.0
+    energy_twh = energy_mwh / 1e6
+    pct = rounded_percentages.get(carrier_key, 0)
+    
+    return f"{name}: {energy_twh:,.2f} TWh ({pct}%)"
 
-# Add Legend with custom label formatting
+# Add Legend with custom label formatting including TWh and integer percentage
 legend_handles = [
     mpatches.Patch(color=CHART_COLORS.get(c, "#7f7f7f"), label=format_legend_label(c))
     for c in sorted(present_carriers)
