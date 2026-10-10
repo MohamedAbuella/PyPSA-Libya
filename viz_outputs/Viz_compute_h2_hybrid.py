@@ -34,11 +34,19 @@ from matplotlib.lines import Line2D
 # =====================================================================
 
 
+###### H2 export, year, 3-hrs, 36 clusters
+  
+# RESULTS = {
+#     "Hybrid": r"Output\libya_h2export_hybrid_emispr_100\3hrs\postnetworks\elec_s_36_ec_lcopt_Co2L-Ep-3h__2030_0.071_AB_70export.nc",
+# }
+
+
 ##### H2 export, year, 3-hrs 
   
 RESULTS = {
     "Hybrid": r"Output\libya_h2export_hybrid_emispr_100\3hrs\postnetworks\elec_s_12_ec_lcopt_Co2L-Ep-3h__2030_0.071_AB_70export.nc",
 }
+
 
 
 
@@ -1498,19 +1506,87 @@ print("\n" + "=" * 70)
 print("Generating August Monthly Dispatch Profiles for Scenarios (Matching Native Temporal Resolution)")
 print("=" * 70)
 
-def extract_total_dispatch(n: pypsa.Network) -> pd.DataFrame:
-    """Extracts total dispatch per carrier for all generators and storage units."""
-    # Generator dispatch
-    gen_dispatch = n.generators_t.p.T.groupby(n.generators.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(str(c).strip(), str(c).strip()))).sum().T / 1e3  # Convert MW to GW
+# Comprehensive carrier mapping including common variations, casing, and new categories
+CAPEX_CARRIER_MAP.update({
+    # Hydrogen & Fuel Cell variations
+    "H2 Fuel Cell": "H2 Fuel Cell",
+    "h2 fuel cell": "H2 Fuel Cell",
+    "H2 fuel cell": "H2 Fuel Cell",
+    "H2 turbine": "H2 Fuel Cell",
+    "h2 turbine": "H2 Fuel Cell",
+    "fuel cell": "H2 Fuel Cell",
+    "fc": "H2 Fuel Cell",
     
-    # Storage discharging dispatch
-    if hasattr(n, "storage_units") and not n.storage_units.empty and not n.storage_units_t.p.empty:
+    # Gas variations (Capitalized as "Gas")
+    "gas": "Gas",
+    "Gas": "Gas",
+    "CCGT": "CCGT",
+    "OCGT": "OCGT",
+
+    # Solar Rooftop variations (Capitalized as "Solar Rooftop")
+    "solar rooftop": "Solar Rooftop",
+    "Solar Rooftop": "Solar Rooftop",
+    "solar_rooftop": "Solar Rooftop",
+    "solar": "Solar PV",
+    "Solar PV": "Solar PV",
+})
+
+CHART_COLORS.update({
+    "H2 Fuel Cell": "cyan",
+    "Gas": "#7f8c8d",               # Professional muted gray for Gas
+    "Solar Rooftop": "#e6007e",     # Distinct magenta/pink accent for Solar Rooftop
+    "Solar PV": "#f5a623",          # Standard Solar PV color for consistency
+})
+
+
+def extract_total_dispatch(n: pypsa.Network) -> pd.DataFrame:
+    """Extracts total dispatch per carrier for all generators, storage units, and fuel cell links."""
+    parts = []
+    
+    # Diagnostic print to check available carriers in this network file
+    if hasattr(n, "generators") and not n.generators.empty:
+        print(f"  [Diagnostics] Generator carriers found: {n.generators.carrier.unique().tolist()}")
+    if hasattr(n, "links") and not n.links.empty:
+        print(f"  [Diagnostics] Link carriers found: {n.links.carrier.unique().tolist()}")
+
+    # 1. Generator dispatch
+    if hasattr(n, "generators") and not n.generators.empty and hasattr(n, "generators_t") and not n.generators_t.p.empty:
+        gen_dispatch = n.generators_t.p.T.groupby(
+            n.generators.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(str(c).strip(), CAPEX_CARRIER_MAP.get(str(c).strip().lower(), str(c).strip())))
+        ).sum().T / 1e3  # Convert MW to GW
+        parts.append(gen_dispatch)
+    
+    # 2. Storage units discharging dispatch
+    if hasattr(n, "storage_units") and not n.storage_units.empty and hasattr(n, "storage_units_t") and not n.storage_units_t.p.empty:
         su_dispatch = n.storage_units_t.p.clip(lower=0).T.groupby(
-            n.storage_units.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(str(c).strip(), str(c).strip()))
+            n.storage_units.carrier.map(lambda c: CAPEX_CARRIER_MAP.get(str(c).strip(), CAPEX_CARRIER_MAP.get(str(c).strip().lower(), str(c).strip())))
         ).sum().T / 1e3
-        total_dispatch = pd.concat([gen_dispatch, su_dispatch], axis=1).T.groupby(level=0).sum().T
+        parts.append(su_dispatch)
+
+    # 3. Links dispatch (Fuel cells / H2 turbines injecting power via p1)
+    if hasattr(n, "links") and not n.links.empty and hasattr(n, "links_t") and hasattr(n.links_t, "p1") and not n.links_t.p1.empty:
+        def map_link_carrier(c):
+            c_str = str(c).strip()
+            c_lower = c_str.lower()
+            if "fuel cell" in c_lower or "turbine" in c_lower or c_lower in ["fc", "h2 fuel cell", "h2 turbine"]:
+                return "H2 Fuel Cell"
+            return CAPEX_CARRIER_MAP.get(c_str, CAPEX_CARRIER_MAP.get(c_lower, c_str))
+
+        link_mapped_carriers = n.links.carrier.map(map_link_carrier)
+        fuel_cell_links = [l for l in n.links.index if link_mapped_carriers[l] == "H2 Fuel Cell" and l in n.links_t.p1.columns]
+        
+        if fuel_cell_links:
+            # FIX: Negate p1 because PyPSA stores link outputs as negative values.
+            fc_dispatch = (-n.links_t.p1[fuel_cell_links]).clip(lower=0).T.groupby(
+                link_mapped_carriers[fuel_cell_links]
+            ).sum().T / 1e3
+            parts.append(fc_dispatch)
+
+    # Combine all dispatch sources
+    if parts:
+        total_dispatch = pd.concat(parts, axis=1).T.groupby(level=0).sum().T
     else:
-        total_dispatch = gen_dispatch
+        total_dispatch = pd.DataFrame(index=n.snapshots)
 
     return total_dispatch
 
@@ -1560,7 +1636,7 @@ for scenario_name, path in RESULTS.items():
     ax.set_title(f"PyPSA-Libya — {scenario_name}: Hourly Generation & Dispatch Profile ({start_date} to {end_date})", fontsize=12, fontweight="bold")
     ax.legend(loc="upper right", bbox_to_anchor=(1.15, 1.0), fontsize=9)
 
-    # Format X-ticks to display every 8th step (matching visualize_libya_year.py format)
+    # Format X-ticks to display every 8th step
     n_ticks = max(1, len(dispatch_aug) // 8)
     ticks = range(0, len(dispatch_aug), n_ticks)
     labels = [dispatch_aug.index[i].strftime("%d %b %H:%M") for i in ticks]
@@ -1580,7 +1656,7 @@ for scenario_name, path in RESULTS.items():
     print(f"  Saved August bar chart -> {out_path}")
     
 
-
+    
 # =====================================================================
 # EXTRA SECTION: GENERATE 4 DETAILED OUTCOMES PER H2 SCENARIO
 # (With Dynamic Threshold Color & Transparency Separation for Small vs Major Bars)
@@ -2335,7 +2411,6 @@ for scenario_name, export_path in RESULTS.items():
     net_ann_cost_pretax = (total_ann_cost_exp - co2_tax_annual_eur) - total_ann_cost_base
     lcoh_lhv_cost_pretax = (net_ann_cost_pretax / exported_h2_mwh) * H2_LHV_MWH_PER_KG
     selling_price = lcoh_lhv_cost_pretax + REVENUE_MARGIN   # price does NOT track the CO2 tax
-
 
     # # Dynamic Selling Price (+1 EUR/kg margin over Net LCOH LHV)
     # selling_price = lcoh_lhv_cost + REVENUE_MARGIN
