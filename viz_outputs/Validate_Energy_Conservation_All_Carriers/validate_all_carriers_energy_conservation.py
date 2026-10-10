@@ -4,42 +4,10 @@
 validate_carrier_energy_conservation.py
 =======================================
 
-Multi-carrier ENERGY CONSERVATION & NODAL BALANCE validation for a solved
-PyPSA / PyPSA-Earth network (.nc). Iterates through all network carriers
-in a defined, organized presentation order.
-
-What it checks (for ALL buses of the chosen carrier):
----------------------------------------------------------------------------
- 1. NODAL BALANCE (Kirchhoff current law, per bus AND per snapshot)
-        sum(injections) - sum(withdrawals) = 0
- 2. CARRIER-LEVEL ENERGY BALANCE  (Supply vs Demand, with full breakdown)
-        Supply : generators, link outputs, store/storage discharge, negative loads
-        Demand : loads, link inputs, store/storage charge, transmission losses
- 3. PER-SNAPSHOT SYSTEM CLOSURE   (worst snapshot of the whole carrier system)
- 4. TRANSMISSION AUDIT            (line / internal-link losses, sending vs receiving)
- 5. CONVERSION-LINK AUDIT         (p_i = -eff_i * p0 consistency + implied losses)
- 6. CARRIER ELEMENTS DISTRIBUTION PER NODE (nodal breakdown of carrier elements)
- 7. SANITY FLAGS                  (load shedding, curtailment, loads on undefined
-                                   buses, negative generation, ...)
-
-PyPSA sign conventions used (identical to PyPSA itself)
--------------------------------------------------------
- generators_t.p      > 0 : injection into the bus
- loads_t.p           > 0 : withdrawal from the bus  (negative load = fixed source)
- stores_t.p          > 0 : dispatch (injection)     < 0 : charging (withdrawal)
- storage_units_t.p   > 0 : dispatch (injection)     < 0 : charging (withdrawal)
- links_t.p{i}        > 0 : WITHDRAWAL at terminal i (outputs are usually < 0)
- lines_t.p{0,1}      > 0 : WITHDRAWAL at that end
-
-Energies are weighted with n.snapshot_weightings.generators, i.e. they are
-ANNUALISED exactly as the optimisation's objective is.
-
-Units: values >= 1000 GWh are automatically printed in TWh
-       (and < 1 GWh in MWh). Mass carriers (co2) printed in t / kt / Mt.
-
-Usage
------
-    python validate_carrier_energy_conservation.py path/to/result.nc
+Multi-carrier ENERGY CONSERVATION & NODAL BALANCE validation for solved
+PyPSA / PyPSA-Earth networks (.nc). Iterates through all network carriers
+and automatically loops over multiple predefined scenarios/study cases,
+saving individual text reports and nodal dispatch maps.
 """
 
 import os
@@ -52,47 +20,47 @@ import numpy as np
 import pandas as pd
 import pypsa
 
-
-
 warnings.filterwarnings("ignore")
 logging.getLogger("pypsa").setLevel(logging.ERROR)
 
 # ----------------------------------------------------------------------------
-# USER SETTINGS (used when no command-line arguments are given, e.g. Spyder)
+# USER SCENARIOS DEFINITION (Automated Batch Loop)
 # ----------------------------------------------------------------------------
 
-####### Electricity-only ##########
+OUTPUT_DIR_BASE = r"C:\Users\Mhdella\Documents\pypsa-libya\viz_outputs\Validate_Energy_Conservation_All_Carriers"
 
-# NC_PATH = r"Output\libya-year-36\LCO2\3h\networks\elec_s_36_ec_lcopt_Co2L-3h.nc"
-
-# NC_PATH = r"Output\libya-year-36\No_LCO2\3h\networks\elec_s_36_ec_lcopt_Co2L-3h.nc"
-
-######### Sector-Coupling ##########
-
-# NC_PATH = r"Output\libya_h2export_test\scenario_a\3hrs\postnetworks\elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc"
-
-# NC_PATH = r"Output\libya_h2export_test\scenario_b\3hrs\postnetworks\elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc"
-
-# NC_PATH = r"Output\libya_h2export_test\scenario_c\3hrs\postnetworks\elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc"
-
-######### Hybrid Pathway ##########
-
-
-### NC_PATH = r"Output/libya_h2export_hybrid_emispr_100/3hrs/postnetworks/elec_s_12_ec_lcopt_Co2L-Ep-3h__2030_0.071_AB_70export.nc"
-
-### NC_PATH = r"Output/libya_h2export_hybrid_emispr_100/3hrs/postnetworks/Week_hybrid_elec_s_12_ec_lcopt_Co2L-Ep-3h__2030_0.071_AB_70export.nc"
-
-### NC_PATH = r"Output/libya_h2export_hybrid_emispr_100/3hrs/postnetworks/Month_Hybrid_Solar_H2_turbine_elec_s_12_ec_lcopt_Co2L-Ep-3h__2030_0.071_AB_70export.nc"
-
-### NC_PATH = r"Output/libya_h2export_hybrid_emispr_100/3hrs/postnetworks/Month_Hybrid_Solar_Wind_H2_turbine_elec_s_12_ec_lcopt_Co2L-Ep-3h__2030_0.071_AB_70export.nc"
-
-### NC_PATH = r"Output/libya_h2export_hybrid_emispr_100/3hrs/postnetworks/Month_Hybrid_Solar_Battery_energy_conservation_all_carriers.nc"
-
-
-
-NC_PATH = r"Output/libya_h2export_hybrid_emispr_100/3hrs/postnetworks/orig_elec_s_12_ec_lcopt_Co2L-Ep-3h__2030_0.071_AB_70export.nc"
-
-
+SCENARIOS = [
+    {
+        "name": "LCO2 (Electricity-only)",
+        "prefix": "LCO2",
+        "nc_path": r"Output\libya-year-36\LCO2\3h\networks\elec_s_36_ec_lcopt_Co2L-3h.nc",
+    },
+    {
+        "name": "No_LCO2 (Electricity-only)",
+        "prefix": "No_LCO2",
+        "nc_path": r"Output\libya-year-36\No_LCO2\3h\networks\elec_s_36_ec_lcopt_Co2L-3h.nc",
+    },
+    {
+        "name": "Scenario A (Sector-Coupling)",
+        "prefix": "Scenario_a",
+        "nc_path": r"Output\libya_h2export_test\scenario_a\3hrs\postnetworks\elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc",
+    },
+    {
+        "name": "Scenario B (Sector-Coupling)",
+        "prefix": "Scenario_b",
+        "nc_path": r"Output\libya_h2export_test\scenario_b\3hrs\postnetworks\elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc",
+    },
+    {
+        "name": "Scenario C (Sector-Coupling)",
+        "prefix": "Scenario_c",
+        "nc_path": r"Output\libya_h2export_test\scenario_c\3hrs\postnetworks\elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc",
+    },
+    {
+        "name": "Hybrid Pathway",
+        "prefix": "Hybrid",
+        "nc_path": r"Output/libya_h2export_hybrid_emispr_100/3hrs/postnetworks/orig_elec_s_12_ec_lcopt_Co2L-Ep-3h__2030_0.071_AB_70export.nc",
+    }
+]
 
 # Desired presentation and iteration order for all network carriers
 CARRIER = [
@@ -203,7 +171,6 @@ def validate_carrier(n, carrier="AC", tol_mw=TOL_MW, rel_tol=REL_TOL):
     snaps = n.snapshots
     w = n.snapshot_weightings.generators
 
-    # Flexible case-insensitive carrier matching
     bus_carrier = n.buses["carrier"]
     available_carriers = list(bus_carrier.unique())
     matching_carriers = [c for c in available_carriers if str(c).lower() == str(carrier).lower()]
@@ -218,7 +185,6 @@ def validate_carrier(n, carrier="AC", tol_mw=TOL_MW, rel_tol=REL_TOL):
     buses = list(n.buses.index[bus_carrier == actual_carrier])
     bus_set = set(buses)
 
-    # ---------------------------------------------------------------- header
     step_h = (snaps[1] - snaps[0]).total_seconds() / 3600.0 if len(snaps) > 1 else float("nan")
     window_h = step_h * len(snaps) if np.isfinite(step_h) else float("nan")
     out("=" * 100)
@@ -236,7 +202,6 @@ def validate_carrier(n, carrier="AC", tol_mw=TOL_MW, rel_tol=REL_TOL):
         out(f" Objective       : {n.objective / 1e9:,.4f} bn EUR/yr")
     out(f" Unit mode       : {'MASS (t / kt / Mt)' if mass else 'ENERGY (MWh / GWh / TWh)'}")
 
-    # -------------------------------------------- collect injections by group
     zeros = lambda: pd.DataFrame(0.0, index=snaps, columns=buses)
     groups = {k: zeros() for k in
               ["Generators", "Loads", "Cross-carrier links", "Stores", "Storage units", "Transfers (lines/internal links)"]}
@@ -552,399 +517,358 @@ def validate_carrier(n, carrier="AC", tol_mw=TOL_MW, rel_tol=REL_TOL):
     return "\n".join(rep)
 
 
-# ----------------------------------------------------------------------------
+# =============================================================================
+# MAIN AUTOMATION BATCH LOOP OVER ALL SCENARIOS
+# =============================================================================
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(description="Multi-carrier energy conservation validation into a single file")
-    ap.add_argument("nc_path", nargs="?", default=NC_PATH)
-    ap.add_argument("--carrier", default=None, help="Carrier name or comma-separated list (optional)")
-    ap.add_argument("--tol-mw", type=float, default=TOL_MW)
-    ap.add_argument("--rel-tol", type=float, default=REL_TOL)
-    ap.add_argument("--out", default=None, help="Path for the combined output .txt file")
-    ap.add_argument("--no-save", action="store_true")
-    args, _ = ap.parse_known_args()
+    try:
+        import cartopy.crs as ccrs
+        import cartopy.feature as cfeature
+        import matplotlib.patches as mpatches
+        import matplotlib.pyplot as plt
+        HAS_CARTOPY = True
+    except ImportError:
+        HAS_CARTOPY = False
+        print("Warning: Cartopy not installed. Nodal dispatch map will use standard matplotlib axes.")
 
-    if not os.path.exists(args.nc_path):
-        sys.exit(f"Network file not found: {args.nc_path}")
+    for sc in SCENARIOS:
+        # Automatically construct paths using the prefix and base directory
+        txt_out = os.path.join(OUTPUT_DIR_BASE, f"{sc['prefix']}_energy_conservation_all_carriers.txt")
+        png_out = os.path.join(OUTPUT_DIR_BASE, f"{sc['prefix']}_pypsa_libya_nodal_dispatch_map.png")
 
-    print(f"Loading network file: {os.path.basename(args.nc_path)} ...")
-    n = pypsa.Network(args.nc_path)
+        print("\n" + "=" * 110)
+        print(f"PROCESSING SCENARIO: {sc['name']}")
+        print(f"File path: {sc['nc_path']}")
+        print("=" * 110)
 
-    available_carriers = list(n.buses["carrier"].unique())
+        if not os.path.exists(sc["nc_path"]):
+            print(f"ERROR: Network file not found: {sc['nc_path']}. Skipping scenario...")
+            continue
 
-    if args.carrier:
-        carriers_to_run = [c.strip() for c in args.carrier.split(",")]
-    elif isinstance(CARRIER, list) and CARRIER:
+        print(f"Loading network file...")
+        n = pypsa.Network(sc["nc_path"])
+
+        available_carriers = list(n.buses["carrier"].unique())
         carriers_to_run = [c for c in CARRIER if any(str(ac).lower() == str(c).lower() for ac in available_carriers)]
         for ac in available_carriers:
             if not any(str(ac).lower() == str(c).lower() for c in carriers_to_run):
                 carriers_to_run.append(ac)
-    else:
-        carriers_to_run = available_carriers
 
-    output_dir = os.path.dirname(os.path.abspath(args.nc_path))
-    combined_report_path = args.out or os.path.join(output_dir, "energy_conservation_all_carriers.txt")
+        # 1. Run Energy Conservation Validation across all carriers
+        all_reports = []
+        for c in carriers_to_run:
+            print(f"  -> Validating carrier: {c} ...")
+            try:
+                report_text = validate_carrier(n, carrier=c, tol_mw=TOL_MW, rel_tol=REL_TOL)
+                all_reports.append(report_text)
+            except Exception as e:
+                err_msg = f"\nERROR validating carrier '{c}': {e}\n"
+                print(err_msg)
+                all_reports.append(err_msg)
 
-    all_reports = []
-    
-    for c in carriers_to_run:
-        print(f"Running validation for carrier: {c} ...")
-        try:
-            report_text = validate_carrier(n, carrier=c, tol_mw=args.tol_mw, rel_tol=args.rel_tol)
-            all_reports.append(report_text)
-        except Exception as e:
-            err_msg = f"\nERROR validating carrier '{c}': {e}\n"
-            print(err_msg)
-            all_reports.append(err_msg)
+        separator = "\n\n" + "=" * 100 + "\n" + " " * 35 + "NEXT CARRIER REPORT SECTION" + "\n" + "=" * 100 + "\n\n"
+        combined_content = separator.join(all_reports)
 
-    separator = "\n\n" + "=" * 100 + "\n" + " " * 35 + "NEXT CARRIER REPORT SECTION" + "\n" + "=" * 100 + "\n\n"
-    combined_content = separator.join(all_reports)
+        # Ensure text report output directory exists
+        txt_dir = os.path.dirname(txt_out)
+        if txt_dir:
+            os.makedirs(txt_dir, exist_ok=True)
 
-    if not args.no_save:
-        with open(combined_report_path, "w", encoding="utf-8") as f:
+        with open(txt_out, "w", encoding="utf-8") as f:
             f.write(combined_content)
-        print(f"\nCombined report successfully saved to: {combined_report_path}")
+        print(f"Saved text validation report to: {txt_out}")
         
-
-
-
 # =====================================================================
-# SECTION 8: NODAL DISPATCH & ENERGY MIX PIE CHART MAP
+# NODAL DISPATCH & ENERGY MIX PIE CHART MAP
 # =====================================================================
-print("\n" + "=" * 100)
-print("Generating Nodal Dispatch & Energy Mix Pie Chart Map")
-print("=" * 100)
 
-try:
-    import cartopy.crs as ccrs
-    import cartopy.feature as cfeature
-    import matplotlib.patches as mpatches
-    import matplotlib.pyplot as plt
-    HAS_CARTOPY = True
-except ImportError:
-    HAS_CARTOPY = False
-    print("Warning: Cartopy not installed. Nodal dispatch map will use standard matplotlib axes.")
+        # 2. Generate and Save Nodal Dispatch & Energy Mix Map
+        print(f"  -> Generating Nodal Dispatch & Energy Mix Pie Chart Map...")
+        
+        CHART_COLORS = {
+            "Onshore Wind": "#2ecc71",          # Green
+            "Solar PV": "#ff7f0e",              # Orange
+            "Oil": "#8b4513",                   # Brown
+            "CCGT": "#e377c2",                  # Pink
+            "Gas": "#ff00ff",                   # Magenta
+            "H2 Turbine": "#9467bd",            # Purple
+            "H2 Fuel Cell": "#00ffff",          # Cyan
+            "H2 Electrolysis": "#003366",       # Dark blue
+            "H2 Electrolyser": "#003366",       # Dark blue (alias)
+            "H2 Storage": "#87ceeb",            # Light blue (Sky blue)
+            "Battery": "#8e44ad",               # Purple
+            "SMR": "#95a5a6",                   # Grey
+            "SMR CC": "#1f77b4",                # Blue
+        }
 
-# Updated color mapping for normalized, capitalized energy carrier elements
-CHART_COLORS = {
-    "Onshore Wind": "#2ecc71",          # Green
-    "Solar PV": "#ff7f0e",              # Orange
-    "Oil": "#8b4513",                   # Brown
-    "CCGT": "#e377c2",                  # Pink
-    "Gas": "#ff00ff",                   # Magenta
-    "H2 Turbine": "#9467bd",            # Purple
-    "H2 Fuel Cell": "#00ffff",          # Cyan
-    "H2 Electrolyser": "#7f7f7f",       # Grey
-    "Battery": "#8e44ad",               # Purple
-    "SMR": "#95a5a6",                   # Grey
-    "SMR CC": "#1f77b4",                # Blue
-}
+        ac_buses = [b for b in n.buses.index if n.buses.loc[b, "carrier"] == "AC"]
+        weights = n.snapshot_weightings.generators
+        terms = link_terminals(n)
 
-ac_buses = [b for b in n.buses.index if n.buses.loc[b, "carrier"] == "AC"]
-weights = n.snapshot_weightings.generators
-terms = link_terminals(n)
+        all_nodal_records = []
 
-all_nodal_records = []
+        def get_base_ac_bus(bus_name):
+            b_str = str(bus_name)
+            for suffix in [" H2", " gas", " low voltage", " home battery", " battery", " co2 stored", " NH3", " co2", " process emissions", " solid biomass for industry", " gas for industry"]:
+                if b_str.endswith(suffix):
+                    b_str = b_str[:-len(suffix)]
+            return b_str if b_str in ac_buses else None
 
-# Helper to clean bus names back to parent AC nodes
-def get_base_ac_bus(bus_name):
-    b_str = str(bus_name)
-    for suffix in [" H2", " gas", " low voltage", " home battery", " battery", " co2 stored", " NH3", " co2", " process emissions", " solid biomass for industry", " gas for industry"]:
-        if b_str.endswith(suffix):
-            b_str = b_str[:-len(suffix)]
-    return b_str if b_str in ac_buses else None
-
-# Collect records across all components using Section 6 logic
-def collect_component_records(inj, bus_of, label_of):
-    if inj.empty:
-        return
-    cols = [c for c in inj.columns if c in bus_of.index]
-    if not cols:
-        return
-    sub = inj[cols]
-    for c in cols:
-        bus = bus_of.loc[c]
-        base_bus = get_base_ac_bus(bus)
-        if base_bus is not None:
-            lbl = label_of.loc[c] if hasattr(label_of, "loc") else label_of[c]
-            val = float(sub[c].clip(lower=0).mul(weights, axis=0).sum())
-            if val > 0:
-                all_nodal_records.append({"bus": base_bus, "label": lbl, "energy": val})
-
-# 1. Generators
-if not n.generators.empty and not n.generators_t.p.empty:
-    collect_component_records(
-        n.generators_t.p,
-        n.generators["bus"],
-        "Generator: " + n.generators["carrier"].astype(str)
-    )
-
-# 2. Storage Units
-if not n.storage_units.empty and not n.storage_units_t.p.empty:
-    collect_component_records(
-        n.storage_units_t.p,
-        n.storage_units["bus"],
-        "StorageUnit: " + n.storage_units["carrier"].astype(str)
-    )
-
-# 3. Links
-if not n.links.empty and not n.links_t.p0.empty:
-    for l_id, l_row in n.links.iterrows():
-        carrier = l_row["carrier"]
-        for i in terms:
-            flow_col = f"p{i}" if i > 0 else "p0"
-            bus_col = f"bus{i}" if i > 0 else "bus0"
-            if flow_col in n.links_t and bus_col in n.links.columns:
-                bus = l_row[bus_col]
+        def collect_component_records(inj, bus_of, label_of):
+            if inj.empty:
+                return
+            cols = [c for c in inj.columns if c in bus_of.index]
+            if not cols:
+                return
+            sub = inj[cols]
+            for c in cols:
+                bus = bus_of.loc[c]
                 base_bus = get_base_ac_bus(bus)
                 if base_bus is not None:
-                    eff_col = f"efficiency{i}" if i > 0 else "efficiency"
-                    eff = l_row.get(eff_col, 1.0) or 1.0
-                    flow_series = n.links_t[flow_col][l_id]
-                    val = float((-flow_series).clip(lower=0).mul(weights, axis=0).sum() * eff)
+                    lbl = label_of.loc[c] if hasattr(label_of, "loc") else label_of[c]
+                    val = float(sub[c].clip(lower=0).mul(weights, axis=0).sum())
                     if val > 0:
-                        lbl = f"Link: {carrier}"
                         all_nodal_records.append({"bus": base_bus, "label": lbl, "energy": val})
 
-if all_nodal_records:
-    df_raw = pd.DataFrame(all_nodal_records)
-    
-    # target_keywords = ["solar", "wind", "ccgt", "cogt", "oil", "gas", "battery", "fuel cell", "eletrolyser", "electrolyser", "h2-turbine", "h2 turbine", "smr", "smr-cc"]
-    # exclude_keywords = ["load", "grid", "distribution", "charger", "store", "vent", "cracker", "haber-bosch", "helmeth", "fischer-tropsch", "sabatier"]
-    
-    target_keywords = ["solar", "wind", "ccgt", "cogt", "oil", "gas", "battery", "fuel cell", "eletrolyser", "electrolyser", "h2-turbine", "h2 turbine", "smr", "smr-cc"]
-    exclude_keywords = ["load", "grid", "distribution", "charger", "store", "vent", "cracker", "haber-bosch", "helmeth", "fischer-tropsch", "sabatier"]
-    
-    def is_target_element(label):
-        l_lower = str(label).lower()
-        if any(ex in l_lower for ex in exclude_keywords):
-            return False
-        return any(kw in l_lower for kw in target_keywords)
+        # Generators
+        if not n.generators.empty and not n.generators_t.p.empty:
+            collect_component_records(n.generators_t.p, n.generators["bus"], "Generator: " + n.generators["carrier"].astype(str))
 
-    df_filtered = df_raw[df_raw["label"].apply(is_target_element)].copy()
-    
-    def normalize_carrier_name(label):
-        l_lower = str(label).lower()
-        if "solar" in l_lower:
-            return "Solar PV"
-        elif "wind" in l_lower:
-            return "Onshore Wind"
-        elif "battery" in l_lower:
-            return "Battery"
-        elif "ccgt" in l_lower:
-            return "CCGT"
-        elif "oil" in l_lower:
-            return "Oil"
-        elif "gas" in l_lower:
-            return "Gas"
-        elif "h2 turbine" in l_lower or "h2-turbine" in l_lower:
-            return "H2 Turbine"
-        elif "fuel cell" in l_lower:
-            return "H2 Fuel Cell"
-        elif "electrolyser" in l_lower or "eletrolyser" in l_lower:
-            return "H2 Electrolyser"
-        elif "smr cc" in l_lower:
-            return "SMR CC"
-        elif "smr" in l_lower:
-            return "SMR"
+        # Storage Units
+        if not n.storage_units.empty and not n.storage_units_t.p.empty:
+            collect_component_records(n.storage_units_t.p, n.storage_units["bus"], "StorageUnit: " + n.storage_units["carrier"].astype(str))
+
+        # Stores
+        if not n.stores.empty and not n.stores_t.p.empty:
+            collect_component_records(n.stores_t.p, n.stores["bus"], "Store: " + n.stores["carrier"].astype(str))
+
+        # Links
+        if not n.links.empty and not n.links_t.p0.empty:
+            for l_id, l_row in n.links.iterrows():
+                carrier = l_row["carrier"]
+                for i in terms:
+                    flow_col = f"p{i}" if i > 0 else "p0"
+                    bus_col = f"bus{i}" if i > 0 else "bus0"
+                    if flow_col in n.links_t and bus_col in n.links.columns:
+                        bus = l_row[bus_col]
+                        base_bus = get_base_ac_bus(bus)
+                        if base_bus is not None:
+                            eff_col = f"efficiency{i}" if i > 0 else "efficiency"
+                            eff = l_row.get(eff_col, 1.0) or 1.0
+                            flow_series = n.links_t[flow_col][l_id]
+                            val = float((-flow_series).clip(lower=0).mul(weights, axis=0).sum() * eff)
+                            if val > 0:
+                                lbl = f"Link: {carrier}"
+                                all_nodal_records.append({"bus": base_bus, "label": lbl, "energy": val})
+
+        if all_nodal_records:
+            df_raw = pd.DataFrame(all_nodal_records)
+            target_keywords = ["solar", "wind", "ccgt", "cogt", "oil", "gas", "battery", "fuel cell", "electrolysis", "h2-turbine", "h2 turbine", "smr", "smr-cc"]
+            exclude_keywords = ["load", "grid", "distribution", "charger", "h2 uhs", "h2 store tank", "vent", "cracker", "haber-bosch", "helmeth", "fischer-tropsch", "sabatier"]
+            
+            def is_target_element(label):
+                l_lower = str(label).lower()
+                if any(ex in l_lower for ex in exclude_keywords):
+                    return False
+                return any(kw in l_lower for kw in target_keywords)
+
+            df_filtered = df_raw[df_raw["label"].apply(is_target_element)].copy()
+            
+            def normalize_carrier_name(label):
+                l_lower = str(label).lower()
+                if "solar" in l_lower:
+                    return "Solar PV"
+                elif "wind" in l_lower:
+                    return "Onshore Wind"
+                elif "battery" in l_lower:
+                    return "Battery"
+                elif "ccgt" in l_lower:
+                    return "CCGT"
+                elif "oil" in l_lower:
+                    return "Oil"
+                elif "gas" in l_lower:
+                    return "Gas"
+                elif "h2 turbine" in l_lower or "h2-turbine" in l_lower:
+                    return "H2 Turbine"
+                elif "fuel cell" in l_lower:
+                    return "H2 Fuel Cell"
+                elif "electrolyser" in l_lower or "electrolysis" in l_lower:
+                    return "H2 Electrolyser"
+                elif "h2 uhs" in l_lower or "h2 store tank" in l_lower or "h2 storage" in l_lower or ("store" in l_lower and "h2" in l_lower):
+                    return "H2 Storage"
+                elif "smr cc" in l_lower:
+                    return "SMR CC"
+                elif "smr" in l_lower:
+                    return "SMR"
+                else:
+                    return label.split(":")[-1].strip().title()
+
+            df_filtered["carrier_key"] = df_filtered["label"].apply(normalize_carrier_name)
+            nodal_mix = df_filtered.pivot_table(index="bus", columns="carrier_key", values="energy", aggfunc="sum", fill_value=0.0)
         else:
-            return label.split(":")[-1].strip().title()
+            nodal_mix = pd.DataFrame(index=ac_buses)
 
-    df_filtered["carrier_key"] = df_filtered["label"].apply(normalize_carrier_name)
-    nodal_mix = df_filtered.pivot_table(index="bus", columns="carrier_key", values="energy", aggfunc="sum", fill_value=0.0)
-else:
-    nodal_mix = pd.DataFrame(index=ac_buses)
+        total_energy_all = nodal_mix.sum().sum() if not nodal_mix.empty else 0.0
+        if not nodal_mix.empty and total_energy_all > 0:
+            global_percentages = (nodal_mix.sum() / total_energy_all) * 100.0
+            valid_carriers = global_percentages[global_percentages >= 2.0].index
+            nodal_mix = nodal_mix[[c for c in nodal_mix.columns if c in valid_carriers]]
 
-# Globally filter out carriers with less than 2% system-wide share
-total_energy_all = nodal_mix.sum().sum() if not nodal_mix.empty else 0.0
-if not nodal_mix.empty and total_energy_all > 0:
-    global_percentages = (nodal_mix.sum() / total_energy_all) * 100.0
-    valid_carriers = global_percentages[global_percentages >= 2.0].index
-    nodal_mix = nodal_mix[[c for c in nodal_mix.columns if c in valid_carriers]]
+        rounded_percentages = {}
+        if not nodal_mix.empty and total_energy_all > 0:
+            active_cols = sorted(list(nodal_mix.columns))
+            raw_pcts = {c: (nodal_mix[c].sum() / total_energy_all) * 100.0 for c in active_cols}
+            int_pcts = {c: int(round(p)) for c, p in raw_pcts.items()}
+            diff = 100 - sum(int_pcts.values())
+            if diff != 0:
+                remainders = {c: raw_pcts[c] - int_pcts[c] for c in active_cols}
+                sorted_by_rem = sorted(remainders, key=remainders.get, reverse=True)
+                for i in range(abs(diff)):
+                    c_target = sorted_by_rem[i % len(sorted_by_rem)]
+                    int_pcts[c_target] += 1 if diff > 0 else -1
+            rounded_percentages = int_pcts
 
-# Pre-calculate integer-rounded percentages that precisely sum to 100%
-rounded_percentages = {}
-if not nodal_mix.empty and total_energy_all > 0:
-    active_cols = sorted(list(nodal_mix.columns))
-    raw_pcts = {c: (nodal_mix[c].sum() / total_energy_all) * 100.0 for c in active_cols}
-    int_pcts = {c: int(round(p)) for c, p in raw_pcts.items()}
-    diff = 100 - sum(int_pcts.values())
-    if diff != 0:
-        # Adjust the carrier with the largest fractional remainder to ensure sum equals 100%
-        remainders = {c: raw_pcts[c] - int_pcts[c] for c in active_cols}
-        sorted_by_rem = sorted(remainders, key=remainders.get, reverse=True)
-        for i in range(abs(diff)):
-            c_target = sorted_by_rem[i % len(sorted_by_rem)]
-            int_pcts[c_target] += 1 if diff > 0 else -1
-    rounded_percentages = int_pcts
+        fig = plt.figure(figsize=(11, 8))
+        if HAS_CARTOPY:
+            ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
+            ax.set_extent([9.0, 25.5, 19.0, 33.8], crs=ccrs.PlateCarree())
+            ax.add_feature(cfeature.LAND, facecolor="#f4f4f0", zorder=0)
+            ax.add_feature(cfeature.OCEAN, facecolor="#e0f2fe", zorder=0)
+            ax.add_feature(cfeature.BORDERS, linestyle="--", edgecolor="#666666", linewidth=0.8, zorder=1)
+            ax.add_feature(cfeature.COASTLINE, edgecolor="#333333", linewidth=1.0, zorder=1)
+            gl = ax.gridlines(draw_labels=True, linewidth=0.3, color="gray", alpha=0.5, linestyle=":")
+            gl.top_labels = False
+            gl.right_labels = False
+        else:
+            ax = fig.add_subplot(1, 1, 1)
 
-# Initialize Map Axis
-fig = plt.figure(figsize=(11, 8))
-if HAS_CARTOPY:
-    ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
-    ax.set_extent([9.0, 25.5, 19.0, 33.8], crs=ccrs.PlateCarree())
-    ax.add_feature(cfeature.LAND, facecolor="#f4f4f0", zorder=0)
-    ax.add_feature(cfeature.OCEAN, facecolor="#e0f2fe", zorder=0)
-    ax.add_feature(cfeature.BORDERS, linestyle="--", edgecolor="#666666", linewidth=0.8, zorder=1)
-    ax.add_feature(cfeature.COASTLINE, edgecolor="#333333", linewidth=1.0, zorder=1)
-    gl = ax.gridlines(draw_labels=True, linewidth=0.3, color="gray", alpha=0.5, linestyle=":")
-    gl.top_labels = False
-    gl.right_labels = False
-else:
-    ax = fig.add_subplot(1, 1, 1)
+        n.plot(ax=ax, bus_sizes=0, line_widths=0, link_widths=0, margin=0)
 
-# Suppress both default PyPSA lines and default PyPSA export links by setting widths to 0
-n.plot(
-    ax=ax,
-    bus_sizes=0,
-    line_widths=0,
-    link_widths=0,
-    margin=0,
-)
+        if HAS_CARTOPY:
+            ax.set_extent([9.0, 25.5, 19.0, 33.8], crs=ccrs.PlateCarree())
 
-if HAS_CARTOPY:
-    ax.set_extent([9.0, 25.5, 19.0, 33.8], crs=ccrs.PlateCarree())
+        plot_buses = n.buses.copy()
+        mask_sea_node = (plot_buses["x"] >= 19.4) & (plot_buses["x"] <= 20.3) & (plot_buses["y"] >= 30.0) & (plot_buses["y"] <= 31.5)
+        plot_buses.loc[mask_sea_node, "y"] = 30.15
+        plot_buses.loc[mask_sea_node, "x"] = 19.80
 
-# Spatial adjustment for coastal/offshore node placement onto land
-plot_buses = n.buses.copy()
-mask_sea_node = (plot_buses["x"] >= 19.4) & (plot_buses["x"] <= 20.3) & (plot_buses["y"] >= 30.0) & (plot_buses["y"] <= 31.5)
-plot_buses.loc[mask_sea_node, "y"] = 30.15
-plot_buses.loc[mask_sea_node, "x"] = 19.80
+        COAST_LONS = np.array([9.0, 11.5, 12.08, 12.73, 13.19, 14.26, 14.57, 15.09, 15.25, 15.50, 15.80, 16.20, 16.59, 17.50, 18.56, 19.20, 19.57, 19.80, 20.00, 20.10, 20.20, 20.30, 20.50, 20.83, 21.75, 22.64, 23.96, 25.09, 26.0])
+        COAST_LATS = np.array([33.0, 33.1, 32.93, 32.76, 32.89, 32.65, 32.47, 32.38, 31.40, 31.20, 31.12, 31.15, 31.21, 30.80, 30.51, 30.35, 30.41, 30.42, 30.50, 30.60, 31.20, 32.00, 32.10, 32.49, 32.76, 32.77, 32.08, 31.76, 31.50])
 
-# Coastal land routing helpers
-COAST_LONS = np.array([
-    9.0, 11.5, 12.08, 12.73, 13.19, 14.26, 14.57, 15.09, 
-    15.25, 15.50, 15.80, 16.20, 16.59, 17.50, 18.56, 19.20,
-    19.57, 19.80, 20.00, 20.10, 20.20, 20.30, 20.50, 20.83, 
-    21.75, 22.64, 23.96, 25.09, 26.0
-])
-COAST_LATS = np.array([
-    33.0, 33.1, 32.93, 32.76, 32.89, 32.65, 32.47, 32.38, 
-    31.40, 31.20, 31.12, 31.15, 31.21, 30.80, 30.51, 30.35,
-    30.41, 30.42, 30.50, 30.60, 31.20, 32.00, 32.10, 32.49, 
-    32.76, 32.77, 32.08, 31.76, 31.50
-])
+        def get_coast_lat(lon):
+            return np.interp(lon, COAST_LONS, COAST_LATS)
 
-def get_coast_lat(lon):
-    return np.interp(lon, COAST_LONS, COAST_LATS)
+        def route_line_land(x0, y0, x1, y1, land_offset=0.13, num_pts=50, allow_waypoint=True):
+            if x0 == x1 or (abs(x0 - x1) < 1e-5 and abs(y0 - y1) < 1e-5):
+                return [x0, x1], [y0, y1]
+            min_x, max_x = min(x0, x1), max(x0, x1)
+            min_y, max_y = min(y0, y1), max(y0, y1)
 
-def route_line_land(x0, y0, x1, y1, land_offset=0.13, num_pts=50, allow_waypoint=True):
-    if x0 == x1 or (abs(x0 - x1) < 1e-5 and abs(y0 - y1) < 1e-5):
-        return [x0, x1], [y0, y1]
-    min_x, max_x = min(x0, x1), max(x0, x1)
-    min_y, max_y = min(y0, y1), max(y0, y1)
+            if ((min_x < 20.15 and max_x > 19.8) and (min_y < 30.8 and max_y > 31.3)) and allow_waypoint:
+                x_mid, y_mid = 20.32, 30.70
+                xs1, ys1 = route_line_land(x0, y0, x_mid, y_mid, land_offset=land_offset, num_pts=num_pts//2, allow_waypoint=False)
+                xs2, ys2 = route_line_land(x_mid, y_mid, x1, y1, land_offset=land_offset, num_pts=num_pts//2, allow_waypoint=False)
+                return np.concatenate([xs1, xs2]), np.concatenate([ys1, ys2])
 
-    if ((min_x < 20.15 and max_x > 19.8) and (min_y < 30.8 and max_y > 31.3)) and allow_waypoint:
-        x_mid, y_mid = 20.32, 30.70
-        xs1, ys1 = route_line_land(x0, y0, x_mid, y_mid, land_offset=land_offset, num_pts=num_pts//2, allow_waypoint=False)
-        xs2, ys2 = route_line_land(x_mid, y_mid, x1, y1, land_offset=land_offset, num_pts=num_pts//2, allow_waypoint=False)
-        return np.concatenate([xs1, xs2]), np.concatenate([ys1, ys2])
+            xs = np.linspace(x0, x1, num_pts)
+            ys_linear = np.linspace(y0, y1, num_pts)
+            coast_lats = get_coast_lat(xs) - land_offset
+            ys_land = np.minimum(ys_linear, coast_lats)
+            ys_land[0], ys_land[-1] = y0, y1
 
-    xs = np.linspace(x0, x1, num_pts)
-    ys_linear = np.linspace(y0, y1, num_pts)
-    coast_lats = get_coast_lat(xs) - land_offset
-    ys_land = np.minimum(ys_linear, coast_lats)
-    ys_land[0], ys_land[-1] = y0, y1
+            if num_pts > 5 and np.any(ys_linear > coast_lats):
+                kernel = np.ones(5) / 5.0
+                ys_smooth = np.convolve(ys_land, kernel, mode='same')
+                ys_smooth[0], ys_smooth[1], ys_smooth[-2], ys_smooth[-1] = y0, ys_land[1], ys_land[-2], y1
+                ys_land = np.minimum(ys_smooth, coast_lats)
+                ys_land[0], ys_land[-1] = y0, y1
+            return xs, ys_land
 
-    if num_pts > 5 and np.any(ys_linear > coast_lats):
-        kernel = np.ones(5) / 5.0
-        ys_smooth = np.convolve(ys_land, kernel, mode='same')
-        ys_smooth[0], ys_smooth[1], ys_smooth[-2], ys_smooth[-1] = y0, ys_land[1], ys_land[-2], y1
-        ys_land = np.minimum(ys_smooth, coast_lats)
-        ys_land[0], ys_land[-1] = y0, y1
-    return xs, ys_land
+        if not n.lines.empty:
+            for _, row in n.lines.iterrows():
+                b0, b1 = row["bus0"], row["bus1"]
+                if b0 in plot_buses.index and b1 in plot_buses.index:
+                    x0, y0 = plot_buses.loc[b0, ["x", "y"]]
+                    x1, y1 = plot_buses.loc[b1, ["x", "y"]]
+                    if y0 > 33.0 or y1 > 33.0:
+                        continue
+                    xs, ys = route_line_land(x0, y0, x1, y1)
+                    ax.plot(xs, ys, color="gray", lw=1.0, alpha=0.8, zorder=1)
 
-# Plot transmission lines manually: filter out European/North sea lines & route along land in grey
-if not n.lines.empty:
-    for _, row in n.lines.iterrows():
-        b0 = row["bus0"]
-        b1 = row["bus1"]
-        if b0 in plot_buses.index and b1 in plot_buses.index:
-            x0, y0 = plot_buses.loc[b0, ["x", "y"]]
-            x1, y1 = plot_buses.loc[b1, ["x", "y"]]
-            # Skip lines extending north to Europe (latitude > 33.0)
-            if y0 > 33.0 or y1 > 33.0:
+        max_energy = nodal_mix.sum(axis=1).max() if not nodal_mix.empty and nodal_mix.sum(axis=1).max() > 0 else 1.0
+        base_pie_size = 0.06
+        min_pie_size = 0.025
+
+        fig.canvas.draw()
+        present_carriers = set()
+
+        for bus in ac_buses:
+            if bus not in nodal_mix.index:
                 continue
-            xs, ys = route_line_land(x0, y0, x1, y1)
-            ax.plot(xs, ys, color="gray", lw=1.0, alpha=0.8, zorder=1)
+            slices = nodal_mix.loc[bus]
+            total_bus_energy = slices.sum()
+            if total_bus_energy <= 0:
+                continue
+            filtered_slices = slices[slices > 0]
+            if filtered_slices.empty:
+                continue
+            for c in filtered_slices.index:
+                present_carriers.add(c)
 
-max_energy = nodal_mix.sum(axis=1).max() if not nodal_mix.empty and nodal_mix.sum(axis=1).max() > 0 else 1.0
-base_pie_size = 0.06
-min_pie_size = 0.025
+            pie_size = max(min_pie_size, base_pie_size * np.sqrt(total_bus_energy / max_energy))
+            colors = [CHART_COLORS.get(c, "#7f7f7f") for c in filtered_slices.index]
+            x_coord, y_coord = plot_buses.loc[bus, ["x", "y"]]
 
-fig.canvas.draw()
-present_carriers = set()
+            disp_pt = ax.transData.transform((x_coord, y_coord))
+            fig_w, fig_h = fig.bbox.width, fig.bbox.height
+            if fig_w > 0 and fig_h > 0:
+                x_frac, y_frac = disp_pt[0] / fig_w, disp_pt[1] / fig_h
+                ax_pie = fig.add_axes([x_frac - pie_size / 2, y_frac - pie_size / 2, pie_size, pie_size])
+                ax_pie.pie(filtered_slices.values, colors=colors, startangle=90)
+                ax_pie.set_aspect("equal")
 
-for bus in ac_buses:
-    if bus not in nodal_mix.index:
-        continue
-    
-    slices = nodal_mix.loc[bus]
-    total_bus_energy = slices.sum()
-    if total_bus_energy <= 0:
-        continue
+        def format_legend_label(carrier_key):
+            if carrier_key == "SMR CC":
+                name = "SMR+CC"
+            elif carrier_key == "SMR":
+                name = "SMR"
+            elif carrier_key == "CCGT":
+                name = "CCGT"
+            elif carrier_key == "Solar PV":
+                name = "Solar PV"
+            else:
+                name = str(carrier_key).title()
+                
+            energy_mwh = nodal_mix[carrier_key].sum() if not nodal_mix.empty and carrier_key in nodal_mix.columns else 0.0
+            energy_twh = energy_mwh / 1e6
+            pct = rounded_percentages.get(carrier_key, 0)
+            return f"{name}: {energy_twh:,.2f} TWh ({pct}%)"
 
-    filtered_slices = slices[slices > 0]
+        legend_handles = [
+            mpatches.Patch(color=CHART_COLORS.get(c, "#7f7f7f"), label=format_legend_label(c))
+            for c in sorted(present_carriers)
+        ]
+        if legend_handles:
+            ax.legend(handles=legend_handles, loc="lower left", fontsize=8.5, title="Energy Carriers")
 
-    if filtered_slices.empty:
-        continue
+        ax.set_title(
+            f"PyPSA-Libya 2030: Nodal Dispatch and Energy Mix ({sc['name']})\n"
+            "Pie Size = Proportional Node Energy; Slices = Carriers",
+            fontsize=11,
+            fontweight="bold",
+        )
+        ax.set_xlabel("Longitude")
+        ax.set_ylabel("Latitude")
 
-    for c in filtered_slices.index:
-        present_carriers.add(c)
+        # Ensure map output directory exists
+        png_dir = os.path.dirname(png_out)
+        if png_dir:
+            os.makedirs(png_dir, exist_ok=True)
 
-    pie_size = max(min_pie_size, base_pie_size * np.sqrt(total_bus_energy / max_energy))
-    colors = [CHART_COLORS.get(c, "#7f7f7f") for c in filtered_slices.index]
+        fig.savefig(png_out, dpi=300, bbox_inches="tight")
+        plt.close(fig)
+        print(f"Saved nodal dispatch map to: {png_out}\n")
 
-    x_coord = plot_buses.loc[bus, "x"]
-    y_coord = plot_buses.loc[bus, "y"]
-
-    disp_pt = ax.transData.transform((x_coord, y_coord))
-    fig_w, fig_h = fig.bbox.width, fig.bbox.height
-    
-    if fig_w > 0 and fig_h > 0:
-        x_frac = disp_pt[0] / fig_w
-        y_frac = disp_pt[1] / fig_h
-
-        ax_pie = fig.add_axes([x_frac - pie_size / 2, y_frac - pie_size / 2, pie_size, pie_size])
-        ax_pie.pie(filtered_slices.values, colors=colors, startangle=90)
-        ax_pie.set_aspect("equal")
-
-# Custom legend label formatter incorporating TWh and integer percentage
-def format_legend_label(carrier_key):
-    if carrier_key == "SMR CC":
-        name = "SMR+CC"
-    elif carrier_key == "SMR":
-        name = "SMR"
-    elif carrier_key == "CCGT":
-        name = "CCGT"
-    elif carrier_key == "Solar PV":
-        name = "Solar PV"
-    else:
-        name = str(carrier_key).title()
-        
-    energy_mwh = nodal_mix[carrier_key].sum() if not nodal_mix.empty and carrier_key in nodal_mix.columns else 0.0
-    energy_twh = energy_mwh / 1e6
-    pct = rounded_percentages.get(carrier_key, 0)
-    
-    return f"{name}: {energy_twh:,.2f} TWh ({pct}%)"
-
-# Add Legend with custom label formatting including TWh and integer percentage
-legend_handles = [
-    mpatches.Patch(color=CHART_COLORS.get(c, "#7f7f7f"), label=format_legend_label(c))
-    for c in sorted(present_carriers)
-]
-if legend_handles:
-    ax.legend(handles=legend_handles, loc="lower left", fontsize=8.5, title="Energy Carriers")
-
-ax.set_title(
-    "PyPSA-Libya 2030: Nodal Dispatch and Energy Mix\n"
-    "Pie Size = Proportional Node Energy; Slices = Carriers",
-    fontsize=11,
-    fontweight="bold",
-)
-ax.set_xlabel("Longitude")
-ax.set_ylabel("Latitude")
-
-out_map_path = os.path.join(output_dir, "pypsa_libya_nodal_dispatch_map.png")
-fig.savefig(out_map_path, dpi=300, bbox_inches="tight")
-plt.show()
-print(f"Dispatch map successfully generated and saved as '{out_map_path}'.")
+    print("=" * 110)
+    print("ALL SCENARIOS PROCESSED AND SAVED SUCCESSFULLY!")
+    print("=" * 110)
