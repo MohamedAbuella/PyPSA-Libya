@@ -29,6 +29,10 @@ logging.getLogger("pypsa").setLevel(logging.ERROR)
 
 OUTPUT_DIR_BASE = r"C:\Users\Mhdella\Documents\pypsa-libya\viz_outputs\Validate_Energy_Conservation_All_Carriers"
 
+### Adjustable key/threshold for scaling the size of all pie charts proportionally
+PIE_SCALE_FACTOR = 1.5  # Change this to 1.0 for original size, 1.5 to increase by 50%, etc.
+
+
 SCENARIOS = [
     {
         "name": "LCO2 (Electricity-only)",
@@ -796,8 +800,10 @@ if __name__ == "__main__":
                     ax.plot(xs, ys, color="gray", lw=1.0, alpha=0.8, zorder=1)
 
         max_energy = nodal_mix.sum(axis=1).max() if not nodal_mix.empty and nodal_mix.sum(axis=1).max() > 0 else 1.0
-        base_pie_size = 0.06
-        min_pie_size = 0.025
+        
+        # Apply the adjustable scale factor here
+        base_pie_size = 0.06 * PIE_SCALE_FACTOR
+        min_pie_size = 0.025 * PIE_SCALE_FACTOR
 
         fig.canvas.draw()
         present_carriers = set()
