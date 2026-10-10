@@ -1,0 +1,1822 @@
+====================================================================================================
+ ENERGY CONSERVATION & NODAL BALANCE VALIDATION  --  CARRIER: AC
+====================================================================================================
+ PyPSA version   : 0.30.3
+ Snapshots       : 2920  (2013-01-01 00:00:00 -> 2013-12-31 21:00:00), step = 3 h
+ Weighting       : sum of weights = 8,760.0 h  (per snapshot: 3.00 - 3.00 h)
+ Buses of carrier: 12  ->  LY0 0 ... LY1 0
+ Objective       : 5.5125 bn EUR/yr
+ Unit mode       : ENERGY (MWh / GWh / TWh)
+
+####################################################################################################
+ 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)
+####################################################################################################
+ Tolerance (max |residual|) : 0.01 MW      Relative tolerance : 1e-06
+ Max |residual|             : 0.0000 MW  at bus 'LY1 0', snapshot 2013-04-04 03:00:00
+ Sum |residual| energy      : 0.000 MWh  (3.66e-14 of carrier throughput)
+ RESULT                     : PASSED
+
+ Per-bus ledger (annualised, signed:  + into bus / - out of bus):
+         Generators      Loads Cross-carrier links     Stores Storage units Transfers (lines/internal links)    Residual max|res| MW
+LY0 0    11.585 TWh  0.000 MWh          -1.637 TWh  0.000 MWh     0.000 MWh                       -9.949 TWh  -0.000 MWh    8.46e-11
+LY0 1     4.147 GWh  0.000 MWh          -7.974 TWh  0.000 MWh     0.000 MWh                        7.970 TWh   0.000 MWh    8.36e-11
+LY0 10  131.220 GWh  0.000 MWh         -12.142 TWh  0.000 MWh     0.000 MWh                       12.011 TWh   0.000 MWh    8.09e-11
+LY0 2     9.081 GWh  0.000 MWh          -5.803 TWh  0.000 MWh     0.000 MWh                        5.794 TWh  -0.000 MWh    7.23e-11
+LY0 3     9.459 TWh  0.000 MWh          -1.119 TWh  0.000 MWh     0.000 MWh                       -8.340 TWh  -0.000 MWh    6.87e-11
+LY0 4    11.432 TWh  0.000 MWh        -706.016 GWh  0.000 MWh     0.000 MWh                      -10.726 TWh  -0.000 MWh    7.19e-11
+LY0 5     4.892 GWh  0.000 MWh        -734.845 GWh  0.000 MWh     0.000 MWh                      729.953 GWh   0.000 MWh    8.45e-11
+LY0 6     4.262 TWh  0.000 MWh          -2.107 TWh  0.000 MWh     0.000 MWh                       -2.155 TWh  -0.000 MWh    8.11e-11
+LY0 7   670.153 GWh  0.000 MWh          -2.385 TWh  0.000 MWh     0.000 MWh                        1.715 TWh  -0.000 MWh    7.94e-11
+LY0 8     9.007 GWh  0.000 MWh          -1.403 TWh  0.000 MWh     0.000 MWh                        1.394 TWh  -0.000 MWh    8.04e-11
+LY0 9     4.900 GWh  0.000 MWh        -890.205 GWh  0.000 MWh     0.000 MWh                      885.305 GWh   0.000 MWh    8.55e-11
+LY1 0   116.006 GWh  0.000 MWh        -786.964 GWh  0.000 MWh     0.000 MWh                      670.959 GWh  -0.000 MWh    8.76e-11
+----------------------------------------------------------------------------------------------------
+ TOTAL         | Generators: 37.688 TWh | Loads: 0.000 MWh | Cross-carrier links: -37.688 TWh | Stores: 0.000 MWh | Storage units: 0.000 MWh | Transfers (lines/internal links): 0.000 MWh | Residual: -0.000 MWh
+
+####################################################################################################
+ 2. CARRIER-LEVEL ENERGY BALANCE  (AC, all 12 buses aggregated)
+####################################################################################################
+ SUPPLY                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Generator: onwind                                                 24.943 TWh    54.84%
+   Generator: solar                                                  12.745 TWh    28.02%
+   Link: oil                                                          7.784 TWh    17.11%
+   Link: CCGT                                                         4.893 GWh     0.01%
+   Link: H2 turbine                                                   1.746 GWh     0.00%
+   Link: H2 Fuel Cell                                                 1.486 GWh     0.00%
+ TOTAL SUPPLY                                                        45.480 TWh
+
+ DEMAND                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Link: electricity distribution grid                               45.278 TWh    99.55%
+   Link: Haber-Bosch                                                193.787 GWh     0.43%
+   Link: H2 Electrolysis                                              6.186 GWh     0.01%
+   Link: helmeth                                                      2.559 GWh     0.01%
+   Link: Fischer-Tropsch                                             15.346 MWh     0.00%
+ TOTAL DEMAND                                                        45.480 TWh
+
+ ========================================================================================
+ NET (Supply - Demand) : -0.000 MWh   (1.638e-14 % of the larger side)
+ RESULT                : PASSED - supply equals demand
+
+####################################################################################################
+ 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)
+####################################################################################################
+ Max |system residual| : 0.0000 MW at 2013-10-02 00:00:00
+ Mean |system residual|: 0.0000 MW
+ Peak supply   : 7.170 GW at 2013-09-02 12:00:00
+ Peak demand   : 7.170 GW at 2013-09-02 12:00:00
+ Min  demand   : 2.351 GW at 2013-11-11 03:00:00
+
+####################################################################################################
+ 4. TRANSMISSION AUDIT (lines and internal transport links)
+####################################################################################################
+ Lines inside carrier   : 13
+ Gross energy sent      : 67.338 TWh
+ Line losses (p0 + p1)  : 0.000 MWh  (0.000 % of gross sent)
+ Snapshots with negative loss (should be 0): 0
+
+ Top lossy lines:
+   line 0               LY0 0 <-> LY0 1      loss 0.000 MWh
+   line 1               LY0 0 <-> LY0 8      loss 0.000 MWh
+   line 10              LY0 5 <-> LY0 8      loss 0.000 MWh
+   line 11              LY0 7 <-> LY0 8      loss 0.000 MWh
+   line 2               LY0 1 <-> LY0 10     loss 0.000 MWh
+ Internal transport links (same-carrier at all terminals): 0
+ TOTAL transmission losses entering the balance: -0.000 MWh
+
+####################################################################################################
+ 5. CONVERSION-LINK AUDIT (links touching this carrier)
+####################################################################################################
+                 link carrier  # terminal terminal carrier input @bus0 output @terminal   eff (min-max) max|p_i+eff*p0| MW
+                         CCGT 11     bus1               AC   8.436 GWh        4.893 GWh   0.5800-0.5800           0.00e+00
+                         CCGT 11     bus2              co2   8.436 GWh         1.670 kt   0.1980-0.1980           0.00e+00
+              Fischer-Tropsch 12     bus1              oil   3.115 GWh        2.489 GWh   0.7990-0.7990           0.00e+00
+              Fischer-Tropsch 12     bus2       co2 stored   3.115 GWh       -639.946 t -0.2054--0.2054           0.00e+00
+              Fischer-Tropsch 12     bus3               AC   3.115 GWh      -15.346 MWh -0.0049--0.0049           0.00e+00
+              H2 Electrolysis 12     bus1               H2   6.186 GWh        3.846 GWh   0.6217-0.6217           0.00e+00
+                 H2 Fuel Cell 12     bus1               AC   2.972 GWh        1.486 GWh   0.5000-0.5000           0.00e+00
+                   H2 turbine 12     bus1               AC   4.258 GWh        1.746 GWh   0.4100-0.4100           0.00e+00
+                  Haber-Bosch 12     bus1              NH3 899.899 GWh      783.611 GWh   0.8708-0.8708           0.00e+00
+                  Haber-Bosch 12     bus2               AC 899.899 GWh     -193.787 GWh -0.2153--0.2153           0.00e+00
+              battery charger 12     bus1          battery   0.000 MWh        0.000 MWh   0.9798-0.9798           0.00e+00
+           battery discharger 12     bus1               AC   0.000 MWh        0.000 MWh   0.9798-0.9798           0.00e+00
+electricity distribution grid 12     bus1      low voltage  45.278 TWh       45.278 TWh   1.0000-1.0000           0.00e+00
+                      helmeth 12     bus1              gas   2.559 GWh        2.047 GWh   0.8000-0.8000           0.00e+00
+                      helmeth 12     bus2       co2 stored   2.559 GWh       -405.306 t -0.1584--0.1584           0.00e+00
+                          oil  9     bus1               AC  22.239 TWh        7.784 TWh   0.3500-0.3500           0.00e+00
+                          oil  9     bus2              co2  22.239 TWh         5.718 Mt   0.2571-0.2571           0.00e+00
+
+ Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
+
+####################################################################################################
+ 6. SANITY FLAGS
+####################################################################################################
+ Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
+ Negative generator dispatch: 0.000 MWh
+ Renewable curtailment    :
+    onwind         potential     30.505 TWh | used     24.943 TWh | curtailed      5.562 TWh (18.23 %)
+    solar          potential     14.371 TWh | used     12.745 TWh | curtailed      1.626 TWh (11.31 %)
+ WARNING: 12 load(s) are attached to buses that DO NOT EXIST (their demand is IGNORED by the optimisation): 0.000 MWh
+    - low-temperature heat for industry: 0.000 MWh
+
+====================================================================================================
+ VERDICT
+====================================================================================================
+  [PASS] Nodal balance: max |residual| = 0.0000 MW
+  [PASS] Carrier balance: net = -0.000 MWh (1.64e-14 %)
+  [PASS] Per-snapshot closure: max |res| = 0.0000 MW
+  [PASS] Line losses non-negative (violations: 0)
+  [PASS] Link efficiency consistency: max err 0.00e+00 MW
+  [PASS] Load shedding: 0.000 MWh
+  [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
+
+  OVERALL ENERGY CONSERVATION FOR 'AC': PASSED  (with warnings)
+====================================================================================================
+
+====================================================================================================
+                                   NEXT CARRIER REPORT SECTION
+====================================================================================================
+
+====================================================================================================
+ ENERGY CONSERVATION & NODAL BALANCE VALIDATION  --  CARRIER: BATTERY
+====================================================================================================
+ PyPSA version   : 0.30.3
+ Snapshots       : 2920  (2013-01-01 00:00:00 -> 2013-12-31 21:00:00), step = 3 h
+ Weighting       : sum of weights = 8,760.0 h  (per snapshot: 3.00 - 3.00 h)
+ Buses of carrier: 12  ->  LY0 0 battery ... LY1 0 battery
+ Objective       : 5.5125 bn EUR/yr
+ Unit mode       : ENERGY (MWh / GWh / TWh)
+
+####################################################################################################
+ 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)
+####################################################################################################
+ Tolerance (max |residual|) : 0.01 MW      Relative tolerance : 1e-06
+ Max |residual|             : 0.0000 MW  at bus 'LY0 0 battery', snapshot 2013-01-01 00:00:00
+ Sum |residual| energy      : 0.000 MWh  (0.00e+00 of carrier throughput)
+ RESULT                     : PASSED
+
+ Per-bus ledger (annualised, signed:  + into bus / - out of bus):
+               Generators      Loads Cross-carrier links     Stores Storage units Transfers (lines/internal links)   Residual max|res| MW
+LY0 0 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 1 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 10 battery  0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 2 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 3 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 4 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 5 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 6 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 7 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 8 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 9 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY1 0 battery   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+----------------------------------------------------------------------------------------------------
+ TOTAL         | Generators: 0.000 MWh | Loads: 0.000 MWh | Cross-carrier links: 0.000 MWh | Stores: 0.000 MWh | Storage units: 0.000 MWh | Transfers (lines/internal links): 0.000 MWh | Residual: 0.000 MWh
+
+####################################################################################################
+ 2. CARRIER-LEVEL ENERGY BALANCE  (BATTERY, all 12 buses aggregated)
+####################################################################################################
+ SUPPLY                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+ TOTAL SUPPLY                                                         0.000 MWh
+
+ DEMAND                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+ TOTAL DEMAND                                                         0.000 MWh
+
+ ========================================================================================
+ NET (Supply - Demand) : 0.000 MWh   (0.000e+00 % of the larger side)
+ RESULT                : PASSED - supply equals demand
+
+####################################################################################################
+ 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)
+####################################################################################################
+ Max |system residual| : 0.0000 MW at 2013-01-01 00:00:00
+ Mean |system residual|: 0.0000 MW
+ Peak supply   : 0.0000 MW at 2013-01-01 00:00:00
+ Peak demand   : 0.0000 MW at 2013-01-01 00:00:00
+ Min  demand   : 0.0000 MW at 2013-01-01 00:00:00
+
+####################################################################################################
+ 4. TRANSMISSION AUDIT (lines and internal transport links)
+####################################################################################################
+ Internal transport links (same-carrier at all terminals): 0
+ TOTAL transmission losses entering the balance: 0.000 MWh
+
+####################################################################################################
+ 5. CONVERSION-LINK AUDIT (links touching this carrier)
+####################################################################################################
+      link carrier  # terminal terminal carrier input @bus0 output @terminal eff (min-max) max|p_i+eff*p0| MW
+   battery charger 12     bus1          battery   0.000 MWh        0.000 MWh 0.9798-0.9798           0.00e+00
+battery discharger 12     bus1               AC   0.000 MWh        0.000 MWh 0.9798-0.9798           0.00e+00
+
+ Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
+
+####################################################################################################
+ 6. SANITY FLAGS
+####################################################################################################
+ Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
+ Negative generator dispatch: 0.000 MWh
+ WARNING: 12 load(s) are attached to buses that DO NOT EXIST (their demand is IGNORED by the optimisation): 0.000 MWh
+    - low-temperature heat for industry: 0.000 MWh
+
+====================================================================================================
+ VERDICT
+====================================================================================================
+  [PASS] Nodal balance: max |residual| = 0.0000 MW
+  [PASS] Carrier balance: net = 0.000 MWh (0.00e+00 %)
+  [PASS] Per-snapshot closure: max |res| = 0.0000 MW
+  [PASS] Link efficiency consistency: max err 0.00e+00 MW
+  [PASS] Load shedding: 0.000 MWh
+  [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
+
+  OVERALL ENERGY CONSERVATION FOR 'BATTERY': PASSED  (with warnings)
+====================================================================================================
+
+====================================================================================================
+                                   NEXT CARRIER REPORT SECTION
+====================================================================================================
+
+====================================================================================================
+ ENERGY CONSERVATION & NODAL BALANCE VALIDATION  --  CARRIER: LOW VOLTAGE
+====================================================================================================
+ PyPSA version   : 0.30.3
+ Snapshots       : 2920  (2013-01-01 00:00:00 -> 2013-12-31 21:00:00), step = 3 h
+ Weighting       : sum of weights = 8,760.0 h  (per snapshot: 3.00 - 3.00 h)
+ Buses of carrier: 12  ->  LY0 0 low voltage ... LY1 0 low voltage
+ Objective       : 5.5125 bn EUR/yr
+ Unit mode       : ENERGY (MWh / GWh / TWh)
+
+####################################################################################################
+ 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)
+####################################################################################################
+ Tolerance (max |residual|) : 0.01 MW      Relative tolerance : 1e-06
+ Max |residual|             : 0.0000 MW  at bus 'LY0 10 low voltage', snapshot 2013-02-04 18:00:00
+ Sum |residual| energy      : 0.000 MWh  (4.58e-17 of carrier throughput)
+ RESULT                     : PASSED
+
+ Per-bus ledger (annualised, signed:  + into bus / - out of bus):
+                     Generators        Loads Cross-carrier links     Stores Storage units Transfers (lines/internal links)    Residual max|res| MW
+LY0 0 low voltage   968.413 GWh   -3.274 TWh           2.306 TWh  0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    1.14e-13
+LY0 1 low voltage     1.052 TWh   -9.377 TWh           8.325 TWh  0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    2.27e-13
+LY0 10 low voltage    2.439 TWh  -14.964 TWh          12.526 TWh  0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    4.55e-13
+LY0 2 low voltage   982.656 GWh   -7.127 TWh           6.144 TWh  0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    2.27e-13
+LY0 3 low voltage   280.362 GWh   -1.388 TWh           1.108 TWh  0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    2.84e-14
+LY0 4 low voltage   537.783 GWh   -1.997 TWh           1.459 TWh  0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    5.68e-14
+LY0 5 low voltage   109.744 GWh   -1.147 TWh           1.038 TWh  0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    2.84e-14
+LY0 6 low voltage   508.174 GWh   -2.931 TWh           2.423 TWh  0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    1.14e-13
+LY0 7 low voltage   586.041 GWh   -3.333 TWh           2.747 TWh  0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    1.14e-13
+LY0 8 low voltage   298.394 GWh   -1.689 TWh           1.391 TWh  0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    5.68e-14
+LY0 9 low voltage   649.655 GWh   -5.531 TWh           4.881 TWh  0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    2.27e-13
+LY1 0 low voltage   318.045 GWh   -1.094 TWh         776.130 GWh  0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    2.84e-14
+----------------------------------------------------------------------------------------------------
+ TOTAL         | Generators: 8.730 TWh | Loads: -53.852 TWh | Cross-carrier links: 45.122 TWh | Stores: 0.000 MWh | Storage units: 0.000 MWh | Transfers (lines/internal links): 0.000 MWh | Residual: -0.000 MWh
+
+####################################################################################################
+ 2. CARRIER-LEVEL ENERGY BALANCE  (LOW VOLTAGE, all 12 buses aggregated)
+####################################################################################################
+ SUPPLY                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Link: electricity distribution grid                               45.278 TWh    78.41%
+   Generator: solar rooftop                                           8.730 TWh    15.12%
+   Link: home battery discharger                                      3.734 TWh     6.47%
+   Generator: load shedding                                           0.932 MWh     0.00%
+ TOTAL SUPPLY                                                        57.742 TWh
+
+ DEMAND                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Load: AC                                                          52.041 TWh    90.13%
+   Link: home battery charger                                         3.890 TWh     6.74%
+   Load: industry electricity                                         1.811 TWh     3.14%
+ TOTAL DEMAND                                                        57.742 TWh
+
+ ========================================================================================
+ NET (Supply - Demand) : 0.000 MWh   (1.290e-14 % of the larger side)
+ RESULT                : PASSED - supply equals demand
+
+####################################################################################################
+ 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)
+####################################################################################################
+ Max |system residual| : 0.0000 MW at 2013-08-01 21:00:00
+ Mean |system residual|: 0.0000 MW
+ Peak supply   : 9.482 GW at 2013-08-26 12:00:00
+ Peak demand   : 9.482 GW at 2013-08-26 12:00:00
+ Min  demand   : 4.189 GW at 2013-03-31 00:00:00
+
+####################################################################################################
+ 4. TRANSMISSION AUDIT (lines and internal transport links)
+####################################################################################################
+ Internal transport links (same-carrier at all terminals): 0
+ TOTAL transmission losses entering the balance: 0.000 MWh
+
+####################################################################################################
+ 5. CONVERSION-LINK AUDIT (links touching this carrier)
+####################################################################################################
+                 link carrier  # terminal terminal carrier input @bus0 output @terminal eff (min-max) max|p_i+eff*p0| MW
+electricity distribution grid 12     bus1      low voltage  45.278 TWh       45.278 TWh 1.0000-1.0000           0.00e+00
+         home battery charger 12     bus1     home battery   3.890 TWh        3.811 TWh 0.9798-0.9798           0.00e+00
+      home battery discharger 12     bus1      low voltage   3.811 TWh        3.734 TWh 0.9798-0.9798           0.00e+00
+
+ Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
+
+####################################################################################################
+ 6. SANITY FLAGS
+####################################################################################################
+ Load shedding energy       : 0.932 MWh  (0.0000 % of loads on this carrier)
+ Negative generator dispatch: 0.000 MWh
+ Renewable curtailment    :
+    solar rooftop  potential      9.309 TWh | used      8.730 TWh | curtailed    578.868 GWh (6.22 %)
+ WARNING: 12 load(s) are attached to buses that DO NOT EXIST (their demand is IGNORED by the optimisation): 0.000 MWh
+    - low-temperature heat for industry: 0.000 MWh
+
+====================================================================================================
+ VERDICT
+====================================================================================================
+  [PASS] Nodal balance: max |residual| = 0.0000 MW
+  [PASS] Carrier balance: net = 0.000 MWh (1.29e-14 %)
+  [PASS] Per-snapshot closure: max |res| = 0.0000 MW
+  [PASS] Link efficiency consistency: max err 0.00e+00 MW
+  [PASS] Load shedding: 0.932 MWh
+  [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
+
+  OVERALL ENERGY CONSERVATION FOR 'LOW VOLTAGE': PASSED  (with warnings)
+====================================================================================================
+
+====================================================================================================
+                                   NEXT CARRIER REPORT SECTION
+====================================================================================================
+
+====================================================================================================
+ ENERGY CONSERVATION & NODAL BALANCE VALIDATION  --  CARRIER: HOME BATTERY
+====================================================================================================
+ PyPSA version   : 0.30.3
+ Snapshots       : 2920  (2013-01-01 00:00:00 -> 2013-12-31 21:00:00), step = 3 h
+ Weighting       : sum of weights = 8,760.0 h  (per snapshot: 3.00 - 3.00 h)
+ Buses of carrier: 12  ->  LY0 0 home battery ... LY1 0 home battery
+ Objective       : 5.5125 bn EUR/yr
+ Unit mode       : ENERGY (MWh / GWh / TWh)
+
+####################################################################################################
+ 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)
+####################################################################################################
+ Tolerance (max |residual|) : 0.01 MW      Relative tolerance : 1e-06
+ Max |residual|             : 0.0000 MW  at bus 'LY0 10 home battery', snapshot 2013-05-10 15:00:00
+ Sum |residual| energy      : 0.000 MWh  (1.05e-16 of carrier throughput)
+ RESULT                     : PASSED
+
+ Per-bus ledger (annualised, signed:  + into bus / - out of bus):
+                    Generators      Loads Cross-carrier links      Stores Storage units Transfers (lines/internal links)    Residual max|res| MW
+LY0 0 home battery   0.000 MWh  0.000 MWh          -0.000 MWh   0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    1.14e-13
+LY0 1 home battery   0.000 MWh  0.000 MWh          -0.000 MWh   0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    1.85e-13
+LY0 10 home battery  0.000 MWh  0.000 MWh          -0.000 MWh   0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    2.56e-13
+LY0 2 home battery   0.000 MWh  0.000 MWh          -0.000 MWh   0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    1.14e-13
+LY0 3 home battery   0.000 MWh  0.000 MWh          -0.000 MWh   0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    2.84e-14
+LY0 4 home battery   0.000 MWh  0.000 MWh          -0.000 MWh   0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    7.11e-14
+LY0 5 home battery   0.000 MWh  0.000 MWh          -0.000 MWh   0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    2.13e-14
+LY0 6 home battery   0.000 MWh  0.000 MWh          -0.000 MWh   0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    6.06e-14
+LY0 7 home battery   0.000 MWh  0.000 MWh          -0.000 MWh   0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    7.11e-14
+LY0 8 home battery   0.000 MWh  0.000 MWh          -0.000 MWh   0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    2.84e-14
+LY0 9 home battery   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    8.53e-14
+LY1 0 home battery   0.000 MWh  0.000 MWh          -0.000 MWh   0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    3.55e-14
+----------------------------------------------------------------------------------------------------
+ TOTAL         | Generators: 0.000 MWh | Loads: 0.000 MWh | Cross-carrier links: -0.000 MWh | Stores: 0.000 MWh | Storage units: 0.000 MWh | Transfers (lines/internal links): 0.000 MWh | Residual: 0.000 MWh
+
+####################################################################################################
+ 2. CARRIER-LEVEL ENERGY BALANCE  (HOME BATTERY, all 12 buses aggregated)
+####################################################################################################
+ SUPPLY                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Link: home battery charger                                         3.811 TWh    56.73%
+   Store: home battery                                                2.907 TWh    43.27%
+ TOTAL SUPPLY                                                         6.718 TWh
+
+ DEMAND                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Link: home battery discharger                                      3.811 TWh    56.73%
+   Store: home battery                                                2.907 TWh    43.27%
+ TOTAL DEMAND                                                         6.718 TWh
+
+ ========================================================================================
+ NET (Supply - Demand) : -0.000 MWh   (1.386e-14 % of the larger side)
+ RESULT                : PASSED - supply equals demand
+
+####################################################################################################
+ 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)
+####################################################################################################
+ Max |system residual| : 0.0000 MW at 2013-01-09 15:00:00
+ Mean |system residual|: 0.0000 MW
+ Peak supply   : 2.208 GW at 2013-09-16 18:00:00
+ Peak demand   : 2.208 GW at 2013-09-16 18:00:00
+ Min  demand   : 0.1598 MW at 2013-01-18 15:00:00
+
+####################################################################################################
+ 4. TRANSMISSION AUDIT (lines and internal transport links)
+####################################################################################################
+ Internal transport links (same-carrier at all terminals): 0
+ TOTAL transmission losses entering the balance: 0.000 MWh
+
+####################################################################################################
+ 5. CONVERSION-LINK AUDIT (links touching this carrier)
+####################################################################################################
+           link carrier  # terminal terminal carrier input @bus0 output @terminal eff (min-max) max|p_i+eff*p0| MW
+   home battery charger 12     bus1     home battery   3.890 TWh        3.811 TWh 0.9798-0.9798           0.00e+00
+home battery discharger 12     bus1      low voltage   3.811 TWh        3.734 TWh 0.9798-0.9798           0.00e+00
+
+ Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
+
+####################################################################################################
+ 6. SANITY FLAGS
+####################################################################################################
+ Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
+ Negative generator dispatch: 0.000 MWh
+ WARNING: 12 load(s) are attached to buses that DO NOT EXIST (their demand is IGNORED by the optimisation): 0.000 MWh
+    - low-temperature heat for industry: 0.000 MWh
+
+====================================================================================================
+ VERDICT
+====================================================================================================
+  [PASS] Nodal balance: max |residual| = 0.0000 MW
+  [PASS] Carrier balance: net = -0.000 MWh (1.39e-14 %)
+  [PASS] Per-snapshot closure: max |res| = 0.0000 MW
+  [PASS] Link efficiency consistency: max err 0.00e+00 MW
+  [PASS] Load shedding: 0.000 MWh
+  [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
+
+  OVERALL ENERGY CONSERVATION FOR 'HOME BATTERY': PASSED  (with warnings)
+====================================================================================================
+
+====================================================================================================
+                                   NEXT CARRIER REPORT SECTION
+====================================================================================================
+
+====================================================================================================
+ ENERGY CONSERVATION & NODAL BALANCE VALIDATION  --  CARRIER: GAS
+====================================================================================================
+ PyPSA version   : 0.30.3
+ Snapshots       : 2920  (2013-01-01 00:00:00 -> 2013-12-31 21:00:00), step = 3 h
+ Weighting       : sum of weights = 8,760.0 h  (per snapshot: 3.00 - 3.00 h)
+ Buses of carrier: 12  ->  LY0 0 gas ... LY1 0 gas
+ Objective       : 5.5125 bn EUR/yr
+ Unit mode       : ENERGY (MWh / GWh / TWh)
+
+####################################################################################################
+ 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)
+####################################################################################################
+ Tolerance (max |residual|) : 0.01 MW      Relative tolerance : 1e-06
+ Max |residual|             : 0.0004 MW  at bus 'LY0 1 gas', snapshot 2013-03-30 06:00:00
+ Sum |residual| energy      : 9.083 MWh  (8.10e-08 of carrier throughput)
+ RESULT                     : PASSED
+
+ Per-bus ledger (annualised, signed:  + into bus / - out of bus):
+             Generators      Loads Cross-carrier links     Stores Storage units Transfers (lines/internal links)    Residual max|res| MW
+LY0 0 gas   626.206 GWh  0.000 MWh        -626.206 GWh  0.000 MWh     0.000 MWh                        0.000 MWh   0.002 MWh    3.82e-04
+LY0 1 gas     1.726 TWh  0.000 MWh          -1.726 TWh  0.000 MWh     0.000 MWh                        0.000 MWh  -0.002 MWh    4.31e-04
+LY0 10 gas  104.623 TWh  0.000 MWh        -104.623 TWh  0.000 MWh     0.000 MWh                        0.000 MWh   0.002 MWh    4.00e-04
+LY0 2 gas     1.464 TWh  0.000 MWh          -1.464 TWh  0.000 MWh     0.000 MWh                        0.000 MWh  -0.004 MWh    3.59e-04
+LY0 3 gas   288.456 GWh  0.000 MWh        -288.456 GWh  0.000 MWh     0.000 MWh                        0.000 MWh  -0.001 MWh    3.92e-04
+LY0 4 gas   378.134 GWh  0.000 MWh        -378.134 GWh  0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    3.96e-04
+LY0 5 gas   233.621 GWh  0.000 MWh        -233.620 GWh  0.000 MWh     0.000 MWh                        0.000 MWh   0.003 MWh    3.97e-04
+LY0 6 gas   537.572 GWh  0.000 MWh        -537.572 GWh  0.000 MWh     0.000 MWh                        0.000 MWh   0.003 MWh    3.45e-04
+LY0 7 gas   649.087 GWh  0.000 MWh        -649.087 GWh  0.000 MWh     0.000 MWh                        0.000 MWh  -0.003 MWh    3.50e-04
+LY0 8 gas   355.537 GWh  0.000 MWh        -355.537 GWh  0.000 MWh     0.000 MWh                        0.000 MWh   0.002 MWh    3.70e-04
+LY0 9 gas     1.034 TWh  0.000 MWh          -1.034 TWh  0.000 MWh     0.000 MWh                        0.000 MWh   0.004 MWh    3.70e-04
+LY1 0 gas   238.541 GWh  0.000 MWh        -238.541 GWh  0.000 MWh     0.000 MWh                        0.000 MWh   0.003 MWh    4.05e-04
+----------------------------------------------------------------------------------------------------
+ TOTAL         | Generators: 112.154 TWh | Loads: 0.000 MWh | Cross-carrier links: -112.154 TWh | Stores: 0.000 MWh | Storage units: 0.000 MWh | Transfers (lines/internal links): 0.000 MWh | Residual: 0.010 MWh
+
+####################################################################################################
+ 2. CARRIER-LEVEL ENERGY BALANCE  (GAS, all 12 buses aggregated)
+####################################################################################################
+ SUPPLY                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Generator: gas                                                   112.154 TWh    99.99%
+   Store: gas                                                         4.177 GWh     0.00%
+   Link: helmeth                                                      2.047 GWh     0.00%
+   Link: Sabatier                                                     1.917 GWh     0.00%
+ TOTAL SUPPLY                                                       112.162 TWh
+
+ DEMAND                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Link: SMR CC                                                     102.757 TWh    91.61%
+   Link: gas for industry CC                                          9.373 TWh     8.36%
+   Link: gas for industry                                            12.389 GWh     0.01%
+   Link: CCGT                                                         8.436 GWh     0.01%
+   Link: SMR                                                          7.061 GWh     0.01%
+   Store: gas                                                         4.177 GWh     0.00%
+ TOTAL DEMAND                                                       112.162 TWh
+
+ ========================================================================================
+ NET (Supply - Demand) : 0.010 MWh   (8.864e-09 % of the larger side)
+ RESULT                : PASSED - supply equals demand
+
+####################################################################################################
+ 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)
+####################################################################################################
+ Max |system residual| : 0.0013 MW at 2013-05-18 12:00:00
+ Mean |system residual|: 0.0003 MW
+ Peak supply   : 12.807 GW at 2013-01-02 15:00:00
+ Peak demand   : 12.807 GW at 2013-01-02 15:00:00
+ Min  demand   : 12.803 GW at 2013-10-05 12:00:00
+
+####################################################################################################
+ 4. TRANSMISSION AUDIT (lines and internal transport links)
+####################################################################################################
+ Internal transport links (same-carrier at all terminals): 0
+ TOTAL transmission losses entering the balance: 0.000 MWh
+
+####################################################################################################
+ 5. CONVERSION-LINK AUDIT (links touching this carrier)
+####################################################################################################
+       link carrier  # terminal terminal carrier input @bus0 output @terminal   eff (min-max) max|p_i+eff*p0| MW
+               CCGT 11     bus1               AC   8.436 GWh        4.893 GWh   0.5800-0.5800           0.00e+00
+               CCGT 11     bus2              co2   8.436 GWh         1.670 kt   0.1980-0.1980           0.00e+00
+                SMR 12     bus1               H2   7.061 GWh        5.367 GWh   0.7600-0.7600           0.00e+00
+                SMR 12     bus2              co2   7.061 GWh         1.398 kt   0.1980-0.1980           0.00e+00
+             SMR CC 12     bus1               H2 102.757 TWh       70.902 TWh   0.6900-0.6900           0.00e+00
+             SMR CC 12     bus2              co2 102.757 TWh         2.035 Mt   0.0198-0.0198           0.00e+00
+             SMR CC 12     bus3       co2 stored 102.757 TWh        18.311 Mt   0.1782-0.1782           0.00e+00
+           Sabatier 12     bus1              gas   2.397 GWh        1.917 GWh   0.8000-0.8000           0.00e+00
+           Sabatier 12     bus2       co2 stored   2.397 GWh       -379.642 t -0.1584--0.1584           0.00e+00
+   gas for industry 12     bus1 gas for industry  12.389 GWh       12.389 GWh   1.0000-1.0000           0.00e+00
+   gas for industry 12     bus2              co2  12.389 GWh         2.453 kt   0.1980-0.1980           0.00e+00
+gas for industry CC 12     bus1 gas for industry   9.373 TWh        8.436 TWh   0.9000-0.9000           0.00e+00
+gas for industry CC 12     bus2              co2   9.373 TWh       185.585 kt   0.0198-0.0198           0.00e+00
+gas for industry CC 12     bus3       co2 stored   9.373 TWh         1.670 Mt   0.1782-0.1782           0.00e+00
+            helmeth 12     bus1              gas   2.559 GWh        2.047 GWh   0.8000-0.8000           0.00e+00
+            helmeth 12     bus2       co2 stored   2.559 GWh       -405.306 t -0.1584--0.1584           0.00e+00
+
+ Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
+
+####################################################################################################
+ 6. SANITY FLAGS
+####################################################################################################
+ Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
+ Negative generator dispatch: 0.000 MWh
+ WARNING: 12 load(s) are attached to buses that DO NOT EXIST (their demand is IGNORED by the optimisation): 0.000 MWh
+    - low-temperature heat for industry: 0.000 MWh
+
+====================================================================================================
+ VERDICT
+====================================================================================================
+  [PASS] Nodal balance: max |residual| = 0.0004 MW
+  [PASS] Carrier balance: net = 0.010 MWh (8.86e-09 %)
+  [PASS] Per-snapshot closure: max |res| = 0.0013 MW
+  [PASS] Link efficiency consistency: max err 0.00e+00 MW
+  [PASS] Load shedding: 0.000 MWh
+  [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
+
+  OVERALL ENERGY CONSERVATION FOR 'GAS': PASSED  (with warnings)
+====================================================================================================
+
+====================================================================================================
+                                   NEXT CARRIER REPORT SECTION
+====================================================================================================
+
+====================================================================================================
+ ENERGY CONSERVATION & NODAL BALANCE VALIDATION  --  CARRIER: GAS FOR INDUSTRY
+====================================================================================================
+ PyPSA version   : 0.30.3
+ Snapshots       : 2920  (2013-01-01 00:00:00 -> 2013-12-31 21:00:00), step = 3 h
+ Weighting       : sum of weights = 8,760.0 h  (per snapshot: 3.00 - 3.00 h)
+ Buses of carrier: 12  ->  LY0 0 gas for industry ... LY1 0 gas for industry
+ Objective       : 5.5125 bn EUR/yr
+ Unit mode       : ENERGY (MWh / GWh / TWh)
+
+####################################################################################################
+ 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)
+####################################################################################################
+ Tolerance (max |residual|) : 0.01 MW      Relative tolerance : 1e-06
+ Max |residual|             : 0.0000 MW  at bus 'LY0 0 gas for industry', snapshot 2013-01-01 00:00:00
+ Sum |residual| energy      : 0.000 MWh  (0.00e+00 of carrier throughput)
+ RESULT                     : PASSED
+
+ Per-bus ledger (annualised, signed:  + into bus / - out of bus):
+                        Generators         Loads Cross-carrier links     Stores Storage units Transfers (lines/internal links)   Residual max|res| MW
+LY0 0 gas for industry   0.000 MWh  -495.070 GWh         495.070 GWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 1 gas for industry   0.000 MWh    -1.468 TWh           1.468 TWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 10 gas for industry  0.000 MWh    -2.401 TWh           2.401 TWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 2 gas for industry   0.000 MWh    -1.098 TWh           1.098 TWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 3 gas for industry   0.000 MWh  -228.259 GWh         228.259 GWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 4 gas for industry   0.000 MWh  -298.203 GWh         298.203 GWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 5 gas for industry   0.000 MWh  -167.715 GWh         167.715 GWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 6 gas for industry   0.000 MWh  -441.659 GWh         441.659 GWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 7 gas for industry   0.000 MWh  -542.538 GWh         542.538 GWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 8 gas for industry   0.000 MWh  -282.809 GWh         282.809 GWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 9 gas for industry   0.000 MWh  -846.179 GWh         846.179 GWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY1 0 gas for industry   0.000 MWh  -178.909 GWh         178.909 GWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+----------------------------------------------------------------------------------------------------
+ TOTAL         | Generators: 0.000 MWh | Loads: -8.448 TWh | Cross-carrier links: 8.448 TWh | Stores: 0.000 MWh | Storage units: 0.000 MWh | Transfers (lines/internal links): 0.000 MWh | Residual: 0.000 MWh
+
+####################################################################################################
+ 2. CARRIER-LEVEL ENERGY BALANCE  (GAS FOR INDUSTRY, all 12 buses aggregated)
+####################################################################################################
+ SUPPLY                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Link: gas for industry CC                                          8.436 TWh    99.85%
+   Link: gas for industry                                            12.389 GWh     0.15%
+ TOTAL SUPPLY                                                         8.448 TWh
+
+ DEMAND                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Load: gas for industry                                             8.448 TWh   100.00%
+ TOTAL DEMAND                                                         8.448 TWh
+
+ ========================================================================================
+ NET (Supply - Demand) : -0.000 MWh   (2.205e-14 % of the larger side)
+ RESULT                : PASSED - supply equals demand
+
+####################################################################################################
+ 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)
+####################################################################################################
+ Max |system residual| : 0.0000 MW at 2013-01-01 00:00:00
+ Mean |system residual|: 0.0000 MW
+ Peak supply   : 964.3939 MW at 2013-01-01 00:00:00
+ Peak demand   : 964.3939 MW at 2013-01-01 00:00:00
+ Min  demand   : 964.3939 MW at 2013-01-01 00:00:00
+
+####################################################################################################
+ 4. TRANSMISSION AUDIT (lines and internal transport links)
+####################################################################################################
+ Internal transport links (same-carrier at all terminals): 0
+ TOTAL transmission losses entering the balance: 0.000 MWh
+
+####################################################################################################
+ 5. CONVERSION-LINK AUDIT (links touching this carrier)
+####################################################################################################
+       link carrier  # terminal terminal carrier input @bus0 output @terminal eff (min-max) max|p_i+eff*p0| MW
+   gas for industry 12     bus1 gas for industry  12.389 GWh       12.389 GWh 1.0000-1.0000           0.00e+00
+   gas for industry 12     bus2              co2  12.389 GWh         2.453 kt 0.1980-0.1980           0.00e+00
+gas for industry CC 12     bus1 gas for industry   9.373 TWh        8.436 TWh 0.9000-0.9000           0.00e+00
+gas for industry CC 12     bus2              co2   9.373 TWh       185.585 kt 0.0198-0.0198           0.00e+00
+gas for industry CC 12     bus3       co2 stored   9.373 TWh         1.670 Mt 0.1782-0.1782           0.00e+00
+
+ Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
+
+####################################################################################################
+ 6. SANITY FLAGS
+####################################################################################################
+ Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
+ Negative generator dispatch: 0.000 MWh
+ WARNING: 12 load(s) are attached to buses that DO NOT EXIST (their demand is IGNORED by the optimisation): 0.000 MWh
+    - low-temperature heat for industry: 0.000 MWh
+
+====================================================================================================
+ VERDICT
+====================================================================================================
+  [PASS] Nodal balance: max |residual| = 0.0000 MW
+  [PASS] Carrier balance: net = -0.000 MWh (2.20e-14 %)
+  [PASS] Per-snapshot closure: max |res| = 0.0000 MW
+  [PASS] Link efficiency consistency: max err 0.00e+00 MW
+  [PASS] Load shedding: 0.000 MWh
+  [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
+
+  OVERALL ENERGY CONSERVATION FOR 'GAS FOR INDUSTRY': PASSED  (with warnings)
+====================================================================================================
+
+====================================================================================================
+                                   NEXT CARRIER REPORT SECTION
+====================================================================================================
+
+====================================================================================================
+ ENERGY CONSERVATION & NODAL BALANCE VALIDATION  --  CARRIER: H2
+====================================================================================================
+ PyPSA version   : 0.30.3
+ Snapshots       : 2920  (2013-01-01 00:00:00 -> 2013-12-31 21:00:00), step = 3 h
+ Weighting       : sum of weights = 8,760.0 h  (per snapshot: 3.00 - 3.00 h)
+ Buses of carrier: 12  ->  LY0 0 H2 ... LY1 0 H2
+ Objective       : 5.5125 bn EUR/yr
+ Unit mode       : ENERGY (MWh / GWh / TWh)
+
+####################################################################################################
+ 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)
+####################################################################################################
+ Tolerance (max |residual|) : 0.01 MW      Relative tolerance : 1e-06
+ Max |residual|             : 0.0000 MW  at bus 'LY0 1 H2', snapshot 2013-01-18 18:00:00
+ Sum |residual| energy      : 0.000 MWh  (2.97e-12 of carrier throughput)
+ RESULT                     : PASSED
+
+ Per-bus ledger (annualised, signed:  + into bus / - out of bus):
+          Generators      Loads Cross-carrier links      Stores Storage units Transfers (lines/internal links)    Residual max|res| MW
+LY0 0 H2   0.000 MWh  0.000 MWh        -973.112 MWh   0.000 MWh     0.000 MWh                      973.112 MWh   0.000 MWh    1.61e-08
+LY0 1 H2   0.000 MWh  0.000 MWh         -91.175 GWh  -0.000 MWh     0.000 MWh                       91.175 GWh  -0.000 MWh    1.87e-08
+LY0 10 H2  0.000 MWh  0.000 MWh          99.514 GWh   0.000 MWh     0.000 MWh                      -99.514 GWh   0.000 MWh    1.77e-08
+LY0 2 H2   0.000 MWh  0.000 MWh          44.374 GWh   0.000 MWh     0.000 MWh                      -44.374 GWh   0.000 MWh    1.55e-08
+LY0 3 H2   0.000 MWh  0.000 MWh          -1.096 GWh  -0.000 MWh     0.000 MWh                        1.096 GWh   0.000 MWh    1.49e-08
+LY0 4 H2   0.000 MWh  0.000 MWh        -285.311 MWh   0.000 MWh     0.000 MWh                      285.311 MWh   0.000 MWh    1.70e-08
+LY0 5 H2   0.000 MWh  0.000 MWh          13.897 GWh   0.000 MWh     0.000 MWh                      -13.897 GWh  -0.000 MWh    1.61e-08
+LY0 6 H2   0.000 MWh  0.000 MWh         -15.530 GWh   0.000 MWh     0.000 MWh                       15.530 GWh  -0.000 MWh    1.79e-08
+LY0 7 H2   0.000 MWh  0.000 MWh         -26.649 GWh  -0.000 MWh     0.000 MWh                       26.649 GWh   0.000 MWh    1.65e-08
+LY0 8 H2   0.000 MWh  0.000 MWh          -2.458 GWh   0.000 MWh     0.000 MWh                        2.458 GWh  -0.000 MWh    1.71e-08
+LY0 9 H2   0.000 MWh  0.000 MWh         -26.454 GWh   0.000 MWh     0.000 MWh                       26.454 GWh   0.000 MWh    1.68e-08
+LY1 0 H2   0.000 MWh  0.000 MWh           6.835 GWh  -0.000 MWh     0.000 MWh                       -6.835 GWh  -0.000 MWh    1.65e-08
+----------------------------------------------------------------------------------------------------
+ TOTAL         | Generators: 0.000 MWh | Loads: 0.000 MWh | Cross-carrier links: -0.000 MWh | Stores: 0.000 MWh | Storage units: 0.000 MWh | Transfers (lines/internal links): 0.000 MWh | Residual: -0.000 MWh
+
+####################################################################################################
+ 2. CARRIER-LEVEL ENERGY BALANCE  (H2, all 12 buses aggregated)
+####################################################################################################
+ SUPPLY                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Link: SMR CC                                                      70.902 TWh    60.04%
+   Store: H2 UHS                                                     47.175 TWh    39.95%
+   Link: SMR                                                          5.367 GWh     0.00%
+   Link: H2 Electrolysis                                              3.846 GWh     0.00%
+   Link: ammonia cracker                                              1.034 GWh     0.00%
+   Store: H2 Store Tank                                             660.465 MWh     0.00%
+ TOTAL SUPPLY                                                       118.088 TWh
+
+ DEMAND                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Link: H2                                                          70.000 TWh    59.28%
+   Store: H2 UHS                                                     47.175 TWh    39.95%
+   Link: Haber-Bosch                                                899.899 GWh     0.76%
+   Link: H2 turbine                                                   4.258 GWh     0.00%
+   Link: Fischer-Tropsch                                              3.115 GWh     0.00%
+   Link: H2 Fuel Cell                                                 2.972 GWh     0.00%
+   Link: Sabatier                                                     2.397 GWh     0.00%
+   Store: H2 Store Tank                                             660.465 MWh     0.00%
+ TOTAL DEMAND                                                       118.088 TWh
+
+ ========================================================================================
+ NET (Supply - Demand) : -0.000 MWh   (3.028e-13 % of the larger side)
+ RESULT                : PASSED - supply equals demand
+
+####################################################################################################
+ 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)
+####################################################################################################
+ Max |system residual| : 0.0000 MW at 2013-10-02 00:00:00
+ Mean |system residual|: 0.0000 MW
+ Peak supply   : 16.544 GW at 2013-09-17 03:00:00
+ Peak demand   : 16.544 GW at 2013-09-17 03:00:00
+ Min  demand   : 8.009 GW at 2013-09-16 00:00:00
+
+####################################################################################################
+ 4. TRANSMISSION AUDIT (lines and internal transport links)
+####################################################################################################
+ Internal transport links (same-carrier at all terminals): 13
+ TOTAL transmission losses entering the balance: -0.000 MWh
+
+####################################################################################################
+ 5. CONVERSION-LINK AUDIT (links touching this carrier)
+####################################################################################################
+   link carrier  # terminal terminal carrier input @bus0 output @terminal   eff (min-max) max|p_i+eff*p0| MW
+Fischer-Tropsch 12     bus1              oil   3.115 GWh        2.489 GWh   0.7990-0.7990           0.00e+00
+Fischer-Tropsch 12     bus2       co2 stored   3.115 GWh       -639.946 t -0.2054--0.2054           0.00e+00
+Fischer-Tropsch 12     bus3               AC   3.115 GWh      -15.346 MWh -0.0049--0.0049           0.00e+00
+             H2  2     bus1        H2 export  70.000 TWh       70.000 TWh   1.0000-1.0000           0.00e+00
+H2 Electrolysis 12     bus1               H2   6.186 GWh        3.846 GWh   0.6217-0.6217           0.00e+00
+   H2 Fuel Cell 12     bus1               AC   2.972 GWh        1.486 GWh   0.5000-0.5000           0.00e+00
+     H2 turbine 12     bus1               AC   4.258 GWh        1.746 GWh   0.4100-0.4100           0.00e+00
+    Haber-Bosch 12     bus1              NH3 899.899 GWh      783.611 GWh   0.8708-0.8708           0.00e+00
+    Haber-Bosch 12     bus2               AC 899.899 GWh     -193.787 GWh -0.2153--0.2153           0.00e+00
+            SMR 12     bus1               H2   7.061 GWh        5.367 GWh   0.7600-0.7600           0.00e+00
+            SMR 12     bus2              co2   7.061 GWh         1.398 kt   0.1980-0.1980           0.00e+00
+         SMR CC 12     bus1               H2 102.757 TWh       70.902 TWh   0.6900-0.6900           0.00e+00
+         SMR CC 12     bus2              co2 102.757 TWh         2.035 Mt   0.0198-0.0198           0.00e+00
+         SMR CC 12     bus3       co2 stored 102.757 TWh        18.311 Mt   0.1782-0.1782           0.00e+00
+       Sabatier 12     bus1              gas   2.397 GWh        1.917 GWh   0.8000-0.8000           0.00e+00
+       Sabatier 12     bus2       co2 stored   2.397 GWh       -379.642 t -0.1584--0.1584           0.00e+00
+ammonia cracker 12     bus1               H2   1.509 GWh        1.034 GWh   0.6849-0.6849           0.00e+00
+
+ Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
+
+####################################################################################################
+ 6. SANITY FLAGS
+####################################################################################################
+ Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
+ Negative generator dispatch: 0.000 MWh
+ WARNING: 12 load(s) are attached to buses that DO NOT EXIST (their demand is IGNORED by the optimisation): 0.000 MWh
+    - low-temperature heat for industry: 0.000 MWh
+
+====================================================================================================
+ VERDICT
+====================================================================================================
+  [PASS] Nodal balance: max |residual| = 0.0000 MW
+  [PASS] Carrier balance: net = -0.000 MWh (3.03e-13 %)
+  [PASS] Per-snapshot closure: max |res| = 0.0000 MW
+  [PASS] Link efficiency consistency: max err 0.00e+00 MW
+  [PASS] Load shedding: 0.000 MWh
+  [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
+
+  OVERALL ENERGY CONSERVATION FOR 'H2': PASSED  (with warnings)
+====================================================================================================
+
+====================================================================================================
+                                   NEXT CARRIER REPORT SECTION
+====================================================================================================
+
+====================================================================================================
+ ENERGY CONSERVATION & NODAL BALANCE VALIDATION  --  CARRIER: H2 EXPORT
+====================================================================================================
+ PyPSA version   : 0.30.3
+ Snapshots       : 2920  (2013-01-01 00:00:00 -> 2013-12-31 21:00:00), step = 3 h
+ Weighting       : sum of weights = 8,760.0 h  (per snapshot: 3.00 - 3.00 h)
+ Buses of carrier: 1  ->  H2 export bus ... H2 export bus
+ Objective       : 5.5125 bn EUR/yr
+ Unit mode       : ENERGY (MWh / GWh / TWh)
+
+####################################################################################################
+ 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)
+####################################################################################################
+ Tolerance (max |residual|) : 0.01 MW      Relative tolerance : 1e-06
+ Max |residual|             : 0.0000 MW  at bus 'H2 export bus', snapshot 2013-01-20 00:00:00
+ Sum |residual| energy      : 0.000 MWh  (6.60e-17 of carrier throughput)
+ RESULT                     : PASSED
+
+ Per-bus ledger (annualised, signed:  + into bus / - out of bus):
+              Generators        Loads Cross-carrier links     Stores Storage units Transfers (lines/internal links)   Residual max|res| MW
+H2 export bus  0.025 MWh  -70.000 TWh          70.000 TWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    7.28e-12
+----------------------------------------------------------------------------------------------------
+ TOTAL         | Generators: 0.025 MWh | Loads: -70.000 TWh | Cross-carrier links: 70.000 TWh | Stores: 0.000 MWh | Storage units: 0.000 MWh | Transfers (lines/internal links): 0.000 MWh | Residual: 0.000 MWh
+
+####################################################################################################
+ 2. CARRIER-LEVEL ENERGY BALANCE  (H2 EXPORT, all 1 buses aggregated)
+####################################################################################################
+ SUPPLY                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Link: H2                                                          70.000 TWh   100.00%
+   Generator: load shedding                                           0.025 MWh     0.00%
+ TOTAL SUPPLY                                                        70.000 TWh
+
+ DEMAND                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Load: H2 export                                                   70.000 TWh   100.00%
+ TOTAL DEMAND                                                        70.000 TWh
+
+ ========================================================================================
+ NET (Supply - Demand) : 0.000 MWh   (2.129e-14 % of the larger side)
+ RESULT                : PASSED - supply equals demand
+
+####################################################################################################
+ 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)
+####################################################################################################
+ Max |system residual| : 0.0000 MW at 2013-01-20 00:00:00
+ Mean |system residual|: 0.0000 MW
+ Peak supply   : 24.510 GW at 2013-01-20 00:00:00
+ Peak demand   : 24.510 GW at 2013-01-01 00:00:00
+ Min  demand   : 0.0000 MW at 2013-01-02 00:00:00
+
+####################################################################################################
+ 4. TRANSMISSION AUDIT (lines and internal transport links)
+####################################################################################################
+ Internal transport links (same-carrier at all terminals): 0
+ TOTAL transmission losses entering the balance: 0.000 MWh
+
+####################################################################################################
+ 5. CONVERSION-LINK AUDIT (links touching this carrier)
+####################################################################################################
+link carrier  # terminal terminal carrier input @bus0 output @terminal eff (min-max) max|p_i+eff*p0| MW
+          H2  2     bus1        H2 export  70.000 TWh       70.000 TWh 1.0000-1.0000           0.00e+00
+
+ Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
+
+####################################################################################################
+ 6. SANITY FLAGS
+####################################################################################################
+ Load shedding energy       : 0.025 MWh  (0.0000 % of loads on this carrier)
+ Negative generator dispatch: 0.000 MWh
+ WARNING: 12 load(s) are attached to buses that DO NOT EXIST (their demand is IGNORED by the optimisation): 0.000 MWh
+    - low-temperature heat for industry: 0.000 MWh
+
+====================================================================================================
+ VERDICT
+====================================================================================================
+  [PASS] Nodal balance: max |residual| = 0.0000 MW
+  [PASS] Carrier balance: net = 0.000 MWh (2.13e-14 %)
+  [PASS] Per-snapshot closure: max |res| = 0.0000 MW
+  [PASS] Link efficiency consistency: max err 0.00e+00 MW
+  [PASS] Load shedding: 0.025 MWh
+  [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
+
+  OVERALL ENERGY CONSERVATION FOR 'H2 EXPORT': PASSED  (with warnings)
+====================================================================================================
+
+====================================================================================================
+                                   NEXT CARRIER REPORT SECTION
+====================================================================================================
+
+====================================================================================================
+ ENERGY CONSERVATION & NODAL BALANCE VALIDATION  --  CARRIER: NH3
+====================================================================================================
+ PyPSA version   : 0.30.3
+ Snapshots       : 2920  (2013-01-01 00:00:00 -> 2013-12-31 21:00:00), step = 3 h
+ Weighting       : sum of weights = 8,760.0 h  (per snapshot: 3.00 - 3.00 h)
+ Buses of carrier: 12  ->  LY0 0 NH3 ... LY1 0 NH3
+ Objective       : 5.5125 bn EUR/yr
+ Unit mode       : ENERGY (MWh / GWh / TWh)
+
+####################################################################################################
+ 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)
+####################################################################################################
+ Tolerance (max |residual|) : 0.01 MW      Relative tolerance : 1e-06
+ Max |residual|             : 0.0000 MW  at bus 'LY0 10 NH3', snapshot 2013-01-06 12:00:00
+ Sum |residual| energy      : 0.000 MWh  (1.36e-15 of carrier throughput)
+ RESULT                     : PASSED
+
+ Per-bus ledger (annualised, signed:  + into bus / - out of bus):
+           Generators         Loads Cross-carrier links      Stores Storage units Transfers (lines/internal links)    Residual max|res| MW
+LY0 0 NH3   0.000 MWh   -45.832 GWh          45.832 GWh   0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    7.22e-14
+LY0 1 NH3   0.000 MWh  -135.884 GWh         135.884 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    1.00e-13
+LY0 10 NH3  0.000 MWh  -222.263 GWh         222.263 GWh   0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    2.89e-12
+LY0 2 NH3   0.000 MWh  -101.662 GWh         101.662 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    3.51e-13
+LY0 3 NH3   0.000 MWh   -21.132 GWh          21.132 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    9.21e-14
+LY0 4 NH3   0.000 MWh   -27.607 GWh          27.607 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    8.23e-14
+LY0 5 NH3   0.000 MWh   -15.527 GWh          15.527 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    9.01e-14
+LY0 6 NH3   0.000 MWh   -40.888 GWh          40.888 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    1.07e-13
+LY0 7 NH3   0.000 MWh   -50.227 GWh          50.227 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    9.15e-14
+LY0 8 NH3   0.000 MWh   -26.182 GWh          26.182 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    8.22e-14
+LY0 9 NH3   0.000 MWh   -78.337 GWh          78.337 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh   0.000 MWh    9.24e-14
+LY1 0 NH3   0.000 MWh   -16.563 GWh          16.563 GWh  -0.000 MWh     0.000 MWh                        0.000 MWh  -0.000 MWh    8.27e-14
+----------------------------------------------------------------------------------------------------
+ TOTAL         | Generators: 0.000 MWh | Loads: -782.102 GWh | Cross-carrier links: 782.102 GWh | Stores: -0.000 MWh | Storage units: 0.000 MWh | Transfers (lines/internal links): 0.000 MWh | Residual: 0.000 MWh
+
+####################################################################################################
+ 2. CARRIER-LEVEL ENERGY BALANCE  (NH3, all 12 buses aggregated)
+####################################################################################################
+ SUPPLY                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Link: Haber-Bosch                                                783.611 GWh    99.22%
+   Store: ammonia store                                               6.180 GWh     0.78%
+ TOTAL SUPPLY                                                       789.791 GWh
+
+ DEMAND                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Load: NH3                                                        782.102 GWh    99.03%
+   Store: ammonia store                                               6.180 GWh     0.78%
+   Link: ammonia cracker                                              1.509 GWh     0.19%
+ TOTAL DEMAND                                                       789.791 GWh
+
+ ========================================================================================
+ NET (Supply - Demand) : 0.000 MWh   (0.000e+00 % of the larger side)
+ RESULT                : PASSED - supply equals demand
+
+####################################################################################################
+ 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)
+####################################################################################################
+ Max |system residual| : 0.0000 MW at 2013-01-06 12:00:00
+ Mean |system residual|: 0.0000 MW
+ Peak supply   : 90.4159 MW at 2013-01-03 09:00:00
+ Peak demand   : 90.4159 MW at 2013-01-03 09:00:00
+ Min  demand   : 89.2811 MW at 2013-12-24 18:00:00
+
+####################################################################################################
+ 4. TRANSMISSION AUDIT (lines and internal transport links)
+####################################################################################################
+ Internal transport links (same-carrier at all terminals): 0
+ TOTAL transmission losses entering the balance: 0.000 MWh
+
+####################################################################################################
+ 5. CONVERSION-LINK AUDIT (links touching this carrier)
+####################################################################################################
+   link carrier  # terminal terminal carrier input @bus0 output @terminal   eff (min-max) max|p_i+eff*p0| MW
+    Haber-Bosch 12     bus1              NH3 899.899 GWh      783.611 GWh   0.8708-0.8708           0.00e+00
+    Haber-Bosch 12     bus2               AC 899.899 GWh     -193.787 GWh -0.2153--0.2153           0.00e+00
+ammonia cracker 12     bus1               H2   1.509 GWh        1.034 GWh   0.6849-0.6849           0.00e+00
+
+ Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
+
+####################################################################################################
+ 6. SANITY FLAGS
+####################################################################################################
+ Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
+ Negative generator dispatch: 0.000 MWh
+ WARNING: 12 load(s) are attached to buses that DO NOT EXIST (their demand is IGNORED by the optimisation): 0.000 MWh
+    - low-temperature heat for industry: 0.000 MWh
+
+====================================================================================================
+ VERDICT
+====================================================================================================
+  [PASS] Nodal balance: max |residual| = 0.0000 MW
+  [PASS] Carrier balance: net = 0.000 MWh (0.00e+00 %)
+  [PASS] Per-snapshot closure: max |res| = 0.0000 MW
+  [PASS] Link efficiency consistency: max err 0.00e+00 MW
+  [PASS] Load shedding: 0.000 MWh
+  [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
+
+  OVERALL ENERGY CONSERVATION FOR 'NH3': PASSED  (with warnings)
+====================================================================================================
+
+====================================================================================================
+                                   NEXT CARRIER REPORT SECTION
+====================================================================================================
+
+====================================================================================================
+ ENERGY CONSERVATION & NODAL BALANCE VALIDATION  --  CARRIER: SOLID BIOMASS FOR INDUSTRY
+====================================================================================================
+ PyPSA version   : 0.30.3
+ Snapshots       : 2920  (2013-01-01 00:00:00 -> 2013-12-31 21:00:00), step = 3 h
+ Weighting       : sum of weights = 8,760.0 h  (per snapshot: 3.00 - 3.00 h)
+ Buses of carrier: 12  ->  LY0 0 solid biomass for industry ... LY1 0 solid biomass for industry
+ Objective       : 5.5125 bn EUR/yr
+ Unit mode       : ENERGY (MWh / GWh / TWh)
+
+####################################################################################################
+ 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)
+####################################################################################################
+ Tolerance (max |residual|) : 0.01 MW      Relative tolerance : 1e-06
+ Max |residual|             : 0.0000 MW  at bus 'LY0 0 solid biomass for industry', snapshot 2013-01-01 00:00:00
+ Sum |residual| energy      : 0.000 MWh  (0.00e+00 of carrier throughput)
+ RESULT                     : PASSED
+
+ Per-bus ledger (annualised, signed:  + into bus / - out of bus):
+                                  Generators      Loads Cross-carrier links     Stores Storage units Transfers (lines/internal links)   Residual max|res| MW
+LY0 0 solid biomass for industry   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 1 solid biomass for industry   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 10 solid biomass for industry  0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 2 solid biomass for industry   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 3 solid biomass for industry   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 4 solid biomass for industry   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 5 solid biomass for industry   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 6 solid biomass for industry   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 7 solid biomass for industry   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 8 solid biomass for industry   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 9 solid biomass for industry   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY1 0 solid biomass for industry   0.000 MWh  0.000 MWh           0.000 MWh  0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+----------------------------------------------------------------------------------------------------
+ TOTAL         | Generators: 0.000 MWh | Loads: 0.000 MWh | Cross-carrier links: 0.000 MWh | Stores: 0.000 MWh | Storage units: 0.000 MWh | Transfers (lines/internal links): 0.000 MWh | Residual: 0.000 MWh
+
+####################################################################################################
+ 2. CARRIER-LEVEL ENERGY BALANCE  (SOLID BIOMASS FOR INDUSTRY, all 12 buses aggregated)
+####################################################################################################
+ SUPPLY                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+ TOTAL SUPPLY                                                         0.000 MWh
+
+ DEMAND                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+ TOTAL DEMAND                                                         0.000 MWh
+
+ ========================================================================================
+ NET (Supply - Demand) : 0.000 MWh   (0.000e+00 % of the larger side)
+ RESULT                : PASSED - supply equals demand
+
+####################################################################################################
+ 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)
+####################################################################################################
+ Max |system residual| : 0.0000 MW at 2013-01-01 00:00:00
+ Mean |system residual|: 0.0000 MW
+ Peak supply   : 0.0000 MW at 2013-01-01 00:00:00
+ Peak demand   : 0.0000 MW at 2013-01-01 00:00:00
+ Min  demand   : 0.0000 MW at 2013-01-01 00:00:00
+
+####################################################################################################
+ 4. TRANSMISSION AUDIT (lines and internal transport links)
+####################################################################################################
+ Internal transport links (same-carrier at all terminals): 0
+ TOTAL transmission losses entering the balance: 0.000 MWh
+
+####################################################################################################
+ 5. CONVERSION-LINK AUDIT (links touching this carrier)
+####################################################################################################
+                 link carrier  # terminal           terminal carrier input @bus0 output @terminal   eff (min-max) max|p_i+eff*p0| MW
+   solid biomass for industry 12     bus1 solid biomass for industry   0.000 MWh        0.000 MWh   1.0000-1.0000           0.00e+00
+solid biomass for industry CC 12     bus1 solid biomass for industry   0.000 MWh        0.000 MWh   0.9000-0.9000           0.00e+00
+solid biomass for industry CC 12     bus2                        co2   0.000 MWh          0.000 t -0.3300--0.3300           0.00e+00
+solid biomass for industry CC 12     bus3                 co2 stored   0.000 MWh          0.000 t   0.3300-0.3300           0.00e+00
+
+ Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
+
+####################################################################################################
+ 6. SANITY FLAGS
+####################################################################################################
+ Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
+ Negative generator dispatch: 0.000 MWh
+ WARNING: 12 load(s) are attached to buses that DO NOT EXIST (their demand is IGNORED by the optimisation): 0.000 MWh
+    - low-temperature heat for industry: 0.000 MWh
+
+====================================================================================================
+ VERDICT
+====================================================================================================
+  [PASS] Nodal balance: max |residual| = 0.0000 MW
+  [PASS] Carrier balance: net = 0.000 MWh (0.00e+00 %)
+  [PASS] Per-snapshot closure: max |res| = 0.0000 MW
+  [PASS] Link efficiency consistency: max err 0.00e+00 MW
+  [PASS] Load shedding: 0.000 MWh
+  [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
+
+  OVERALL ENERGY CONSERVATION FOR 'SOLID BIOMASS FOR INDUSTRY': PASSED  (with warnings)
+====================================================================================================
+
+====================================================================================================
+                                   NEXT CARRIER REPORT SECTION
+====================================================================================================
+
+====================================================================================================
+ ENERGY CONSERVATION & NODAL BALANCE VALIDATION  --  CARRIER: CO2
+====================================================================================================
+ PyPSA version   : 0.30.3
+ Snapshots       : 2920  (2013-01-01 00:00:00 -> 2013-12-31 21:00:00), step = 3 h
+ Weighting       : sum of weights = 8,760.0 h  (per snapshot: 3.00 - 3.00 h)
+ Buses of carrier: 1  ->  co2 atmosphere ... co2 atmosphere
+ Objective       : 5.5125 bn EUR/yr
+ Unit mode       : MASS (t / kt / Mt)
+
+####################################################################################################
+ 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)
+####################################################################################################
+ Tolerance (max |residual|) : 0.01 MW      Relative tolerance : 1e-06
+ Max |residual|             : 0.0000 MW  at bus 'co2 atmosphere', snapshot 2013-01-01 03:00:00
+ Sum |residual| energy      : 0.000 t  (3.92e-17 of carrier throughput)
+ RESULT                     : PASSED
+
+ Per-bus ledger (annualised, signed:  + into bus / - out of bus):
+               Generators     Loads Cross-carrier links      Stores Storage units Transfers (lines/internal links) Residual max|res| MW
+co2 atmosphere    0.000 t  1.663 Mt           43.031 Mt  -44.694 Mt       0.000 t                          0.000 t  0.000 t    9.09e-13
+----------------------------------------------------------------------------------------------------
+ TOTAL         | Generators: 0.000 t | Loads: 1.663 Mt | Cross-carrier links: 43.031 Mt | Stores: -44.694 Mt | Storage units: 0.000 t | Transfers (lines/internal links): 0.000 t | Residual: 0.000 t
+
+####################################################################################################
+ 2. CARRIER-LEVEL ENERGY BALANCE  (CO2, all 1 buses aggregated)
+####################################################################################################
+ SUPPLY                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Link: co2 vent                                                     19.979 Mt    44.70%
+   Link: process emissions                                            15.108 Mt    33.80%
+   Link: oil                                                           5.718 Mt    12.79%
+   Link: SMR CC                                                        2.035 Mt     4.55%
+   Load: industry oil emissions                                        1.663 Mt     3.72%
+   Link: gas for industry CC                                         185.585 kt     0.42%
+   Link: gas for industry                                              2.453 kt     0.01%
+   Link: CCGT                                                          1.670 kt     0.00%
+   Link: SMR                                                           1.398 kt     0.00%
+   Link: process emissions CC                                         273.595 t     0.00%
+ TOTAL SUPPLY                                                         44.694 Mt
+
+ DEMAND                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Store: co2                                                         44.694 Mt   100.00%
+ TOTAL DEMAND                                                         44.694 Mt
+
+ ========================================================================================
+ NET (Supply - Demand) : -0.000 t   (1.667e-14 % of the larger side)
+ RESULT                : PASSED - supply equals demand
+
+####################################################################################################
+ 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)
+####################################################################################################
+ Max |system residual| : 0.0000 MW at 2013-01-01 03:00:00
+ Mean |system residual|: 0.0000 MW
+ Peak supply   : 7.858 GW at 2013-09-17 18:00:00
+ Peak demand   : 7.858 GW at 2013-09-17 18:00:00
+ Min  demand   : 4.357 GW at 2013-01-01 09:00:00
+
+####################################################################################################
+ 4. TRANSMISSION AUDIT (lines and internal transport links)
+####################################################################################################
+ Internal transport links (same-carrier at all terminals): 0
+ TOTAL transmission losses entering the balance: 0.000 t
+
+####################################################################################################
+ 5. CONVERSION-LINK AUDIT (links touching this carrier)
+####################################################################################################
+                 link carrier  # terminal           terminal carrier input @bus0 output @terminal   eff (min-max) max|p_i+eff*p0| MW
+                         CCGT 11     bus1                         AC    8.436 kt        4.893 GWh   0.5800-0.5800           0.00e+00
+                         CCGT 11     bus2                        co2    8.436 kt         1.670 kt   0.1980-0.1980           0.00e+00
+                          SMR 12     bus1                         H2    7.061 kt        5.367 GWh   0.7600-0.7600           0.00e+00
+                          SMR 12     bus2                        co2    7.061 kt         1.398 kt   0.1980-0.1980           0.00e+00
+                       SMR CC 12     bus1                         H2  102.757 Mt       70.902 TWh   0.6900-0.6900           0.00e+00
+                       SMR CC 12     bus2                        co2  102.757 Mt         2.035 Mt   0.0198-0.0198           0.00e+00
+                       SMR CC 12     bus3                 co2 stored  102.757 Mt        18.311 Mt   0.1782-0.1782           0.00e+00
+                     co2 vent 12     bus1                        co2   19.979 Mt        19.979 Mt   1.0000-1.0000           0.00e+00
+             gas for industry 12     bus1           gas for industry   12.389 kt       12.389 GWh   1.0000-1.0000           0.00e+00
+             gas for industry 12     bus2                        co2   12.389 kt         2.453 kt   0.1980-0.1980           0.00e+00
+          gas for industry CC 12     bus1           gas for industry    9.373 Mt        8.436 TWh   0.9000-0.9000           0.00e+00
+          gas for industry CC 12     bus2                        co2    9.373 Mt       185.585 kt   0.0198-0.0198           0.00e+00
+          gas for industry CC 12     bus3                 co2 stored    9.373 Mt         1.670 Mt   0.1782-0.1782           0.00e+00
+                          oil  9     bus1                         AC   22.239 Mt        7.784 TWh   0.3500-0.3500           0.00e+00
+                          oil  9     bus2                        co2   22.239 Mt         5.718 Mt   0.2571-0.2571           0.00e+00
+            process emissions  1     bus1                        co2   15.108 Mt        15.108 Mt   1.0000-1.0000           0.00e+00
+         process emissions CC 12     bus1                        co2    2.736 kt        273.595 t   0.1000-0.1000           0.00e+00
+         process emissions CC 12     bus2                 co2 stored    2.736 kt         2.462 kt   0.9000-0.9000           0.00e+00
+solid biomass for industry CC 12     bus1 solid biomass for industry     0.000 t        0.000 MWh   0.9000-0.9000           0.00e+00
+solid biomass for industry CC 12     bus2                        co2     0.000 t          0.000 t -0.3300--0.3300           0.00e+00
+solid biomass for industry CC 12     bus3                 co2 stored     0.000 t          0.000 t   0.3300-0.3300           0.00e+00
+
+ Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
+
+####################################################################################################
+ 6. SANITY FLAGS
+####################################################################################################
+ Load shedding energy       : 0.000 t  (0.0000 % of loads on this carrier)
+ Negative generator dispatch: 0.000 t
+ WARNING: 12 load(s) are attached to buses that DO NOT EXIST (their demand is IGNORED by the optimisation): 0.000 t
+    - low-temperature heat for industry: 0.000 t
+
+====================================================================================================
+ VERDICT
+====================================================================================================
+  [PASS] Nodal balance: max |residual| = 0.0000 MW
+  [PASS] Carrier balance: net = -0.000 t (1.67e-14 %)
+  [PASS] Per-snapshot closure: max |res| = 0.0000 MW
+  [PASS] Link efficiency consistency: max err 0.00e+00 MW
+  [PASS] Load shedding: 0.000 t
+  [WARN] 12 loads on undefined buses (0.000 t) are silently ignored
+
+  OVERALL ENERGY CONSERVATION FOR 'CO2': PASSED  (with warnings)
+====================================================================================================
+
+====================================================================================================
+                                   NEXT CARRIER REPORT SECTION
+====================================================================================================
+
+====================================================================================================
+ ENERGY CONSERVATION & NODAL BALANCE VALIDATION  --  CARRIER: CO2 STORED
+====================================================================================================
+ PyPSA version   : 0.30.3
+ Snapshots       : 2920  (2013-01-01 00:00:00 -> 2013-12-31 21:00:00), step = 3 h
+ Weighting       : sum of weights = 8,760.0 h  (per snapshot: 3.00 - 3.00 h)
+ Buses of carrier: 12  ->  LY0 0 co2 stored ... LY1 0 co2 stored
+ Objective       : 5.5125 bn EUR/yr
+ Unit mode       : MASS (t / kt / Mt)
+
+####################################################################################################
+ 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)
+####################################################################################################
+ Tolerance (max |residual|) : 0.01 MW      Relative tolerance : 1e-06
+ Max |residual|             : 0.0000 MW  at bus 'LY1 0 co2 stored', snapshot 2013-04-04 03:00:00
+ Sum |residual| energy      : 0.000 t  (3.68e-12 of carrier throughput)
+ RESULT                     : PASSED
+
+ Per-bus ledger (annualised, signed:  + into bus / - out of bus):
+                  Generators    Loads Cross-carrier links      Stores Storage units Transfers (lines/internal links)  Residual max|res| MW
+LY0 0 co2 stored     0.000 t  0.000 t           191.217 t  -204.061 t       0.000 t                         12.844 t  -0.000 t    3.22e-09
+LY0 1 co2 stored     0.000 t  0.000 t            1.138 kt  -385.506 t       0.000 t                       -752.372 t   0.000 t    3.79e-09
+LY0 10 co2 stored    0.000 t  0.000 t            2.149 kt   -1.176 kt       0.000 t                       -973.657 t  -0.000 t    3.77e-09
+LY0 2 co2 stored     0.000 t  0.000 t           529.464 t  -331.318 t       0.000 t                       -198.146 t  -0.000 t    3.23e-09
+LY0 3 co2 stored     0.000 t  0.000 t          -193.055 t  -119.988 t       0.000 t                        313.043 t   0.000 t    3.46e-09
+LY0 4 co2 stored     0.000 t  0.000 t            75.266 t  -140.306 t       0.000 t                         65.040 t  -0.000 t    3.25e-09
+LY0 5 co2 stored     0.000 t  0.000 t          -679.526 t  -113.818 t       0.000 t                        793.344 t  -0.000 t    3.47e-09
+LY0 6 co2 stored     0.000 t  0.000 t            93.089 t  -190.484 t       0.000 t                         97.395 t   0.000 t    3.54e-09
+LY0 7 co2 stored     0.000 t  0.000 t           197.297 t  -202.051 t       0.000 t                          4.753 t   0.000 t    3.31e-09
+LY0 8 co2 stored     0.000 t  0.000 t            41.293 t  -132.474 t       0.000 t                         91.181 t   0.000 t    4.34e-09
+LY0 9 co2 stored     0.000 t  0.000 t           -72.214 t  -280.615 t       0.000 t                        352.829 t  -0.000 t    3.23e-09
+LY1 0 co2 stored     0.000 t  0.000 t           -81.526 t  -112.220 t       0.000 t                        193.745 t  -0.000 t    4.35e-09
+----------------------------------------------------------------------------------------------------
+ TOTAL         | Generators: 0.000 t | Loads: 0.000 t | Cross-carrier links: 3.388 kt | Stores: -3.388 kt | Storage units: 0.000 t | Transfers (lines/internal links): 0.000 t | Residual: 0.000 t
+
+####################################################################################################
+ 2. CARRIER-LEVEL ENERGY BALANCE  (CO2 STORED, all 12 buses aggregated)
+####################################################################################################
+ SUPPLY                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Link: SMR CC                                                       18.311 Mt    91.60%
+   Link: gas for industry CC                                           1.670 Mt     8.36%
+   Store: co2 stored                                                   6.220 kt     0.03%
+   Link: process emissions CC                                          2.462 kt     0.01%
+ TOTAL SUPPLY                                                         19.990 Mt
+
+ DEMAND                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Link: co2 vent                                                     19.979 Mt    99.94%
+   Store: co2 stored                                                   9.609 kt     0.05%
+   Link: Fischer-Tropsch                                              639.946 t     0.00%
+   Link: helmeth                                                      405.306 t     0.00%
+   Link: Sabatier                                                     379.642 t     0.00%
+ TOTAL DEMAND                                                         19.990 Mt
+
+ ========================================================================================
+ NET (Supply - Demand) : 0.000 t   (1.118e-13 % of the larger side)
+ RESULT                : PASSED - supply equals demand
+
+####################################################################################################
+ 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)
+####################################################################################################
+ Max |system residual| : 0.0000 MW at 2013-02-23 09:00:00
+ Mean |system residual|: 0.0000 MW
+ Peak supply   : 358.2812 MW at 2013-12-31 21:00:00
+ Peak demand   : 358.2812 MW at 2013-12-31 21:00:00
+ Min  demand   : 0.2063 MW at 2013-07-29 12:00:00
+
+####################################################################################################
+ 4. TRANSMISSION AUDIT (lines and internal transport links)
+####################################################################################################
+ Internal transport links (same-carrier at all terminals): 13
+ TOTAL transmission losses entering the balance: -0.000 t
+
+####################################################################################################
+ 5. CONVERSION-LINK AUDIT (links touching this carrier)
+####################################################################################################
+                 link carrier  # terminal           terminal carrier input @bus0 output @terminal   eff (min-max) max|p_i+eff*p0| MW
+              Fischer-Tropsch 12     bus1                        oil    3.115 kt        2.489 GWh   0.7990-0.7990           0.00e+00
+              Fischer-Tropsch 12     bus2                 co2 stored    3.115 kt       -639.946 t -0.2054--0.2054           0.00e+00
+              Fischer-Tropsch 12     bus3                         AC    3.115 kt      -15.346 MWh -0.0049--0.0049           0.00e+00
+                       SMR CC 12     bus1                         H2  102.757 Mt       70.902 TWh   0.6900-0.6900           0.00e+00
+                       SMR CC 12     bus2                        co2  102.757 Mt         2.035 Mt   0.0198-0.0198           0.00e+00
+                       SMR CC 12     bus3                 co2 stored  102.757 Mt        18.311 Mt   0.1782-0.1782           0.00e+00
+                     Sabatier 12     bus1                        gas    2.397 kt        1.917 GWh   0.8000-0.8000           0.00e+00
+                     Sabatier 12     bus2                 co2 stored    2.397 kt       -379.642 t -0.1584--0.1584           0.00e+00
+                     co2 vent 12     bus1                        co2   19.979 Mt        19.979 Mt   1.0000-1.0000           0.00e+00
+          gas for industry CC 12     bus1           gas for industry    9.373 Mt        8.436 TWh   0.9000-0.9000           0.00e+00
+          gas for industry CC 12     bus2                        co2    9.373 Mt       185.585 kt   0.0198-0.0198           0.00e+00
+          gas for industry CC 12     bus3                 co2 stored    9.373 Mt         1.670 Mt   0.1782-0.1782           0.00e+00
+                      helmeth 12     bus1                        gas    2.559 kt        2.047 GWh   0.8000-0.8000           0.00e+00
+                      helmeth 12     bus2                 co2 stored    2.559 kt       -405.306 t -0.1584--0.1584           0.00e+00
+         process emissions CC 12     bus1                        co2    2.736 kt        273.595 t   0.1000-0.1000           0.00e+00
+         process emissions CC 12     bus2                 co2 stored    2.736 kt         2.462 kt   0.9000-0.9000           0.00e+00
+solid biomass for industry CC 12     bus1 solid biomass for industry     0.000 t        0.000 MWh   0.9000-0.9000           0.00e+00
+solid biomass for industry CC 12     bus2                        co2     0.000 t          0.000 t -0.3300--0.3300           0.00e+00
+solid biomass for industry CC 12     bus3                 co2 stored     0.000 t          0.000 t   0.3300-0.3300           0.00e+00
+
+ Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
+
+####################################################################################################
+ 6. SANITY FLAGS
+####################################################################################################
+ Load shedding energy       : 0.000 t  (0.0000 % of loads on this carrier)
+ Negative generator dispatch: 0.000 t
+ WARNING: 12 load(s) are attached to buses that DO NOT EXIST (their demand is IGNORED by the optimisation): 0.000 t
+    - low-temperature heat for industry: 0.000 t
+
+====================================================================================================
+ VERDICT
+====================================================================================================
+  [PASS] Nodal balance: max |residual| = 0.0000 MW
+  [PASS] Carrier balance: net = 0.000 t (1.12e-13 %)
+  [PASS] Per-snapshot closure: max |res| = 0.0000 MW
+  [PASS] Link efficiency consistency: max err 0.00e+00 MW
+  [PASS] Load shedding: 0.000 t
+  [WARN] 12 loads on undefined buses (0.000 t) are silently ignored
+
+  OVERALL ENERGY CONSERVATION FOR 'CO2 STORED': PASSED  (with warnings)
+====================================================================================================
+
+====================================================================================================
+                                   NEXT CARRIER REPORT SECTION
+====================================================================================================
+
+====================================================================================================
+ ENERGY CONSERVATION & NODAL BALANCE VALIDATION  --  CARRIER: PROCESS EMISSIONS
+====================================================================================================
+ PyPSA version   : 0.30.3
+ Snapshots       : 2920  (2013-01-01 00:00:00 -> 2013-12-31 21:00:00), step = 3 h
+ Weighting       : sum of weights = 8,760.0 h  (per snapshot: 3.00 - 3.00 h)
+ Buses of carrier: 1  ->  process emissions ... process emissions
+ Objective       : 5.5125 bn EUR/yr
+ Unit mode       : MASS (t / kt / Mt)
+
+####################################################################################################
+ 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)
+####################################################################################################
+ Tolerance (max |residual|) : 0.01 MW      Relative tolerance : 1e-06
+ Max |residual|             : 0.0000 MW  at bus 'process emissions', snapshot 2013-10-12 21:00:00
+ Sum |residual| energy      : 0.000 t  (3.89e-17 of carrier throughput)
+ RESULT                     : PASSED
+
+ Per-bus ledger (annualised, signed:  + into bus / - out of bus):
+                  Generators      Loads Cross-carrier links   Stores Storage units Transfers (lines/internal links) Residual max|res| MW
+process emissions    0.000 t  15.111 Mt          -15.111 Mt  0.000 t       0.000 t                          0.000 t  0.000 t    4.55e-13
+----------------------------------------------------------------------------------------------------
+ TOTAL         | Generators: 0.000 t | Loads: 15.111 Mt | Cross-carrier links: -15.111 Mt | Stores: 0.000 t | Storage units: 0.000 t | Transfers (lines/internal links): 0.000 t | Residual: 0.000 t
+
+####################################################################################################
+ 2. CARRIER-LEVEL ENERGY BALANCE  (PROCESS EMISSIONS, all 1 buses aggregated)
+####################################################################################################
+ SUPPLY                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Load: process emissions                                            15.111 Mt   100.00%
+ TOTAL SUPPLY                                                         15.111 Mt
+
+ DEMAND                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Link: process emissions                                            15.108 Mt    99.98%
+   Link: process emissions CC                                          2.736 kt     0.02%
+ TOTAL DEMAND                                                         15.111 Mt
+
+ ========================================================================================
+ NET (Supply - Demand) : 0.000 t   (0.000e+00 % of the larger side)
+ RESULT                : PASSED - supply equals demand
+
+####################################################################################################
+ 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)
+####################################################################################################
+ Max |system residual| : 0.0000 MW at 2013-10-12 21:00:00
+ Mean |system residual|: 0.0000 MW
+ Peak supply   : 1.725 GW at 2013-01-01 00:00:00
+ Peak demand   : 1.725 GW at 2013-01-01 06:00:00
+ Min  demand   : 1.725 GW at 2013-10-12 21:00:00
+
+####################################################################################################
+ 4. TRANSMISSION AUDIT (lines and internal transport links)
+####################################################################################################
+ Internal transport links (same-carrier at all terminals): 0
+ TOTAL transmission losses entering the balance: 0.000 t
+
+####################################################################################################
+ 5. CONVERSION-LINK AUDIT (links touching this carrier)
+####################################################################################################
+        link carrier  # terminal terminal carrier input @bus0 output @terminal eff (min-max) max|p_i+eff*p0| MW
+   process emissions  1     bus1              co2   15.108 Mt        15.108 Mt 1.0000-1.0000           0.00e+00
+process emissions CC 12     bus1              co2    2.736 kt        273.595 t 0.1000-0.1000           0.00e+00
+process emissions CC 12     bus2       co2 stored    2.736 kt         2.462 kt 0.9000-0.9000           0.00e+00
+
+ Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
+
+####################################################################################################
+ 6. SANITY FLAGS
+####################################################################################################
+ Load shedding energy       : 0.000 t  (0.0000 % of loads on this carrier)
+ Negative generator dispatch: 0.000 t
+ WARNING: 12 load(s) are attached to buses that DO NOT EXIST (their demand is IGNORED by the optimisation): 0.000 t
+    - low-temperature heat for industry: 0.000 t
+
+====================================================================================================
+ VERDICT
+====================================================================================================
+  [PASS] Nodal balance: max |residual| = 0.0000 MW
+  [PASS] Carrier balance: net = 0.000 t (0.00e+00 %)
+  [PASS] Per-snapshot closure: max |res| = 0.0000 MW
+  [PASS] Link efficiency consistency: max err 0.00e+00 MW
+  [PASS] Load shedding: 0.000 t
+  [WARN] 12 loads on undefined buses (0.000 t) are silently ignored
+
+  OVERALL ENERGY CONSERVATION FOR 'PROCESS EMISSIONS': PASSED  (with warnings)
+====================================================================================================
+
+====================================================================================================
+                                   NEXT CARRIER REPORT SECTION
+====================================================================================================
+
+====================================================================================================
+ ENERGY CONSERVATION & NODAL BALANCE VALIDATION  --  CARRIER: OIL
+====================================================================================================
+ PyPSA version   : 0.30.3
+ Snapshots       : 2920  (2013-01-01 00:00:00 -> 2013-12-31 21:00:00), step = 3 h
+ Weighting       : sum of weights = 8,760.0 h  (per snapshot: 3.00 - 3.00 h)
+ Buses of carrier: 12  ->  LY0 0 oil ... LY1 0 oil
+ Objective       : 5.5125 bn EUR/yr
+ Unit mode       : ENERGY (MWh / GWh / TWh)
+
+####################################################################################################
+ 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)
+####################################################################################################
+ Tolerance (max |residual|) : 0.01 MW      Relative tolerance : 1e-06
+ Max |residual|             : 0.0000 MW  at bus 'LY0 9 oil', snapshot 2013-01-01 00:00:00
+ Sum |residual| energy      : 0.000 MWh  (3.54e-12 of carrier throughput)
+ RESULT                     : PASSED
+
+ Per-bus ledger (annualised, signed:  + into bus / - out of bus):
+             Generators         Loads Cross-carrier links       Stores Storage units Transfers (lines/internal links)    Residual max|res| MW
+LY0 0 oil   146.668 MWh  -379.006 GWh          -1.991 TWh    2.370 TWh     0.000 MWh                        0.000 MWh  -0.000 MWh    2.48e-09
+LY0 1 oil   146.675 MWh    -1.124 TWh          -1.151 TWh    2.275 TWh     0.000 MWh                        0.000 MWh   0.000 MWh    2.48e-09
+LY0 10 oil  146.673 MWh    -1.838 TWh          -1.356 TWh    3.194 TWh     0.000 MWh                        0.000 MWh  -0.000 MWh    2.48e-09
+LY0 2 oil   146.670 MWh  -840.682 GWh          -1.094 TWh    1.935 TWh     0.000 MWh                        0.000 MWh  -0.000 MWh    2.48e-09
+LY0 3 oil   146.619 MWh  -174.746 GWh         207.549 MWh  174.392 GWh     0.000 MWh                        0.000 MWh  -0.000 MWh    2.48e-09
+LY0 4 oil   146.667 MWh  -228.293 GWh          -2.200 TWh    2.428 TWh     0.000 MWh                        0.000 MWh  -0.000 MWh    2.48e-09
+LY0 5 oil   146.672 MWh  -128.396 GWh        -887.582 GWh    1.016 TWh     0.000 MWh                        0.000 MWh   0.000 MWh    2.48e-09
+LY0 6 oil   146.675 MWh  -338.117 GWh        -956.790 GWh    1.295 TWh     0.000 MWh                        0.000 MWh   0.000 MWh    2.48e-09
+LY0 7 oil   146.674 MWh  -415.346 GWh          -1.097 TWh    1.513 TWh     0.000 MWh                        0.000 MWh  -0.000 MWh    2.72e-09
+LY0 8 oil   146.624 MWh  -216.507 GWh         207.756 MWh  216.153 GWh     0.000 MWh                        0.000 MWh   0.000 MWh    2.48e-09
+LY0 9 oil   146.664 MWh  -647.801 GWh         -11.502 TWh   12.150 TWh     0.000 MWh                        0.000 MWh  -0.000 MWh    2.92e-09
+LY1 0 oil   146.669 MWh  -136.966 GWh         207.878 MWh  136.611 GWh     0.000 MWh                        0.000 MWh  -0.000 MWh    2.48e-09
+----------------------------------------------------------------------------------------------------
+ TOTAL         | Generators: 1.760 GWh | Loads: -6.468 TWh | Cross-carrier links: -22.237 TWh | Stores: 28.703 TWh | Storage units: 0.000 MWh | Transfers (lines/internal links): 0.000 MWh | Residual: -0.000 MWh
+
+####################################################################################################
+ 2. CARRIER-LEVEL ENERGY BALANCE  (OIL, all 12 buses aggregated)
+####################################################################################################
+ SUPPLY                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Store: oil                                                        28.703 TWh    99.99%
+   Link: Fischer-Tropsch                                              2.489 GWh     0.01%
+   Generator: oil                                                     1.760 GWh     0.01%
+ TOTAL SUPPLY                                                        28.707 TWh
+
+ DEMAND                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+   Link: oil                                                         22.239 TWh    77.47%
+   Load: naphtha for industry                                         6.468 TWh    22.53%
+ TOTAL DEMAND                                                        28.707 TWh
+
+ ========================================================================================
+ NET (Supply - Demand) : -0.000 MWh   (2.595e-14 % of the larger side)
+ RESULT                : PASSED - supply equals demand
+
+####################################################################################################
+ 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)
+####################################################################################################
+ Max |system residual| : 0.0000 MW at 2013-07-11 18:00:00
+ Mean |system residual|: 0.0000 MW
+ Peak supply   : 13.999 GW at 2013-09-16 18:00:00
+ Peak demand   : 13.999 GW at 2013-09-16 18:00:00
+ Min  demand   : 738.3741 MW at 2013-04-06 09:00:00
+
+####################################################################################################
+ 4. TRANSMISSION AUDIT (lines and internal transport links)
+####################################################################################################
+ Internal transport links (same-carrier at all terminals): 0
+ TOTAL transmission losses entering the balance: 0.000 MWh
+
+####################################################################################################
+ 5. CONVERSION-LINK AUDIT (links touching this carrier)
+####################################################################################################
+   link carrier  # terminal terminal carrier input @bus0 output @terminal   eff (min-max) max|p_i+eff*p0| MW
+Fischer-Tropsch 12     bus1              oil   3.115 GWh        2.489 GWh   0.7990-0.7990           0.00e+00
+Fischer-Tropsch 12     bus2       co2 stored   3.115 GWh       -639.946 t -0.2054--0.2054           0.00e+00
+Fischer-Tropsch 12     bus3               AC   3.115 GWh      -15.346 MWh -0.0049--0.0049           0.00e+00
+            oil  9     bus1               AC  22.239 TWh        7.784 TWh   0.3500-0.3500           0.00e+00
+            oil  9     bus2              co2  22.239 TWh         5.718 Mt   0.2571-0.2571           0.00e+00
+
+ Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
+
+####################################################################################################
+ 6. SANITY FLAGS
+####################################################################################################
+ Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
+ Negative generator dispatch: 0.000 MWh
+ WARNING: 12 load(s) are attached to buses that DO NOT EXIST (their demand is IGNORED by the optimisation): 0.000 MWh
+    - low-temperature heat for industry: 0.000 MWh
+
+====================================================================================================
+ VERDICT
+====================================================================================================
+  [PASS] Nodal balance: max |residual| = 0.0000 MW
+  [PASS] Carrier balance: net = -0.000 MWh (2.60e-14 %)
+  [PASS] Per-snapshot closure: max |res| = 0.0000 MW
+  [PASS] Link efficiency consistency: max err 0.00e+00 MW
+  [PASS] Load shedding: 0.000 MWh
+  [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
+
+  OVERALL ENERGY CONSERVATION FOR 'OIL': PASSED  (with warnings)
+====================================================================================================
+
+====================================================================================================
+                                   NEXT CARRIER REPORT SECTION
+====================================================================================================
+
+====================================================================================================
+ ENERGY CONSERVATION & NODAL BALANCE VALIDATION  --  CARRIER: COAL
+====================================================================================================
+ PyPSA version   : 0.30.3
+ Snapshots       : 2920  (2013-01-01 00:00:00 -> 2013-12-31 21:00:00), step = 3 h
+ Weighting       : sum of weights = 8,760.0 h  (per snapshot: 3.00 - 3.00 h)
+ Buses of carrier: 12  ->  LY0 0 coal ... LY1 0 coal
+ Objective       : 5.5125 bn EUR/yr
+ Unit mode       : ENERGY (MWh / GWh / TWh)
+
+####################################################################################################
+ 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)
+####################################################################################################
+ Tolerance (max |residual|) : 0.01 MW      Relative tolerance : 1e-06
+ Max |residual|             : 0.0000 MW  at bus 'LY0 0 coal', snapshot 2013-01-01 00:00:00
+ Sum |residual| energy      : 0.000 MWh  (0.00e+00 of carrier throughput)
+ RESULT                     : PASSED
+
+ Per-bus ledger (annualised, signed:  + into bus / - out of bus):
+            Generators      Loads Cross-carrier links      Stores Storage units Transfers (lines/internal links)   Residual max|res| MW
+LY0 0 coal   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 1 coal   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 10 coal  0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 2 coal   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 3 coal   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 4 coal   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 5 coal   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 6 coal   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 7 coal   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 8 coal   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 9 coal   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY1 0 coal   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+----------------------------------------------------------------------------------------------------
+ TOTAL         | Generators: 0.000 MWh | Loads: 0.000 MWh | Cross-carrier links: 0.000 MWh | Stores: -0.000 MWh | Storage units: 0.000 MWh | Transfers (lines/internal links): 0.000 MWh | Residual: 0.000 MWh
+
+####################################################################################################
+ 2. CARRIER-LEVEL ENERGY BALANCE  (COAL, all 12 buses aggregated)
+####################################################################################################
+ SUPPLY                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+ TOTAL SUPPLY                                                         0.000 MWh
+
+ DEMAND                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+ TOTAL DEMAND                                                         0.000 MWh
+
+ ========================================================================================
+ NET (Supply - Demand) : 0.000 MWh   (0.000e+00 % of the larger side)
+ RESULT                : PASSED - supply equals demand
+
+####################################################################################################
+ 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)
+####################################################################################################
+ Max |system residual| : 0.0000 MW at 2013-01-01 00:00:00
+ Mean |system residual|: 0.0000 MW
+ Peak supply   : 0.0000 MW at 2013-01-02 12:00:00
+ Peak demand   : 0.0000 MW at 2013-01-02 12:00:00
+ Min  demand   : 0.0000 MW at 2013-01-01 00:00:00
+
+####################################################################################################
+ 4. TRANSMISSION AUDIT (lines and internal transport links)
+####################################################################################################
+ Internal transport links (same-carrier at all terminals): 0
+ TOTAL transmission losses entering the balance: 0.000 MWh
+
+####################################################################################################
+ 5. CONVERSION-LINK AUDIT (links touching this carrier)
+####################################################################################################
+
+ Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
+
+####################################################################################################
+ 6. SANITY FLAGS
+####################################################################################################
+ Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
+ Negative generator dispatch: 0.000 MWh
+ WARNING: 12 load(s) are attached to buses that DO NOT EXIST (their demand is IGNORED by the optimisation): 0.000 MWh
+    - low-temperature heat for industry: 0.000 MWh
+
+====================================================================================================
+ VERDICT
+====================================================================================================
+  [PASS] Nodal balance: max |residual| = 0.0000 MW
+  [PASS] Carrier balance: net = 0.000 MWh (0.00e+00 %)
+  [PASS] Per-snapshot closure: max |res| = 0.0000 MW
+  [PASS] Link efficiency consistency: max err 0.00e+00 MW
+  [PASS] Load shedding: 0.000 MWh
+  [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
+
+  OVERALL ENERGY CONSERVATION FOR 'COAL': PASSED  (with warnings)
+====================================================================================================
+
+====================================================================================================
+                                   NEXT CARRIER REPORT SECTION
+====================================================================================================
+
+====================================================================================================
+ ENERGY CONSERVATION & NODAL BALANCE VALIDATION  --  CARRIER: LIGNITE
+====================================================================================================
+ PyPSA version   : 0.30.3
+ Snapshots       : 2920  (2013-01-01 00:00:00 -> 2013-12-31 21:00:00), step = 3 h
+ Weighting       : sum of weights = 8,760.0 h  (per snapshot: 3.00 - 3.00 h)
+ Buses of carrier: 1  ->  Earth lignite ... Earth lignite
+ Objective       : 5.5125 bn EUR/yr
+ Unit mode       : ENERGY (MWh / GWh / TWh)
+
+####################################################################################################
+ 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)
+####################################################################################################
+ Tolerance (max |residual|) : 0.01 MW      Relative tolerance : 1e-06
+ Max |residual|             : 0.0000 MW  at bus 'Earth lignite', snapshot 2013-01-01 00:00:00
+ Sum |residual| energy      : 0.000 MWh  (0.00e+00 of carrier throughput)
+ RESULT                     : PASSED
+
+ Per-bus ledger (annualised, signed:  + into bus / - out of bus):
+              Generators      Loads Cross-carrier links      Stores Storage units Transfers (lines/internal links)   Residual max|res| MW
+Earth lignite  0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+----------------------------------------------------------------------------------------------------
+ TOTAL         | Generators: 0.000 MWh | Loads: 0.000 MWh | Cross-carrier links: 0.000 MWh | Stores: -0.000 MWh | Storage units: 0.000 MWh | Transfers (lines/internal links): 0.000 MWh | Residual: 0.000 MWh
+
+####################################################################################################
+ 2. CARRIER-LEVEL ENERGY BALANCE  (LIGNITE, all 1 buses aggregated)
+####################################################################################################
+ SUPPLY                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+ TOTAL SUPPLY                                                         0.000 MWh
+
+ DEMAND                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+ TOTAL DEMAND                                                         0.000 MWh
+
+ ========================================================================================
+ NET (Supply - Demand) : 0.000 MWh   (0.000e+00 % of the larger side)
+ RESULT                : PASSED - supply equals demand
+
+####################################################################################################
+ 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)
+####################################################################################################
+ Max |system residual| : 0.0000 MW at 2013-01-01 00:00:00
+ Mean |system residual|: 0.0000 MW
+ Peak supply   : 0.0000 MW at 2013-07-06 09:00:00
+ Peak demand   : 0.0000 MW at 2013-07-06 09:00:00
+ Min  demand   : 0.0000 MW at 2013-01-01 00:00:00
+
+####################################################################################################
+ 4. TRANSMISSION AUDIT (lines and internal transport links)
+####################################################################################################
+ Internal transport links (same-carrier at all terminals): 0
+ TOTAL transmission losses entering the balance: 0.000 MWh
+
+####################################################################################################
+ 5. CONVERSION-LINK AUDIT (links touching this carrier)
+####################################################################################################
+
+ Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
+
+####################################################################################################
+ 6. SANITY FLAGS
+####################################################################################################
+ Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
+ Negative generator dispatch: 0.000 MWh
+ WARNING: 12 load(s) are attached to buses that DO NOT EXIST (their demand is IGNORED by the optimisation): 0.000 MWh
+    - low-temperature heat for industry: 0.000 MWh
+
+====================================================================================================
+ VERDICT
+====================================================================================================
+  [PASS] Nodal balance: max |residual| = 0.0000 MW
+  [PASS] Carrier balance: net = 0.000 MWh (0.00e+00 %)
+  [PASS] Per-snapshot closure: max |res| = 0.0000 MW
+  [PASS] Link efficiency consistency: max err 0.00e+00 MW
+  [PASS] Load shedding: 0.000 MWh
+  [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
+
+  OVERALL ENERGY CONSERVATION FOR 'LIGNITE': PASSED  (with warnings)
+====================================================================================================
+
+====================================================================================================
+                                   NEXT CARRIER REPORT SECTION
+====================================================================================================
+
+====================================================================================================
+ ENERGY CONSERVATION & NODAL BALANCE VALIDATION  --  CARRIER: BIOMASS
+====================================================================================================
+ PyPSA version   : 0.30.3
+ Snapshots       : 2920  (2013-01-01 00:00:00 -> 2013-12-31 21:00:00), step = 3 h
+ Weighting       : sum of weights = 8,760.0 h  (per snapshot: 3.00 - 3.00 h)
+ Buses of carrier: 12  ->  LY0 0 solid biomass ... LY1 0 solid biomass
+ Objective       : 5.5125 bn EUR/yr
+ Unit mode       : ENERGY (MWh / GWh / TWh)
+
+####################################################################################################
+ 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)
+####################################################################################################
+ Tolerance (max |residual|) : 0.01 MW      Relative tolerance : 1e-06
+ Max |residual|             : 0.0000 MW  at bus 'LY0 0 solid biomass', snapshot 2013-01-01 00:00:00
+ Sum |residual| energy      : 0.000 MWh  (0.00e+00 of carrier throughput)
+ RESULT                     : PASSED
+
+ Per-bus ledger (annualised, signed:  + into bus / - out of bus):
+                     Generators      Loads Cross-carrier links      Stores Storage units Transfers (lines/internal links)   Residual max|res| MW
+LY0 0 solid biomass   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 1 solid biomass   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 10 solid biomass  0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 2 solid biomass   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 3 solid biomass   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 4 solid biomass   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 5 solid biomass   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 6 solid biomass   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 7 solid biomass   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 8 solid biomass   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY0 9 solid biomass   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+LY1 0 solid biomass   0.000 MWh  0.000 MWh           0.000 MWh  -0.000 MWh     0.000 MWh                        0.000 MWh  0.000 MWh    0.00e+00
+----------------------------------------------------------------------------------------------------
+ TOTAL         | Generators: 0.000 MWh | Loads: 0.000 MWh | Cross-carrier links: 0.000 MWh | Stores: -0.000 MWh | Storage units: 0.000 MWh | Transfers (lines/internal links): 0.000 MWh | Residual: 0.000 MWh
+
+####################################################################################################
+ 2. CARRIER-LEVEL ENERGY BALANCE  (BIOMASS, all 12 buses aggregated)
+####################################################################################################
+ SUPPLY                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+ TOTAL SUPPLY                                                         0.000 MWh
+
+ DEMAND                                                                  Energy     Share
+ ----------------------------------------------------------------------------------------
+ TOTAL DEMAND                                                         0.000 MWh
+
+ ========================================================================================
+ NET (Supply - Demand) : 0.000 MWh   (0.000e+00 % of the larger side)
+ RESULT                : PASSED - supply equals demand
+
+####################################################################################################
+ 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)
+####################################################################################################
+ Max |system residual| : 0.0000 MW at 2013-01-01 00:00:00
+ Mean |system residual|: 0.0000 MW
+ Peak supply   : 0.0000 MW at 2013-01-02 12:00:00
+ Peak demand   : 0.0000 MW at 2013-01-02 12:00:00
+ Min  demand   : 0.0000 MW at 2013-01-01 00:00:00
+
+####################################################################################################
+ 4. TRANSMISSION AUDIT (lines and internal transport links)
+####################################################################################################
+ Internal transport links (same-carrier at all terminals): 0
+ TOTAL transmission losses entering the balance: 0.000 MWh
+
+####################################################################################################
+ 5. CONVERSION-LINK AUDIT (links touching this carrier)
+####################################################################################################
+                 link carrier  # terminal           terminal carrier input @bus0 output @terminal   eff (min-max) max|p_i+eff*p0| MW
+   solid biomass for industry 12     bus1 solid biomass for industry   0.000 MWh        0.000 MWh   1.0000-1.0000           0.00e+00
+solid biomass for industry CC 12     bus1 solid biomass for industry   0.000 MWh        0.000 MWh   0.9000-0.9000           0.00e+00
+solid biomass for industry CC 12     bus2                        co2   0.000 MWh          0.000 t -0.3300--0.3300           0.00e+00
+solid biomass for industry CC 12     bus3                 co2 stored   0.000 MWh          0.000 t   0.3300-0.3300           0.00e+00
+
+ Max |p_i + eff_i*p0| over all audited terminals: 0.000e+00 MW
+
+####################################################################################################
+ 6. SANITY FLAGS
+####################################################################################################
+ Load shedding energy       : 0.000 MWh  (0.0000 % of loads on this carrier)
+ Negative generator dispatch: 0.000 MWh
+ WARNING: 12 load(s) are attached to buses that DO NOT EXIST (their demand is IGNORED by the optimisation): 0.000 MWh
+    - low-temperature heat for industry: 0.000 MWh
+
+====================================================================================================
+ VERDICT
+====================================================================================================
+  [PASS] Nodal balance: max |residual| = 0.0000 MW
+  [PASS] Carrier balance: net = 0.000 MWh (0.00e+00 %)
+  [PASS] Per-snapshot closure: max |res| = 0.0000 MW
+  [PASS] Link efficiency consistency: max err 0.00e+00 MW
+  [PASS] Load shedding: 0.000 MWh
+  [WARN] 12 loads on undefined buses (0.000 MWh) are silently ignored
+
+  OVERALL ENERGY CONSERVATION FOR 'BIOMASS': PASSED  (with warnings)
+====================================================================================================
