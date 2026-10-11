@@ -592,7 +592,7 @@ if __name__ == "__main__":
         
         CHART_COLORS = {
             "Onshore Wind": "#2ecc71",          # Green
-            "Solar PV": "#ff7f0e",              # Orange
+            "Solar PV": "#ffbf00",              # Amber (Yellow-Orange blend)
             "Oil": "#8b4513",                   # Brown
             "CCGT": "#e377c2",                  # Pink
             "Gas": "#ff00ff",                   # Magenta
@@ -736,7 +736,8 @@ if __name__ == "__main__":
         if HAS_CARTOPY:
             ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
             ax.set_extent([9.0, 25.5, 19.0, 33.8], crs=ccrs.PlateCarree())
-            ax.add_feature(cfeature.LAND, facecolor="#f4f4f0", zorder=0)
+            # ax.add_feature(cfeature.LAND, facecolor="#f4f4f0", zorder=0)
+            ax.add_feature(cfeature.LAND, facecolor="#ffffff", zorder=0)  # Pure white background for high contrast
             ax.add_feature(cfeature.OCEAN, facecolor="#e0f2fe", zorder=0)
             ax.add_feature(cfeature.BORDERS, linestyle="--", edgecolor="#666666", linewidth=0.8, zorder=1)
             ax.add_feature(cfeature.COASTLINE, edgecolor="#333333", linewidth=1.0, zorder=1)
@@ -788,16 +789,53 @@ if __name__ == "__main__":
                 ys_land[0], ys_land[-1] = y0, y1
             return xs, ys_land
 
+
+        # ===================================================================
+        # TRANSMISSION LINE CAPACITY LOADING & COLOR BAR MAPPING
+        # (Adapted from Viz_compute_h2_hybrid.py Section 2.3)
+        # ===================================================================
+        import matplotlib.colors as mcolors
+
+        from matplotlib.colors import LinearSegmentedColormap
+
+        line_loading_series = pd.Series(0.0, index=n.lines.index)
+        if not n.lines.empty and not n.lines_t.p0.empty:
+            flows = n.lines_t.p0.abs()
+            caps = n.lines["s_nom_opt"] if "s_nom_opt" in n.lines.columns else n.lines["s_nom"]
+            caps = caps.replace(0, 1e-6)
+            loading_ratios = flows.div(caps, axis=1) * 100.0
+            line_loading_series = loading_ratios.mean(axis=0)
+
+        min_val, max_val = 0.0, max(line_loading_series.max() if not line_loading_series.empty else 1.0, 1.0)
+        norm_metric = mcolors.Normalize(vmin=min_val, vmax=max_val)
+        
+        # Truncate Reds colormap to start at 0.20 instead of 0.0 so low-loading lines are clearly visible
+        base_cmap = plt.colormaps.get_cmap("Reds") if hasattr(plt, "colormaps") else plt.cm.get_cmap("Reds")
+        cmap_lines = LinearSegmentedColormap.from_list(
+            "truncated_reds", base_cmap(np.linspace(0.20, 1.0, 100)))
+        
         if not n.lines.empty:
-            for _, row in n.lines.iterrows():
+            for idx, row in n.lines.iterrows():
                 b0, b1 = row["bus0"], row["bus1"]
                 if b0 in plot_buses.index and b1 in plot_buses.index:
                     x0, y0 = plot_buses.loc[b0, ["x", "y"]]
                     x1, y1 = plot_buses.loc[b1, ["x", "y"]]
                     if y0 > 33.0 or y1 > 33.0:
                         continue
+                    
+                    val = line_loading_series.get(idx, 0.0)
+                    # Map every line directly to the colormap based on its loading percentage
+                    line_color = cmap_lines(norm_metric(val))
+                    linewidth = 1.0 + 3.0 * norm_metric(val)
+                    
                     xs, ys = route_line_land(x0, y0, x1, y1)
-                    ax.plot(xs, ys, color="gray", lw=1.0, alpha=0.8, zorder=1)
+                    ax.plot(xs, ys, color=line_color, lw=linewidth, zorder=3, alpha=0.85)
+
+        # Attach Vertical Color Bar for Transmission Line Capacity Loading
+        sm_line = plt.cm.ScalarMappable(cmap=cmap_lines, norm=norm_metric)
+        sm_line.set_array([])
+        cbar = fig.colorbar(sm_line, ax=ax, orientation="vertical", shrink=0.7, pad=0.03)
+        cbar.set_label("Mean Capacity Loading (%)", fontsize=10)
 
 
         max_energy = nodal_mix.sum(axis=1).max() if not nodal_mix.empty and nodal_mix.sum(axis=1).max() > 0 else 1.0
