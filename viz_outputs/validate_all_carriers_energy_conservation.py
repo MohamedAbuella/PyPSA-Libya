@@ -15,6 +15,7 @@ import sys
 import argparse
 import logging
 import warnings
+import re
 
 import numpy as np
 import pandas as pd
@@ -28,6 +29,38 @@ logging.getLogger("pypsa").setLevel(logging.ERROR)
 # ----------------------------------------------------------------------------
 
 OUTPUT_DIR_BASE = r"C:\Users\Mhdella\Documents\pypsa-libya\viz_outputs\Validate_Energy_Conservation_All_Carriers"
+
+# --- PAPER PDF SUPPORT FOLDER ---
+PAPER_DIR = os.path.join(OUTPUT_DIR_BASE, "Paper_Figures")
+os.makedirs(PAPER_DIR, exist_ok=True)
+
+def save_paper_pdf(fig, ax, filename):
+    """
+    Automatically clears the title and saves a high-res PDF to the Paper_Figures folder.
+    Optimizes map file sizes by rasterizing geographic layers while keeping text as vectors.
+    """
+    original_title = ax.get_title() # Store the title
+    ax.set_title("")                # Clear the title for the paper version
+    
+    # Apply naming logic: start with 'fig_' and ensure .pdf extension
+    clean_name = re.sub(r'^figure\d+[a-z]?_', '', filename)
+    if not clean_name.startswith('fig_'):
+        clean_name = 'fig_' + clean_name
+    if not clean_name.endswith('.pdf'):
+        clean_name += '.pdf'
+        
+    pdf_path = os.path.join(PAPER_DIR, clean_name)
+    
+    # --- OPTIMIZATION FOR MAPS ---
+    # Rasterize layers with low z-orders (map background/lines) while keeping bubbles/text vector
+    if "map" in filename.lower():
+        ax.set_rasterization_zorder(2.5) 
+    
+    # Save with dpi=300 for high-resolution journal quality
+    fig.savefig(pdf_path, format='pdf', dpi=300, bbox_inches="tight")
+    
+    ax.set_title(original_title)    # Restore title for the PNG/display version
+    print(f" Saved Paper PDF (Optimized): {clean_name}")
 
 ### Adjustable key/threshold for scaling the size of all pie charts proportionally
 PIE_SCALE_FACTOR = 1.5  # Change this to 1.0 for original size, 1.5 to increase by 50%, etc.
@@ -583,6 +616,12 @@ if __name__ == "__main__":
             f.write(combined_content)
         print(f"Saved text validation report to: {txt_out}")
         
+        # Also copy/save text validation report to Paper_Figures folder
+        txt_paper_out = os.path.join(PAPER_DIR, f"{sc['prefix']}_energy_conservation_all_carriers.txt")
+        with open(txt_paper_out, "w", encoding="utf-8") as f:
+            f.write(combined_content)
+        print(f"Saved text validation report to Paper_Figures: {txt_paper_out}")
+        
 # =====================================================================
 # NODAL DISPATCH & ENERGY MIX PIE CHART MAP
 # =====================================================================
@@ -736,7 +775,6 @@ if __name__ == "__main__":
         if HAS_CARTOPY:
             ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
             ax.set_extent([9.0, 25.5, 19.0, 33.8], crs=ccrs.PlateCarree())
-            # ax.add_feature(cfeature.LAND, facecolor="#f4f4f0", zorder=0)
             ax.add_feature(cfeature.LAND, facecolor="#ffffff", zorder=0)  # Pure white background for high contrast
             ax.add_feature(cfeature.OCEAN, facecolor="#e0f2fe", zorder=0)
             ax.add_feature(cfeature.BORDERS, linestyle="--", edgecolor="#666666", linewidth=0.8, zorder=1)
@@ -789,13 +827,10 @@ if __name__ == "__main__":
                 ys_land[0], ys_land[-1] = y0, y1
             return xs, ys_land
 
-
         # ===================================================================
         # TRANSMISSION LINE CAPACITY LOADING & COLOR BAR MAPPING
-        # (Adapted from Viz_compute_h2_hybrid.py Section 2.3)
         # ===================================================================
         import matplotlib.colors as mcolors
-
         from matplotlib.colors import LinearSegmentedColormap
 
         line_loading_series = pd.Series(0.0, index=n.lines.index)
@@ -813,7 +848,7 @@ if __name__ == "__main__":
         base_cmap = plt.colormaps.get_cmap("Reds") if hasattr(plt, "colormaps") else plt.cm.get_cmap("Reds")
         cmap_lines = LinearSegmentedColormap.from_list(
             "truncated_reds", base_cmap(np.linspace(0.20, 1.0, 100)))
-        
+
         if not n.lines.empty:
             for idx, row in n.lines.iterrows():
                 b0, b1 = row["bus0"], row["bus1"]
@@ -824,7 +859,6 @@ if __name__ == "__main__":
                         continue
                     
                     val = line_loading_series.get(idx, 0.0)
-                    # Map every line directly to the colormap based on its loading percentage
                     line_color = cmap_lines(norm_metric(val))
                     linewidth = 1.0 + 3.0 * norm_metric(val)
                     
@@ -837,17 +871,14 @@ if __name__ == "__main__":
         cbar = fig.colorbar(sm_line, ax=ax, orientation="vertical", shrink=0.7, pad=0.03)
         cbar.set_label("Mean Capacity Loading (%)", fontsize=10)
 
-
         max_energy = nodal_mix.sum(axis=1).max() if not nodal_mix.empty and nodal_mix.sum(axis=1).max() > 0 else 1.0
         
-        # Apply the adjustable scale factor here
         base_pie_size = 0.06 * PIE_SCALE_FACTOR
         min_pie_size = 0.025 * PIE_SCALE_FACTOR
 
         fig.canvas.draw()
         present_carriers = set()
 
-        # Compute total nodal energy to rank nodes for labeling (1, 2, 3, ...)
         node_totals = nodal_mix.sum(axis=1) if not nodal_mix.empty else pd.Series(dtype=float)
         sorted_buses = node_totals.sort_values(ascending=False).index.tolist()
         for b in ac_buses:
@@ -855,9 +886,8 @@ if __name__ == "__main__":
                 sorted_buses.append(b)
         bus_ranks = {b: idx + 1 for idx, b in enumerate(sorted_buses)}
         
-        is_elec_only = len(ac_buses) > 12  # True for 36-node Electricity-only studies
+        is_elec_only = len(ac_buses) > 12
 
-        # Store annotation instructions to render them strictly LAST (on top of pie charts and lines)
         pending_annotations = []
 
         for bus in ac_buses:
@@ -891,12 +921,11 @@ if __name__ == "__main__":
                 "text": str(rank),
                 "x": x_coord,
                 "y": y_coord,
-                "rank": rank  # Track the rank explicitly
+                "rank": rank
             })
 
         fig.canvas.draw()
         for ann in pending_annotations:
-            # For electricity-only studies, skip drawing labels for nodes ranked below 10 to avoid clutter
             if is_elec_only and ann["rank"] > 10:
                 continue
 
@@ -916,7 +945,6 @@ if __name__ == "__main__":
                 ha=ha, va=va, fontsize=fontsize, color="black",
                 weight="normal", zorder=1000, clip_on=False
             )
-            
             
         def format_legend_label(carrier_key):
             if carrier_key == "SMR CC":
@@ -957,6 +985,8 @@ if __name__ == "__main__":
             os.makedirs(png_dir, exist_ok=True)
 
         fig.savefig(png_out, dpi=300, bbox_inches="tight")
+        # Save high-res paper PDF version with title removed
+        save_paper_pdf(fig, ax, f"{sc['prefix']}_nodal_dispatch_map")
         plt.close(fig)
         print(f"Saved nodal dispatch map to: {png_out}\n")
 
@@ -997,7 +1027,7 @@ if __name__ == "__main__":
                 fontsize=11,
                 fontweight="bold"
             )
-            ax_bar.set_xlabel("Energy Capacity (TWh)")
+            ax_bar.set_xlabel("Energy Dispatch (TWh)")
             ax_bar.set_ylabel("Node Rank")
             ax_bar.grid(axis="x", linestyle="--", alpha=0.5)
 
@@ -1010,6 +1040,8 @@ if __name__ == "__main__":
             if bar_dir:
                 os.makedirs(bar_dir, exist_ok=True)
             fig_bar.savefig(bar_out, dpi=300, bbox_inches="tight")
+            # Save high-res paper PDF version with title removed
+            save_paper_pdf(fig_bar, ax_bar, f"{sc['prefix']}_nodal_bar_chart")
             plt.close(fig_bar)
             print(f"Saved nodal bar chart to: {bar_out}\n")
 
