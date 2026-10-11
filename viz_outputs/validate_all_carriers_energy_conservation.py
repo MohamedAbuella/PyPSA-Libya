@@ -62,8 +62,18 @@ def save_paper_pdf(fig, ax, filename):
     ax.set_title(original_title)    # Restore title for the PNG/display version
     print(f" Saved Paper PDF (Optimized): {clean_name}")
 
-### Adjustable key/threshold for scaling the size of all pie charts proportionally
-PIE_SCALE_FACTOR = 1.5  # Change this to 1.0 for original size, 1.5 to increase by 50%, etc.
+### --- ADJUSTABLE MAP & BAR CHART SETTINGS FOR READABILITY ---
+PIE_SCALE_FACTOR = 1.5                # Change this to 1.0 for original size, 1.5 to increase by 50%, etc.
+
+MAP_NODE_LABEL_SIZE = 11              # Change this to adjust map node label font size (e.g., 9, 11, 13)
+MAP_NODE_LABEL_WEIGHT = "bold"        # Change this to "bold" or "normal"
+
+MAP_LABEL_OFFSET_X = -0.35            # Horizontal offset for map labels (electricity-only mode)
+MAP_LABEL_OFFSET_Y = -0.15             # Vertical offset for map labels (electricity-only mode)
+MAP_PIXEL_OFFSET_Y = 7                # Vertical pixel offset above nodes (sector-coupling mode)
+
+BAR_TICK_FONT_SIZE = 12               # Change this to adjust bar plot tick size (e.g., 10, 12, 14)
+BAR_LABEL_FONT_SIZE = 13              # Change this to adjust bar plot axis labels size
 
 
 SCENARIOS = [
@@ -929,21 +939,22 @@ if __name__ == "__main__":
             if is_elec_only and ann["rank"] > 10:
                 continue
 
+            
             if is_elec_only:
-                label_x, label_y = ann["x"] - 0.30, ann["y"] + 0.30
-                ha, va, fontsize = "center", "center", 7
+                label_x, label_y = ann["x"] + MAP_LABEL_OFFSET_X, ann["y"] + MAP_LABEL_OFFSET_Y
+                ha, va = "center", "center"
             else:
                 node_px = ax.transData.transform((ann["x"], ann["y"]))
-                label_px = (node_px[0], node_px[1] + 7 * fig.dpi / 72)
+                label_px = (node_px[0], node_px[1] + MAP_PIXEL_OFFSET_Y * fig.dpi / 72)
                 label_x, label_y = ax.transData.inverted().transform(label_px)
-                ha, va, fontsize = "center", "bottom", 9
+                ha, va = "center", "bottom"
 
             label_px = ax.transData.transform((label_x, label_y))
             label_fig = fig.transFigure.inverted().transform(label_px)
             fig.text(
                 label_fig[0], label_fig[1], ann["text"],
-                ha=ha, va=va, fontsize=fontsize, color="black",
-                weight="normal", zorder=1000, clip_on=False
+                ha=ha, va=va, fontsize=MAP_NODE_LABEL_SIZE, color="black",
+                weight=MAP_NODE_LABEL_WEIGHT, zorder=1000, clip_on=False
             )
             
         def format_legend_label(carrier_key):
@@ -1008,7 +1019,10 @@ if __name__ == "__main__":
 
             bar_y_labels = [str(bus_ranks[b]) for b in df_bar.index]
 
-            fig_bar, ax_bar = plt.subplots(figsize=(10, max(5, len(df_bar) * 0.35)))
+            
+            # --- UNIFIED FIGSIZE TO MATCH THE MAP FIGURE (11x8) ---
+            
+            fig_bar, ax_bar = plt.subplots(figsize=(11, 8))
             
             bottom_val = np.zeros(len(df_bar))
             active_bar_carriers = sorted(list(present_carriers))
@@ -1027,8 +1041,12 @@ if __name__ == "__main__":
                 fontsize=11,
                 fontweight="bold"
             )
-            ax_bar.set_xlabel("Energy Dispatch (TWh)")
-            ax_bar.set_ylabel("Node Rank")
+            ax_bar.set_xlabel("Energy Dispatch (TWh)", fontsize=BAR_LABEL_FONT_SIZE)
+            ax_bar.set_ylabel("Node Rank", fontsize=BAR_LABEL_FONT_SIZE)
+            
+            # Increase and make tick label sizes adjustable
+            ax_bar.tick_params(axis='both', which='major', labelsize=BAR_TICK_FONT_SIZE)
+            
             ax_bar.grid(axis="x", linestyle="--", alpha=0.5)
 
             handles, labels = ax_bar.get_legend_handles_labels()
