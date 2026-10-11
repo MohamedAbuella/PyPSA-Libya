@@ -7,7 +7,7 @@ validate_carrier_energy_conservation.py
 Multi-carrier ENERGY CONSERVATION & NODAL BALANCE validation for solved
 PyPSA / PyPSA-Earth networks (.nc). Iterates through all network carriers
 and automatically loops over multiple predefined scenarios/study cases,
-saving individual text reports and nodal dispatch maps.
+saving individual text reports, nodal dispatch maps, and stacked bar charts.
 """
 
 import os
@@ -539,6 +539,7 @@ if __name__ == "__main__":
         # Automatically construct paths using the prefix and base directory
         txt_out = os.path.join(OUTPUT_DIR_BASE, f"{sc['prefix']}_energy_conservation_all_carriers.txt")
         png_out = os.path.join(OUTPUT_DIR_BASE, f"{sc['prefix']}_pypsa_libya_nodal_dispatch_map.png")
+        bar_out = os.path.join(OUTPUT_DIR_BASE, f"{sc['prefix']}_pypsa_libya_nodal_bar_chart.png")
 
         print("\n" + "=" * 110)
         print(f"PROCESSING SCENARIO: {sc['name']}")
@@ -597,8 +598,7 @@ if __name__ == "__main__":
             "Gas": "#ff00ff",                   # Magenta
             "H2 Turbine": "#9467bd",            # Purple
             "H2 Fuel Cell": "#00ffff",          # Cyan
-            "H2 Electrolysis": "#003366",       # Dark blue
-            "H2 Electrolyser": "#003366",       # Dark blue (alias)
+            "H2 Electrolyser": "#8da35d",       # Olive green (alias)
             "H2 Storage": "#87ceeb",            # Light blue (Sky blue)
             "Battery": "#8e44ad",               # Purple
             "SMR": "#95a5a6",                   # Grey
@@ -799,6 +799,7 @@ if __name__ == "__main__":
                     xs, ys = route_line_land(x0, y0, x1, y1)
                     ax.plot(xs, ys, color="gray", lw=1.0, alpha=0.8, zorder=1)
 
+
         max_energy = nodal_mix.sum(axis=1).max() if not nodal_mix.empty and nodal_mix.sum(axis=1).max() > 0 else 1.0
         
         # Apply the adjustable scale factor here
@@ -807,6 +808,19 @@ if __name__ == "__main__":
 
         fig.canvas.draw()
         present_carriers = set()
+
+        # Compute total nodal energy to rank nodes for labeling (1, 2, 3, ...)
+        node_totals = nodal_mix.sum(axis=1) if not nodal_mix.empty else pd.Series(dtype=float)
+        sorted_buses = node_totals.sort_values(ascending=False).index.tolist()
+        for b in ac_buses:
+            if b not in sorted_buses:
+                sorted_buses.append(b)
+        bus_ranks = {b: idx + 1 for idx, b in enumerate(sorted_buses)}
+        
+        is_elec_only = len(ac_buses) > 12  # True for 36-node Electricity-only studies
+
+        # Store annotation instructions to render them strictly LAST (on top of pie charts and lines)
+        pending_annotations = []
 
         for bus in ac_buses:
             if bus not in nodal_mix.index:
@@ -830,9 +844,42 @@ if __name__ == "__main__":
             if fig_w > 0 and fig_h > 0:
                 x_frac, y_frac = disp_pt[0] / fig_w, disp_pt[1] / fig_h
                 ax_pie = fig.add_axes([x_frac - pie_size / 2, y_frac - pie_size / 2, pie_size, pie_size])
+                ax_pie.set_zorder(5)
                 ax_pie.pie(filtered_slices.values, colors=colors, startangle=90)
                 ax_pie.set_aspect("equal")
 
+            rank = bus_ranks.get(bus, 1)
+            pending_annotations.append({
+                "text": str(rank),
+                "x": x_coord,
+                "y": y_coord,
+                "rank": rank  # Track the rank explicitly
+            })
+
+        fig.canvas.draw()
+        for ann in pending_annotations:
+            # For electricity-only studies, skip drawing labels for nodes ranked below 10 to avoid clutter
+            if is_elec_only and ann["rank"] > 10:
+                continue
+
+            if is_elec_only:
+                label_x, label_y = ann["x"] - 0.30, ann["y"] + 0.30
+                ha, va, fontsize = "center", "center", 7
+            else:
+                node_px = ax.transData.transform((ann["x"], ann["y"]))
+                label_px = (node_px[0], node_px[1] + 7 * fig.dpi / 72)
+                label_x, label_y = ax.transData.inverted().transform(label_px)
+                ha, va, fontsize = "center", "bottom", 9
+
+            label_px = ax.transData.transform((label_x, label_y))
+            label_fig = fig.transFigure.inverted().transform(label_px)
+            fig.text(
+                label_fig[0], label_fig[1], ann["text"],
+                ha=ha, va=va, fontsize=fontsize, color="black",
+                weight="normal", zorder=1000, clip_on=False
+            )
+            
+            
         def format_legend_label(carrier_key):
             if carrier_key == "SMR CC":
                 name = "SMR+CC"
@@ -874,6 +921,59 @@ if __name__ == "__main__":
         fig.savefig(png_out, dpi=300, bbox_inches="tight")
         plt.close(fig)
         print(f"Saved nodal dispatch map to: {png_out}\n")
+
+# =====================================================================
+# NODAL DISPATCH & ENERGY MIX STACKED HORIZONTAL BAR CHART
+# =====================================================================
+
+        print(f"  -> Generating Nodal Dispatch Stacked Horizontal Bar Chart...")
+        
+        if not nodal_mix.empty:
+            node_totals_bar = nodal_mix.sum(axis=1)
+            sorted_nodes = node_totals_bar.sort_values(ascending=True).index.tolist()
+            
+            df_bar = nodal_mix.loc[sorted_nodes] / 1e6  # Convert MWh to TWh
+
+            if is_elec_only and len(sorted_nodes) > 10:
+                top_10_nodes = node_totals_bar.nlargest(10).sort_values(ascending=True).index.tolist()
+                df_bar = df_bar.loc[top_10_nodes]
+
+            bar_y_labels = [str(bus_ranks[b]) for b in df_bar.index]
+
+            fig_bar, ax_bar = plt.subplots(figsize=(10, max(5, len(df_bar) * 0.35)))
+            
+            bottom_val = np.zeros(len(df_bar))
+            active_bar_carriers = sorted(list(present_carriers))
+
+            for carrier in active_bar_carriers:
+                if carrier not in df_bar.columns:
+                    continue
+                values = df_bar[carrier].values
+                color = CHART_COLORS.get(carrier, "#7f7f7f")
+                ax_bar.barh(bar_y_labels, values, left=bottom_val, color=color, label=carrier, edgecolor="none")
+                bottom_val += values
+
+            ax_bar.set_title(
+                f"PyPSA-Libya 2030: Nodal Energy Dispatch & Mix ({sc['name']})\n"
+                f"{'Top 10 Nodes' if is_elec_only else 'All Nodes'} Ranked by Total Energy Capacity",
+                fontsize=11,
+                fontweight="bold"
+            )
+            ax_bar.set_xlabel("Energy Capacity (TWh)")
+            ax_bar.set_ylabel("Node Rank")
+            ax_bar.grid(axis="x", linestyle="--", alpha=0.5)
+
+            handles, labels = ax_bar.get_legend_handles_labels()
+            if handles:
+                ax_bar.legend(handles[::-1], labels[::-1], loc="lower right", fontsize=8.5, title="Energy Carriers")
+
+            fig_bar.tight_layout()
+            bar_dir = os.path.dirname(bar_out)
+            if bar_dir:
+                os.makedirs(bar_dir, exist_ok=True)
+            fig_bar.savefig(bar_out, dpi=300, bbox_inches="tight")
+            plt.close(fig_bar)
+            print(f"Saved nodal bar chart to: {bar_out}\n")
 
     print("=" * 110)
     print("ALL SCENARIOS PROCESSED AND SAVED SUCCESSFULLY!")
