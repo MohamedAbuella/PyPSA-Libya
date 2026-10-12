@@ -86,10 +86,12 @@ MAP_PIXEL_OFFSET_Y = 7                # Vertical pixel shift above nodes (used i
 # Map Figure Axis Settings
 MAP_AXIS_LABEL_FONT_SIZE = 14         # Font size for map axis titles (Longitude / Latitude)
 MAP_AXIS_TICK_FONT_SIZE = 10          # Font size for map tick values along the axes
+MAP_LEGEND_FONT_SIZE = 14             # Font size for the map legend text
 
 # Bar Chart Figure Axis Settings
 BAR_LABEL_FONT_SIZE = 16              # Font size for bar chart axis titles (Node Rank / Energy Dispatch)
 BAR_TICK_FONT_SIZE = 18               # Font size for bar chart tick marks and values
+BAR_LEGEND_FONT_SIZE = 14             # Font size for the bar chart legend text (increased for better readability)
 
 
 SCENARIOS = [
@@ -990,14 +992,31 @@ if __name__ == "__main__":
             energy_twh = energy_mwh / 1e6
             pct = rounded_percentages.get(carrier_key, 0)
             return f"{name}: {energy_twh:,.2f} TWh ({pct}%)"
+        
+
+        # Sort carriers from highest to lowest total energy share
+        sorted_present_carriers = sorted(
+            present_carriers, 
+            key=lambda c: nodal_mix[c].sum() if not nodal_mix.empty and c in nodal_mix.columns else 0, 
+            reverse=True
+        )
 
         legend_handles = [
             mpatches.Patch(color=CHART_COLORS.get(c, "#7f7f7f"), label=format_legend_label(c))
-            for c in sorted(present_carriers)
+            for c in sorted_present_carriers
         ]
+        
         if legend_handles:
-            ax.legend(handles=legend_handles, loc="lower left", fontsize=8.5, title="Energy Carriers")
-
+            ax.legend(
+                handles=legend_handles, 
+                loc="lower left", 
+                fontsize=MAP_LEGEND_FONT_SIZE,        
+                title_fontsize=MAP_LEGEND_FONT_SIZE,  
+                title="Energy Carriers (Annual TWh & Share)",
+                framealpha=1.0,   
+                facecolor="white"
+            )
+                
         ax.set_title(
             f"PyPSA-Libya 2030: Nodal Dispatch and Energy Mix ({sc['name']})\n"
             "Pie Size = Proportional Node Energy; Slices = Carriers",
@@ -1040,10 +1059,12 @@ if __name__ == "__main__":
             
             # --- UNIFIED FIGSIZE TO MATCH THE MAP FIGURE (11x8) ---
             
+            # Use the identical sorted carriers list for unified ordering
+            active_bar_carriers = sorted_present_carriers
+
             fig_bar, ax_bar = plt.subplots(figsize=(11, 8))
             
             bottom_val = np.zeros(len(df_bar))
-            active_bar_carriers = sorted(list(present_carriers))
 
             for carrier in active_bar_carriers:
                 if carrier not in df_bar.columns:
@@ -1061,16 +1082,23 @@ if __name__ == "__main__":
             )
             ax_bar.set_xlabel("Energy Dispatch (TWh)", fontsize=BAR_LABEL_FONT_SIZE)
             ax_bar.set_ylabel("Cluster Rank", fontsize=BAR_LABEL_FONT_SIZE)
-            
-            # Increase and make tick label sizes adjustable
             ax_bar.tick_params(axis='both', which='major', labelsize=BAR_TICK_FONT_SIZE)
-            
             ax_bar.grid(axis="x", linestyle="--", alpha=0.5)
 
-            handles, labels = ax_bar.get_legend_handles_labels()
-            if handles:
-                ax_bar.legend(handles[::-1], labels[::-1], loc="lower right", fontsize=8.5, title="Energy Carriers")
+            # Match handles to the sorted list and fix the title typo
+            handles = [mpatches.Patch(color=CHART_COLORS.get(c, "#7f7f7f"), label=c) for c in active_bar_carriers if c in df_bar.columns]
+            labels = [c for c in active_bar_carriers if c in df_bar.columns]
 
+            if handles:
+                ax_bar.legend(
+                    handles, 
+                    labels, 
+                    loc="lower right", 
+                    fontsize=BAR_LEGEND_FONT_SIZE,        
+                    title_fontsize=BAR_LEGEND_FONT_SIZE,  
+                    title="Energy Carriers)" # Fixed closing parenthesis typo here too
+                )
+                
             fig_bar.tight_layout()
             bar_dir = os.path.dirname(bar_out)
             if bar_dir:
