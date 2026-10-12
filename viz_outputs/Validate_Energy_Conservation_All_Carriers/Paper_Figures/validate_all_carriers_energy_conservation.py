@@ -62,18 +62,36 @@ def save_paper_pdf(fig, ax, filename):
     ax.set_title(original_title)    # Restore title for the PNG/display version
     print(f" Saved Paper PDF (Optimized): {clean_name}")
 
-### --- ADJUSTABLE MAP & BAR CHART SETTINGS FOR READABILITY ---
-PIE_SCALE_FACTOR = 1.5                # Change this to 1.0 for original size, 1.5 to increase by 50%, etc.
+# ============================================================================
+# ADJUSTABLE CONFIGURATION: MAP & BAR CHART FORMATTING FOR READABILITY
+# ============================================================================
 
-MAP_NODE_LABEL_SIZE = 11              # Change this to adjust map node label font size (e.g., 9, 11, 13)
-MAP_NODE_LABEL_WEIGHT = "bold"        # Change this to "bold" or "normal"
+### --- 1. General Scaling & Filtering Thresholds ---
+PIE_SCALE_FACTOR = 1.5                # Scales pie chart sizes globally 
+                                      # (1.0 = baseline size, 1.5 = +50% larger, etc.)
 
-MAP_LABEL_OFFSET_X = -0.35            # Horizontal offset for map labels (electricity-only mode)
-MAP_LABEL_OFFSET_Y = -0.15             # Vertical offset for map labels (electricity-only mode)
-MAP_PIXEL_OFFSET_Y = 7                # Vertical pixel offset above nodes (sector-coupling mode)
+CARRIER_PERCENTAGE = 0.5              # Minimum global energy share (%) required for a 
+                                      # carrier to appear in map pie charts and the legend
 
-BAR_TICK_FONT_SIZE = 12               # Change this to adjust bar plot tick size (e.g., 10, 12, 14)
-BAR_LABEL_FONT_SIZE = 13              # Change this to adjust bar plot axis labels size
+### --- 2. Map Node Label Styling & Positioning ---
+MAP_NODE_LABEL_SIZE = 11              # Font size for rank numbers placed next to nodes (e.g., 9, 11, 13)
+MAP_NODE_LABEL_WEIGHT = "bold"        # Font weight for node labels ("bold" or "normal")
+
+# Label coordinate offsets (adjusts position relative to node coordinates)
+MAP_LABEL_OFFSET_X = -0.35            # Horizontal offset (used primarily in electricity-only mode)
+MAP_LABEL_OFFSET_Y = -0.15            # Vertical offset (used primarily in electricity-only mode)
+MAP_PIXEL_OFFSET_Y = 7                # Vertical pixel shift above nodes (used in sector-coupling mode)
+
+### --- 3. Axis & Tick Typography Controls ---
+# Map Figure Axis Settings
+MAP_AXIS_LABEL_FONT_SIZE = 14         # Font size for map axis titles (Longitude / Latitude)
+MAP_AXIS_TICK_FONT_SIZE = 10          # Font size for map tick values along the axes
+MAP_LEGEND_FONT_SIZE = 14             # Font size for the map legend text
+
+# Bar Chart Figure Axis Settings
+BAR_LABEL_FONT_SIZE = 16              # Font size for bar chart axis titles (Node Rank / Energy Dispatch)
+BAR_TICK_FONT_SIZE = 18               # Font size for bar chart tick marks and values
+BAR_LEGEND_FONT_SIZE = 14             # Font size for the bar chart legend text (increased for better readability)
 
 
 SCENARIOS = [
@@ -764,7 +782,7 @@ if __name__ == "__main__":
         total_energy_all = nodal_mix.sum().sum() if not nodal_mix.empty else 0.0
         if not nodal_mix.empty and total_energy_all > 0:
             global_percentages = (nodal_mix.sum() / total_energy_all) * 100.0
-            valid_carriers = global_percentages[global_percentages >= 2.0].index
+            valid_carriers = global_percentages[global_percentages >= CARRIER_PERCENTAGE].index
             nodal_mix = nodal_mix[[c for c in nodal_mix.columns if c in valid_carriers]]
 
         rounded_percentages = {}
@@ -974,22 +992,40 @@ if __name__ == "__main__":
             energy_twh = energy_mwh / 1e6
             pct = rounded_percentages.get(carrier_key, 0)
             return f"{name}: {energy_twh:,.2f} TWh ({pct}%)"
+        
+
+        # Sort carriers from highest to lowest total energy share
+        sorted_present_carriers = sorted(
+            present_carriers, 
+            key=lambda c: nodal_mix[c].sum() if not nodal_mix.empty and c in nodal_mix.columns else 0, 
+            reverse=True
+        )
 
         legend_handles = [
             mpatches.Patch(color=CHART_COLORS.get(c, "#7f7f7f"), label=format_legend_label(c))
-            for c in sorted(present_carriers)
+            for c in sorted_present_carriers
         ]
+        
         if legend_handles:
-            ax.legend(handles=legend_handles, loc="lower left", fontsize=8.5, title="Energy Carriers")
-
+            ax.legend(
+                handles=legend_handles, 
+                loc="lower left", 
+                fontsize=MAP_LEGEND_FONT_SIZE,        
+                title_fontsize=MAP_LEGEND_FONT_SIZE,  
+                title="Energy Carriers (Annual TWh & Share)",
+                framealpha=1.0,   
+                facecolor="white"
+            )
+                
         ax.set_title(
             f"PyPSA-Libya 2030: Nodal Dispatch and Energy Mix ({sc['name']})\n"
             "Pie Size = Proportional Node Energy; Slices = Carriers",
             fontsize=11,
             fontweight="bold",
         )
-        ax.set_xlabel("Longitude")
-        ax.set_ylabel("Latitude")
+        ax.set_xlabel("Longitude", fontsize=MAP_AXIS_LABEL_FONT_SIZE)
+        ax.set_ylabel("Latitude", fontsize=MAP_AXIS_LABEL_FONT_SIZE)
+        ax.tick_params(axis='both', which='major', labelsize=MAP_AXIS_TICK_FONT_SIZE)
 
         # Ensure map output directory exists
         png_dir = os.path.dirname(png_out)
@@ -1023,10 +1059,12 @@ if __name__ == "__main__":
             
             # --- UNIFIED FIGSIZE TO MATCH THE MAP FIGURE (11x8) ---
             
+            # Use the identical sorted carriers list for unified ordering
+            active_bar_carriers = sorted_present_carriers
+
             fig_bar, ax_bar = plt.subplots(figsize=(11, 8))
             
             bottom_val = np.zeros(len(df_bar))
-            active_bar_carriers = sorted(list(present_carriers))
 
             for carrier in active_bar_carriers:
                 if carrier not in df_bar.columns:
@@ -1043,17 +1081,24 @@ if __name__ == "__main__":
                 fontweight="bold"
             )
             ax_bar.set_xlabel("Energy Dispatch (TWh)", fontsize=BAR_LABEL_FONT_SIZE)
-            ax_bar.set_ylabel("Node Rank", fontsize=BAR_LABEL_FONT_SIZE)
-            
-            # Increase and make tick label sizes adjustable
+            ax_bar.set_ylabel("Cluster Rank", fontsize=BAR_LABEL_FONT_SIZE)
             ax_bar.tick_params(axis='both', which='major', labelsize=BAR_TICK_FONT_SIZE)
-            
             ax_bar.grid(axis="x", linestyle="--", alpha=0.5)
 
-            handles, labels = ax_bar.get_legend_handles_labels()
-            if handles:
-                ax_bar.legend(handles[::-1], labels[::-1], loc="lower right", fontsize=8.5, title="Energy Carriers")
+            # Match handles to the sorted list and fix the title typo
+            handles = [mpatches.Patch(color=CHART_COLORS.get(c, "#7f7f7f"), label=c) for c in active_bar_carriers if c in df_bar.columns]
+            labels = [c for c in active_bar_carriers if c in df_bar.columns]
 
+            if handles:
+                ax_bar.legend(
+                    handles, 
+                    labels, 
+                    loc="lower right", 
+                    fontsize=BAR_LEGEND_FONT_SIZE,        
+                    title_fontsize=BAR_LEGEND_FONT_SIZE,  
+                    title="Energy Carriers)" # Fixed closing parenthesis typo here too
+                )
+                
             fig_bar.tight_layout()
             bar_dir = os.path.dirname(bar_out)
             if bar_dir:
