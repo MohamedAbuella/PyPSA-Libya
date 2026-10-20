@@ -1,0 +1,15 @@
+=====================================================================================
+PyPSA-Libya: Combined System-Wide Levelized Cost of Energy (LCOE) Results
+=====================================================================================
+
+            Total System Cost [Billion EUR]  Domestic AC Demand [TWh]  Exported H2 Energy [TWh]  Total System Energy [TWh]  System LCOE [EUR/MWh]
+Scenario A                        12.606640                 52.041432                      70.0                 122.041432             103.298034
+Scenario B                         7.668663                 52.041432                      70.0                 122.041432              62.836556
+Scenario C                         5.914796                 52.041432                      70.0                 122.041432              48.465476
+
+=====================================================================================
+Notes:
+ - Total System Cost includes all capital and operational costs for electricity, H2 export, and industrial carriers.
+ - Total System Energy = Domestic AC Electricity Demand + Exported Hydrogen Energy
+ - System LCOE [EUR/MWh] = Total System Cost / Total System Energy
+=====================================================================================

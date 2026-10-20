@@ -1,0 +1,12 @@
+===================================================================================================================
+PyPSA-Libya: Cost Breakdown Summary by Scenario (Export Hydrogen) (Billion EUR/year)
+===================================================================================================================
+
+--- Itemized Cost Breakdown (Billion EUR/year) ---
+category  Solar PV  Onshore Wind    CCGT     Oil  Electrolysis  H2 Storage  H2 Fuel Cell     SMR  SMR with CC  Grid Expansion  H2 pipeline  Operating Cost  CO2 Tax
+Hybrid      0.3332        1.1493  0.0003  0.1861        0.0004      0.2881        0.0002  0.0003       2.4961          0.3594       0.0032          3.6028   0.7925
+
+-------------------------------------------------------------------------------------------------------------------
+--- Total System Costs Summary ---
+  Hybrid       Total Cost:    9.212 Billion EUR/year
+===================================================================================================================

@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText:  PyPSA-Earth and PyPSA-Eur Authors
 #
 # SPDX-License-Identifier: CC0-1.0
-
 # Fix language stats: https://github.com/github/linguist/issues/3316#issuecomment-263485606
 *.ipynb linguist-vendored
 * text=auto
+viz_outputs/+No_UHS_H2_Coastal_Only/*.nc filter=lfs diff=lfs merge=lfs -text

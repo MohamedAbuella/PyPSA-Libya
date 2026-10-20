@@ -1,0 +1,32 @@
+=========================================================================================================
+PyPSA-Libya: Operational Expenditure (OPEX) Breakdown Summary (Export Hydrogen) (Billion EUR/year)
+=========================================================================================================
+
+--- Itemized OPEX Breakdown (>= 0.001 Billion EUR/year) ---
+category       Gas     Oil  Solar PV  Onshore Wind  Electrolysis  SMR with CC  CO2 Tax
+Scenario A  0.2313  0.0581    0.0011        0.0025        0.0012       0.0000   0.6824
+Scenario B  2.7569  0.0403    0.0003        0.0007        0.0000       0.0011   0.6825
+Scenario C  2.4999  0.3403    0.0000        0.0000        0.0000       0.0000   5.9149
+
+---------------------------------------------------------------------------------------------------------
+--- Top 10 OPEX Components Ranked by Scenario ---
+          Scenario A                               Scenario B                            Scenario C                   
+             Carrier OPEX [Billion EUR]               Carrier OPEX [Billion EUR]            Carrier OPEX [Billion EUR]
+Rank                                                                                                                  
+1            CO2 Tax           0.682381                   Gas           2.756913            CO2 Tax           5.914905
+2                Gas           0.231252               CO2 Tax           0.682481                Gas           2.499935
+3                Oil           0.058084                   Oil           0.040275                Oil           0.340279
+4       Onshore Wind           0.002453           SMR with CC           0.001063                SMR           0.000963
+5       Electrolysis           0.001178            H2 Storage           0.000670         H2 Storage           0.000654
+6           Solar PV           0.001098          Onshore Wind           0.000651     Grid Expansion           0.000551
+7         H2 Storage           0.000659        Grid Expansion           0.000449  Process Emissions           0.000160
+8     Grid Expansion           0.000454              Solar PV           0.000254      Load Shedding           0.000040
+9      Load Shedding           0.000252         solar rooftop           0.000191        Haber-Bosch           0.000026
+10     solar rooftop           0.000162  process emissions CC           0.000145           Solar PV           0.000019
+
+---------------------------------------------------------------------------------------------------------
+--- Total OPEX Summary ---
+  Scenario A   Total OPEX:    0.978 Billion EUR/year
+  Scenario B   Total OPEX:    3.483 Billion EUR/year
+  Scenario C   Total OPEX:    8.757 Billion EUR/year
+=========================================================================================================

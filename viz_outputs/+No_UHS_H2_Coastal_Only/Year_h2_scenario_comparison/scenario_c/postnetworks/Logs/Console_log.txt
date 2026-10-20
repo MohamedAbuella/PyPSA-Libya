@@ -1,0 +1,1811 @@
+(pypsa-earth) C:\Users\Mhdella\Documents\pypsa-libya>snakemake --cores 12 solve_sector_networks
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+Demand data folder: data\ssp2-2.6\2030\era5_2013, load path is ['data\\ssp2-2.6\\2030\\era5_2013\\Africa.nc'].
+Expected files: Africa.nc
+Building DAG of jobs...
+Provided cores: 12
+Rules claiming more threads will be scaled down.
+Job stats:
+job                                   count
+----------------------------------  -------
+add_electricity                           1
+add_export                                1
+add_extra_components                      1
+augmented_line_connections                1
+base_network                              1
+build_bus_regions                         1
+build_clustered_population_layouts        1
+build_demand_profiles                     1
+build_industrial_distribution_key         1
+build_industry_demand                     1
+build_osm_network                         1
+build_population_layouts                  1
+build_powerplants                         1
+build_renewable_profiles                  2
+build_shapes                              1
+clean_osm_data                            1
+cluster_network                           1
+copy_defaultnatura_tiff                   1
+download_osm_data                         1
+prepare_gas_network                       1
+prepare_network                           1
+prepare_sector_network                    1
+process_cost_data                         2
+retrieve_cost_data                        1
+simplify_network                          1
+solve_sector_network                      1
+solve_sector_networks                     1
+total                                    29
+
+Select jobs to execute...
+
+[Sun Oct 18 17:28:06 2026]
+rule copy_defaultnatura_tiff:
+    input: data/natura/natura.tiff
+    output: resources/libya_h2export_scenario_c_No_UHS/natura.tiff
+    jobid: 22
+    reason: Missing output files: resources/libya_h2export_scenario_c_No_UHS/natura.tiff
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp
+
+[Sun Oct 18 17:28:06 2026]
+rule retrieve_cost_data:
+    input: raw.githubusercontent.com/PyPSA/technology-data/v0.13.2/outputs/costs_2030.csv
+    output: resources/libya_h2export_scenario_c_No_UHS/costs_2030.csv
+    log: logs/libya_h2export_scenario_c_No_UHS/retrieve_cost_data_2030.log
+    jobid: 11
+    reason: Missing output files: resources/libya_h2export_scenario_c_No_UHS/costs_2030.csv
+    wildcards: year=2030
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=5000, mem_mib=4769
+
+Downloading from remote: raw.githubusercontent.com/PyPSA/technology-data/v0.13.2/outputs/costs_2030.csv
+Finished download.
+
+[Sun Oct 18 17:28:07 2026]
+rule download_osm_data:
+    output: resources/libya_h2export_scenario_c_No_UHS/osm/raw/all_raw_cables.geojson, resources/libya_h2export_scenario_c_No_UHS/osm/raw/all_raw_generators.geojson, resources/libya_h2export_scenario_c_No_UHS/osm/raw/all_raw_generators.csv, resources/libya_h2export_scenario_c_No_UHS/osm/raw/all_raw_lines.geojson, resources/libya_h2export_scenario_c_No_UHS/osm/raw/all_raw_substations.geojson
+    log: logs/libya_h2export_scenario_c_No_UHS/download_osm_data.log
+    jobid: 8
+    benchmark: benchmarks/libya_h2export_scenario_c_No_UHS/download_osm_data
+    reason: Missing output files: resources/libya_h2export_scenario_c_No_UHS/osm/raw/all_raw_lines.geojson, resources/libya_h2export_scenario_c_No_UHS/osm/raw/all_raw_generators.geojson, resources/libya_h2export_scenario_c_No_UHS/osm/raw/all_raw_cables.geojson, resources/libya_h2export_scenario_c_No_UHS/osm/raw/all_raw_substations.geojson
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp
+
+[Sun Oct 18 17:28:07 2026]
+rule build_shapes:
+    input: data/eez/eez_v11.gpkg
+    output: resources/libya_h2export_scenario_c_No_UHS/shapes/country_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/offshore_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/extended_country_shape.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/gadm_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/subregion_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/subregion_offshore.geojson
+    log: logs/libya_h2export_scenario_c_No_UHS/build_shapes.log
+    jobid: 9
+    benchmark: benchmarks/libya_h2export_scenario_c_No_UHS/build_shapes
+    reason: Missing output files: resources/libya_h2export_scenario_c_No_UHS/shapes/offshore_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/extended_country_shape.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/gadm_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/country_shapes.geojson
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=3096, mem_mib=2953
+
+[Sun Oct 18 17:28:07 2026]
+Finished job 22.
+1 of 29 steps (3%) done
+[Sun Oct 18 17:28:07 2026]
+Finished job 11.
+2 of 29 steps (7%) done
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+INFO:eo.stream:Region LY (power=substation,line,cable,generator): downloading libya-latest.osm.pbf
+INFO:eo.stream:Scanning libya-latest.osm.pbf for power=substation,line,cable,generator candidates across 1731 blocks (workers=15)
+Stage 1 of 5: Create country shapes
+INFO:__main__:Stage 1 of 5: Create country shapes
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pyogrio\__init__.py:7: DeprecationWarning: The 'shapely.geos' module is deprecated, and will be removed in a future version. All attributes of 'shapely.geos' are available directly from the top-level 'shapely' namespace (since shapely 2.0.0).
+  import shapely.geos  # noqa: F401
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pyogrio\geopandas.py:710: UserWarning: 'crs' was not provided.  The output dataset will not have projection information defined and may not be usable in other systems.
+  write(
+INFO:pyogrio._io:Created 1 records
+Stage 2 of 5: Create offshore shapes
+INFO:__main__:Stage 2 of 5: Create offshore shapes
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pyogrio\geopandas.py:710: UserWarning: 'crs' was not provided.  The output dataset will not have projection information defined and may not be usable in other systems.
+  write(
+INFO:pyogrio._io:Created 1 records
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pyogrio\geopandas.py:710: UserWarning: 'crs' was not provided.  The output dataset will not have projection information defined and may not be usable in other systems.
+  write(
+INFO:pyogrio._io:Created 1 records
+Stage 3 of 5: Creation GADM GeoDataFrame
+INFO:__main__:Stage 3 of 5: Creation GADM GeoDataFrame
+Stage 3 of 5: Download WorldPop datasets, method: standard
+INFO:__main__:Stage 3 of 5: Download WorldPop datasets, method: standard
+Downloading worldpop file per country and assigning tasks: 100%|█████████████████████████| 1/1 [00:00<00:00,  2.51it/s]
+Stage 4 of 5: Add population data to GADM GeoDataFrame
+INFO:__main__:Stage 4 of 5: Add population data to GADM GeoDataFrame
+Stage 4 of 5: Starting multiprocessing
+INFO:__main__:Stage 4 of 5: Starting multiprocessing
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 0% (17/1731 blocks, nodes=0, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 1% (34/1731 blocks, nodes=2, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 2% (51/1731 blocks, nodes=4, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 3% (68/1731 blocks, nodes=5, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 4% (85/1731 blocks, nodes=9, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 5% (102/1731 blocks, nodes=12, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 6% (119/1731 blocks, nodes=14, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 7% (136/1731 blocks, nodes=15, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 8% (153/1731 blocks, nodes=15, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 9% (170/1731 blocks, nodes=15, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 10% (187/1731 blocks, nodes=15, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 11% (204/1731 blocks, nodes=15, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 12% (221/1731 blocks, nodes=15, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 13% (238/1731 blocks, nodes=15, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 14% (255/1731 blocks, nodes=15, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 15% (272/1731 blocks, nodes=15, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 16% (289/1731 blocks, nodes=15, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 17% (306/1731 blocks, nodes=15, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 18% (323/1731 blocks, nodes=15, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 19% (340/1731 blocks, nodes=15, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 20% (357/1731 blocks, nodes=15, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 21% (374/1731 blocks, nodes=15, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 22% (391/1731 blocks, nodes=15, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 23% (408/1731 blocks, nodes=15, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 24% (425/1731 blocks, nodes=15, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 25% (442/1731 blocks, nodes=15, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 26% (459/1731 blocks, nodes=15, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 27% (476/1731 blocks, nodes=15, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 28% (493/1731 blocks, nodes=19, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 29% (510/1731 blocks, nodes=19, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 30% (527/1731 blocks, nodes=19, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 31% (544/1731 blocks, nodes=19, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 32% (561/1731 blocks, nodes=19, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 33% (578/1731 blocks, nodes=19, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 34% (595/1731 blocks, nodes=19, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 35% (612/1731 blocks, nodes=19, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 36% (629/1731 blocks, nodes=20, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 37% (646/1731 blocks, nodes=20, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 38% (663/1731 blocks, nodes=22, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 39% (680/1731 blocks, nodes=23, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 40% (697/1731 blocks, nodes=23, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 41% (714/1731 blocks, nodes=23, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 42% (731/1731 blocks, nodes=23, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 43% (748/1731 blocks, nodes=23, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 44% (765/1731 blocks, nodes=23, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 45% (782/1731 blocks, nodes=23, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 46% (799/1731 blocks, nodes=23, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 47% (816/1731 blocks, nodes=23, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 48% (833/1731 blocks, nodes=23, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 49% (850/1731 blocks, nodes=23, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 50% (867/1731 blocks, nodes=23, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 51% (884/1731 blocks, nodes=23, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 52% (901/1731 blocks, nodes=23, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 53% (918/1731 blocks, nodes=23, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 54% (935/1731 blocks, nodes=23, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 54% (952/1731 blocks, nodes=23, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 55% (969/1731 blocks, nodes=23, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 56% (986/1731 blocks, nodes=23, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 57% (1003/1731 blocks, nodes=24, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 58% (1020/1731 blocks, nodes=133, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 59% (1037/1731 blocks, nodes=134, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 60% (1054/1731 blocks, nodes=134, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 61% (1071/1731 blocks, nodes=138, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 62% (1088/1731 blocks, nodes=138, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 63% (1105/1731 blocks, nodes=138, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 64% (1122/1731 blocks, nodes=138, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 65% (1139/1731 blocks, nodes=138, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 66% (1156/1731 blocks, nodes=138, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 67% (1173/1731 blocks, nodes=138, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 68% (1190/1731 blocks, nodes=138, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 69% (1207/1731 blocks, nodes=138, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 70% (1224/1731 blocks, nodes=138, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 71% (1241/1731 blocks, nodes=138, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 72% (1258/1731 blocks, nodes=138, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 73% (1275/1731 blocks, nodes=138, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 74% (1292/1731 blocks, nodes=138, ways=0)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 75% (1309/1731 blocks, nodes=138, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 76% (1326/1731 blocks, nodes=138, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 77% (1343/1731 blocks, nodes=138, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 78% (1360/1731 blocks, nodes=139, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 79% (1377/1731 blocks, nodes=139, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 80% (1394/1731 blocks, nodes=139, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 81% (1411/1731 blocks, nodes=139, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 82% (1428/1731 blocks, nodes=139, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 83% (1445/1731 blocks, nodes=143, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 84% (1462/1731 blocks, nodes=143, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 85% (1479/1731 blocks, nodes=143, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 86% (1496/1731 blocks, nodes=143, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 87% (1513/1731 blocks, nodes=145, ways=0)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 88% (1530/1731 blocks, nodes=147, ways=1206)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 89% (1547/1731 blocks, nodes=147, ways=2051)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 90% (1564/1731 blocks, nodes=147, ways=2119)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 91% (1581/1731 blocks, nodes=147, ways=2169)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 92% (1598/1731 blocks, nodes=147, ways=2203)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 93% (1615/1731 blocks, nodes=147, ways=2241)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 94% (1632/1731 blocks, nodes=147, ways=2328)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 95% (1649/1731 blocks, nodes=147, ways=2495)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 96% (1666/1731 blocks, nodes=147, ways=2683)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 97% (1683/1731 blocks, nodes=147, ways=2698)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 98% (1700/1731 blocks, nodes=147, ways=2728)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 99% (1717/1731 blocks, nodes=147, ways=2770)
+INFO:eo.stream:Scanning libya-latest.osm.pbf (power=substation,line,cable,generator): 100% (1731/1731 blocks, nodes=147, ways=3464)
+INFO:eo.stream:Completed scan of libya-latest.osm.pbf: 3464 candidate ways, 147 candidate nodes, 87723 referenced nodes
+INFO:eo.stream:Region LY (power=substation,line,cable,generator): identified 147 target nodes, 3464 target ways
+INFO:eo.stream:Capturing 87720 prerequisite nodes from libya-latest.osm.pbf using 15 workers
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+Compute population per window:   0%|                                                        | 0/2 [00:00<?, ? window/s]C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+Compute population per window:  50%|████████████████████████                        | 1/2 [00:05<00:05,  5.31s/ window]C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+Compute population per window: 100%|████████████████████████████████████████████████| 2/2 [00:19<00:00,  9.74s/ window]
+Stage 5 of 5: Add gdp data to GADM GeoDataFrame
+INFO:__main__:Stage 5 of 5: Add gdp data to GADM GeoDataFrame
+Stage 5 of 5: Access to GDP raster data
+INFO:__main__:Stage 5 of 5: Access to GDP raster data
+Compute GDP :  59%|██████████████████████████████████▊                        | 13/22 [00:01<00:00, 13.34 geometries/s]C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+Compute GDP : 100%|███████████████████████████████████████████████████████████| 22/22 [00:01<00:00, 11.79 geometries/s]
+INFO:pyogrio._io:Created 22 records
+INFO:pyogrio._io:Created 0 records
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:28:58 2026]
+Finished job 9.
+3 of 29 steps (10%) done
+Select jobs to execute...
+
+[Sun Oct 18 17:28:58 2026]
+rule build_population_layouts:
+    input: resources/libya_h2export_scenario_c_No_UHS/shapes/gadm_shapes.geojson, resources/urban_percent.csv, cutouts/cutout-2013-era5.nc
+    output: resources/population_shares/pop_layout_total_2030.nc, resources/population_shares/pop_layout_urban_2030.nc, resources/population_shares/pop_layout_rural_2030.nc, resources/gdp_shares/gdp_layout_2030.nc
+    jobid: 28
+    benchmark: benchmarks/build_population_layouts_2030
+    reason: Input files updated by another job: resources/libya_h2export_scenario_c_No_UHS/shapes/gadm_shapes.geojson
+    wildcards: planning_horizons=2030
+    threads: 8
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=20000, mem_mib=19074
+
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pyogrio\__init__.py:7: DeprecationWarning: The 'shapely.geos' module is deprecated, and will be removed in a future version. All attributes of 'shapely.geos' are available directly from the top-level 'shapely' namespace (since shapely 2.0.0).
+  import shapely.geos  # noqa: F401
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\geopandas\geoseries.py:772: FutureWarning: Series.__getitem__ treating keys as positions is deprecated. In a future version, integer keys will always be treated as labels (consistent with DataFrame behavior). To access a value by position, use `ser.iloc[pos]`
+  val = getattr(super(), mtd)(*args, **kwargs)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:29:05 2026]
+Finished job 28.
+4 of 29 steps (14%) done
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 0% (17/1731 blocks, captured=969/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 1% (34/1731 blocks, captured=3455/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 2% (51/1731 blocks, captured=10056/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 3% (68/1731 blocks, captured=43174/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 4% (85/1731 blocks, captured=72272/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 5% (102/1731 blocks, captured=74008/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 6% (119/1731 blocks, captured=74435/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 7% (136/1731 blocks, captured=75604/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 8% (153/1731 blocks, captured=75643/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 9% (170/1731 blocks, captured=75971/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 10% (187/1731 blocks, captured=77154/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 11% (204/1731 blocks, captured=77169/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 12% (221/1731 blocks, captured=77171/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 13% (238/1731 blocks, captured=77176/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 14% (255/1731 blocks, captured=77201/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 15% (272/1731 blocks, captured=77205/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 16% (289/1731 blocks, captured=77234/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 17% (306/1731 blocks, captured=77241/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 18% (323/1731 blocks, captured=77245/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 19% (340/1731 blocks, captured=77247/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 20% (357/1731 blocks, captured=77257/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 21% (374/1731 blocks, captured=77381/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 22% (391/1731 blocks, captured=78377/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 23% (408/1731 blocks, captured=78587/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 24% (425/1731 blocks, captured=78680/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 25% (442/1731 blocks, captured=78681/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 26% (459/1731 blocks, captured=78774/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 27% (476/1731 blocks, captured=79129/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 28% (493/1731 blocks, captured=79282/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 29% (510/1731 blocks, captured=79350/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 30% (527/1731 blocks, captured=79371/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 31% (544/1731 blocks, captured=79406/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 32% (561/1731 blocks, captured=79414/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 33% (578/1731 blocks, captured=79428/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 34% (595/1731 blocks, captured=79451/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 35% (612/1731 blocks, captured=79488/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 36% (629/1731 blocks, captured=79522/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 37% (646/1731 blocks, captured=79546/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 38% (663/1731 blocks, captured=79611/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 39% (680/1731 blocks, captured=79646/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 40% (697/1731 blocks, captured=79753/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 41% (714/1731 blocks, captured=79778/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 42% (731/1731 blocks, captured=79993/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 43% (748/1731 blocks, captured=80057/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 44% (765/1731 blocks, captured=80092/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 45% (782/1731 blocks, captured=80136/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 46% (799/1731 blocks, captured=80205/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 47% (816/1731 blocks, captured=80293/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 48% (833/1731 blocks, captured=80337/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 49% (850/1731 blocks, captured=80487/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 50% (867/1731 blocks, captured=80574/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 51% (884/1731 blocks, captured=80619/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 52% (901/1731 blocks, captured=80720/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 53% (918/1731 blocks, captured=80794/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 54% (935/1731 blocks, captured=80930/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 54% (952/1731 blocks, captured=81212/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 55% (969/1731 blocks, captured=81320/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 56% (986/1731 blocks, captured=81522/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 57% (1003/1731 blocks, captured=81595/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 58% (1020/1731 blocks, captured=81831/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 59% (1037/1731 blocks, captured=82057/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 60% (1054/1731 blocks, captured=82120/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 61% (1071/1731 blocks, captured=83534/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 62% (1088/1731 blocks, captured=83597/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 63% (1105/1731 blocks, captured=83646/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 64% (1122/1731 blocks, captured=83674/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 65% (1139/1731 blocks, captured=83686/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 66% (1156/1731 blocks, captured=83714/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 67% (1173/1731 blocks, captured=83719/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 68% (1190/1731 blocks, captured=83864/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 69% (1207/1731 blocks, captured=83903/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 70% (1224/1731 blocks, captured=83977/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 71% (1241/1731 blocks, captured=84021/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 72% (1258/1731 blocks, captured=84043/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 73% (1275/1731 blocks, captured=84211/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 74% (1292/1731 blocks, captured=84222/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 75% (1309/1731 blocks, captured=84235/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 76% (1326/1731 blocks, captured=84307/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 77% (1343/1731 blocks, captured=84328/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 78% (1360/1731 blocks, captured=84354/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 79% (1377/1731 blocks, captured=84387/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 80% (1394/1731 blocks, captured=84418/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 81% (1411/1731 blocks, captured=84473/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 82% (1428/1731 blocks, captured=84506/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 83% (1445/1731 blocks, captured=84597/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 84% (1462/1731 blocks, captured=85428/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 85% (1479/1731 blocks, captured=85834/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 86% (1496/1731 blocks, captured=86417/87720)
+INFO:eo.stream:Collecting nodes from libya-latest.osm.pbf: 87% (1513/1731 blocks, captured=87619/87720)
+INFO:eo.stream:Captured coordinates for all referenced nodes after 1518 blocks
+INFO:eo.stream:Captured coordinates for all referenced nodes
+INFO:eo.stream:Region LY (power=substation,line,cable,generator): node stage completed with 147 features (147 total)
+INFO:eo.stream:Region LY (power=substation,line,cable,generator): way stage completed with 3464 features (3611 total)
+INFO:eo.stream:Region LY (power=substation,line,cable,generator -> substation): node rows=21, way rows=1014, total=1035
+INFO:eo.stream:Region LY (power=substation,line,cable,generator -> line): node rows=0, way rows=2355, total=2355
+INFO:eo.stream:Region LY (power=substation,line,cable,generator -> cable): node rows=0, way rows=76, total=76
+INFO:eo.stream:Region LY (power=substation,line,cable,generator -> generator): node rows=126, way rows=19, total=145
+INFO:eo.stream:Region LY (power=substation,line,cable,generator): streaming finished with 3611 features across 4 values
+INFO:eo.export:CSV: C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_substation.csv
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pyogrio\__init__.py:7: DeprecationWarning: The 'shapely.geos' module is deprecated, and will be removed in a future version. All attributes of 'shapely.geos' are available directly from the top-level 'shapely' namespace (since shapely 2.0.0).
+  import shapely.geos  # noqa: F401
+INFO:pyogrio._io:Created 1,035 records
+INFO:eo.export:GEOJSON: C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_substation.geojson
+INFO:eo.export:CSV: C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_line.csv
+INFO:pyogrio._io:Created 2,355 records
+INFO:eo.export:GEOJSON: C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_line.geojson
+INFO:eo.export:CSV: C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_cable.csv
+INFO:pyogrio._io:Created 76 records
+INFO:eo.export:GEOJSON: C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_cable.geojson
+INFO:eo.export:CSV: C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_generator.csv
+INFO:pyogrio._io:Created 145 records
+INFO:eo.export:GEOJSON: C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_generator.geojson
+Move C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_generator.csv to C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\all_raw_generators.csv
+INFO:__main__:Move C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_generator.csv to C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\all_raw_generators.csv
+Move C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_generator.geojson to C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\all_raw_generators.geojson
+INFO:__main__:Move C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_generator.geojson to C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\all_raw_generators.geojson
+Move C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_cable.csv to C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\all_raw_cables.csv
+INFO:__main__:Move C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_cable.csv to C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\all_raw_cables.csv
+Move C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_cable.geojson to C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\all_raw_cables.geojson
+INFO:__main__:Move C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_cable.geojson to C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\all_raw_cables.geojson
+Move C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_line.csv to C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\all_raw_lines.csv
+INFO:__main__:Move C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_line.csv to C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\all_raw_lines.csv
+Move C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_line.geojson to C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\all_raw_lines.geojson
+INFO:__main__:Move C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_line.geojson to C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\all_raw_lines.geojson
+Move C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_substation.csv to C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\all_raw_substations.csv
+INFO:__main__:Move C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_substation.csv to C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\all_raw_substations.csv
+Move C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_substation.geojson to C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\all_raw_substations.geojson
+INFO:__main__:Move C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\out\LY_substation.geojson to C:\Users\Mhdella\Documents\pypsa-libya\resources\libya_h2export_scenario_c_No_UHS\osm\raw\all_raw_substations.geojson
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:29:37 2026]
+Finished job 8.
+5 of 29 steps (17%) done
+Select jobs to execute...
+
+[Sun Oct 18 17:29:37 2026]
+rule clean_osm_data:
+    input: resources/libya_h2export_scenario_c_No_UHS/osm/raw/all_raw_cables.geojson, resources/libya_h2export_scenario_c_No_UHS/osm/raw/all_raw_generators.geojson, resources/libya_h2export_scenario_c_No_UHS/osm/raw/all_raw_lines.geojson, resources/libya_h2export_scenario_c_No_UHS/osm/raw/all_raw_substations.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/country_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/offshore_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/extended_country_shape.geojson
+    output: resources/libya_h2export_scenario_c_No_UHS/osm/clean/all_clean_generators.geojson, resources/libya_h2export_scenario_c_No_UHS/osm/clean/all_clean_generators.csv, resources/libya_h2export_scenario_c_No_UHS/osm/clean/all_clean_lines.geojson, resources/libya_h2export_scenario_c_No_UHS/osm/clean/all_clean_substations.geojson
+    log: logs/libya_h2export_scenario_c_No_UHS/clean_osm_data.log
+    jobid: 7
+    benchmark: benchmarks/libya_h2export_scenario_c_No_UHS/clean_osm_data
+    reason: Missing output files: resources/libya_h2export_scenario_c_No_UHS/osm/clean/all_clean_generators.geojson, resources/libya_h2export_scenario_c_No_UHS/osm/clean/all_clean_generators.csv, resources/libya_h2export_scenario_c_No_UHS/osm/clean/all_clean_lines.geojson, resources/libya_h2export_scenario_c_No_UHS/osm/clean/all_clean_substations.geojson; Input files updated by another job: resources/libya_h2export_scenario_c_No_UHS/shapes/extended_country_shape.geojson, resources/libya_h2export_scenario_c_No_UHS/osm/raw/all_raw_cables.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/offshore_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/osm/raw/all_raw_substations.geojson, resources/libya_h2export_scenario_c_No_UHS/osm/raw/all_raw_lines.geojson, resources/libya_h2export_scenario_c_No_UHS/osm/raw/all_raw_generators.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/country_shapes.geojson
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp
+
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pyogrio\__init__.py:7: DeprecationWarning: The 'shapely.geos' module is deprecated, and will be removed in a future version. All attributes of 'shapely.geos' are available directly from the top-level 'shapely' namespace (since shapely 2.0.0).
+  import shapely.geos  # noqa: F401
+C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\scripts\tmp5j73cyqh.clean_osm_data.py:865: UserWarning: Geometry is in a geographic CRS. Results from 'buffer' are likely incorrect. Use 'GeoSeries.to_crs()' to re-project geometries to a projected CRS before this operation.
+
+  .buffer(tolerance)
+Process OSM lines
+INFO:__main__:Process OSM lines
+WARNING:pyogrio._io:Skipping field refs: unsupported OGR type: 13
+Add OSM cables to data
+INFO:__main__:Add OSM cables to data
+WARNING:pyogrio._io:Skipping field refs: unsupported OGR type: 13
+Non-numeric and non-NaN values found in cables column, consider replacement: ['هوائي150/25مم' None 'هواي150/25مم' nan]
+--- Logging error ---
+Traceback (most recent call last):
+  File "C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\logging\__init__.py", line 1103, in emit
+    stream.write(msg + self.terminator)
+  File "C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 96-100: character maps to <undefined>
+Call stack:
+  File "C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\scripts\tmp5j73cyqh.clean_osm_data.py", line 1152, in <module>
+    clean_data(
+  File "C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\scripts\tmp5j73cyqh.clean_osm_data.py", line 982, in clean_data
+    df_all_lines = integrate_lines_df(df_all_lines, distance_crs)
+  File "C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\scripts\tmp5j73cyqh.clean_osm_data.py", line 733, in integrate_lines_df
+    clean_cables(df)
+  File "C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\scripts\tmp5j73cyqh.clean_osm_data.py", line 482, in clean_cables
+    logger.warning(
+Message: "Non-numeric and non-NaN values found in cables column, consider replacement: ['هوائي150/25مم' None 'هواي150/25مم' nan]"
+Arguments: ()
+WARNING:__main__:Non-numeric and non-NaN values found in cables column, consider replacement: ['هوائي150/25مم' None 'هواي150/25مم' nan]
+C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\scripts\tmp5j73cyqh.clean_osm_data.py:743: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  df["under_construction"] = df["under_construction"].fillna(False)
+Filter lines by voltage, frequency, circuits and geometry
+INFO:__main__:Filter lines by voltage, frequency, circuits and geometry
+Select lines and cables in the region of interest
+INFO:__main__:Select lines and cables in the region of interest
+Setting lines country name using the GADM shapes
+INFO:__main__:Setting lines country name using the GADM shapes
+Saving lines output
+INFO:__main__:Saving lines output
+INFO:pyogrio._io:Created 900 records
+Process OSM substations
+INFO:__main__:Process OSM substations
+WARNING:pyogrio._io:Skipping field refs: unsupported OGR type: 13
+C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\scripts\tmp5j73cyqh.clean_osm_data.py:56: UserWarning: Geometry is in a geographic CRS. Results from 'centroid' are likely incorrect. Use 'GeoSeries.to_crs()' to re-project geometries to a projected CRS before this operation.
+
+  df_all_buses["geometry"] = df_all_buses["geometry"].centroid
+Setting substations country name using the GADM shapes
+INFO:__main__:Setting substations country name using the GADM shapes
+Saving substations output
+INFO:__main__:Saving substations output
+INFO:pyogrio._io:Created 1,925 records
+Process OSM generators
+INFO:__main__:Process OSM generators
+WARNING:pyogrio._io:Skipping field refs: unsupported OGR type: 13
+Setting generators country name using the GADM shapes
+INFO:__main__:Setting generators country name using the GADM shapes
+Saving generators output
+INFO:__main__:Saving generators output
+INFO:pyogrio._io:Created 91 records
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:29:44 2026]
+Finished job 7.
+6 of 29 steps (21%) done
+Select jobs to execute...
+
+[Sun Oct 18 17:29:44 2026]
+rule build_osm_network:
+    input: resources/libya_h2export_scenario_c_No_UHS/osm/clean/all_clean_generators.geojson, resources/libya_h2export_scenario_c_No_UHS/osm/clean/all_clean_lines.geojson, resources/libya_h2export_scenario_c_No_UHS/osm/clean/all_clean_substations.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/country_shapes.geojson
+    output: resources/libya_h2export_scenario_c_No_UHS/base_network/all_lines_build_network.csv, resources/libya_h2export_scenario_c_No_UHS/base_network/all_converters_build_network.csv, resources/libya_h2export_scenario_c_No_UHS/base_network/all_transformers_build_network.csv, resources/libya_h2export_scenario_c_No_UHS/base_network/all_buses_build_network.csv, resources/libya_h2export_scenario_c_No_UHS/base_network/all_lines_build_network.geojson, resources/libya_h2export_scenario_c_No_UHS/base_network/all_converters_build_network.geojson, resources/libya_h2export_scenario_c_No_UHS/base_network/all_transformers_build_network.geojson, resources/libya_h2export_scenario_c_No_UHS/base_network/all_buses_build_network.geojson
+    log: logs/libya_h2export_scenario_c_No_UHS/build_osm_network.log
+    jobid: 6
+    benchmark: benchmarks/libya_h2export_scenario_c_No_UHS/build_osm_network
+    reason: Missing output files: resources/libya_h2export_scenario_c_No_UHS/base_network/all_lines_build_network.csv, resources/libya_h2export_scenario_c_No_UHS/base_network/all_transformers_build_network.csv, resources/libya_h2export_scenario_c_No_UHS/base_network/all_buses_build_network.csv, resources/libya_h2export_scenario_c_No_UHS/base_network/all_converters_build_network.csv; Input files updated by another job: resources/libya_h2export_scenario_c_No_UHS/osm/clean/all_clean_generators.geojson, resources/libya_h2export_scenario_c_No_UHS/osm/clean/all_clean_lines.geojson, resources/libya_h2export_scenario_c_No_UHS/osm/clean/all_clean_substations.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/country_shapes.geojson
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp
+
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+Stage 1/5: Read input data
+INFO:__main__:Stage 1/5: Read input data
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pyogrio\__init__.py:7: DeprecationWarning: The 'shapely.geos' module is deprecated, and will be removed in a future version. All attributes of 'shapely.geos' are available directly from the top-level 'shapely' namespace (since shapely 2.0.0).
+  import shapely.geos  # noqa: F401
+Stage 2/5: AC and DC network: enabled
+INFO:__main__:Stage 2/5: AC and DC network: enabled
+Stage 3/5: Avoid nodes overpassing lines: enabled with tolerance
+INFO:__main__:Stage 3/5: Avoid nodes overpassing lines: enabled with tolerance
+Stage 4/5: Aggregate close substations: enabled with tolerance 15000 m
+INFO:__main__:Stage 4/5: Aggregate close substations: enabled with tolerance 15000 m
+Stage 4a/5: Set substation ids with tolerance of 15.00 km
+INFO:__main__:Stage 4a/5: Set substation ids with tolerance of 15.00 km
+Stage 4b/5: Merge substations with the same id
+INFO:__main__:Stage 4b/5: Merge substations with the same id
+Stage 4c/5: Specify the bus ids of the line endings
+INFO:__main__:Stage 4c/5: Specify the bus ids of the line endings
+Stage 4d/5: Add converters to lines
+INFO:__main__:Stage 4d/5: Add converters to lines
+Stage 5/5: Add augmented substation to country with no data
+INFO:__main__:Stage 5/5: Add augmented substation to country with no data
+Save outputs
+INFO:__main__:Save outputs
+INFO:pyogrio._io:Created 166 records
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pyogrio\geopandas.py:710: UserWarning: 'crs' was not provided.  The output dataset will not have projection information defined and may not be usable in other systems.
+  write(
+INFO:pyogrio._io:Created 38 records
+INFO:pyogrio._io:Created 141 records
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:29:52 2026]
+Finished job 6.
+7 of 29 steps (24%) done
+Select jobs to execute...
+
+[Sun Oct 18 17:29:52 2026]
+rule base_network:
+    input: resources/libya_h2export_scenario_c_No_UHS/base_network/all_buses_build_network.csv, resources/libya_h2export_scenario_c_No_UHS/base_network/all_lines_build_network.csv, resources/libya_h2export_scenario_c_No_UHS/base_network/all_converters_build_network.csv, resources/libya_h2export_scenario_c_No_UHS/base_network/all_transformers_build_network.csv, resources/libya_h2export_scenario_c_No_UHS/shapes/country_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/offshore_shapes.geojson
+    output: networks/libya_h2export_scenario_c_No_UHS/base.nc
+    log: logs/libya_h2export_scenario_c_No_UHS/base_network.log
+    jobid: 5
+    benchmark: benchmarks/libya_h2export_scenario_c_No_UHS/base_network
+    reason: Missing output files: networks/libya_h2export_scenario_c_No_UHS/base.nc; Input files updated by another job: resources/libya_h2export_scenario_c_No_UHS/base_network/all_transformers_build_network.csv, resources/libya_h2export_scenario_c_No_UHS/base_network/all_buses_build_network.csv, resources/libya_h2export_scenario_c_No_UHS/base_network/all_lines_build_network.csv, resources/libya_h2export_scenario_c_No_UHS/shapes/offshore_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/base_network/all_converters_build_network.csv, resources/libya_h2export_scenario_c_No_UHS/shapes/country_shapes.geojson
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=500, mem_mib=477
+
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pyogrio\__init__.py:7: DeprecationWarning: The 'shapely.geos' module is deprecated, and will be removed in a future version. All attributes of 'shapely.geos' are available directly from the top-level 'shapely' namespace (since shapely 2.0.0).
+  import shapely.geos  # noqa: F401
+INFO:pypsa.io:Exported network 'base.nc' contains: buses, lines, transformers
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:29:58 2026]
+Finished job 5.
+8 of 29 steps (28%) done
+Select jobs to execute...
+
+[Sun Oct 18 17:29:58 2026]
+rule build_powerplants:
+    input: networks/libya_h2export_scenario_c_No_UHS/base.nc, configs/powerplantmatching_config.yaml, resources/libya_h2export_scenario_c_No_UHS/osm/clean/all_clean_generators.csv, resources/libya_h2export_scenario_c_No_UHS/shapes/gadm_shapes.geojson
+    output: resources/libya_h2export_scenario_c_No_UHS/powerplants.csv, resources/libya_h2export_scenario_c_No_UHS/powerplants_osm2pm.csv
+    log: logs/libya_h2export_scenario_c_No_UHS/build_powerplants.log
+    jobid: 25
+    benchmark: benchmarks/libya_h2export_scenario_c_No_UHS/build_powerplants
+    reason: Missing output files: resources/libya_h2export_scenario_c_No_UHS/powerplants.csv; Input files updated by another job: resources/libya_h2export_scenario_c_No_UHS/shapes/gadm_shapes.geojson, networks/libya_h2export_scenario_c_No_UHS/base.nc, resources/libya_h2export_scenario_c_No_UHS/osm/clean/all_clean_generators.csv
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=500, mem_mib=477
+
+[Sun Oct 18 17:29:58 2026]
+rule process_cost_data:
+    input: networks/libya_h2export_scenario_c_No_UHS/base.nc, resources/libya_h2export_scenario_c_No_UHS/costs_2030.csv
+    output: resources/libya_h2export_scenario_c_No_UHS/costs_2030_sec.csv
+    log: logs/libya_h2export_scenario_c_No_UHS/build_cost_data_2030_sec.log
+    jobid: 4
+    benchmark: benchmarks/libya_h2export_scenario_c_No_UHS/build_cost_data_2030_sec
+    reason: Missing output files: resources/libya_h2export_scenario_c_No_UHS/costs_2030_sec.csv; Input files updated by another job: resources/libya_h2export_scenario_c_No_UHS/costs_2030.csv, networks/libya_h2export_scenario_c_No_UHS/base.nc
+    wildcards: year=2030, scope=sec
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=4000, mem_mib=3815
+
+[Sun Oct 18 17:29:58 2026]
+rule process_cost_data:
+    input: networks/libya_h2export_scenario_c_No_UHS/base.nc, resources/libya_h2export_scenario_c_No_UHS/costs_2030.csv
+    output: resources/libya_h2export_scenario_c_No_UHS/costs_2030_elec.csv
+    log: logs/libya_h2export_scenario_c_No_UHS/build_cost_data_2030_elec.log
+    jobid: 17
+    benchmark: benchmarks/libya_h2export_scenario_c_No_UHS/build_cost_data_2030_elec
+    reason: Missing output files: resources/libya_h2export_scenario_c_No_UHS/costs_2030_elec.csv; Input files updated by another job: resources/libya_h2export_scenario_c_No_UHS/costs_2030.csv, networks/libya_h2export_scenario_c_No_UHS/base.nc
+    wildcards: year=2030, scope=elec
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=4000, mem_mib=3815
+
+[Sun Oct 18 17:29:58 2026]
+rule build_bus_regions:
+    input: resources/libya_h2export_scenario_c_No_UHS/shapes/country_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/offshore_shapes.geojson, networks/libya_h2export_scenario_c_No_UHS/base.nc, resources/libya_h2export_scenario_c_No_UHS/shapes/gadm_shapes.geojson
+    output: resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore.geojson, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_offshore.geojson
+    log: logs/libya_h2export_scenario_c_No_UHS/build_bus_regions.log
+    jobid: 23
+    benchmark: benchmarks/libya_h2export_scenario_c_No_UHS/build_bus_regions
+    reason: Missing output files: resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_offshore.geojson, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore.geojson; Input files updated by another job: resources/libya_h2export_scenario_c_No_UHS/shapes/offshore_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/gadm_shapes.geojson, networks/libya_h2export_scenario_c_No_UHS/base.nc, resources/libya_h2export_scenario_c_No_UHS/shapes/country_shapes.geojson
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=1000, mem_mib=954
+
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+INFO:pypsa.io:Imported network base.nc has buses, lines, transformers
+INFO:pypsa.io:Imported network base.nc has buses, lines, transformers
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pyogrio\__init__.py:7: DeprecationWarning: The 'shapely.geos' module is deprecated, and will be removed in a future version. All attributes of 'shapely.geos' are available directly from the top-level 'shapely' namespace (since shapely 2.0.0).
+  import shapely.geos  # noqa: F401
+WARNING:__main__:Some rows are missing 'currency_year' and will be skipped in currency conversion.
+INFO:pypsa.io:Imported network base.nc has buses, lines, transformers
+INFO:__main__:Overwriting marginal_cost of Index(['solar', 'onwind', 'offwind', 'hydro', 'H2', 'electrolysis',
+       'fuel cell', 'battery', 'battery inverter'],
+      dtype='object') to [0.01  0.015 0.015 0.    0.    0.    0.    0.    0.   ]
+INFO:pyogrio._io:Created 103 records
+INFO:pyogrio._io:Created 50 records
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:30:06 2026]
+Finished job 4.
+9 of 29 steps (31%) done
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:30:06 2026]
+Finished job 17.
+10 of 29 steps (34%) done
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:30:06 2026]
+Finished job 23.
+11 of 29 steps (38%) done
+Select jobs to execute...
+
+[Sun Oct 18 17:30:06 2026]
+rule build_renewable_profiles:
+    input: resources/libya_h2export_scenario_c_No_UHS/natura.tiff, data/copernicus/PROBAV_LC100_global_v3.0.1_2019-nrt_Discrete-Classification-map_EPSG-4326.tif, data/gebco/GEBCO_2025_sub_ice.nc, resources/libya_h2export_scenario_c_No_UHS/shapes/country_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/offshore_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore.geojson, cutouts/cutout-2013-era5.nc
+    output: resources/libya_h2export_scenario_c_No_UHS/renewable_profiles/profile_solar.nc
+    log: logs/libya_h2export_scenario_c_No_UHS/build_renewable_profile_solar.log
+    jobid: 24
+    benchmark: benchmarks/libya_h2export_scenario_c_No_UHS/build_renewable_profiles_solar
+    reason: Missing output files: resources/libya_h2export_scenario_c_No_UHS/renewable_profiles/profile_solar.nc; Input files updated by another job: resources/libya_h2export_scenario_c_No_UHS/shapes/offshore_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore.geojson, resources/libya_h2export_scenario_c_No_UHS/natura.tiff, resources/libya_h2export_scenario_c_No_UHS/shapes/country_shapes.geojson
+    wildcards: technology=solar
+    threads: 2
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=10000, mem_mib=9537
+
+[Sun Oct 18 17:30:06 2026]
+rule build_demand_profiles:
+    input: networks/libya_h2export_scenario_c_No_UHS/base.nc, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore.geojson, data/ssp2-2.6/2030/era5_2013/Africa.nc, resources/libya_h2export_scenario_c_No_UHS/shapes/gadm_shapes.geojson
+    output: resources/libya_h2export_scenario_c_No_UHS/demand_profiles.csv
+    log: logs/libya_h2export_scenario_c_No_UHS/build_demand_profiles.log
+    jobid: 26
+    benchmark: benchmarks/libya_h2export_scenario_c_No_UHS/build_demand_profiles
+    reason: Missing output files: resources/libya_h2export_scenario_c_No_UHS/demand_profiles.csv; Input files updated by another job: resources/libya_h2export_scenario_c_No_UHS/shapes/gadm_shapes.geojson, networks/libya_h2export_scenario_c_No_UHS/base.nc, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore.geojson
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=3000, mem_mib=2862
+
+[Sun Oct 18 17:30:06 2026]
+rule build_renewable_profiles:
+    input: resources/libya_h2export_scenario_c_No_UHS/natura.tiff, data/copernicus/PROBAV_LC100_global_v3.0.1_2019-nrt_Discrete-Classification-map_EPSG-4326.tif, data/gebco/GEBCO_2025_sub_ice.nc, resources/libya_h2export_scenario_c_No_UHS/shapes/country_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/offshore_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore.geojson, cutouts/cutout-2013-era5.nc
+    output: resources/libya_h2export_scenario_c_No_UHS/renewable_profiles/profile_onwind.nc
+    log: logs/libya_h2export_scenario_c_No_UHS/build_renewable_profile_onwind.log
+    jobid: 21
+    benchmark: benchmarks/libya_h2export_scenario_c_No_UHS/build_renewable_profiles_onwind
+    reason: Missing output files: resources/libya_h2export_scenario_c_No_UHS/renewable_profiles/profile_onwind.nc; Input files updated by another job: resources/libya_h2export_scenario_c_No_UHS/shapes/offshore_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore.geojson, resources/libya_h2export_scenario_c_No_UHS/natura.tiff, resources/libya_h2export_scenario_c_No_UHS/shapes/country_shapes.geojson
+    wildcards: technology=onwind
+    threads: 2
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=10000, mem_mib=9537
+
+INFO:pypsa.io:Imported network base.nc has buses, lines, transformers
+INFO:powerplantmatching.collection:Create combined dataset for GEM, GEO, GPD
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+INFO:pypsa.io:Imported network base.nc has buses, lines, transformers
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pyogrio\__init__.py:7: DeprecationWarning: The 'shapely.geos' module is deprecated, and will be removed in a future version. All attributes of 'shapely.geos' are available directly from the top-level 'shapely' namespace (since shapely 2.0.0).
+  import shapely.geos  # noqa: F401
+Merging demand data from paths data/ssp2-2.6/2030/era5_2013/Africa.nc into the load data frame
+INFO:__main__:Merging demand data from paths data/ssp2-2.6/2030/era5_2013/Africa.nc into the load data frame
+Load data scaled with scaling factor 1.
+INFO:__main__:Load data scaled with scaling factor 1.
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\geopandas\geoseries.py:772: FutureWarning: Series.__getitem__ treating keys as positions is deprecated. In a future version, integer keys will always be treated as labels (consistent with DataFrame behavior). To access a value by position, use `ser.iloc[pos]`
+  val = getattr(super(), mtd)(*args, **kwargs)
+INFO:powerplantmatching.data:In newer versions of the dataset, the sheet 'Below Threshold' does not exist anymore.
+correction_factor is set as 0.854337
+INFO:__main__:correction_factor is set as 0.854337
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pyogrio\__init__.py:7: DeprecationWarning: The 'shapely.geos' module is deprecated, and will be removed in a future version. All attributes of 'shapely.geos' are available directly from the top-level 'shapely' namespace (since shapely 2.0.0).
+  import shapely.geos  # noqa: F401
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pyogrio\__init__.py:7: DeprecationWarning: The 'shapely.geos' module is deprecated, and will be removed in a future version. All attributes of 'shapely.geos' are available directly from the top-level 'shapely' namespace (since shapely 2.0.0).
+  import shapely.geos  # noqa: F401
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\distributed\node.py:188: UserWarning: Port 8787 is already in use.
+Perhaps you already have a cluster running?
+Hosting the HTTP server on port 58684 instead
+  warnings.warn(
+Demand_profiles csv file created for the corresponding snapshots.
+INFO:__main__:Demand_profiles csv file created for the corresponding snapshots.
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:30:17 2026]
+Finished job 26.
+12 of 29 steps (41%) done
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+Compute availability matrix:  39%|█████████████████                           | 40/103 [00:08<00:12,  5.01 gridcells/s]C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+Compute availability matrix:  50%|█████████████████████▊                      | 51/103 [00:19<00:18,  2.81 gridcells/s]C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+Compute availability matrix:  52%|███████████████████████                     | 54/103 [00:20<00:14,  3.29 gridcells/s]C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+Compute availability matrix:  63%|███████████████████████████▊                | 65/103 [00:29<00:24,  1.54 gridcells/s]C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+Compute availability matrix:  84%|█████████████████████████████████████▏      | 87/103 [00:34<00:10,  1.59 gridcells/s]C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+Compute availability matrix:  85%|█████████████████████████████████████▌      | 88/103 [00:35<00:10,  1.46 gridcells/s]C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+Compute availability matrix:  90%|███████████████████████████████████████▋    | 93/103 [00:42<00:15,  1.54s/ gridcells]C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+Compute availability matrix: 100%|███████████████████████████████████████████| 103/103 [00:43<00:00,  2.35 gridcells/s]
+Compute availability matrix:  85%|█████████████████████████████████████▌      | 88/103 [00:44<00:17,  1.15s/ gridcells]C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\atlite\convert.py:929: FutureWarning: aggregate_time='legacy' is deprecated and will be removed in a future release. Pass 'sum', 'mean', or None explicitly.
+  return cutout.convert_and_aggregate(
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\atlite\convert.py:929: FutureWarning: capacity_factor is deprecated. Use aggregate_time='mean' instead.
+  return cutout.convert_and_aggregate(
+INFO:atlite.convert:Convert and aggregate 'pv'.
+Compute availability matrix:  89%|███████████████████████████████████████▎    | 92/103 [00:50<00:15,  1.40s/ gridcells]C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\atlite\convert.py:929: FutureWarning: aggregate_time='legacy' is deprecated and will be removed in a future release. Pass 'sum', 'mean', or None explicitly.
+  return cutout.convert_and_aggregate(
+INFO:atlite.convert:Convert and aggregate 'pv'.
+Compute availability matrix: 100%|███████████████████████████████████████████| 103/103 [00:55<00:00,  1.85 gridcells/s]
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\atlite\convert.py:739: FutureWarning: aggregate_time='legacy' is deprecated and will be removed in a future release. Pass 'sum', 'mean', or None explicitly.
+  return cutout.convert_and_aggregate(
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\atlite\convert.py:739: FutureWarning: capacity_factor is deprecated. Use aggregate_time='mean' instead.
+  return cutout.convert_and_aggregate(
+INFO:atlite.convert:Convert and aggregate 'wind'.
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\atlite\convert.py:739: FutureWarning: aggregate_time='legacy' is deprecated and will be removed in a future release. Pass 'sum', 'mean', or None explicitly.
+  return cutout.convert_and_aggregate(
+INFO:atlite.convert:Convert and aggregate 'wind'.
+Calculating maximal capacity per bus (method 'simple')
+INFO:__main__:Calculating maximal capacity per bus (method 'simple')
+Calculate average distances.
+INFO:__main__:Calculate average distances.
+Calculating maximal capacity per bus (method 'simple')
+INFO:__main__:Calculating maximal capacity per bus (method 'simple')
+Calculate average distances.
+INFO:__main__:Calculate average distances.
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:31:43 2026]
+Finished job 21.
+13 of 29 steps (45%) done
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:31:44 2026]
+Finished job 24.
+14 of 29 steps (48%) done
+INFO:powerplantmatching.cleaning:Aggregating blocks in data source 'GEM'.
+INFO:powerplantmatching.cleaning:Aggregating blocks in data source 'GEO'.
+INFO:powerplantmatching.cleaning:Aggregating blocks in data source 'GPD'.
+INFO:powerplantmatching.matching:Comparing data sources `GEM` and `GEO`
+INFO:powerplantmatching.matching:Comparing data sources `GEM` and `GPD`
+INFO:powerplantmatching.matching:Comparing data sources `GEO` and `GPD`
+INFO:powerplantmatching.cleaning:Aggregating blocks in data source 'GEO'.
+INFO:powerplantmatching.cleaning:Aggregating blocks in data source 'GPD'.
+INFO:powerplantmatching.data:In newer versions of the dataset, the sheet 'Below Threshold' does not exist anymore.
+INFO:powerplantmatching.cleaning:Aggregating blocks in data source 'GEM'.
+INFO:powerplantmatching.core:Adding stored geo-position from C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\powerplantmatching\package_data\parsed_locations.csv
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:33:50 2026]
+Finished job 25.
+15 of 29 steps (52%) done
+Select jobs to execute...
+
+[Sun Oct 18 17:33:50 2026]
+rule add_electricity:
+    input: resources/libya_h2export_scenario_c_No_UHS/renewable_profiles/profile_onwind.nc, resources/libya_h2export_scenario_c_No_UHS/renewable_profiles/profile_solar.nc, networks/libya_h2export_scenario_c_No_UHS/base.nc, resources/libya_h2export_scenario_c_No_UHS/costs_2030_elec.csv, resources/libya_h2export_scenario_c_No_UHS/powerplants.csv, resources/libya_h2export_scenario_c_No_UHS/shapes/gadm_shapes.geojson, data/hydro_capacities.csv, resources/libya_h2export_scenario_c_No_UHS/demand_profiles.csv, data/nuclear_p_max_pu.csv
+    output: networks/libya_h2export_scenario_c_No_UHS/elec.nc
+    log: logs/libya_h2export_scenario_c_No_UHS/add_electricity.log
+    jobid: 20
+    benchmark: benchmarks/libya_h2export_scenario_c_No_UHS/add_electricity
+    reason: Missing output files: networks/libya_h2export_scenario_c_No_UHS/elec.nc; Input files updated by another job: resources/libya_h2export_scenario_c_No_UHS/renewable_profiles/profile_onwind.nc, resources/libya_h2export_scenario_c_No_UHS/costs_2030_elec.csv, resources/libya_h2export_scenario_c_No_UHS/renewable_profiles/profile_solar.nc, resources/libya_h2export_scenario_c_No_UHS/demand_profiles.csv, resources/libya_h2export_scenario_c_No_UHS/shapes/gadm_shapes.geojson, networks/libya_h2export_scenario_c_No_UHS/base.nc, resources/libya_h2export_scenario_c_No_UHS/powerplants.csv
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=3000, mem_mib=2862
+
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+INFO:pypsa.io:Imported network base.nc has buses, lines, transformers
+Adding 44 existing generators with capacities [GW]
+carrier
+CCGT    14.29
+oil      6.28
+Name: p_nom, dtype: float64
+INFO:__main__:Adding 44 existing generators with capacities [GW]
+carrier
+CCGT    14.29
+oil      6.28
+Name: p_nom, dtype: float64
+Added extendable {'OCGT', 'oil', 'CCGT'} generators.
+INFO:__main__:Added extendable {'OCGT', 'oil', 'CCGT'} generators.
+solar: existing from powerplants = 0.61 GW, IRENA target = 0.01 GW, gap filled = 0.00 GW (0.0% of total).
+INFO:__main__:solar: existing from powerplants = 0.61 GW, IRENA target = 0.01 GW, gap filled = 0.00 GW (0.0% of total).
+onwind: existing from powerplants = 0.00 GW, IRENA target = 0.00 GW, gap filled = 0.00 GW (0.0% of total).
+INFO:__main__:onwind: existing from powerplants = 0.00 GW, IRENA target = 0.00 GW, gap filled = 0.00 GW (0.0% of total).
+No existing batteries found in powerplants.csv.
+INFO:__main__:No existing batteries found in powerplants.csv.
+No nuclear generators found: skipping nuclear p_max_pu limits.
+INFO:__main__:No nuclear generators found: skipping nuclear p_max_pu limits.
+
+Installed capacities summary
+         Generators [GW]  StorageUnits [GW]
+carrier
+ccgt               14.29                0.0
+oil                 6.28                0.0
+onwind              0.00                0.0
+solar               0.62                0.0
+INFO:__main__:
+Installed capacities summary
+         Generators [GW]  StorageUnits [GW]
+carrier
+ccgt               14.29                0.0
+oil                 6.28                0.0
+onwind              0.00                0.0
+solar               0.62                0.0
+INFO:pypsa.io:Exported network 'elec.nc' contains: generators, lines, transformers, buses, carriers, loads
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:34:04 2026]
+Finished job 20.
+16 of 29 steps (55%) done
+Select jobs to execute...
+
+[Sun Oct 18 17:34:04 2026]
+rule simplify_network:
+    input: networks/libya_h2export_scenario_c_No_UHS/elec.nc, resources/libya_h2export_scenario_c_No_UHS/costs_2030_elec.csv, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore.geojson, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_offshore.geojson
+    output: networks/libya_h2export_scenario_c_No_UHS/elec_s.nc, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore_elec_s.geojson, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_offshore_elec_s.geojson, resources/libya_h2export_scenario_c_No_UHS/bus_regions/busmap_elec_s.csv, resources/libya_h2export_scenario_c_No_UHS/bus_regions/connection_costs_s.csv
+    log: logs/libya_h2export_scenario_c_No_UHS/simplify_network/elec_s.log
+    jobid: 19
+    benchmark: benchmarks/libya_h2export_scenario_c_No_UHS/simplify_network/elec_s
+    reason: Missing output files: resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_offshore_elec_s.geojson, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore_elec_s.geojson, networks/libya_h2export_scenario_c_No_UHS/elec_s.nc; Input files updated by another job: networks/libya_h2export_scenario_c_No_UHS/elec.nc, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_offshore.geojson, resources/libya_h2export_scenario_c_No_UHS/costs_2030_elec.csv, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore.geojson
+    wildcards: simpl=
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=4000, mem_mib=3815
+
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+INFO:pypsa.io:Imported network elec.nc has buses, carriers, generators, lines, loads, transformers
+INFO:_helpers:Added year suffixes to carrier names for clustering
+Mapping all network lines onto a single 380kV layer
+INFO:__main__:Mapping all network lines onto a single 380kV layer
+Simplifying connected link components
+INFO:__main__:Simplifying connected link components
+Removing stubs
+INFO:__main__:Removing stubs
+INFO:_helpers:Restored base carrier names
+INFO:pypsa.io:Exported network 'elec_s.nc' contains: generators, loads, lines, buses, carriers
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pyogrio\__init__.py:7: DeprecationWarning: The 'shapely.geos' module is deprecated, and will be removed in a future version. All attributes of 'shapely.geos' are available directly from the top-level 'shapely' namespace (since shapely 2.0.0).
+  import shapely.geos  # noqa: F401
+INFO:pyogrio._io:Created 71 records
+INFO:pyogrio._io:Created 32 records
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:34:11 2026]
+Finished job 19.
+17 of 29 steps (59%) done
+Select jobs to execute...
+
+[Sun Oct 18 17:34:11 2026]
+rule cluster_network:
+    input: networks/libya_h2export_scenario_c_No_UHS/elec_s.nc, resources/libya_h2export_scenario_c_No_UHS/shapes/country_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore_elec_s.geojson, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_offshore_elec_s.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/gadm_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/costs_2030_elec.csv
+    output: networks/libya_h2export_scenario_c_No_UHS/elec_s_12_pre_augmentation.nc, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore_elec_s_12.geojson, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_offshore_elec_s_12.geojson, resources/libya_h2export_scenario_c_No_UHS/bus_regions/busmap_elec_s_12.csv, resources/libya_h2export_scenario_c_No_UHS/bus_regions/linemap_elec_s_12.csv
+    log: logs/libya_h2export_scenario_c_No_UHS/cluster_network/elec_s_12.log
+    jobid: 18
+    benchmark: benchmarks/libya_h2export_scenario_c_No_UHS/cluster_network/elec_s_12
+    reason: Missing output files: resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_offshore_elec_s_12.geojson, networks/libya_h2export_scenario_c_No_UHS/elec_s_12_pre_augmentation.nc, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore_elec_s_12.geojson; Input files updated by another job: resources/libya_h2export_scenario_c_No_UHS/costs_2030_elec.csv, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore_elec_s.geojson, networks/libya_h2export_scenario_c_No_UHS/elec_s.nc, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_offshore_elec_s.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/gadm_shapes.geojson, resources/libya_h2export_scenario_c_No_UHS/shapes/country_shapes.geojson
+    wildcards: simpl=, clusters=12
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=3000, mem_mib=2862
+
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+INFO:pypsa.io:Imported network elec_s.nc has buses, carriers, generators, lines, loads
+INFO:_helpers:Added year suffixes to carrier names for clustering
+Keyword argument feature is only valid for algorithm `hac`. Given feature `load` will be ignored.
+WARNING:__main__:Keyword argument feature is only valid for algorithm `hac`. Given feature `load` will be ignored.
+Using custom focus weights for determining number of clusters.
+WARNING:__main__:Using custom focus weights for determining number of clusters.
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\xarray\core\dataarray.py:3198: DeprecationWarning: Deleting a single level of a MultiIndex is deprecated. Previously, this deleted all levels of a MultiIndex. Please also drop the following variables: {'dim_0'} to avoid an error in the future.
+  ds = self._to_temp_dataset().drop_vars(names, errors=errors)
+The configured solver `highs` does not support quadratic objectives. Falling back to `scip`.
+ERROR:__main__:The configured solver `highs` does not support quadratic objectives. Falling back to `scip`.
+INFO:linopy.model: Solve problem using Scip solver
+INFO:linopy.io: Writing time: 0.03s
+original problem has 3 variables (0 bin, 2 int, 0 impl, 1 cont) and 2 constraints
+presolving:
+(round 1, fast)       2 del vars, 1 del conss, 0 add conss, 3 chg bounds, 0 chg sides, 0 chg coeffs, 1 upgd conss, 0 impls, 0 clqs
+(round 2, fast)       2 del vars, 2 del conss, 0 add conss, 4 chg bounds, 0 chg sides, 0 chg coeffs, 1 upgd conss, 0 impls, 0 clqs
+presolving (3 rounds: 3 fast, 1 medium, 1 exhaustive):
+ 3 deleted vars, 2 deleted constraints, 0 added constraints, 4 tightened bounds, 0 added holes, 0 changed sides, 0 changed coefficients
+ 0 implications, 0 cliques
+transformed 1/1 original solutions to the transformed problem space
+Presolving Time: 0.00
+
+SCIP Status        : problem is solved [optimal solution found]
+Solving Time (sec) : 0.00
+Solving Nodes      : 0
+Primal Bound       : -2.20000000000000e+01 (1 solutions)
+Dual Bound         : -2.20000000000000e+01
+Gap                : 0.00 %
+INFO:linopy.constants: Optimization successful:
+Status: ok
+Termination condition: optimal
+Solution: 2 primals, 1 duals
+Objective: -2.20e+01
+Solver model: available
+Solver message: optimal
+
+INFO:_helpers:Restored base carrier names
+INFO:pypsa.io:Exported network 'elec_s_12_pre_augmentation.nc' contains: generators, lines, carriers, loads, buses
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pyogrio\__init__.py:7: DeprecationWarning: The 'shapely.geos' module is deprecated, and will be removed in a future version. All attributes of 'shapely.geos' are available directly from the top-level 'shapely' namespace (since shapely 2.0.0).
+  import shapely.geos  # noqa: F401
+INFO:pyogrio._io:Created 12 records
+INFO:pyogrio._io:Created 8 records
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:34:20 2026]
+Finished job 18.
+18 of 29 steps (62%) done
+Select jobs to execute...
+
+[Sun Oct 18 17:34:20 2026]
+rule prepare_gas_network:
+    input: resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore_elec_s_12.geojson
+    output: resources/gas_networks/gas_network_elec_s_12.csv
+    jobid: 39
+    reason: Input files updated by another job: resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore_elec_s_12.geojson
+    wildcards: simpl=, clusters=12
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp
+
+[Sun Oct 18 17:34:20 2026]
+rule augmented_line_connections:
+    input: resources/libya_h2export_scenario_c_No_UHS/costs_2030_elec.csv, networks/libya_h2export_scenario_c_No_UHS/elec_s_12_pre_augmentation.nc, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore_elec_s_12.geojson, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_offshore_elec_s_12.geojson
+    output: networks/libya_h2export_scenario_c_No_UHS/elec_s_12.nc
+    log: logs/libya_h2export_scenario_c_No_UHS/augmented_line_connections/elec_s_12.log
+    jobid: 16
+    benchmark: benchmarks/libya_h2export_scenario_c_No_UHS/augmented_line_connections/elec_s_12
+    reason: Missing output files: networks/libya_h2export_scenario_c_No_UHS/elec_s_12.nc; Input files updated by another job: resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore_elec_s_12.geojson, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_offshore_elec_s_12.geojson, networks/libya_h2export_scenario_c_No_UHS/elec_s_12_pre_augmentation.nc, resources/libya_h2export_scenario_c_No_UHS/costs_2030_elec.csv
+    wildcards: simpl=, clusters=12
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=3000, mem_mib=2862
+
+[Sun Oct 18 17:34:20 2026]
+rule build_clustered_population_layouts:
+    input: resources/population_shares/pop_layout_total_2030.nc, resources/population_shares/pop_layout_urban_2030.nc, resources/population_shares/pop_layout_rural_2030.nc, resources/gdp_shares/gdp_layout_2030.nc, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore_elec_s_12.geojson, cutouts/cutout-2013-era5.nc
+    output: resources/population_shares/pop_layout_elec_s_12_2030.csv, resources/gdp_shares/gdp_layout_elec_s_12_2030.csv
+    jobid: 27
+    benchmark: benchmarks/build_clustered_population_layouts/s_12_2030
+    reason: Input files updated by another job: resources/population_shares/pop_layout_rural_2030.nc, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore_elec_s_12.geojson, resources/population_shares/pop_layout_urban_2030.nc, resources/gdp_shares/gdp_layout_2030.nc, resources/population_shares/pop_layout_total_2030.nc
+    wildcards: simpl=, clusters=12, planning_horizons=2030
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=10000, mem_mib=9537
+
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+INFO:pypsa.io:Imported network elec_s_12_pre_augmentation.nc has buses, carriers, generators, lines, loads
+INFO:pypsa.io:Exported network 'elec_s_12.nc' contains: generators, buses, loads, lines, carriers
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pyogrio\__init__.py:7: DeprecationWarning: The 'shapely.geos' module is deprecated, and will be removed in a future version. All attributes of 'shapely.geos' are available directly from the top-level 'shapely' namespace (since shapely 2.0.0).
+  import shapely.geos  # noqa: F401
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:34:28 2026]
+Finished job 16.
+19 of 29 steps (66%) done
+Select jobs to execute...
+
+[Sun Oct 18 17:34:28 2026]
+rule add_extra_components:
+    input: networks/libya_h2export_scenario_c_No_UHS/elec_s_12.nc, resources/libya_h2export_scenario_c_No_UHS/costs_2030_elec.csv
+    output: networks/libya_h2export_scenario_c_No_UHS/elec_s_12_ec.nc
+    log: logs/libya_h2export_scenario_c_No_UHS/add_extra_components/elec_s_12.log
+    jobid: 15
+    benchmark: benchmarks/libya_h2export_scenario_c_No_UHS/add_extra_components/elec_s_12_ec
+    reason: Missing output files: networks/libya_h2export_scenario_c_No_UHS/elec_s_12_ec.nc; Input files updated by another job: resources/libya_h2export_scenario_c_No_UHS/costs_2030_elec.csv, networks/libya_h2export_scenario_c_No_UHS/elec_s_12.nc
+    wildcards: simpl=, clusters=12
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=3000, mem_mib=2862
+
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:34:29 2026]
+Finished job 27.
+20 of 29 steps (69%) done
+Select jobs to execute...
+
+[Sun Oct 18 17:34:29 2026]
+rule build_industrial_distribution_key:
+    input: resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore_elec_s_12.geojson, resources/population_shares/pop_layout_elec_s_12_2030.csv, resources/gdp_shares/gdp_layout_elec_s_12_2030.csv, resources/industrial_database.csv, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore_elec_s_12.geojson
+    output: resources/demand/industrial_distribution_key_elec_s_12_2030.csv
+    jobid: 31
+    benchmark: benchmarks/libya_h2export_scenario_c_No_UHS/build_industrial_distribution_key_elec_s_12_2030
+    reason: Input files updated by another job: resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore_elec_s_12.geojson, resources/population_shares/pop_layout_elec_s_12_2030.csv, resources/gdp_shares/gdp_layout_elec_s_12_2030.csv
+    wildcards: simpl=, clusters=12, planning_horizons=2030
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=1000, mem_mib=954
+
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pyogrio\__init__.py:7: DeprecationWarning: The 'shapely.geos' module is deprecated, and will be removed in a future version. All attributes of 'shapely.geos' are available directly from the top-level 'shapely' namespace (since shapely 2.0.0).
+  import shapely.geos  # noqa: F401
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\scripts\tmpr3306pu9.build_industrial_distribution_key.py:25: DeprecationWarning: distutils Version classes are deprecated. Use packaging.version instead.
+  gpd_version = StrictVersion(gpd.__version__)
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pyogrio\__init__.py:7: DeprecationWarning: The 'shapely.geos' module is deprecated, and will be removed in a future version. All attributes of 'shapely.geos' are available directly from the top-level 'shapely' namespace (since shapely 2.0.0).
+  import shapely.geos  # noqa: F401
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\geopandas\array.py:411: UserWarning: Geometry is in a geographic CRS. Results from 'sjoin_nearest' are likely incorrect. Use 'GeoSeries.to_crs()' to re-project geometries to a projected CRS before this operation.
+
+  warnings.warn(
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:34:35 2026]
+Finished job 31.
+21 of 29 steps (72%) done
+Select jobs to execute...
+
+[Sun Oct 18 17:34:35 2026]
+rule build_industry_demand:
+    input: resources/demand/industrial_distribution_key_elec_s_12_2030.csv, resources/demand/base_industry_totals_2030_AB.csv, resources/industrial_database.csv, resources/ammonia_production.csv, resources/libya_h2export_scenario_c_No_UHS/costs_2030_sec.csv, data/demand/industry_growth_cagr.csv
+    output: resources/demand/industrial_energy_demand_per_node_elec_s_12_2030_AB.csv
+    jobid: 30
+    benchmark: benchmarks/industrial_energy_demand_per_node_elec_s_12_2030_AB.csv
+    reason: Input files updated by another job: resources/libya_h2export_scenario_c_No_UHS/costs_2030_sec.csv, resources/demand/industrial_distribution_key_elec_s_12_2030.csv
+    wildcards: simpl=, clusters=12, planning_horizons=2030, demand=AB
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=1000, mem_mib=954
+
+INFO:pypsa.io:Imported network elec_s_12.nc has buses, carriers, generators, lines, loads
+INFO:pypsa.io:Exported network 'elec_s_12_ec.nc' contains: generators, storage_units, loads, stores, carriers, buses, links, lines
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:34:38 2026]
+Finished job 15.
+22 of 29 steps (76%) done
+Select jobs to execute...
+
+[Sun Oct 18 17:34:38 2026]
+rule prepare_network:
+    input: networks/libya_h2export_scenario_c_No_UHS/elec_s_12_ec.nc, resources/libya_h2export_scenario_c_No_UHS/costs_2030_elec.csv
+    output: networks/libya_h2export_scenario_c_No_UHS/elec_s_12_ec_lcopt_Co2L-3h.nc
+    log: logs/libya_h2export_scenario_c_No_UHS/prepare_network/elec_s_12_ec_lcopt_Co2L-3h.log
+    jobid: 14
+    benchmark: benchmarks/libya_h2export_scenario_c_No_UHS/prepare_network/elec_s_12_ec_lcopt_Co2L-3h
+    reason: Missing output files: networks/libya_h2export_scenario_c_No_UHS/elec_s_12_ec_lcopt_Co2L-3h.nc; Input files updated by another job: networks/libya_h2export_scenario_c_No_UHS/elec_s_12_ec.nc, resources/libya_h2export_scenario_c_No_UHS/costs_2030_elec.csv
+    wildcards: simpl=, clusters=12, ll=copt, opts=Co2L-3h
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=4000, mem_mib=3815
+
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+No industry growth data for LY using default data instead.
+No aluminum production data found for LY. Filled with 0.0.
+Ammonia gas demand (853521.43 MWh) exceeds chemical and petrochemical gas total (0.00 MWh) for LY. Clipping to 0; energy totals are not preserved.
+Ammonia electricity demand (139667.14 MWh) exceeds chemical and petrochemical electricity total (0.00 MWh) for LY. Clipping to 0; energy totals are not preserved.
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:34:41 2026]
+Finished job 30.
+23 of 29 steps (79%) done
+INFO:pypsa.io:Imported network elec_s_12_ec.nc has buses, carriers, generators, lines, links, loads, storage_units, stores
+N-1 security margin of lines set to 0.7
+INFO:__main__:N-1 security margin of lines set to 0.7
+Resampling the network to 3h
+INFO:__main__:Resampling the network to 3h
+Setting CO2 limit according to config value.
+INFO:__main__:Setting CO2 limit according to config value.
+INFO:pypsa.io:Exported network 'elec_s_12_ec_lcopt_Co2L-3h.nc' contains: links, storage_units, lines, loads, generators, stores, global_constraints, carriers, buses
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:34:47 2026]
+Finished job 14.
+24 of 29 steps (83%) done
+The maximum number of states which are passed by one single pipeline amounts to 7.
+average_length =  278.32418062863997
+total_system_capacity =  68264.57598416292
+[Sun Oct 18 17:35:50 2026]
+Finished job 39.
+25 of 29 steps (86%) done
+Select jobs to execute...
+
+[Sun Oct 18 17:35:50 2026]
+rule prepare_sector_network:
+    input: networks/libya_h2export_scenario_c_No_UHS/elec_s_12_ec_lcopt_Co2L-3h.nc, resources/libya_h2export_scenario_c_No_UHS/costs_2030_sec.csv, resources/population_shares/pop_layout_elec_s_12_2030.csv, resources/demand/industrial_energy_demand_per_node_elec_s_12_2030_AB.csv, resources/energy_totals_AB_2030.csv, data/temp_hard_coded/biomass_transport_costs.csv, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore_elec_s_12.geojson, resources/gas_networks/gas_network_elec_s_12.csv
+    output: results/prenetworks/elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB.nc
+    jobid: 13
+    benchmark: results/benchmarks/prepare_network/elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB
+    reason: Input files updated by another job: resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore_elec_s_12.geojson, networks/libya_h2export_scenario_c_No_UHS/elec_s_12_ec_lcopt_Co2L-3h.nc, resources/demand/industrial_energy_demand_per_node_elec_s_12_2030_AB.csv, resources/libya_h2export_scenario_c_No_UHS/costs_2030_sec.csv, resources/population_shares/pop_layout_elec_s_12_2030.csv, resources/gas_networks/gas_network_elec_s_12.csv
+    wildcards: simpl=, clusters=12, ll=copt, opts=Co2L-3h, sopts=, planning_horizons=2030, discountrate=0.071, demand=AB
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=2000, mem_mib=1908
+
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+INFO:pypsa.io:Imported network elec_s_12_ec_lcopt_Co2L-3h.nc has buses, carriers, generators, global_constraints, lines, links, loads, storage_units, stores
+WARNING:pypsa.components:Bus has no attribute location, ignoring this passed value.
+INFO:__main__:Adding CO2 network.
+INFO:__main__:Converting conventional generators to links
+INFO:__main__:Removing 20 conventional generators
+INFO:__main__:Removing carrier definitions: ['OCGT', 'CCGT', 'oil']
+INFO:__main__:No generators with carrier OCGT found to convert
+INFO:__main__:Converted 11 CCGT generators with 14287.86 MW total capacity to links
+INFO:__main__:Converted 9 oil generators with 6280.59 MW total capacity to links
+INFO:__main__:No generators with carrier coal found to convert
+INFO:__main__:No generators with carrier lignite found to convert
+INFO:__main__:No generators with carrier biomass found to convert
+INFO:__main__:Removing buses with carrier ['H2']
+INFO:__main__:Removing generators with carrier ['H2']
+INFO:__main__:Removing stores with carrier ['H2']
+INFO:__main__:Removing storage_units with carrier ['H2']
+INFO:__main__:Removing links with carrier ['H2 electrolysis', 'H2 fuel cell']
+INFO:__main__:Adding hydrogen
+INFO:__main__:Removing buses with carrier ['battery']
+INFO:__main__:Removing generators with carrier ['battery']
+INFO:__main__:Removing stores with carrier ['battery']
+INFO:__main__:Removing storage_units with carrier ['battery']
+INFO:__main__:Removing links with carrier []
+INFO:__main__:Add battery storage
+INFO:__main__:Battery carry-over from electricity-only network: 0.00 GW, 12 units
+ERROR:pypsa.io:Error, new components for Store are not unique
+ERROR:pypsa.io:Error, new components for Link are not unique
+ERROR:pypsa.io:Error, new components for Link are not unique
+INFO:__main__:adding industrial demand
+WARNING:pypsa.io:The following Load have buses which are not defined:
+Index(['LY0 0 low-temperature heat for industry',
+       'LY0 1 low-temperature heat for industry',
+       'LY0 10 low-temperature heat for industry',
+       'LY0 2 low-temperature heat for industry',
+       'LY0 3 low-temperature heat for industry',
+       'LY0 4 low-temperature heat for industry',
+       'LY0 5 low-temperature heat for industry',
+       'LY0 6 low-temperature heat for industry',
+       'LY0 7 low-temperature heat for industry',
+       'LY0 8 low-temperature heat for industry',
+       'LY0 9 low-temperature heat for industry',
+       'LY1 0 low-temperature heat for industry'],
+      dtype='object', name='name')
+WARNING:pypsa.components:Bus has no attribute location, ignoring this passed value.
+INFO:__main__:Adding conventional Haber-Bosch ammonia industry
+INFO:__main__:Adding electricity distribution network
+INFO:__main__:Deducting distribution losses from electricity demand: 3.0%
+INFO:__main__:Adding solar rooftop technology with potential based on population distribution
+INFO:__main__:Adding home battery technology
+WARNING:_helpers:tech_colors for carriers ['NH3', 'Haber-Bosch', 'home battery charger', 'home battery discharger', 'ammonia cracker', 'ammonia store'] not defined in config.
+INFO:pypsa.io:Exported network 'elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB.nc' contains: links, global_constraints, carriers, stores, buses, loads, lines, generators
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Sun Oct 18 17:35:58 2026]
+Finished job 13.
+26 of 29 steps (90%) done
+Select jobs to execute...
+
+[Sun Oct 18 17:35:58 2026]
+rule add_export:
+    input: resources/export_ports.csv, resources/libya_h2export_scenario_c_No_UHS/costs_2030_sec.csv, resources/ship_profile_70TWh.csv, results/prenetworks/elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB.nc, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore_elec_s_12.geojson
+    output: results/prenetworks/elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc
+    jobid: 2
+    reason: Input files updated by another job: results/prenetworks/elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB.nc, resources/libya_h2export_scenario_c_No_UHS/costs_2030_sec.csv, resources/libya_h2export_scenario_c_No_UHS/bus_regions/regions_onshore_elec_s_12.geojson
+    wildcards: simpl=, clusters=12, ll=copt, opts=Co2L-3h, sopts=, planning_horizons=2030, discountrate=0.071, demand=AB, h2export=70
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp
+
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+WARNING:pypsa.io:The following Load have buses which are not defined:
+Index(['LY0 0 low-temperature heat for industry',
+       'LY0 1 low-temperature heat for industry',
+       'LY0 10 low-temperature heat for industry',
+       'LY0 2 low-temperature heat for industry',
+       'LY0 3 low-temperature heat for industry',
+       'LY0 4 low-temperature heat for industry',
+       'LY0 5 low-temperature heat for industry',
+       'LY0 6 low-temperature heat for industry',
+       'LY0 7 low-temperature heat for industry',
+       'LY0 8 low-temperature heat for industry',
+       'LY0 9 low-temperature heat for industry',
+       'LY1 0 low-temperature heat for industry'],
+      dtype='object', name='name')
+INFO:pypsa.io:Imported network elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB.nc has buses, carriers, generators, global_constraints, lines, links, loads, stores
+INFO:__main__:The yearly export demand is 70.0 TWh, profile generated based on ship with total demand 70.0 method and resampled to 2920 snapshots.
+C:\Users\Mhdella\Documents\pypsa-libya\scripts\_helpers.py:1664: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[col_out] = None
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\pyogrio\__init__.py:7: DeprecationWarning: The 'shapely.geos' module is deprecated, and will be removed in a future version. All attributes of 'shapely.geos' are available directly from the top-level 'shapely' namespace (since shapely 2.0.0).
+  import shapely.geos  # noqa: F401
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\geopandas\array.py:411: UserWarning: Geometry is in a geographic CRS. Results from 'sjoin_nearest' are likely incorrect. Use 'GeoSeries.to_crs()' to re-project geometries to a projected CRS before this operation.
+
+  warnings.warn(
+WARNING:pypsa.components:Bus has no attribute location, ignoring this passed value.
+INFO:__main__:Adding export links
+INFO:__main__:                     bus0           bus1 carrier  ...  ramp_limit_start_up  ramp_limit_shut_down  p_nom_opt
+Link                                              ...
+LY0 7 H2 export  LY0 7 H2  H2 export bus          ...                  1.0                   1.0        0.0
+LY0 9 H2 export  LY0 9 H2  H2 export bus          ...                  1.0                   1.0        0.0
+
+[2 rows x 38 columns]
+INFO:pypsa.io:Exported network 'elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc' contains: global_constraints, links, lines, loads, buses, stores, carriers, generators
+INFO:__main__:Network successfully exported
+[Sun Oct 18 17:36:06 2026]
+Finished job 2.
+27 of 29 steps (93%) done
+Select jobs to execute...
+
+[Sun Oct 18 17:36:06 2026]
+rule solve_sector_network:
+    input: results/prenetworks/elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc, resources/libya_h2export_scenario_c_No_UHS/costs_2030_sec.csv, results/configs/config.yaml, data/agg_p_nom_minmax.csv
+    output: results/postnetworks/elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc
+    log: logs/solve_network/elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export_solver.log, logs/solve_network/elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export_python.log, logs/solve_network/elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export_memory.log
+    jobid: 1
+    benchmark: results/benchmarks/solve_network/elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export
+    reason: Missing output files: results/postnetworks/elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc; Updated input files: results/configs/config.yaml; Input files updated by another job: results/prenetworks/elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc, resources/libya_h2export_scenario_c_No_UHS/costs_2030_sec.csv
+    wildcards: simpl=, clusters=12, ll=copt, opts=Co2L-3h, sopts=, planning_horizons=2030, discountrate=0.071, demand=AB, h2export=70
+    threads: 12
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp, mem_mb=16000, mem_mib=15259
+
+Changing to shadow directory: C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\shadow\tmpzcpznzbw
+C:\Users\Mhdella\anaconda3\envs\pypsa-earth\lib\site-packages\google\api_core\_python_version_support.py:223: FutureWarning: You are using a non-supported Python version (3.10.20). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+WARNING:pypsa.io:The following Load have buses which are not defined:
+Index(['LY0 0 low-temperature heat for industry',
+       'LY0 1 low-temperature heat for industry',
+       'LY0 10 low-temperature heat for industry',
+       'LY0 2 low-temperature heat for industry',
+       'LY0 3 low-temperature heat for industry',
+       'LY0 4 low-temperature heat for industry',
+       'LY0 5 low-temperature heat for industry',
+       'LY0 6 low-temperature heat for industry',
+       'LY0 7 low-temperature heat for industry',
+       'LY0 8 low-temperature heat for industry',
+       'LY0 9 low-temperature heat for industry',
+       'LY1 0 low-temperature heat for industry'],
+      dtype='object', name='name')
+INFO:pypsa.io:Imported network elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc has buses, carriers, generators, global_constraints, lines, links, loads, stores
+WARNING:pypsa.consistency:Encountered nan's in static data for columns ['efficiency2', 'efficiency3'] of component 'Link'.
+WARNING:pypsa.consistency:The following buses have carriers which are not defined:
+Index(['H2 export bus'], dtype='object', name='Bus')
+WARNING:pypsa.consistency:Encountered nan's in static data for columns ['x', 'y'] of component 'Bus'.
+WARNING:pypsa.consistency:The following loads have bus which are not defined:
+Index(['LY0 0 low-temperature heat for industry',
+       'LY0 1 low-temperature heat for industry',
+       'LY0 10 low-temperature heat for industry',
+       'LY0 2 low-temperature heat for industry',
+       'LY0 3 low-temperature heat for industry',
+       'LY0 4 low-temperature heat for industry',
+       'LY0 5 low-temperature heat for industry',
+       'LY0 6 low-temperature heat for industry',
+       'LY0 7 low-temperature heat for industry',
+       'LY0 8 low-temperature heat for industry',
+       'LY0 9 low-temperature heat for industry',
+       'LY1 0 low-temperature heat for industry'],
+      dtype='object', name='Load')
+WARNING:pypsa.consistency:The following loads have carriers which are not defined:
+Index(['H2 export load'], dtype='object', name='Load')
+WARNING:pypsa.consistency:Encountered nan's in static data for columns ['efficiency2', 'efficiency3'] of component 'Link'.
+WARNING:pypsa.consistency:The following buses have carriers which are not defined:
+Index(['H2 export bus'], dtype='object', name='Bus')
+WARNING:pypsa.consistency:Encountered nan's in static data for columns ['x', 'y'] of component 'Bus'.
+WARNING:pypsa.consistency:The following loads have bus which are not defined:
+Index(['LY0 0 low-temperature heat for industry',
+       'LY0 1 low-temperature heat for industry',
+       'LY0 10 low-temperature heat for industry',
+       'LY0 2 low-temperature heat for industry',
+       'LY0 3 low-temperature heat for industry',
+       'LY0 4 low-temperature heat for industry',
+       'LY0 5 low-temperature heat for industry',
+       'LY0 6 low-temperature heat for industry',
+       'LY0 7 low-temperature heat for industry',
+       'LY0 8 low-temperature heat for industry',
+       'LY0 9 low-temperature heat for industry',
+       'LY1 0 low-temperature heat for industry'],
+      dtype='object', name='Load')
+WARNING:pypsa.consistency:The following loads have carriers which are not defined:
+Index(['H2 export load'], dtype='object', name='Load')
+setting CHP constraints
+INFO:__main__:setting CHP constraints
+no h2 temporal constraint set
+INFO:__main__:no h2 temporal constraint set
+INFO:linopy.model: Solve problem using Highs solver
+INFO:linopy.model:Solver logs written to `logs/solve_network/elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export_solver.log`.
+INFO:linopy.model:Solver options:
+ - threads: 12
+ - solver: ipm
+ - run_crossover: off
+ - small_matrix_value: 1e-6
+ - large_matrix_value: 1e15
+ - primal_feasibility_tolerance: 1e-3
+ - dual_feasibility_tolerance: 1e-3
+ - ipm_optimality_tolerance: 1e-3
+ - parallel: on
+ - random_seed: 123
+ - user_bound_scale: -20
+INFO:linopy.io:Writing objective.
+Writing constraints.: 100%|████████████████████████████████████████████████████████████| 30/30 [00:04<00:00,  6.39it/s]
+Writing continuous variables.: 100%|███████████████████████████████████████████████████| 10/10 [00:00<00:00, 50.47it/s]
+INFO:linopy.io: Writing time: 5.26s
+INFO:linopy.solvers:Log file at C:\Users\Mhdella\Documents\pypsa-libya\.snakemake\shadow\tmpzcpznzbw\logs\solve_network\elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export_solver.log
+Running HiGHS 1.15.1 (git hash: n/a): Copyright (c) 2026 under MIT licence terms
+Includes third-party software components, see THIRD_PARTY_NOTICES.md for full details
+LP linopy-problem-p6mwolfl has 4701724 rows; 2275154 cols; 9880627 nonzeros
+Assessing costs and bounds after applying user_bound_scale option value of -20
+Coefficient ranges:
+  Matrix  [5e-03, 6e+02]
+  Cost    [3e-02, 3e+05]
+  Bound   [2e+03, 2e+03]
+  RHS     [1e-06, 1e+06]
+WARNING: User-scaled problem has some excessively small row bounds
+Presolving model
+1728249 rows, 1450121 cols, 5207108 nonzeros 4s
+1272645 rows, 1064597 cols, 4879826 nonzeros 8s
+Dependent equations search running on 217330 equations with time limit of 1000.00s
+Dependent equations search removed 0 rows and 0 nonzeros in 0.05s (limit = 1000.00s)
+1261372 rows, 978282 cols, 4718046 nonzeros 16s
+Presolve reductions: rows 1261372(-3440352); columns 978282(-1296872); nonzeros 4718046(-5162581)
+Solving the presolved LP
+IPX model has 1261372 rows, 978282 columns and 4718046 nonzeros
+Input
+    Number of variables:                                978282
+    Number of free variables:                           113300
+    Number of constraints:                              1261372
+    Number of equality constraints:                     217330
+    Number of matrix entries:                           4718046
+    Matrix range:                                       [2e-03, 6e+02]
+    RHS range:                                          [2e-06, 1e+06]
+    Objective range:                                    [3e-04, 3e+05]
+    Bounds range:                                       [1e-06, 3e+00]
+Preprocessing
+    Dualized model:                                     no
+    Number of dense columns:                            291
+    Range of scaling factors:                           [6.25e-02, 2.00e+00]
+    Scaled cost norm:                                   301107
+    Scaled bounds norm:                                 953674
+IPX version 1.0
+Interior point solve
+ Iter       primal obj         dual obj       pinf       dinf       gap      time
+   0    4.72052706e+07   1.13999516e+05   7.87e-02   9.80e-01  1.99e+00      20.2
+   1   -4.14115208e+10   1.15042462e+11   7.86e-02   1.17e+00  4.25e+00      54.6
+ Constructing starting basis...
+ Iter       primal obj         dual obj       pinf       dinf       gap      time
+    Start  factorization   8: nonzeros in basis =   1992765                 148.3
+    Start  factorization  13: nonzeros in basis =   2010567                 218.2
+    Finish factorization  18: fill factor =   1.03                          278.2
+    Start  factorization  24: nonzeros in basis =   2063011                 347.6
+    Start  factorization  29: nonzeros in basis =   2086625                 408.8
+    Start  factorization  35: nonzeros in basis =   2116783                 473.8
+    Start  factorization  42: nonzeros in basis =   2155614                 541.4
+   2    2.53202656e+12  -4.93443243e+11   7.37e-02   7.39e-01  2.97e+00     586.4
+   3    2.10430139e+13  -8.42037086e+11   5.29e-02   5.04e-01  2.17e+00     686.4
+    Start  factorization  48: nonzeros in basis =   2282452                 777.8
+    Start  factorization  50: nonzeros in basis =   2287513                 848.0
+   4    2.55902081e+13  -1.17362456e+12   2.49e-02   2.82e-01  2.19e+00     930.9
+    Start  factorization  53: nonzeros in basis =   2328736                1020.9
+    Start  factorization  56: nonzeros in basis =   2335012                1112.2
+    Finish factorization  58: fill factor =   1.09                         1172.5
+    Start  factorization  60: nonzeros in basis =   2342835                1237.3
+    Start  factorization  62: nonzeros in basis =   2346997                1297.4
+    Start  factorization  64: nonzeros in basis =   2349384                1359.6
+    Start  factorization  66: nonzeros in basis =   2353519                1459.5
+    Start  factorization  68: nonzeros in basis =   2357898                1527.4
+    Start  factorization  70: nonzeros in basis =   2368058                1613.8
+    Start  factorization  72: nonzeros in basis =   2376920                1683.1
+    Start  factorization  74: nonzeros in basis =   2378248                1743.7
+    Start  factorization  76: nonzeros in basis =   2380578                1822.2
+    Start  factorization  78: nonzeros in basis =   2385160                1919.0
+    Start  factorization  80: nonzeros in basis =   2389584                2003.4
+    Start  factorization  82: nonzeros in basis =   2394376                2078.9
+   5    1.45732433e+13  -1.43340496e+12   9.59e-03   1.34e-01  2.44e+00    2291.0
+    Start  factorization  83: nonzeros in basis =   2401919                2363.1
+    Start  factorization  84: nonzeros in basis =   2404352                2451.9
+    Start  factorization  85: nonzeros in basis =   2406166                2529.9
+    Start  factorization  87: nonzeros in basis =   2408265                2647.6
+    Start  factorization  89: nonzeros in basis =   2411054                2759.9
+    Start  factorization  91: nonzeros in basis =   2414247                2837.2
+    Start  factorization  92: nonzeros in basis =   2416316                2901.8
+    Start  factorization  94: nonzeros in basis =   2419509                2992.9
+    Start  factorization  96: nonzeros in basis =   2423040                3080.8
+    Start  factorization  97: nonzeros in basis =   2424848                3145.3
+    Start  factorization  99: nonzeros in basis =   2428157                3247.4
+    Start  factorization 101: nonzeros in basis =   2434897                3318.5
+    Start  factorization 103: nonzeros in basis =   2438690                3382.9
+    Finish factorization 105: fill factor =   1.18                         3443.3
+    Start  factorization 107: nonzeros in basis =   2450653                3504.3
+    Start  factorization 109: nonzeros in basis =   2451151                3567.8
+    Start  factorization 111: nonzeros in basis =   2452083                3632.7
+    Start  factorization 113: nonzeros in basis =   2454479                3695.2
+    Start  factorization 115: nonzeros in basis =   2458966                3760.8
+    Start  factorization 117: nonzeros in basis =   2462325                3821.9
+    Start  factorization 119: nonzeros in basis =   2467066                3883.1
+    Start  factorization 121: nonzeros in basis =   2468973                3946.5
+    Start  factorization 123: nonzeros in basis =   2471976                4007.6
+    Start  factorization 125: nonzeros in basis =   2474074                4068.3
+    Start  factorization 128: nonzeros in basis =   2484126                4157.8
+    Start  factorization 130: nonzeros in basis =   2488614                4220.3
+    Start  factorization 132: nonzeros in basis =   2492471                4283.2
+    Start  factorization 134: nonzeros in basis =   2496034                4343.6
+    Start  factorization 137: nonzeros in basis =   2502354                4420.4
+    Start  factorization 139: nonzeros in basis =   2508446                4487.1
+    Start  factorization 141: nonzeros in basis =   2511656                4551.7
+    Start  factorization 143: nonzeros in basis =   2512730                4612.3
+    Start  factorization 145: nonzeros in basis =   2511390                4675.4
+    Start  factorization 147: nonzeros in basis =   2509291                4739.3
+    Start  factorization 149: nonzeros in basis =   2509146                4804.2
+    Start  factorization 151: nonzeros in basis =   2510398                4870.1
+    Start  factorization 154: nonzeros in basis =   2516596                4950.2
+    Start  factorization 156: nonzeros in basis =   2517471                5011.0
+    Start  factorization 158: nonzeros in basis =   2517569                5073.0
+    Start  factorization 160: nonzeros in basis =   2518425                5133.9
+    Start  factorization 162: nonzeros in basis =   2519100                5197.2
+    Start  factorization 164: nonzeros in basis =   2517675                5270.0
+    Start  factorization 166: nonzeros in basis =   2519206                5336.4
+    Start  factorization 168: nonzeros in basis =   2519752                5408.7
+    Start  factorization 170: nonzeros in basis =   2522367                5471.4
+    Start  factorization 172: nonzeros in basis =   2525862                5533.7
+   6    8.43039884e+12  -1.70047391e+12   2.87e-03   5.88e-02  3.01e+00    5753.2
+    Start  factorization 175: nonzeros in basis =   2536526                5822.5
+    Start  factorization 177: nonzeros in basis =   2544721                5893.4
+    Start  factorization 179: nonzeros in basis =   2554035                5960.8
+    Start  factorization 181: nonzeros in basis =   2558363                6039.6
+    Start  factorization 183: nonzeros in basis =   2565467                6104.1
+    Start  factorization 185: nonzeros in basis =   2565653                6173.9
+    Start  factorization 188: nonzeros in basis =   2569360                6264.1
+    Start  factorization 190: nonzeros in basis =   2569133                6329.0
+    Start  factorization 192: nonzeros in basis =   2573364                6403.2
+    Start  factorization 193: nonzeros in basis =   2585108                6563.5
+   7    5.12585435e+12  -1.90929276e+12   7.21e-04   2.16e-02  4.37e+00    6641.8
+    Start  factorization 197: nonzeros in basis =   2565672                6705.7
+    Start  factorization 200: nonzeros in basis =   2557966                6767.4
+    Start  factorization 203: nonzeros in basis =   2550254                6827.9
+    Start  factorization 206: nonzeros in basis =   2542716                6888.1
+    Start  factorization 210: nonzeros in basis =   2532612                6965.4
+    Start  factorization 214: nonzeros in basis =   2522881                7033.3
+    Start  factorization 218: nonzeros in basis =   2513008                7093.8
+    Start  factorization 222: nonzeros in basis =   2502694                7154.2
+   8    4.27415989e+12  -2.09782000e+12   2.14e-04   7.21e-03  5.86e+00    7331.9
+   9    3.82745097e+12  -2.02373817e+12   5.44e-05   2.24e-03  6.49e+00    7434.8
+  10    3.24283182e+12  -1.73699018e+12   2.17e-05   8.55e-04  6.61e+00    7525.1
+  11    2.24579849e+12  -1.24588365e+12   5.77e-06   1.55e-04  6.98e+00    7567.7
+  12    7.88744208e+11  -5.78831182e+11   8.43e-07   4.32e-05  1.30e+01    7602.3
+  13    2.95322193e+11  -9.53449310e+10   1.97e-07   3.46e-06  3.91e+00    7663.9
+    Start  factorization 235: nonzeros in basis =   2550828                7742.2
+  14    9.53926244e+10  -2.30463839e+10   5.37e-08   3.73e-07  3.27e+00    7767.7
+  15    7.76668502e+10  -2.72051309e+10   3.44e-08   2.23e-07  4.16e+00    7804.6
+  16    1.64830439e+10  -1.18166245e+10   4.84e-09   7.01e-08  1.21e+01    7840.1
+  17    9.05849712e+09  -6.92502955e+09   1.03e-09   2.09e-08  1.50e+01    7932.2
+    Start  factorization 243: nonzeros in basis =   2631534                7993.6
+    Finish factorization 247: fill factor =   1.15                         8054.0
+    Start  factorization 252: nonzeros in basis =   2640134                8118.4
+    Start  factorization 256: nonzeros in basis =   2650675                8187.0
+    Start  factorization 261: nonzeros in basis =   2654927                8251.5
+  18    2.78428738e+09  -5.51679514e+09   1.25e-10   1.60e-08  6.08e+00    8394.4
+  19    2.87165348e+09  -2.43652753e+09   9.88e-11   1.88e-09  2.44e+01    8681.9
+  20    9.08193323e+08  -2.81971631e+08   1.59e-11   3.22e-10  3.80e+00    9072.1
+    Start  factorization 272: nonzeros in basis =   2810983                9151.1
+    Start  factorization 276: nonzeros in basis =   2818924                9226.0
+    Start  factorization 280: nonzeros in basis =   2823704                9297.4
+    Start  factorization 283: nonzeros in basis =   2845032                9357.8
+    Start  factorization 287: nonzeros in basis =   2898897                9424.9
+    Start  factorization 291: nonzeros in basis =   2909852                9506.8
+    Start  factorization 294: nonzeros in basis =   2916022                9570.8
+    Start  factorization 297: nonzeros in basis =   2923974                9640.4
+    Start  factorization 300: nonzeros in basis =   2932030                9707.4
+    Start  factorization 303: nonzeros in basis =   2939740                9780.3
+    Start  factorization 306: nonzeros in basis =   2949128                9856.4
+    Start  factorization 309: nonzeros in basis =   2958844                9937.4
+    Start  factorization 312: nonzeros in basis =   2969938               10023.9
+    Finish factorization 314: fill factor =   1.19                        10084.3
+    Start  factorization 316: nonzeros in basis =   2985819               10144.6
+  21    7.28160801e+08  -9.34645132e+07   9.44e-12   8.59e-11  2.59e+00   10253.1
+    Start  factorization 318: nonzeros in basis =   3071914               10327.0
+    Start  factorization 320: nonzeros in basis =   3080037               10395.3
+    Start  factorization 322: nonzeros in basis =   3088903               10465.4
+  22    7.13658280e+08  -8.67363145e+07   7.85e-12   8.06e-11  2.55e+00   10623.4
+    Start  factorization 324: nonzeros in basis =   3123895               10683.6
+  23    2.17747184e+08  -4.05816850e+07   2.51e-12   2.07e-11  2.92e+00   10801.2
+    Start  factorization 327: nonzeros in basis =   3133171               10882.8
+  24    7.64471478e+07  -1.51479200e+07   6.76e-13   6.83e-12  2.99e+00   10966.5
+  25    2.48668895e+07  -9.92094171e+06   4.45e-13   3.61e-12  4.66e+00   11117.7
+  26    2.43417305e+07  -9.95169955e+06   4.57e-13   3.46e-12  4.77e+00   11327.4
+  27    1.23566263e+07  -6.73223501e+06   4.92e-13   2.24e-12  6.79e+00   11521.1
+  28    1.07984973e+07  -4.84378540e+06   5.04e-13   1.49e-12  5.25e+00   11694.5
+  29    4.69472898e+06  -2.12775521e+06   1.76e-13   6.67e-13  5.32e+00   11877.4
+  30    4.62122820e+06  -2.02981054e+06   1.84e-13   6.04e-13  5.13e+00   12091.1
+  31    3.69711274e+06  -1.66221994e+06   1.13e-13   4.87e-13  5.27e+00   12274.3
+  32    3.26030294e+06  -1.24893148e+06   8.59e-14   3.54e-13  4.48e+00   12473.2
+  33    3.00044422e+06  -1.00018154e+06   1.21e-13   2.97e-13  4.00e+00   12688.0
+  34    2.33699830e+06  -6.09936441e+05   1.52e-13   1.61e-13  3.41e+00   12892.9
+  35    2.26667512e+06  -4.94637564e+05   1.48e-13   1.98e-13  3.12e+00   13099.7
+  36    1.89271065e+06  -4.49734010e+05   1.21e-13   1.98e-13  3.25e+00   13287.7
+  37    1.51474649e+06  -3.72725534e+05   1.56e-13   1.98e-13  3.31e+00   13468.1
+  38    8.40341016e+05  -3.01548996e+05   8.59e-14   1.98e-13  4.24e+00   13669.3
+  39    6.21765729e+05  -1.67018842e+05   5.47e-14   9.90e-14  3.47e+00   13862.1
+  40    6.12209513e+05  -1.33228085e+05   1.17e-13   9.90e-14  3.11e+00   14094.0
+  41    2.74880417e+05  -3.10978857e+04   1.87e-13   1.48e-13  2.51e+00   14315.9
+  42    1.18484195e+05  -1.00797940e+04   6.25e-14   9.90e-14  2.37e+00   14577.8
+    Start  factorization 346: nonzeros in basis =   3251880               14640.6
+  43    7.34376914e+04  -8.15116466e+03   3.12e-14   9.90e-14  2.50e+00   14893.7
+    Start  factorization 347: nonzeros in basis =   3256114               14956.6
+  44    4.12178395e+04  -3.64612389e+03   1.56e-14   9.90e-14  2.39e+00   15219.1
+    Finish factorization 348: fill factor =   1.30                        15280.3
+  45    3.42329428e+04  -1.24846730e+03   1.56e-14   9.90e-14  2.15e+00   15622.1
+    Start  factorization 351: nonzeros in basis =   3316021               15736.5
+  46    2.26056327e+04   4.45047445e+02   1.56e-14   9.90e-14  1.92e+00   16031.7
+    Start  factorization 354: nonzeros in basis =   3338722               16147.3
+  47    2.23115734e+04   5.03600991e+02   1.56e-14   9.90e-14  1.91e+00   16444.8
+    Start  factorization 357: nonzeros in basis =   3334246               16549.3
+  48    1.82797697e+04   1.15703646e+03   1.56e-14   9.90e-14  1.76e+00   16775.5
+    Start  factorization 360: nonzeros in basis =   3349244               16884.4
+    Finish factorization 361: fill factor =   1.30                        16944.6
+  49    1.71056623e+04   1.11634751e+03   1.56e-14   9.90e-14  1.75e+00   17129.5
+    Start  factorization 362: nonzeros in basis =   3360039               17202.5
+  50    1.34459068e+04   1.65189254e+03   1.56e-14   9.90e-14  1.56e+00   17380.0
+    Start  factorization 364: nonzeros in basis =   3373193               17479.9
+    Start  factorization 365: nonzeros in basis =   3374227               17543.9
+  51    1.29252265e+04   1.72962171e+03   1.56e-14   9.90e-14  1.53e+00   17710.4
+    Start  factorization 367: nonzeros in basis =   3383354               17790.3
+    Start  factorization 368: nonzeros in basis =   3384587               17862.9
+  52    1.03178503e+04   2.05576577e+03   1.56e-14   9.90e-14  1.34e+00   18057.7
+    Start  factorization 370: nonzeros in basis =   3400624               18171.5
+    Start  factorization 371: nonzeros in basis =   3401511               18238.4
+    Start  factorization 372: nonzeros in basis =   3403432               18322.5
+  53    9.07843808e+03   2.16664410e+03   1.56e-14   9.90e-14  1.23e+00   18559.8
+    Start  factorization 374: nonzeros in basis =   3407049               18627.7
+    Start  factorization 375: nonzeros in basis =   3410222               18699.8
+    Start  factorization 377: nonzeros in basis =   3419790               18811.6
+    Start  factorization 378: nonzeros in basis =   3424401               18876.7
+    Start  factorization 380: nonzeros in basis =   3432637               18995.9
+  54    9.02004598e+03   2.20738575e+03   1.56e-14   9.90e-14  1.21e+00   19194.0
+    Start  factorization 382: nonzeros in basis =   3436470               19264.1
+    Start  factorization 383: nonzeros in basis =   3440169               19325.7
+    Start  factorization 384: nonzeros in basis =   3443084               19393.0
+  55    8.28666790e+03   2.57657418e+03   1.56e-14   9.90e-14  1.05e+00   19569.3
+    Start  factorization 387: nonzeros in basis =   3447861               19673.7
+    Start  factorization 389: nonzeros in basis =   3454169               19758.0
+    Start  factorization 392: nonzeros in basis =   3458663               19854.1
+    Start  factorization 396: nonzeros in basis =   3461439               19952.8
+  56    8.05829124e+03   2.68363486e+03   1.56e-14   9.90e-14  1.00e+00   20114.4
+    Start  factorization 398: nonzeros in basis =   3464015               20179.0
+    Start  factorization 400: nonzeros in basis =   3466869               20243.5
+    Start  factorization 402: nonzeros in basis =   3469836               20353.6
+    Start  factorization 404: nonzeros in basis =   3474009               20464.5
+  57    7.52202173e+03   2.98734583e+03   1.56e-14   9.90e-14  8.63e-01   20681.4
+    Start  factorization 407: nonzeros in basis =   3479280               20795.9
+    Finish factorization 408: fill factor =   1.31                        20857.6
+    Start  factorization 409: nonzeros in basis =   3483053               20917.8
+    Start  factorization 410: nonzeros in basis =   3485232               20979.0
+    Start  factorization 412: nonzeros in basis =   3489896               21096.6
+    Start  factorization 414: nonzeros in basis =   3493998               21220.9
+  58    6.95022448e+03   3.07079796e+03   1.56e-14   4.95e-14  7.74e-01   21470.5
+    Start  factorization 416: nonzeros in basis =   3529311               21535.3
+    Start  factorization 417: nonzeros in basis =   3531240               21606.0
+    Finish factorization 418: fill factor =   1.32                        21667.2
+    Start  factorization 419: nonzeros in basis =   3537896               21729.2
+    Start  factorization 420: nonzeros in basis =   3540516               21790.0
+    Start  factorization 421: nonzeros in basis =   3541944               21854.8
+  59    6.88882807e+03   3.07506489e+03   1.56e-14   6.29e-14  7.65e-01   22045.4
+    Start  factorization 423: nonzeros in basis =   3543593               22132.7
+    Start  factorization 424: nonzeros in basis =   3545861               22210.2
+  60    6.88029425e+03   3.12285019e+03   2.34e-14   9.90e-14  7.51e-01   22427.9
+    Start  factorization 426: nonzeros in basis =   3551213               22525.3
+  61    6.75561086e+03   3.16754229e+03   2.34e-14   4.95e-14  7.23e-01   22743.8
+    Start  factorization 428: nonzeros in basis =   3553308               22844.7
+  62    6.74423178e+03   3.18287091e+03   2.34e-14   9.90e-14  7.17e-01   23068.4
+    Start  factorization 429: nonzeros in basis =   3553526               23148.0
+  63    6.21589712e+03   3.30014130e+03   1.56e-14   9.90e-14  6.13e-01   23342.9
+    Start  factorization 430: nonzeros in basis =   3560251               23449.5
+  64    6.20891830e+03   3.30166581e+03   2.34e-14   9.90e-14  6.11e-01   23637.6
+    Start  factorization 431: nonzeros in basis =   3560444               23711.3
+  65    6.20177269e+03   3.38012324e+03   2.34e-14   1.98e-13  5.89e-01   23895.0
+    Start  factorization 432: nonzeros in basis =   3561427               23991.4
+  66    5.43372644e+03   3.49662398e+03   1.56e-14   9.90e-14  4.34e-01   24166.3
+    Start  factorization 433: nonzeros in basis =   3599605               24252.8
+    Start  factorization 434: nonzeros in basis =   3601455               24315.5
+    Start  factorization 436: nonzeros in basis =   3605248               24435.9
+    Start  factorization 438: nonzeros in basis =   3608599               24544.1
+    Finish factorization 439: fill factor =   1.32                        24605.1
+    Start  factorization 440: nonzeros in basis =   3613908               24668.3
+    Start  factorization 441: nonzeros in basis =   3615500               24731.6
+    Finish factorization 442: fill factor =   1.32                        24792.9
+  67    5.00206035e+03   3.65772575e+03   1.56e-14   1.98e-13  3.10e-01   25044.0
+    Start  factorization 444: nonzeros in basis =   3621074               25113.4
+    Start  factorization 445: nonzeros in basis =   3623060               25191.7
+    Start  factorization 446: nonzeros in basis =   3625029               25288.2
+    Start  factorization 447: nonzeros in basis =   3626444               25380.0
+  68    4.97940804e+03   3.67082882e+03   2.34e-14   1.98e-13  3.02e-01   25617.2
+    Start  factorization 448: nonzeros in basis =   3627244               25720.6
+  69    4.78089578e+03   3.75113055e+03   1.56e-14   9.90e-14  2.41e-01   25924.0
+    Start  factorization 450: nonzeros in basis =   3628928               25987.8
+    Start  factorization 451: nonzeros in basis =   3632093               26066.1
+    Start  factorization 452: nonzeros in basis =   3633539               26134.6
+    Start  factorization 453: nonzeros in basis =   3635294               26221.1
+  70    4.69496571e+03   3.79592170e+03   1.56e-14   9.90e-14  2.12e-01   26430.7
+    Start  factorization 454: nonzeros in basis =   3636308               26496.8
+    Start  factorization 455: nonzeros in basis =   3637488               26563.2
+    Start  factorization 457: nonzeros in basis =   3640457               26694.7
+    Start  factorization 458: nonzeros in basis =   3643686               26780.2
+  71    4.63922060e+03   3.82551563e+03   1.56e-14   9.90e-14  1.92e-01   26969.2
+    Start  factorization 460: nonzeros in basis =   3647752               27047.1
+    Start  factorization 461: nonzeros in basis =   3650621               27127.0
+    Finish factorization 462: fill factor =   1.33                        27188.5
+  72    4.60614523e+03   3.80417159e+03   2.34e-14   9.90e-14  1.91e-01   27422.4
+    Start  factorization 464: nonzeros in basis =   3655968               27521.2
+  73    4.44617906e+03   3.85290497e+03   1.56e-14   9.90e-14  1.43e-01   27724.2
+    Start  factorization 465: nonzeros in basis =   3657269               27788.5
+    Start  factorization 466: nonzeros in basis =   3658983               27849.9
+    Start  factorization 467: nonzeros in basis =   3660636               27940.3
+  74    4.31549414e+03   3.88050097e+03   1.56e-14   9.90e-14  1.06e-01   28105.7
+    Finish factorization 469: fill factor =   1.33                        28166.7
+    Finish factorization 470: fill factor =   1.33                        28227.6
+    Start  factorization 471: nonzeros in basis =   3667342               28322.0
+    Start  factorization 472: nonzeros in basis =   3669854               28394.5
+    Start  factorization 473: nonzeros in basis =   3671650               28457.3
+  75    4.24305815e+03   3.89609281e+03   1.56e-14   9.90e-14  8.52e-02   28622.1
+    Start  factorization 475: nonzeros in basis =   3674307               28721.6
+    Start  factorization 476: nonzeros in basis =   3676702               28795.9
+  76    4.22575908e+03   3.89945745e+03   1.56e-14   9.90e-14  8.03e-02   28992.6
+    Start  factorization 478: nonzeros in basis =   3678912               29082.4
+  77    4.20969110e+03   3.91438741e+03   1.56e-14   9.90e-14  7.27e-02   29235.9
+    Start  factorization 479: nonzeros in basis =   3679637               29319.5
+  78    4.18890791e+03   3.92181508e+03   1.56e-14   9.90e-14  6.58e-02   29481.1
+    Start  factorization 480: nonzeros in basis =   3681971               29586.1
+    Start  factorization 481: nonzeros in basis =   3684270               29650.8
+  79    4.16014210e+03   3.93020133e+03   1.56e-14   9.90e-14  5.68e-02   29774.0
+    Start  factorization 482: nonzeros in basis =   3687008               29873.8
+    Start  factorization 483: nonzeros in basis =   3689653               29948.6
+  80    4.15791337e+03   3.93019615e+03   1.56e-14   9.90e-14  5.63e-02   30095.1
+    Start  factorization 485: nonzeros in basis =   3693243               30190.4
+    Start  factorization 486: nonzeros in basis =   3695609               30263.9
+  81    4.13901442e+03   3.93534928e+03   1.56e-14   9.90e-14  5.04e-02   30395.6
+    Start  factorization 488: nonzeros in basis =   3698743               30501.4
+  82    4.13036174e+03   3.94244108e+03   1.56e-14   9.90e-14  4.65e-02   30620.5
+    Start  factorization 490: nonzeros in basis =   3699262               30692.0
+  83    4.10750029e+03   3.94688507e+03   2.34e-14   9.90e-14  3.99e-02   30802.0
+    Start  factorization 491: nonzeros in basis =   3699329               30866.0
+  84    4.09406489e+03   3.95165030e+03   2.34e-14   9.90e-14  3.54e-02   30976.8
+    Start  factorization 492: nonzeros in basis =   3699368               31044.8
+  85    4.08712552e+03   3.95380114e+03   2.34e-14   9.90e-14  3.32e-02   31147.3
+    Start  factorization 493: nonzeros in basis =   3706240               31317.4
+    Start  factorization 494: nonzeros in basis =   3708582               31398.1
+    Start  factorization 495: nonzeros in basis =   3711124               31465.8
+    Start  factorization 496: nonzeros in basis =   3713588               31531.5
+  86    4.06974571e+03   3.95485890e+03   2.34e-14   9.90e-14  2.86e-02   31658.4
+    Start  factorization 498: nonzeros in basis =   3716469               31739.4
+    Start  factorization 499: nonzeros in basis =   3718958               31811.5
+  87    4.04372114e+03   3.95785094e+03   1.56e-14   9.90e-14  2.15e-02   31958.7
+    Start  factorization 502: nonzeros in basis =   3725952               32118.7
+    Start  factorization 503: nonzeros in basis =   3728376               32195.3
+    Start  factorization 504: nonzeros in basis =   3731183               32280.0
+  88    4.02801472e+03   3.96035801e+03   1.56e-14   9.90e-14  1.69e-02   32423.6
+    Start  factorization 506: nonzeros in basis =   3736516               32547.1
+    Start  factorization 507: nonzeros in basis =   3739807               32628.6
+  89    4.02472518e+03   3.96187108e+03   1.56e-14   9.90e-14  1.57e-02   32744.9
+    Start  factorization 509: nonzeros in basis =   3743604               32844.3
+  90    4.01703467e+03   3.96390096e+03   1.56e-14   9.90e-14  1.33e-02   32960.6
+    Start  factorization 511: nonzeros in basis =   3747083               33074.9
+  91    4.00452112e+03   3.96534795e+03   1.56e-14   9.90e-14  9.83e-03   33161.8
+    Start  factorization 513: nonzeros in basis =   3748100               33226.9
+    Start  factorization 514: nonzeros in basis =   3748937               33287.3
+  92    3.99718570e+03   3.96660277e+03   1.56e-14   9.90e-14  7.68e-03   33358.1
+    Start  factorization 515: nonzeros in basis =   3749375               33429.1
+  93    3.99571077e+03   3.96678153e+03   1.56e-14   9.90e-14  7.26e-03   33548.3
+    Start  factorization 517: nonzeros in basis =   3750209               33621.0
+  94    3.99271081e+03   3.96751322e+03   1.56e-14   9.90e-14  6.33e-03   33695.5
+    Start  factorization 518: nonzeros in basis =   3750111               33775.7
+  95    3.99109927e+03   3.96871497e+03   1.56e-14   9.90e-14  5.62e-03   33879.2
+    Start  factorization 521: nonzeros in basis =   3751291               33994.2
+  96    3.98856265e+03   3.96897079e+03   1.56e-14   9.90e-14  4.92e-03   34110.9
+    Start  factorization 523: nonzeros in basis =   3752160               34173.4
+    Start  factorization 525: nonzeros in basis =   3753205               34238.9
+  97    3.98681773e+03   3.96910170e+03   1.56e-14   9.90e-14  4.45e-03   34296.5
+    Start  factorization 527: nonzeros in basis =   3754745               34405.8
+  98    3.98240098e+03   3.96974634e+03   1.56e-14   9.90e-14  3.18e-03   34464.3
+    Start  factorization 529: nonzeros in basis =   3756612               34567.6
+    Start  factorization 530: nonzeros in basis =   3758289               34634.1
+    Start  factorization 532: nonzeros in basis =   3760348               34699.6
+  99    3.98173579e+03   3.96997515e+03   2.34e-14   9.90e-14  2.96e-03   34769.3
+    Start  factorization 533: nonzeros in basis =   3761266               34830.5
+    Finish factorization 534: fill factor =   1.30                        34891.1
+ 100    3.98003063e+03   3.97016713e+03   1.56e-14   9.90e-14  2.48e-03   34984.6
+    Start  factorization 536: nonzeros in basis =   3765386               35048.1
+    Start  factorization 538: nonzeros in basis =   3767999               35121.2
+ 101    3.97956431e+03   3.97035572e+03   1.56e-14   9.90e-14  2.32e-03   35175.7
+    Start  factorization 539: nonzeros in basis =   3769733               35253.5
+    Start  factorization 541: nonzeros in basis =   3772217               35318.5
+ 102    3.97917640e+03   3.97049713e+03   1.56e-14   9.90e-14  2.18e-03   35371.1
+    Start  factorization 542: nonzeros in basis =   3773902               35446.2
+ 103    3.97895209e+03   3.97053891e+03   2.34e-14   9.90e-14  2.12e-03   35543.1
+    Start  factorization 544: nonzeros in basis =   3777364               35621.8
+ 104    3.97869901e+03   3.97055932e+03   2.34e-14   9.90e-14  2.05e-03   35697.3
+    Start  factorization 546: nonzeros in basis =   3780172               35773.1
+ 105    3.97825755e+03   3.97086175e+03   2.34e-14   9.90e-14  1.86e-03   35838.0
+    Start  factorization 548: nonzeros in basis =   3781892               35913.8
+ 106    3.97783712e+03   3.97112903e+03   2.34e-14   9.90e-14  1.69e-03   36001.6
+    Start  factorization 550: nonzeros in basis =   3784221               36080.8
+ 107    3.97681052e+03   3.97126882e+03   2.34e-14   9.90e-14  1.39e-03   36168.3
+    Start  factorization 552: nonzeros in basis =   3784234               36250.6
+ 108    3.97630074e+03   3.97137252e+03   1.56e-14   9.90e-14  1.24e-03   36324.0
+    Start  factorization 554: nonzeros in basis =   3784571               36410.1
+ 109    3.97576055e+03   3.97142653e+03   1.56e-14   9.90e-14  1.09e-03   36488.5
+    Start  factorization 556: nonzeros in basis =   3785684               36572.4
+ 110*   3.97523482e+03   3.97154384e+03   1.56e-14   9.90e-14  9.29e-04   36669.2
+Summary
+    Runtime:                                            36669.27s
+    Status interior point solve:                        imprecise
+    Status crossover:                                   not run
+    objective value:                                    3.97523482e+03
+    interior solution primal residual (abs/rel):        1.89e-08 / 1.98e-14
+    interior solution dual residual (abs/rel):          3.12e-08 / 1.04e-13
+    interior solution objective gap (abs/rel):          5.68e+00 / 1.43e-03
+WARNING: Ipx: IPM       imprecise
+WARNING: Unwelcome IPX status of Unknown: basis is not valid; solution is valid; run_crossover is "off"
+WARNING: Running postsolve on non-optimal solution of reduced LP
+
+
+Performed postsolve
+
+Model name          : linopy-problem-p6mwolfl
+Model status        : Unknown
+IPM       iterations: 110
+Objective value     :  3.9752348206e+03
+P-D objective error :  1.3504105273e-03
+HiGHS run time      :      36670.40
+WARNING: Solution optimality conditions: After removing user scaling
+num/max  27469 /   0.0145 (relative      0 / 6.45e-12) primal infeasibilities     (tolerance = 1e-03)
+num/max      0 /    0.001 (relative      0 / 3.32e-09)   dual infeasibilities     (tolerance = 1e-03)
+                                         1 /  0.00191  P-D objective error        (tolerance = 1e-07)
+After solving the user-scaled model, the unscaled solution has objective value 4168335827.3
+WARNING:linopy.solvers:Solution status unknown. Trying to parse solution.
+WARNING:linopy.solvers:Solution parsed successfully.
+INFO:linopy.constants: Optimization successful:
+Status: ok
+Termination condition: unknown
+Solution: 2275154 primals, 4701724 duals
+Objective: 4.17e+09
+Solver model: available
+Solver message: Unknown
+
+INFO:pypsa.optimization.optimize:The shadow-prices of the constraints Generator-fix-p-lower, Generator-fix-p-upper, Generator-ext-p-lower, Generator-ext-p-upper, Line-ext-s-lower, Line-ext-s-upper, Link-fix-p-lower, Link-fix-p-upper, Link-ext-p-lower, Link-ext-p-upper, Store-fix-e-lower, Store-fix-e-upper, Store-ext-e-lower, Store-ext-e-upper, Kirchhoff-Voltage-Law, Store-energy_balance, h2_network_cap were not assigned to the network.
+INFO:pypsa.io:Exported network 'elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc' contains: lines, links, generators, global_constraints, buses, carriers, loads, stores
+Objective function: 4168335827.2978225
+INFO:__main__:Objective function: 4168335827.2978225
+Objective constant: 2250903337.941189
+INFO:__main__:Objective constant: 2250903337.941189
+Benchmark: unable to collect cpu and memory benchmark statistics
+[Mon Oct 19 03:48:15 2026]
+Finished job 1.
+28 of 29 steps (97%) done
+Select jobs to execute...
+
+[Mon Oct 19 03:48:15 2026]
+localrule solve_sector_networks:
+    input: results/postnetworks/elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc
+    jobid: 0
+    reason: Input files updated by another job: results/postnetworks/elec_s_12_ec_lcopt_Co2L-3h__2030_0.071_AB_70export.nc
+    resources: tmpdir=C:\Users\Mhdella\AppData\Local\Temp
+
+[Mon Oct 19 03:48:15 2026]
+Finished job 0.
+29 of 29 steps (100%) done
+Complete log: .snakemake\log\2026-10-18T172756.361180.snakemake.log
+
+(pypsa-earth) C:\Users\Mhdella\Documents\pypsa-libya>
