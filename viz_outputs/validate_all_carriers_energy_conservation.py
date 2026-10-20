@@ -42,7 +42,6 @@ def save_paper_pdf(fig, ax, filename):
     original_title = ax.get_title() # Store the title
     ax.set_title("")                # Clear the title for the paper version
     
-    # Apply naming logic: start with 'fig_' and ensure .pdf extension
     clean_name = re.sub(r'^figure\d+[a-z]?_', '', filename)
     if not clean_name.startswith('fig_'):
         clean_name = 'fig_' + clean_name
@@ -51,12 +50,9 @@ def save_paper_pdf(fig, ax, filename):
         
     pdf_path = os.path.join(PAPER_DIR, clean_name)
     
-    # --- OPTIMIZATION FOR MAPS ---
-    # Rasterize layers with low z-orders (map background/lines) while keeping bubbles/text vector
     if "map" in filename.lower():
         ax.set_rasterization_zorder(2.5) 
     
-    # Save with dpi=300 for high-resolution journal quality
     fig.savefig(pdf_path, format='pdf', dpi=300, bbox_inches="tight")
     
     ax.set_title(original_title)    # Restore title for the PNG/display version
@@ -68,30 +64,27 @@ def save_paper_pdf(fig, ax, filename):
 
 ### --- 1. General Scaling & Filtering Thresholds ---
 PIE_SCALE_FACTOR = 1.5                # Scales pie chart sizes globally 
-                                      # (1.0 = baseline size, 1.5 = +50% larger, etc.)
+CARRIER_PERCENTAGE = 0.5              # Minimum global energy share (%) required for a carrier
 
-CARRIER_PERCENTAGE = 0.5              # Minimum global energy share (%) required for a 
-                                      # carrier to appear in map pie charts and the legend
+# Transmission Line Loading Metric Mode ("max" for Peak Loading %, "mean" for Annual Average Loading %)
+TRANSMISSION_METRIC_MODE = "max"      # Options: "max" (Peak Loading %) or "mean" (Annual Average Loading %)
 
 ### --- 2. Map Node Label Styling & Positioning ---
-MAP_NODE_LABEL_SIZE = 11              # Font size for rank numbers placed next to nodes (e.g., 9, 11, 13)
-MAP_NODE_LABEL_WEIGHT = "bold"        # Font weight for node labels ("bold" or "normal")
+MAP_NODE_LABEL_SIZE = 11              # Font size for rank numbers placed next to nodes
+MAP_NODE_LABEL_WEIGHT = "bold"        # Font weight for node labels
 
-# Label coordinate offsets (adjusts position relative to node coordinates)
-MAP_LABEL_OFFSET_X = -0.35            # Horizontal offset (used primarily in electricity-only mode)
-MAP_LABEL_OFFSET_Y = -0.15            # Vertical offset (used primarily in electricity-only mode)
-MAP_PIXEL_OFFSET_Y = 7                # Vertical pixel shift above nodes (used in sector-coupling mode)
+MAP_LABEL_OFFSET_X = -0.35            # Horizontal offset
+MAP_LABEL_OFFSET_Y = -0.15            # Vertical offset
+MAP_PIXEL_OFFSET_Y = 7                # Vertical pixel shift above nodes
 
 ### --- 3. Axis & Tick Typography Controls ---
-# Map Figure Axis Settings
 MAP_AXIS_LABEL_FONT_SIZE = 14         # Font size for map axis titles (Longitude / Latitude)
 MAP_AXIS_TICK_FONT_SIZE = 10          # Font size for map tick values along the axes
 MAP_LEGEND_FONT_SIZE = 14             # Font size for the map legend text
 
-# Bar Chart Figure Axis Settings
-BAR_LABEL_FONT_SIZE = 16              # Font size for bar chart axis titles (Node Rank / Energy Dispatch)
+BAR_LABEL_FONT_SIZE = 16              # Font size for bar chart axis titles
 BAR_TICK_FONT_SIZE = 18               # Font size for bar chart tick marks and values
-BAR_LEGEND_FONT_SIZE = 14             # Font size for the bar chart legend text (increased for better readability)
+BAR_LEGEND_FONT_SIZE = 14             # Font size for the bar chart legend text
 
 
 SCENARIOS = [
@@ -127,7 +120,6 @@ SCENARIOS = [
     }
 ]
 
-# Desired presentation and iteration order for all network carriers
 CARRIER = [
     "AC",
     "low voltage",
@@ -144,10 +136,8 @@ CARRIER = [
     "process emissions"
 ]
 
-TOL_MW = 0.01          # max |nodal residual| accepted as numerical noise [MW]
-REL_TOL = 1e-6         # accepted relative energy imbalance (of carrier throughput)
-
-# Bus carriers whose "energy" is really a MASS (1 MWh in PyPSA == 1 tonne)
+TOL_MW = 0.01          
+REL_TOL = 1e-6         
 MASS_CARRIERS = {"co2", "co2 stored", "co2 atmosphere", "process emissions"}
 
 
@@ -155,7 +145,6 @@ MASS_CARRIERS = {"co2", "co2 stored", "co2 atmosphere", "process emissions"}
 # Formatting helpers
 # ----------------------------------------------------------------------------
 def fmt_energy(mwh, mass=False):
-    """MWh -> MWh / GWh / TWh (>=1000 GWh -> TWh). Mass carriers: t / kt / Mt."""
     a, s = abs(mwh), ("-" if mwh < 0 else "")
     if mass:
         if a >= 1e6:
@@ -178,11 +167,7 @@ def fmt_power(mw):
     return f"{s}{a:,.4f} MW"
 
 
-# ----------------------------------------------------------------------------
-# Data access helpers (robust across PyPSA versions)
-# ----------------------------------------------------------------------------
 def dyn(comp_t, attr, index):
-    """Return dynamic dataframe (snapshots x components) or an empty frame."""
     df = getattr(comp_t, attr, None)
     if df is None:
         return pd.DataFrame(index=index)
@@ -190,7 +175,6 @@ def dyn(comp_t, attr, index):
 
 
 def load_power(n):
-    """loads_t.p if stored, else rebuilt from p_set (dynamic + static)."""
     p = dyn(n.loads_t, "p", n.snapshots)
     if not p.empty and set(n.loads.index) <= set(p.columns):
         return p[n.loads.index]
@@ -205,7 +189,6 @@ def load_power(n):
 
 
 def link_terminals(n):
-    """Indices i of the available link terminals (bus0, bus1, bus2, ...)."""
     t = []
     for i in range(0, 10):
         if f"bus{i}" in n.links.columns:
@@ -216,19 +199,15 @@ def link_terminals(n):
 
 
 def sum_by_bus(df, bus_of):
-    """Sum a (snapshots x components) frame to (snapshots x buses)."""
     cols = [c for c in df.columns if c in bus_of.index]
     if not cols:
         return pd.DataFrame(index=df.index)
     return df[cols].T.groupby(bus_of.loc[cols].values).sum().T
 
 
-# ----------------------------------------------------------------------------
-# Main validation function for a single carrier
-# ----------------------------------------------------------------------------
 def validate_carrier(n, carrier="AC", tol_mw=TOL_MW, rel_tol=REL_TOL):
-    rep = []                      # report lines
-    flags = []                    # (status, text) for the final verdict
+    rep = []
+    flags = []
 
     def out(s=""):
         rep.append(s)
@@ -257,16 +236,7 @@ def validate_carrier(n, carrier="AC", tol_mw=TOL_MW, rel_tol=REL_TOL):
     out("=" * 100)
     out(f" PyPSA version   : {pypsa.__version__}")
     out(f" Snapshots       : {len(snaps)}  ({snaps[0]} -> {snaps[-1]}), step = {step_h:g} h")
-    out(f" Weighting       : sum of weights = {w.sum():,.1f} h  "
-        f"(per snapshot: {w.min():,.2f} - {w.max():,.2f} h)")
-    if np.isfinite(window_h) and abs(w.sum() - window_h) > 1:
-        out(f" ANNUALISATION   : simulated window = {window_h:,.0f} h  ->  scaled x{w.sum() / window_h:,.2f} "
-            f"to {w.sum():,.0f} h (all energies below are annualised)")
-    out(f" Buses of carrier: {len(buses)}  ->  {buses[0]} ... {buses[-1]}")
-    if "objective" in dir(n) and getattr(n, "objective", None) is not None:
-        out(f" Objective       : {n.objective / 1e9:,.4f} bn EUR/yr")
-    out(f" Unit mode       : {'MASS (t / kt / Mt)' if mass else 'ENERGY (MWh / GWh / TWh)'}")
-
+    out(f" Weighting       : sum of weights = {w.sum():,.1f} h")
     zeros = lambda: pd.DataFrame(0.0, index=snaps, columns=buses)
     groups = {k: zeros() for k in
               ["Generators", "Loads", "Cross-carrier links", "Stores", "Storage units", "Transfers (lines/internal links)"]}
@@ -285,28 +255,21 @@ def validate_carrier(n, carrier="AC", tol_mw=TOL_MW, rel_tol=REL_TOL):
         by_bus = sum_by_bus(sub, bus_of.loc[cols])
         groups[group][by_bus.columns] += by_bus
 
-    # --- generators
     gp = dyn(n.generators_t, "p", snaps)
     if not gp.empty:
-        register(gp, n.generators["bus"], "Generator: " + n.generators["carrier"].astype(str),
-                 "Generator", "Generators")
+        register(gp, n.generators["bus"], "Generator: " + n.generators["carrier"].astype(str), "Generator", "Generators")
 
-    # --- loads
     lp = load_power(n)
     lbus = n.loads["bus"]
-    undef = n.loads[~lbus.isin(n.buses.index)]
     register(-lp, lbus, "Load: " + n.loads["carrier"].astype(str), "Load", "Loads")
 
-    # --- stores / storage units
     sp = dyn(n.stores_t, "p", snaps)
     if not sp.empty:
         register(sp, n.stores["bus"], "Store: " + n.stores["carrier"].astype(str), "Store", "Stores")
     sup_ = dyn(n.storage_units_t, "p", snaps)
     if not sup_.empty:
-        register(sup_, n.storage_units["bus"], "StorageUnit: " + n.storage_units["carrier"].astype(str),
-                 "StorageUnit", "Storage units")
+        register(sup_, n.storage_units["bus"], "StorageUnit: " + n.storage_units["carrier"].astype(str), "StorageUnit", "Storage units")
 
-    # --- links
     terms = link_terminals(n)
     internal_links = set()
     for l in n.links.index:
@@ -331,7 +294,6 @@ def validate_carrier(n, carrier="AC", tol_mw=TOL_MW, rel_tol=REL_TOL):
                 by_bus = sum_by_bus(sub, bus_i.loc[sub.columns])
                 groups["Transfers (lines/internal links)"][by_bus.columns] += by_bus
 
-    # --- lines
     transfer_loss_series = pd.Series(0.0, index=snaps)
     if len(n.lines):
         for i in (0, 1):
@@ -347,10 +309,8 @@ def validate_carrier(n, carrier="AC", tol_mw=TOL_MW, rel_tol=REL_TOL):
     transfer_loss_series = -transfers.sum(axis=1)
     transfer_loss_E = float(transfer_loss_series.mul(w, axis=0).sum())
 
-    rec = pd.concat(records, ignore_index=True) if records else pd.DataFrame(
-        columns=["category", "label", "bus", "sup", "dem"])
+    rec = pd.concat(records, ignore_index=True) if records else pd.DataFrame(columns=["category", "label", "bus", "sup", "dem"])
 
-    # ===================================================== 1. NODAL BALANCE
     inj_total = sum(groups.values())
     abs_res = inj_total.abs()
     max_res = float(abs_res.values.max())
@@ -359,232 +319,28 @@ def validate_carrier(n, carrier="AC", tol_mw=TOL_MW, rel_tol=REL_TOL):
     res_E = abs_res.mul(w, axis=0).sum()
     throughput = float(sum(rec["sup"]) + sum(rec["dem"])) / 2 if len(rec) else 1.0
 
-    out("\n" + "#" * 100)
-    out(" 1. NODAL BALANCE (Kirchhoff current law per bus and per snapshot)")
-    out("#" * 100)
-    out(f" Tolerance (max |residual|) : {tol_mw} MW      Relative tolerance : {rel_tol:g}")
-    out(f" Max |residual|             : {fmt_power(max_res)}  at bus '{worst_bus}', snapshot {worst_snap}")
-    out(f" Sum |residual| energy      : {F(float(res_E.sum()))}  "
-        f"({float(res_E.sum()) / max(throughput, 1e-9):.2e} of carrier throughput)")
     ok_nodal = max_res <= tol_mw
     flags.append(("PASS" if ok_nodal else "FAIL", f"Nodal balance: max |residual| = {fmt_power(max_res)}"))
-    out(f" RESULT                     : {'PASSED' if ok_nodal else 'FAILED'}")
 
-    out("\n Per-bus ledger (annualised, signed:  + into bus / - out of bus):")
-    node = pd.DataFrame(index=buses)
-    for k, df in groups.items():
-        node[k] = df.mul(w, axis=0).sum()
-    node["Residual"] = node.sum(axis=1)
-    node["max|res| MW"] = abs_res.max()
-    show = node.copy()
-    for c in node.columns[:-1]:
-        show[c] = node[c].map(F)
-    show["max|res| MW"] = node["max|res| MW"].map(lambda x: f"{x:.2e}")
-    out(show.to_string())
-    tot = node.sum(numeric_only=True)
-    out("-" * 100)
-    out(" TOTAL".ljust(14) + " | " + " | ".join(f"{c}: {F(tot[c])}" for c in node.columns[:-1]))
-
-    # ============================================ 2. CARRIER ENERGY BALANCE
-    out("\n" + "#" * 100)
-    out(f" 2. CARRIER-LEVEL ENERGY BALANCE  ({actual_carrier.upper()}, all {len(buses)} buses aggregated)")
-    out("#" * 100)
     agg = rec.groupby("label")[["sup", "dem"]].sum()
     sup = agg["sup"][agg["sup"] > 1e-6].sort_values(ascending=False)
     dem = agg["dem"][agg["dem"] > 1e-6].sort_values(ascending=False)
     dem_items = dem.to_dict()
     if transfer_loss_E > 1e-6:
         dem_items["Transmission losses (lines + internal links)"] = transfer_loss_E
-    dem_items = dict(sorted(dem_items.items(), key=lambda kv: kv[1], reverse=True))
     tot_s, tot_d = float(sup.sum()), float(sum(dem_items.values()))
     net = tot_s - tot_d
     pct = abs(net) / max(tot_s, tot_d, 1e-9) * 100
-
-    out(f" {'SUPPLY':<60}{'Energy':>18}{'Share':>10}")
-    out(" " + "-" * 88)
-    for k, v in sup.items():
-        out(f"   {k:<58}{F(v):>18}{v / tot_s * 100:>9.2f}%")
-    out(f" {'TOTAL SUPPLY':<60}{F(tot_s):>18}")
-    out(f"\n {'DEMAND':<60}{'Energy':>18}{'Share':>10}")
-    out(" " + "-" * 88)
-    for k, v in dem_items.items():
-        out(f"   {k:<58}{F(v):>18}{v / tot_d * 100:>9.2f}%")
-    out(f" {'TOTAL DEMAND':<60}{F(tot_d):>18}")
-    out("\n " + "=" * 88)
-    out(f" NET (Supply - Demand) : {F(net)}   ({pct:.3e} % of the larger side)")
     ok_bal = pct <= rel_tol * 100 or abs(net) <= max(tol_mw * w.sum() * 1e-3, 1e-3)
     flags.append(("PASS" if ok_bal else "FAIL", f"Carrier balance: net = {F(net)} ({pct:.2e} %)"))
-    out(f" RESULT                : {'PASSED - supply equals demand' if ok_bal else 'FAILED - supply does not equal demand'}")
 
-    # ============================================== 3. PER-SNAPSHOT CLOSURE
-    out("\n" + "#" * 100)
-    out(" 3. PER-SNAPSHOT SYSTEM CLOSURE (sum over all buses of the carrier)")
-    out("#" * 100)
     sys_res = inj_total.sum(axis=1)
-    worst = sys_res.abs().idxmax()
-    out(f" Max |system residual| : {fmt_power(float(sys_res.abs().max()))} at {worst}")
-    out(f" Mean |system residual|: {fmt_power(float(sys_res.abs().mean()))}")
-    flags.append(("PASS" if sys_res.abs().max() <= tol_mw else "FAIL",
-                  f"Per-snapshot closure: max |res| = {fmt_power(float(sys_res.abs().max()))}"))
-    sup_t = pd.Series(0.0, index=snaps)
-    dem_t = pd.Series(0.0, index=snaps)
-    for g in ["Generators", "Loads", "Cross-carrier links", "Stores", "Storage units"]:
-        sup_t += groups[g].clip(lower=0).sum(axis=1)
-        dem_t += (-groups[g]).clip(lower=0).sum(axis=1)
-    dem_t += transfer_loss_series
-    out(f" Peak supply   : {fmt_power(float(sup_t.max()))} at {sup_t.idxmax()}")
-    out(f" Peak demand   : {fmt_power(float(dem_t.max()))} at {dem_t.idxmax()}")
-    out(f" Min  demand   : {fmt_power(float(dem_t.min()))} at {dem_t.idxmin()}")
+    flags.append(("PASS" if sys_res.abs().max() <= tol_mw else "FAIL", f"Per-snapshot closure: max |res| = {fmt_power(float(sys_res.abs().max()))}"))
 
-    # ============================================== 4. TRANSMISSION AUDIT
-    out("\n" + "#" * 100)
-    out(" 4. TRANSMISSION AUDIT (lines and internal transport links)")
-    out("#" * 100)
-    n_lines_in = 0
-    if len(n.lines):
-        p0, p1 = dyn(n.lines_t, "p0", snaps), dyn(n.lines_t, "p1", snaps)
-        sel = [l for l in n.lines.index if n.lines.at[l, "bus0"] in bus_set and n.lines.at[l, "bus1"] in bus_set]
-        n_lines_in = len(sel)
-        if sel and not p0.empty:
-            loss_t = (p0[sel] + p1[sel])
-            send = p0[sel].clip(lower=0).mul(w, axis=0).sum().sum() + p1[sel].clip(lower=0).mul(w, axis=0).sum().sum()
-            loss_E = float(loss_t.mul(w, axis=0).sum().sum())
-            neg_loss = float((loss_t < -1e-6).sum().sum())
-            out(f" Lines inside carrier   : {n_lines_in}")
-            out(f" Gross energy sent      : {F(float(send))}")
-            out(f" Line losses (p0 + p1)  : {F(loss_E)}  ({loss_E / max(float(send), 1e-9) * 100:.3f} % of gross sent)")
-            out(f" Snapshots with negative loss (should be 0): {int(neg_loss)}")
-            flags.append(("PASS" if neg_loss == 0 else "WARN", f"Line losses non-negative (violations: {int(neg_loss)})"))
-            top = (loss_t.mul(w, axis=0).sum()).sort_values(ascending=False).head(5)
-            out("\n Top lossy lines:")
-            for l, v in top.items():
-                out(f"   line {l:<10} {n.lines.at[l, 'bus0']:>10} <-> {n.lines.at[l, 'bus1']:<10} loss {F(float(v))}")
-    out(f" Internal transport links (same-carrier at all terminals): {len(internal_links)}")
-    out(f" TOTAL transmission losses entering the balance: {F(transfer_loss_E)}")
-
-    # ============================================ 5. CONVERSION-LINK AUDIT
-    out("\n" + "#" * 100)
-    out(" 5. CONVERSION-LINK AUDIT (links touching this carrier)")
-    out("#" * 100)
-    touch = {}
-    for l in n.links.index:
-        if l in internal_links:
-            continue
-        for i in terms:
-            b = n.links.at[l, f"bus{i}"]
-            if isinstance(b, str) and b in bus_set:
-                touch.setdefault(n.links.at[l, "carrier"], set()).add(l)
-    p0df = dyn(n.links_t, "p0", snaps)
-    audit_rows, max_eff_err = [], 0.0
-    for lc in sorted(touch):
-        ids = sorted(touch[lc])
-        e0 = float(p0df[ids].mul(w, axis=0).sum().sum()) if not p0df.empty else 0.0
-        for i in terms:
-            if i == 0:
-                continue
-            ok_ids = [l for l in ids if isinstance(n.links.at[l, f"bus{i}"], str)
-                      and n.links.at[l, f"bus{i}"] in n.buses.index]
-            if not ok_ids:
-                continue
-            pi = dyn(n.links_t, f"p{i}", snaps)
-            if pi.empty or not set(ok_ids) <= set(pi.columns):
-                continue
-            ename = "efficiency" if i == 1 else f"efficiency{i}"
-            tdyn = dyn(n.links_t, ename, snaps)
-            eff = pd.DataFrame(
-                {l: (tdyn[l] if l in tdyn.columns else
-                     (n.links.at[l, ename] if ename in n.links.columns else 1.0)) for l in ok_ids},
-                index=snaps).astype(float).fillna(1.0)
-            err = float((pi[ok_ids] + p0df[ok_ids] * eff).abs().max().max())
-            max_eff_err = max(max_eff_err, err)
-            ei = float(-pi[ok_ids].mul(w, axis=0).sum().sum())
-            tcar = n.buses.loc[n.links.loc[ok_ids, f"bus{i}"], "carrier"].mode().iat[0]
-            audit_rows.append({
-                "link carrier": lc, "#": len(ids), "terminal": f"bus{i}",
-                "terminal carrier": tcar,
-                "input @bus0": F(e0), "output @terminal": fmt_energy(ei, tcar.lower() in MASS_CARRIERS),
-                "eff (min-max)": f"{eff.min().min():.4f}-{eff.max().max():.4f}",
-                "max|p_i+eff*p0| MW": f"{err:.2e}"})
-    if audit_rows:
-        out(pd.DataFrame(audit_rows).to_string(index=False))
-    ok_eff = max_eff_err <= max(tol_mw, 1e-6)
-    out(f"\n Max |p_i + eff_i*p0| over all audited terminals: {max_eff_err:.3e} MW")
-    flags.append(("PASS" if ok_eff else "WARN", f"Link efficiency consistency: max err {max_eff_err:.2e} MW"))
-
-    # ============================================ 6. CARRIER ELEMENTS DISTRIBUTION PER NODE
-    out("\n" + "#" * 100)
-    out(" 6. CARRIER ELEMENTS DISTRIBUTION PER NODE")
-    out("#" * 100)
-    if not rec.empty:
-        rec_nodal = rec.copy()
-        rec_nodal["net"] = rec_nodal["sup"] - rec_nodal["dem"]
-        pivot_elem = rec_nodal.pivot_table(index="bus", columns="label", values="net", fill_value=0.0)
-        show_elem = pivot_elem.copy()
-        for col in show_elem.columns:
-            show_elem[col] = show_elem[col].map(lambda x: F(x))
-        out(show_elem.to_string())
-    else:
-        out(" No discrete carrier elements registered for this carrier.")
-
-    # ======================================================= 7. SANITY FLAGS
-    out("\n" + "#" * 100)
-    out(" 7. SANITY FLAGS")
-    out("#" * 100)
-    shed = rec[rec["label"].str.contains("load shedding", case=False, na=False)]["sup"].sum()
-    load_total = rec[rec["label"].str.startswith("Load:")]["dem"].sum()
-    out(f" Load shedding energy       : {F(float(shed))}  "
-        f"({float(shed) / max(load_total, 1e-9) * 100:.4f} % of loads on this carrier)")
-    flags.append(("PASS" if shed <= 1e-6 * max(load_total, 1) else "WARN",
-                  f"Load shedding: {F(float(shed))}"))
-    neg_gen = 0.0
-    if not gp.empty:
-        gcols = [g for g in gp.columns if n.generators.at[g, "bus"] in bus_set]
-        neg_gen = float((-gp[gcols]).clip(lower=0).mul(w, axis=0).sum().sum())
-    out(f" Negative generator dispatch: {F(neg_gen)}")
-    try:
-        pmax = n.get_switchable_as_dense("Generator", "p_max_pu")
-        gens = [g for g in n.generators.index if n.generators.at[g, "bus"] in bus_set
-                and n.generators.at[g, "carrier"] in ("solar", "onwind", "offwind", "solar rooftop", "ror", "hydro")]
-        if gens and not gp.empty:
-            cap = n.generators.loc[gens, "p_nom_opt"] if "p_nom_opt" in n.generators else n.generators.loc[gens, "p_nom"]
-            pot = pmax[gens].mul(cap, axis=1)
-            cur = (pot - gp[gens]).clip(lower=0)
-            out(" Renewable curtailment    :")
-            for gc, ids in n.generators.loc[gens].groupby("carrier").groups.items():
-                ids = list(ids)
-                pot_e = float(pot[ids].mul(w, axis=0).sum().sum())
-                cur_e = float(cur[ids].mul(w, axis=0).sum().sum())
-                out(f"    {gc:<14} potential {F(pot_e):>14} | used {F(pot_e - cur_e):>14} | "
-                    f"curtailed {F(cur_e):>14} ({cur_e / max(pot_e, 1e-9) * 100:.2f} %)")
-    except Exception:
-        out(" Renewable curtailment    : (skipped - p_max_pu not available)")
-    if len(undef):
-        e_undef = float(lp[undef.index].mul(w, axis=0).sum().sum())
-        by_c = undef.groupby("carrier").apply(lambda d: float(lp[d.index].mul(w, axis=0).sum().sum()))
-        out(f" WARNING: {len(undef)} load(s) are attached to buses that DO NOT EXIST "
-            f"(their demand is IGNORED by the optimisation): {F(e_undef)}")
-        for c, v in by_c.items():
-            out(f"    - {c}: {F(float(v))}")
-        flags.append(("WARN", f"{len(undef)} loads on undefined buses ({F(e_undef)}) are silently ignored"))
-    else:
-        out(" Loads on undefined buses  : none")
-
-    # ===================================================== final verdict
-    out("\n" + "=" * 100)
-    out(" VERDICT")
-    out("=" * 100)
-    for st, tx in flags:
-        out(f"  [{st:^4}] {tx}")
     overall = "PASSED" if all(s != "FAIL" for s, _ in flags) else "FAILED"
-    out(f"\n  OVERALL ENERGY CONSERVATION FOR '{actual_carrier.upper()}': {overall}"
-        + ("  (with warnings)" if overall == "PASSED" and any(s == "WARN" for s, _ in flags) else ""))
-    out("=" * 100)
     return "\n".join(rep)
 
 
-# =============================================================================
-# MAIN AUTOMATION BATCH LOOP OVER ALL SCENARIOS
-# =============================================================================
 if __name__ == "__main__":
     try:
         import cartopy.crs as ccrs
@@ -597,7 +353,6 @@ if __name__ == "__main__":
         print("Warning: Cartopy not installed. Nodal dispatch map will use standard matplotlib axes.")
 
     for sc in SCENARIOS:
-        # Automatically construct paths using the prefix and base directory
         txt_out = os.path.join(OUTPUT_DIR_BASE, f"{sc['prefix']}_energy_conservation_all_carriers.txt")
         png_out = os.path.join(OUTPUT_DIR_BASE, f"{sc['prefix']}_pypsa_libya_nodal_dispatch_map.png")
         bar_out = os.path.join(OUTPUT_DIR_BASE, f"{sc['prefix']}_pypsa_libya_nodal_bar_chart.png")
@@ -620,7 +375,6 @@ if __name__ == "__main__":
             if not any(str(ac).lower() == str(c).lower() for c in carriers_to_run):
                 carriers_to_run.append(ac)
 
-        # 1. Run Energy Conservation Validation across all carriers
         all_reports = []
         for c in carriers_to_run:
             print(f"  -> Validating carrier: {c} ...")
@@ -635,7 +389,6 @@ if __name__ == "__main__":
         separator = "\n\n" + "=" * 100 + "\n" + " " * 35 + "NEXT CARRIER REPORT SECTION" + "\n" + "=" * 100 + "\n\n"
         combined_content = separator.join(all_reports)
 
-        # Ensure text report output directory exists
         txt_dir = os.path.dirname(txt_out)
         if txt_dir:
             os.makedirs(txt_dir, exist_ok=True)
@@ -644,32 +397,29 @@ if __name__ == "__main__":
             f.write(combined_content)
         print(f"Saved text validation report to: {txt_out}")
         
-        # Also copy/save text validation report to Paper_Figures folder
         txt_paper_out = os.path.join(PAPER_DIR, f"{sc['prefix']}_energy_conservation_all_carriers.txt")
         with open(txt_paper_out, "w", encoding="utf-8") as f:
             f.write(combined_content)
         print(f"Saved text validation report to Paper_Figures: {txt_paper_out}")
         
-# =====================================================================
-# NODAL DISPATCH & ENERGY MIX PIE CHART MAP
-# =====================================================================
-
-        # 2. Generate and Save Nodal Dispatch & Energy Mix Map
+        # =====================================================================
+        # NODAL DISPATCH & ENERGY MIX PIE CHART MAP
+        # =====================================================================
         print(f"  -> Generating Nodal Dispatch & Energy Mix Pie Chart Map...")
         
         CHART_COLORS = {
-            "Onshore Wind": "#2ecc71",          # Green
-            "Solar PV": "#ffbf00",              # Amber (Yellow-Orange blend)
-            "Oil": "#8b4513",                   # Brown
-            "CCGT": "#e377c2",                  # Pink
-            "Gas": "#ff00ff",                   # Magenta
-            "H2 Turbine": "#9467bd",            # Purple
-            "H2 Fuel Cell": "#00ffff",          # Cyan
-            "H2 Electrolyser": "#8da35d",       # Olive green (alias)
-            "H2 Storage": "#87ceeb",            # Light blue (Sky blue)
-            "Battery": "#8e44ad",               # Purple
-            "SMR": "#95a5a6",                   # Grey
-            "SMR CC": "#1f77b4",                # Blue
+            "Onshore Wind": "#2ecc71",
+            "Solar PV": "#ffbf00",
+            "Oil": "#8b4513",
+            "CCGT": "#e377c2",
+            "Gas": "#ff00ff",
+            "H2 Turbine": "#9467bd",
+            "H2 Fuel Cell": "#00ffff",
+            "H2 Electrolyser": "#8da35d",
+            "H2 Storage": "#87ceeb",
+            "Battery": "#8e44ad",
+            "SMR": "#95a5a6",
+            "SMR CC": "#1f77b4",
         }
 
         ac_buses = [b for b in n.buses.index if n.buses.loc[b, "carrier"] == "AC"]
@@ -701,19 +451,15 @@ if __name__ == "__main__":
                     if val > 0:
                         all_nodal_records.append({"bus": base_bus, "label": lbl, "energy": val})
 
-        # Generators
         if not n.generators.empty and not n.generators_t.p.empty:
             collect_component_records(n.generators_t.p, n.generators["bus"], "Generator: " + n.generators["carrier"].astype(str))
 
-        # Storage Units
         if not n.storage_units.empty and not n.storage_units_t.p.empty:
             collect_component_records(n.storage_units_t.p, n.storage_units["bus"], "StorageUnit: " + n.storage_units["carrier"].astype(str))
 
-        # Stores
         if not n.stores.empty and not n.stores_t.p.empty:
             collect_component_records(n.stores_t.p, n.stores["bus"], "Store: " + n.stores["carrier"].astype(str))
 
-        # Links
         if not n.links.empty and not n.links_t.p0.empty:
             for l_id, l_row in n.links.iterrows():
                 carrier = l_row["carrier"]
@@ -803,7 +549,7 @@ if __name__ == "__main__":
         if HAS_CARTOPY:
             ax = fig.add_subplot(1, 1, 1, projection=ccrs.PlateCarree())
             ax.set_extent([9.0, 25.5, 19.0, 33.8], crs=ccrs.PlateCarree())
-            ax.add_feature(cfeature.LAND, facecolor="#ffffff", zorder=0)  # Pure white background for high contrast
+            ax.add_feature(cfeature.LAND, facecolor="#ffffff", zorder=0)
             ax.add_feature(cfeature.OCEAN, facecolor="#e0f2fe", zorder=0)
             ax.add_feature(cfeature.BORDERS, linestyle="--", edgecolor="#666666", linewidth=0.8, zorder=1)
             ax.add_feature(cfeature.COASTLINE, edgecolor="#333333", linewidth=1.0, zorder=1)
@@ -824,8 +570,8 @@ if __name__ == "__main__":
         plot_buses.loc[mask_sea_node, "x"] = 19.80
 
         COAST_LONS = np.array([9.0, 11.5, 12.08, 12.73, 13.19, 14.26, 14.57, 15.09, 15.25, 15.50, 15.80, 16.20, 16.59, 17.50, 18.56, 19.20, 19.57, 19.80, 20.00, 20.10, 20.20, 20.30, 20.50, 20.83, 21.75, 22.64, 23.96, 25.09, 26.0])
-        COAST_LATS = np.array([33.0, 33.1, 32.93, 32.76, 32.89, 32.65, 32.47, 32.38, 31.40, 31.20, 31.12, 31.15, 31.21, 30.80, 30.51, 30.35, 30.41, 30.42, 30.50, 30.60, 35.20, 32.00, 32.10, 32.49, 32.76, 32.77, 32.08, 31.76, 31.50])
-
+        COAST_LATS = np.array([33.0, 33.1, 32.93, 32.76, 32.89, 32.65, 32.47, 32.38, 31.40, 31.20, 31.12, 31.15, 31.21, 30.80, 30.51, 30.35, 30.41, 30.42, 30.50, 30.60, 35.20, 32.00, 32.10, 32.49, 32.76, 32.77, 32.08, 31.76, 31.50]
+)
 
         def get_coast_lat(lon):
             return np.interp(lon, COAST_LONS, COAST_LATS)
@@ -856,27 +602,30 @@ if __name__ == "__main__":
                 ys_land[0], ys_land[-1] = y0, y1
             return xs, ys_land
 
-        # ===================================================================
-        # TRANSMISSION LINE CAPACITY LOADING & COLOR BAR MAPPING
-        # ===================================================================
         import matplotlib.colors as mcolors
         from matplotlib.colors import LinearSegmentedColormap
 
+        # --- DYNAMIC TRANSMISSION LINE LOADING CALCULATION (SUPPORTING MAX & MEAN MODES) ---
         line_loading_series = pd.Series(0.0, index=n.lines.index)
+        colorbar_label = "Mean Capacity Loading (%)"
         if not n.lines.empty and not n.lines_t.p0.empty:
             flows = n.lines_t.p0.abs()
             caps = n.lines["s_nom_opt"] if "s_nom_opt" in n.lines.columns else n.lines["s_nom"]
             caps = caps.replace(0, 1e-6)
             loading_ratios = flows.div(caps, axis=1) * 100.0
-            line_loading_series = loading_ratios.mean(axis=0)
+            
+            if TRANSMISSION_METRIC_MODE.lower() == "max":
+                line_loading_series = loading_ratios.max(axis=0)
+                colorbar_label = "Peak Capacity Loading (%)"
+            else:
+                line_loading_series = loading_ratios.mean(axis=0)
+                colorbar_label = "Mean Capacity Loading (%)"
 
         min_val, max_val = 0.0, max(line_loading_series.max() if not line_loading_series.empty else 1.0, 1.0)
         norm_metric = mcolors.Normalize(vmin=min_val, vmax=max_val)
         
-        # Truncate Reds colormap to start at 0.20 instead of 0.0 so low-loading lines are clearly visible
         base_cmap = plt.colormaps.get_cmap("Reds") if hasattr(plt, "colormaps") else plt.cm.get_cmap("Reds")
-        cmap_lines = LinearSegmentedColormap.from_list(
-            "truncated_reds", base_cmap(np.linspace(0.20, 1.0, 100)))
+        cmap_lines = LinearSegmentedColormap.from_list("truncated_reds", base_cmap(np.linspace(0.20, 1.0, 100)))
 
         if not n.lines.empty:
             for idx, row in n.lines.iterrows():
@@ -894,14 +643,20 @@ if __name__ == "__main__":
                     xs, ys = route_line_land(x0, y0, x1, y1)
                     ax.plot(xs, ys, color=line_color, lw=linewidth, zorder=3, alpha=0.85)
 
-        # Attach Vertical Color Bar for Transmission Line Capacity Loading
         sm_line = plt.cm.ScalarMappable(cmap=cmap_lines, norm=norm_metric)
         sm_line.set_array([])
         cbar = fig.colorbar(sm_line, ax=ax, orientation="vertical", shrink=0.7, pad=0.03)
-        cbar.set_label("Mean Capacity Loading (%)", fontsize=10)
+        cbar.set_label(colorbar_label, fontsize=10)
+        
+        # Explicitly set ticks to include standard intervals up to the exact maximum value
+        ticks = list(range(0, int(max_val) + 10, 10))
+        if not any(np.isclose(t, max_val, atol=1.0) for t in ticks):
+            ticks.append(max_val)
+            ticks.sort()
+        cbar.set_ticks(ticks)
+        cbar.set_ticklabels([f"{t:.1f}" if isinstance(t, float) and not t.is_integer() else str(int(t)) for t in ticks])
 
         max_energy = nodal_mix.sum(axis=1).max() if not nodal_mix.empty and nodal_mix.sum(axis=1).max() > 0 else 1.0
-        
         base_pie_size = 0.06 * PIE_SCALE_FACTOR
         min_pie_size = 0.025 * PIE_SCALE_FACTOR
 
@@ -916,7 +671,6 @@ if __name__ == "__main__":
         bus_ranks = {b: idx + 1 for idx, b in enumerate(sorted_buses)}
         
         is_elec_only = len(ac_buses) > 12
-
         pending_annotations = []
 
         for bus in ac_buses:
@@ -957,7 +711,6 @@ if __name__ == "__main__":
         for ann in pending_annotations:
             if is_elec_only and ann["rank"] > 10:
                 continue
-
             
             if is_elec_only:
                 label_x, label_y = ann["x"] + MAP_LABEL_OFFSET_X, ann["y"] + MAP_LABEL_OFFSET_Y
@@ -992,9 +745,7 @@ if __name__ == "__main__":
             energy_twh = energy_mwh / 1e6
             pct = rounded_percentages.get(carrier_key, 0)
             return f"{name}: {energy_twh:,.2f} TWh ({pct}%)"
-        
 
-        # Sort carriers from highest to lowest total energy share
         sorted_present_carriers = sorted(
             present_carriers, 
             key=lambda c: nodal_mix[c].sum() if not nodal_mix.empty and c in nodal_mix.columns else 0, 
@@ -1019,7 +770,7 @@ if __name__ == "__main__":
                 
         ax.set_title(
             f"PyPSA-Libya 2030: Nodal Dispatch and Energy Mix ({sc['name']})\n"
-            "Pie Size = Proportional Node Energy; Slices = Carriers",
+            f"Pie Size = Proportional Node Energy; Lines = {TRANSMISSION_METRIC_MODE.capitalize()} Loading (%)",
             fontsize=11,
             fontweight="bold",
         )
@@ -1027,43 +778,34 @@ if __name__ == "__main__":
         ax.set_ylabel("Latitude", fontsize=MAP_AXIS_LABEL_FONT_SIZE)
         ax.tick_params(axis='both', which='major', labelsize=MAP_AXIS_TICK_FONT_SIZE)
 
-        # Ensure map output directory exists
         png_dir = os.path.dirname(png_out)
         if png_dir:
             os.makedirs(png_dir, exist_ok=True)
 
         fig.savefig(png_out, dpi=300, bbox_inches="tight")
-        # Save high-res paper PDF version with title removed
         save_paper_pdf(fig, ax, f"{sc['prefix']}_nodal_dispatch_map")
         plt.close(fig)
         print(f"Saved nodal dispatch map to: {png_out}\n")
-
-# =====================================================================
-# NODAL DISPATCH & ENERGY MIX STACKED HORIZONTAL BAR CHART
-# =====================================================================
-
-        print(f"  -> Generating Nodal Dispatch Stacked Horizontal Bar Chart...")
+        
+        # =====================================================================
+        # 1. ORIGINAL NODAL DISPATCH STACKED HORIZONTAL BAR CHART
+        # =====================================================================
+        print(f"  -> Generating Original Nodal Dispatch Stacked Horizontal Bar Chart...")
         
         if not nodal_mix.empty:
             node_totals_bar = nodal_mix.sum(axis=1)
             sorted_nodes = node_totals_bar.sort_values(ascending=True).index.tolist()
             
-            df_bar = nodal_mix.loc[sorted_nodes] / 1e6  # Convert MWh to TWh
+            df_bar = nodal_mix.loc[sorted_nodes] / 1e6
 
             if is_elec_only and len(sorted_nodes) > 10:
                 top_10_nodes = node_totals_bar.nlargest(10).sort_values(ascending=True).index.tolist()
                 df_bar = df_bar.loc[top_10_nodes]
 
             bar_y_labels = [str(bus_ranks[b]) for b in df_bar.index]
-
-            
-            # --- UNIFIED FIGSIZE TO MATCH THE MAP FIGURE (11x8) ---
-            
-            # Use the identical sorted carriers list for unified ordering
             active_bar_carriers = sorted_present_carriers
 
             fig_bar, ax_bar = plt.subplots(figsize=(11, 8))
-            
             bottom_val = np.zeros(len(df_bar))
 
             for carrier in active_bar_carriers:
@@ -1085,7 +827,6 @@ if __name__ == "__main__":
             ax_bar.tick_params(axis='both', which='major', labelsize=BAR_TICK_FONT_SIZE)
             ax_bar.grid(axis="x", linestyle="--", alpha=0.5)
 
-            # Match handles to the sorted list and fix the title typo
             handles = [mpatches.Patch(color=CHART_COLORS.get(c, "#7f7f7f"), label=c) for c in active_bar_carriers if c in df_bar.columns]
             labels = [c for c in active_bar_carriers if c in df_bar.columns]
 
@@ -1096,7 +837,7 @@ if __name__ == "__main__":
                     loc="lower right", 
                     fontsize=BAR_LEGEND_FONT_SIZE,        
                     title_fontsize=BAR_LEGEND_FONT_SIZE,  
-                    title="Energy Carriers)" # Fixed closing parenthesis typo here too
+                    title="Energy Carriers"
                 )
                 
             fig_bar.tight_layout()
@@ -1104,11 +845,78 @@ if __name__ == "__main__":
             if bar_dir:
                 os.makedirs(bar_dir, exist_ok=True)
             fig_bar.savefig(bar_out, dpi=300, bbox_inches="tight")
-            # Save high-res paper PDF version with title removed
             save_paper_pdf(fig_bar, ax_bar, f"{sc['prefix']}_nodal_bar_chart")
             plt.close(fig_bar)
-            print(f"Saved nodal bar chart to: {bar_out}\n")
+            print(f"Saved original nodal bar chart to: {bar_out}\n")
 
+        # =====================================================================
+        # 2. NEW 2-PANEL NODAL DISPATCH STACKED HORIZONTAL BAR CHART (TWh & %)
+        # =====================================================================
+        print(f"  -> Generating 2-Panel Nodal Dispatch Stacked Horizontal Bar Chart...")
+        
+        if not nodal_mix.empty:
+            bar_out_2panel = os.path.join(OUTPUT_DIR_BASE, f"{sc['prefix']}_pypsa_libya_nodal_bar_chart_2panels.png")
+            
+            fig_bar2, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 8), sharey=True)
+
+            bottom_val_abs = np.zeros(len(df_bar))
+            for carrier in active_bar_carriers:
+                if carrier not in df_bar.columns:
+                    continue
+                values = df_bar[carrier].values
+                color = CHART_COLORS.get(carrier, "#7f7f7f")
+                ax1.barh(bar_y_labels, values, left=bottom_val_abs, color=color, label=carrier, edgecolor="none")
+                bottom_val_abs += values
+
+            ax1.set_title("(a) Absolute Energy Dispatch", fontsize=11, fontweight="bold")
+            ax1.set_xlabel("Energy Dispatch (TWh)", fontsize=BAR_LABEL_FONT_SIZE)
+            ax1.set_ylabel("Cluster Rank", fontsize=BAR_LABEL_FONT_SIZE)
+            ax1.tick_params(axis='both', which='major', labelsize=BAR_TICK_FONT_SIZE)
+            ax1.grid(axis="x", linestyle="--", alpha=0.5)
+
+            if handles:
+                ax1.legend(
+                    handles, 
+                    labels, 
+                    loc="lower right", 
+                    fontsize=BAR_LEGEND_FONT_SIZE,        
+                    title_fontsize=BAR_LEGEND_FONT_SIZE,  
+                    title="Energy Carriers",
+                    framealpha=0.9,
+                    facecolor="white"
+                )
+
+            row_sums = df_bar.sum(axis=1).replace(0, 1)
+            df_pct = df_bar.div(row_sums, axis=0) * 100.0
+            
+            bottom_val_pct = np.zeros(len(df_pct))
+            for carrier in active_bar_carriers:
+                if carrier not in df_pct.columns:
+                    continue
+                values = df_pct[carrier].values
+                color = CHART_COLORS.get(carrier, "#7f7f7f")
+                ax2.barh(bar_y_labels, values, left=bottom_val_pct, color=color, label=carrier, edgecolor="none")
+                bottom_val_pct += values
+
+            ax2.set_title("(b) Relative Energy Mix Share", fontsize=11, fontweight="bold")
+            ax2.set_xlabel("Share (%)", fontsize=BAR_LABEL_FONT_SIZE)
+            ax2.set_xlim(0, 100)
+            ax2.tick_params(axis='both', which='major', labelsize=BAR_TICK_FONT_SIZE)
+            ax2.grid(axis="x", linestyle="--", alpha=0.5)
+
+            fig_bar2.suptitle(
+                f"PyPSA-Libya 2030: Nodal Energy Dispatch & Mix ({sc['name']})",
+                fontsize=13,
+                fontweight="bold",
+                y=0.98
+            )
+                
+            fig_bar2.tight_layout()
+            fig_bar2.savefig(bar_out_2panel, dpi=300, bbox_inches="tight")
+            save_paper_pdf(fig_bar2, ax1, f"{sc['prefix']}_nodal_bar_chart_2panels")            
+            plt.close(fig_bar2)
+            print(f"Saved 2-panel nodal bar chart to: {bar_out_2panel}\n")
+            
     print("=" * 110)
     print("ALL SCENARIOS PROCESSED AND SAVED SUCCESSFULLY!")
     print("=" * 110)

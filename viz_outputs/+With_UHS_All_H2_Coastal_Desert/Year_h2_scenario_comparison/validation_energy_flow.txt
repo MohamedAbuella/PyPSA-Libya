@@ -1,0 +1,597 @@
+Loading network: Output/libya_h2export_hybrid_emispr_100/3hrs/postnetworks/orig_elec_s_12_ec_lcopt_Co2L-Ep-3h__2030_0.071_AB_70export.nc ...
+
+==========================================================================================
+ENERGY FLOW & NODAL BALANCE VALIDATION REPORT: orig_elec_s_12_ec_lcopt_Co2L-Ep-3h__2030_0.071_AB_70export.nc
+==========================================================================================
+
+##########################################################################################
+ 1. CARRIER-LEVEL ENERGY BALANCE SUMMARY
+##########################################################################################
+
+Carrier: AC
+------------------------------------------------------------
+  Total Supply : 107.19 TWh
+  Total Demand : 107.19 TWh
+  Net Loss/Diff: 0.00 MWh
+
+    [Supply Sources]:
+      * Generator: onwind: 24.94 TWh
+      * Generator: solar: 12.75 TWh
+      * Line Transfer (9): 10.73 TWh
+      * Link Output (oil): 7.78 TWh
+      * Line Transfer (0): 7.48 TWh
+      * Line Transfer (10): 6.45 TWh
+      * Line Transfer (3): 5.72 TWh
+      * Line Transfer (11): 5.37 TWh
+      * Line Transfer (8): 5.01 TWh
+      * Line Transfer (2): 4.56 TWh
+      * Line Transfer (5): 4.12 TWh
+      * Line Transfer (7): 3.64 TWh
+      * Line Transfer (4): 3.33 TWh
+      * Line Transfer (1): 2.47 TWh
+      * Line Transfer (6): 2.15 TWh
+      * Line Transfer (lines new LY0 1 <-> LY1 0 AC): 670.96 GWh
+      * Link Output (CCGT): 4.89 GWh
+      * Link Output (H2 turbine): 1.75 GWh
+      * Link Output (H2 Fuel Cell): 1.49 GWh
+
+    [Demand Sinks]:
+      * Link Input (electricity distribution grid): 45.28 TWh
+      * Line Transfer (9): 10.73 TWh
+      * Line Transfer (0): 7.48 TWh
+      * Line Transfer (10): 6.45 TWh
+      * Line Transfer (3): 5.72 TWh
+      * Line Transfer (11): 5.37 TWh
+      * Line Transfer (8): 5.01 TWh
+      * Line Transfer (2): 4.56 TWh
+      * Line Transfer (5): 4.12 TWh
+      * Line Transfer (7): 3.64 TWh
+      * Line Transfer (4): 3.33 TWh
+      * Line Transfer (1): 2.47 TWh
+      * Line Transfer (6): 2.15 TWh
+      * Line Transfer (lines new LY0 1 <-> LY1 0 AC): 670.96 GWh
+      * Link Output (Haber-Bosch): 193.79 GWh
+      * Link Input (H2 Electrolysis): 6.19 GWh
+      * Link Input (helmeth): 2.56 GWh
+      * Link Output (Fischer-Tropsch): 15.35 MWh
+
+Carrier: H2
+------------------------------------------------------------
+  Total Supply : 118.26 TWh
+  Total Demand : 118.26 TWh
+  Net Loss/Diff: -0.00 MWh
+
+    [Supply Sources]:
+      * Link Output (SMR CC): 70.90 TWh
+      * Store Discharge: H2: 47.18 TWh
+      * Link Input (H2 pipeline): 93.20 GWh
+      * Link Output (H2 pipeline): 75.04 GWh
+      * Link Output (SMR): 5.37 GWh
+      * Link Output (H2 Electrolysis): 3.85 GWh
+      * Link Output (ammonia cracker): 1.03 GWh
+
+    [Demand Sinks]:
+      * Link Input (H2): 70.00 TWh
+      * Store Charge: H2: 47.18 TWh
+      * Link Input (Haber-Bosch): 899.90 GWh
+      * Link Output (H2 pipeline): 93.20 GWh
+      * Link Input (H2 pipeline): 75.04 GWh
+      * Link Input (H2 turbine): 4.26 GWh
+      * Link Input (Fischer-Tropsch): 3.12 GWh
+      * Link Input (H2 Fuel Cell): 2.97 GWh
+      * Link Input (Sabatier): 2.40 GWh
+
+Carrier: H2 EXPORT
+------------------------------------------------------------
+  Total Supply : 70.00 TWh
+  Total Demand : 70.00 TWh
+  Net Loss/Diff: 0.00 MWh
+
+    [Supply Sources]:
+      * Link Output (H2): 70.00 TWh
+      * Generator: load shedding: 0.03 MWh
+
+    [Demand Sinks]:
+      * Load: H2 export load: 70.00 TWh
+
+Carrier: NH3
+------------------------------------------------------------
+  Total Supply : 789.79 GWh
+  Total Demand : 7.69 GWh
+  Net Loss/Diff: 782.10 GWh
+
+    [Supply Sources]:
+      * Link Output (Haber-Bosch): 783.61 GWh
+      * Store Discharge: NH3: 6.18 GWh
+
+    [Demand Sinks]:
+      * Store Charge: NH3: 6.18 GWh
+      * Link Input (ammonia cracker): 1.51 GWh
+
+Carrier: CO2
+------------------------------------------------------------
+  Total Supply : 87.72 TWh
+  Total Demand : 0.00 MWh
+  Net Loss/Diff: 87.72 TWh
+
+    [Supply Sources]:
+      * Store Discharge: co2: 44.69 TWh
+      * Link Output (co2 vent): 19.98 TWh
+      * Link Output (process emissions): 15.11 TWh
+      * Link Output (oil): 5.72 TWh
+      * Link Output (SMR CC): 2.03 TWh
+      * Link Output (gas for industry CC): 185.59 GWh
+      * Link Output (gas for industry): 2.45 GWh
+      * Link Output (CCGT): 1.67 GWh
+      * Link Output (SMR): 1.40 GWh
+      * Link Output (process emissions CC): 273.60 MWh
+
+Carrier: CO2 STORED
+------------------------------------------------------------
+  Total Supply : 20.00 TWh
+  Total Demand : 19.99 TWh
+  Net Loss/Diff: 6.78 GWh
+
+    [Supply Sources]:
+      * Link Output (SMR CC): 18.31 TWh
+      * Link Output (gas for industry CC): 1.67 TWh
+      * Store Discharge: co2 stored: 9.61 GWh
+      * Link Output (process emissions CC): 2.46 GWh
+      * Link Output (CO2 pipeline): 1.99 GWh
+      * Link Input (CO2 pipeline): 575.28 MWh
+
+    [Demand Sinks]:
+      * Link Input (co2 vent): 19.98 TWh
+      * Store Charge: co2 stored: 6.22 GWh
+      * Link Input (CO2 pipeline): 1.99 GWh
+      * Link Output (Fischer-Tropsch): 639.95 MWh
+      * Link Output (CO2 pipeline): 575.28 MWh
+      * Link Output (helmeth): 405.31 MWh
+      * Link Output (Sabatier): 379.64 MWh
+
+Carrier: GAS
+------------------------------------------------------------
+  Total Supply : 112.16 TWh
+  Total Demand : 112.16 TWh
+  Net Loss/Diff: 0.01 MWh
+
+    [Supply Sources]:
+      * Generator: gas: 112.15 TWh
+      * Store Discharge: gas: 4.18 GWh
+      * Link Output (helmeth): 2.05 GWh
+      * Link Output (Sabatier): 1.92 GWh
+
+    [Demand Sinks]:
+      * Link Input (SMR CC): 102.76 TWh
+      * Link Input (gas for industry CC): 9.37 TWh
+      * Link Input (gas for industry): 12.39 GWh
+      * Link Input (CCGT): 8.44 GWh
+      * Link Input (SMR): 7.06 GWh
+      * Store Charge: gas: 4.18 GWh
+
+Carrier: GAS FOR INDUSTRY
+------------------------------------------------------------
+  Total Supply : 8.45 TWh
+  Total Demand : 0.00 MWh
+  Net Loss/Diff: 8.45 TWh
+
+    [Supply Sources]:
+      * Link Output (gas for industry CC): 8.44 TWh
+      * Link Output (gas for industry): 12.39 GWh
+
+Carrier: HOME BATTERY
+------------------------------------------------------------
+  Total Supply : 6.72 TWh
+  Total Demand : 6.72 TWh
+  Net Loss/Diff: 0.00 MWh
+
+    [Supply Sources]:
+      * Link Output (home battery charger): 3.81 TWh
+      * Store Discharge: home battery: 2.91 TWh
+
+    [Demand Sinks]:
+      * Link Input (home battery discharger): 3.81 TWh
+      * Store Charge: home battery: 2.91 TWh
+
+Carrier: LOW VOLTAGE
+------------------------------------------------------------
+  Total Supply : 57.74 TWh
+  Total Demand : 55.93 TWh
+  Net Loss/Diff: 1.81 TWh
+
+    [Supply Sources]:
+      * Link Output (electricity distribution grid): 45.28 TWh
+      * Generator: solar rooftop: 8.73 TWh
+      * Link Output (home battery discharger): 3.73 TWh
+      * Generator: load shedding: 0.93 MWh
+
+    [Demand Sinks]:
+      * Load: LY0 10: 14.45 TWh
+      * Load: LY0 1: 9.06 TWh
+      * Load: LY0 2: 6.89 TWh
+      * Load: LY0 9: 5.35 TWh
+      * Link Input (home battery charger): 3.89 TWh
+      * Load: LY0 7: 3.22 TWh
+      * Load: LY0 0: 3.17 TWh
+      * Load: LY0 6: 2.84 TWh
+      * Load: LY0 4: 1.93 TWh
+      * Load: LY0 8: 1.63 TWh
+      * Load: LY0 3: 1.34 TWh
+      * Load: LY0 5: 1.11 TWh
+      * Load: LY1 0: 1.06 TWh
+
+Carrier: OIL
+------------------------------------------------------------
+  Total Supply : 4.25 GWh
+  Total Demand : 50.94 TWh
+  Net Loss/Diff: -50.94 TWh
+
+    [Supply Sources]:
+      * Link Output (Fischer-Tropsch): 2.49 GWh
+      * Generator: oil: 1.76 GWh
+
+    [Demand Sinks]:
+      * Store Charge: oil: 28.70 TWh
+      * Link Input (oil): 22.24 TWh
+
+Carrier: PROCESS EMISSIONS
+------------------------------------------------------------
+  Total Supply : 0.00 MWh
+  Total Demand : 15.11 TWh
+  Net Loss/Diff: -15.11 TWh
+
+    [Demand Sinks]:
+      * Link Input (process emissions): 15.11 TWh
+      * Link Input (process emissions CC): 2.74 GWh
+
+##########################################################################################
+ 2. STORAGE ENERGY BALANCE & LOSSES
+##########################################################################################
+                                       Carrier     Charged  Discharged       Losses   RTE (%)
+Store:co2 atmosphere                       co2    0.00 MWh   44.69 TWh   -44.69 TWh     0.00%
+Store:LY0 0 co2 stored              co2 stored  551.70 MWh  755.77 MWh  -204.06 MWh   136.99%
+Store:LY0 1 co2 stored              co2 stored  387.34 MWh  772.85 MWh  -385.51 MWh   199.53%
+Store:LY0 10 co2 stored             co2 stored  119.40 MWh    1.29 GWh    -1.18 GWh  1084.55%
+Store:LY0 2 co2 stored              co2 stored  442.32 MWh  773.64 MWh  -331.32 MWh   174.90%
+Store:LY0 3 co2 stored              co2 stored  631.02 MWh  751.01 MWh  -119.99 MWh   119.01%
+Store:LY0 4 co2 stored              co2 stored  600.38 MWh  740.69 MWh  -140.31 MWh   123.37%
+Store:LY0 5 co2 stored              co2 stored  639.54 MWh  753.36 MWh  -113.82 MWh   117.80%
+Store:LY0 6 co2 stored              co2 stored  561.41 MWh  751.89 MWh  -190.48 MWh   133.93%
+Store:LY0 7 co2 stored              co2 stored  552.33 MWh  754.38 MWh  -202.05 MWh   136.58%
+Store:LY0 8 co2 stored              co2 stored  615.23 MWh  747.70 MWh  -132.47 MWh   121.53%
+Store:LY0 9 co2 stored              co2 stored  491.20 MWh  771.82 MWh  -280.61 MWh   157.13%
+Store:LY1 0 co2 stored              co2 stored  628.30 MWh  740.52 MWh  -112.22 MWh   117.86%
+Store:LY0 0 gas Store                      gas  337.31 MWh  337.31 MWh     0.00 MWh   100.00%
+Store:LY0 1 gas Store                      gas  328.68 MWh  328.68 MWh     0.00 MWh   100.00%
+Store:LY0 10 gas Store                     gas  749.02 MWh  749.02 MWh     0.00 MWh   100.00%
+Store:LY0 2 gas Store                      gas  369.03 MWh  369.03 MWh     0.00 MWh   100.00%
+Store:LY0 3 gas Store                      gas  331.36 MWh  331.36 MWh     0.00 MWh   100.00%
+Store:LY0 4 gas Store                      gas  338.07 MWh  338.07 MWh     0.00 MWh   100.00%
+Store:LY0 5 gas Store                      gas  330.86 MWh  330.86 MWh     0.00 MWh   100.00%
+Store:LY0 6 gas Store                      gas  336.30 MWh  336.30 MWh     0.00 MWh   100.00%
+Store:LY0 7 gas Store                      gas  335.60 MWh  335.60 MWh     0.00 MWh   100.00%
+Store:LY0 8 gas Store                      gas  331.47 MWh  331.47 MWh     0.00 MWh   100.00%
+Store:LY0 9 gas Store                      gas  330.01 MWh  330.01 MWh     0.00 MWh   100.00%
+Store:LY1 0 gas Store                      gas   58.79 MWh   58.79 MWh     0.00 MWh   100.00%
+Store:LY0 0 oil Store                      oil    2.37 TWh    0.00 MWh     2.37 TWh     0.00%
+Store:LY0 1 oil Store                      oil    2.27 TWh    0.00 MWh     2.27 TWh     0.00%
+Store:LY0 10 oil Store                     oil    3.19 TWh    0.00 MWh     3.19 TWh     0.00%
+Store:LY0 2 oil Store                      oil    1.93 TWh    0.00 MWh     1.93 TWh     0.00%
+Store:LY0 3 oil Store                      oil  174.39 GWh    0.00 MWh   174.39 GWh     0.00%
+Store:LY0 4 oil Store                      oil    2.43 TWh    0.00 MWh     2.43 TWh     0.00%
+Store:LY0 5 oil Store                      oil    1.02 TWh    0.00 MWh     1.02 TWh     0.00%
+Store:LY0 6 oil Store                      oil    1.29 TWh    0.00 MWh     1.29 TWh     0.00%
+Store:LY0 7 oil Store                      oil    1.51 TWh    0.00 MWh     1.51 TWh     0.00%
+Store:LY0 8 oil Store                      oil  216.15 GWh    0.00 MWh   216.15 GWh     0.00%
+Store:LY0 9 oil Store                      oil   12.15 TWh    0.00 MWh    12.15 TWh     0.00%
+Store:LY1 0 oil Store                      oil  136.61 GWh    0.00 MWh   136.61 GWh     0.00%
+Store:LY0 0 coal Store                    coal    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 1 coal Store                    coal    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 10 coal Store                   coal    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 2 coal Store                    coal    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 3 coal Store                    coal    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 4 coal Store                    coal    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 5 coal Store                    coal    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 6 coal Store                    coal    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 7 coal Store                    coal    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 8 coal Store                    coal    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 9 coal Store                    coal    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY1 0 coal Store                    coal    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:Earth lignite Store              lignite    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 0 solid biomass Store        biomass    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 1 solid biomass Store        biomass    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 10 solid biomass Store       biomass    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 2 solid biomass Store        biomass    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 3 solid biomass Store        biomass    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 4 solid biomass Store        biomass    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 5 solid biomass Store        biomass    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 6 solid biomass Store        biomass    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 7 solid biomass Store        biomass    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 8 solid biomass Store        biomass    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 9 solid biomass Store        biomass    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY1 0 solid biomass Store        biomass    0.00 MWh    0.00 MWh    -0.00 MWh     0.00%
+Store:LY0 10 H2 UHS                         H2   47.17 TWh   47.17 TWh     0.00 MWh   100.00%
+Store:LY0 3 H2 UHS                          H2  300.57 MWh  300.57 MWh     0.00 MWh   100.00%
+Store:LY0 9 H2 UHS                          H2  692.49 MWh  692.49 MWh     0.00 MWh   100.00%
+Store:LY1 0 H2 UHS                          H2    1.43 GWh    1.43 GWh     0.00 MWh   100.00%
+Store:LY0 0 H2 Store Tank                   H2   36.30 MWh   36.30 MWh     0.00 MWh   100.00%
+Store:LY0 1 H2 Store Tank                   H2    9.06 MWh    9.06 MWh     0.00 MWh   100.00%
+Store:LY0 10 H2 Store Tank                  H2    5.19 MWh    5.19 MWh    -0.00 MWh   100.00%
+Store:LY0 2 H2 Store Tank                   H2  157.53 MWh  157.53 MWh    -0.00 MWh   100.00%
+Store:LY0 3 H2 Store Tank                   H2    4.84 MWh    4.84 MWh     0.00 MWh   100.00%
+Store:LY0 4 H2 Store Tank                   H2  101.22 MWh  101.22 MWh    -0.00 MWh   100.00%
+Store:LY0 5 H2 Store Tank                   H2   18.55 MWh   18.55 MWh     0.00 MWh   100.00%
+Store:LY0 6 H2 Store Tank                   H2  139.20 MWh  139.20 MWh     0.00 MWh   100.00%
+Store:LY0 7 H2 Store Tank                   H2  125.15 MWh  125.15 MWh     0.00 MWh   100.00%
+Store:LY0 8 H2 Store Tank                   H2   51.55 MWh   51.55 MWh     0.00 MWh   100.00%
+Store:LY0 9 H2 Store Tank                   H2    5.05 MWh    5.05 MWh     0.00 MWh   100.00%
+Store:LY1 0 H2 Store Tank                   H2    6.83 MWh    6.83 MWh     0.00 MWh   100.00%
+Store:LY0 0 battery                    battery    0.00 MWh    0.00 MWh     0.00 MWh     0.00%
+Store:LY0 1 battery                    battery    0.00 MWh    0.00 MWh     0.00 MWh     0.00%
+Store:LY0 10 battery                   battery    0.00 MWh    0.00 MWh     0.00 MWh     0.00%
+Store:LY0 2 battery                    battery    0.00 MWh    0.00 MWh     0.00 MWh     0.00%
+Store:LY0 3 battery                    battery    0.00 MWh    0.00 MWh     0.00 MWh     0.00%
+Store:LY0 4 battery                    battery    0.00 MWh    0.00 MWh     0.00 MWh     0.00%
+Store:LY0 5 battery                    battery    0.00 MWh    0.00 MWh     0.00 MWh     0.00%
+Store:LY0 6 battery                    battery    0.00 MWh    0.00 MWh     0.00 MWh     0.00%
+Store:LY0 7 battery                    battery    0.00 MWh    0.00 MWh     0.00 MWh     0.00%
+Store:LY0 8 battery                    battery    0.00 MWh    0.00 MWh     0.00 MWh     0.00%
+Store:LY0 9 battery                    battery    0.00 MWh    0.00 MWh     0.00 MWh     0.00%
+Store:LY1 0 battery                    battery    0.00 MWh    0.00 MWh     0.00 MWh     0.00%
+Store:LY0 0 NH3 ammonia store              NH3  220.65 MWh  220.65 MWh     0.00 MWh   100.00%
+Store:LY0 1 NH3 ammonia store              NH3  858.27 MWh  858.27 MWh    -0.00 MWh   100.00%
+Store:LY0 10 NH3 ammonia store             NH3    1.38 GWh    1.38 GWh     0.00 MWh   100.00%
+Store:LY0 2 NH3 ammonia store              NH3  640.29 MWh  640.29 MWh    -0.00 MWh   100.00%
+Store:LY0 3 NH3 ammonia store              NH3  358.56 MWh  358.56 MWh    -0.00 MWh   100.00%
+Store:LY0 4 NH3 ammonia store              NH3  186.61 MWh  186.61 MWh    -0.00 MWh   100.00%
+Store:LY0 5 NH3 ammonia store              NH3  274.82 MWh  274.82 MWh    -0.00 MWh   100.00%
+Store:LY0 6 NH3 ammonia store              NH3  406.72 MWh  406.72 MWh    -0.00 MWh   100.00%
+Store:LY0 7 NH3 ammonia store              NH3  466.11 MWh  466.11 MWh    -0.00 MWh   100.00%
+Store:LY0 8 NH3 ammonia store              NH3  328.68 MWh  328.68 MWh    -0.00 MWh   100.00%
+Store:LY0 9 NH3 ammonia store              NH3  587.99 MWh  587.99 MWh    -0.00 MWh   100.00%
+Store:LY1 0 NH3 ammonia store              NH3  474.68 MWh  474.68 MWh    -0.00 MWh   100.00%
+Store:LY0 0 home battery          home battery  313.40 GWh  313.40 GWh    -0.00 MWh   100.00%
+Store:LY0 1 home battery          home battery  360.83 GWh  360.83 GWh     0.00 MWh   100.00%
+Store:LY0 10 home battery         home battery  770.97 GWh  770.97 GWh     0.00 MWh   100.00%
+Store:LY0 2 home battery          home battery  330.41 GWh  330.41 GWh     0.00 MWh   100.00%
+Store:LY0 3 home battery          home battery   76.42 GWh   76.42 GWh     0.00 MWh   100.00%
+Store:LY0 4 home battery          home battery  179.91 GWh  179.91 GWh     0.00 MWh   100.00%
+Store:LY0 5 home battery          home battery   52.32 GWh   52.32 GWh     0.00 MWh   100.00%
+Store:LY0 6 home battery          home battery  167.83 GWh  167.83 GWh     0.00 MWh   100.00%
+Store:LY0 7 home battery          home battery  181.31 GWh  181.31 GWh     0.00 MWh   100.00%
+Store:LY0 8 home battery          home battery   87.65 GWh   87.65 GWh     0.00 MWh   100.00%
+Store:LY0 9 home battery          home battery  279.16 GWh  279.16 GWh    -0.00 MWh   100.00%
+Store:LY1 0 home battery          home battery  106.51 GWh  106.51 GWh     0.00 MWh   100.00%
+
+##########################################################################################
+ 3. BUS-LEVEL NODAL CONSERVATION CHECK
+##########################################################################################
+WARNING: 62 bus(es) exceed the mismatch tolerance threshold of 1.0 MWh:
+                                   Carrier        Supply        Demand   Net_Balance
+Bus                                                                                 
+co2 atmosphere                         co2  8.772498e+07  0.000000e+00  8.772498e+07
+LY0 0 co2 stored                co2 stored  1.122142e+05  1.118061e+05  4.081217e+02
+LY0 1 co2 stored                co2 stored  3.085139e+05  3.077429e+05  7.710119e+02
+LY0 10 co2 stored               co2 stored  1.864499e+07  1.864264e+07  2.351062e+03
+LY0 2 co2 stored                co2 stored  2.614787e+05  2.608160e+05  6.626362e+02
+LY0 3 co2 stored                co2 stored  5.230996e+04  5.206998e+04  2.399755e+02
+LY0 4 co2 stored                co2 stored  6.803524e+04  6.775463e+04  2.806124e+02
+LY0 5 co2 stored                co2 stored  4.306435e+04  4.283671e+04  2.276362e+02
+LY0 6 co2 stored                co2 stored  9.648364e+04  9.610267e+04  3.809682e+02
+LY0 7 co2 stored                co2 stored  1.163607e+05  1.159566e+05  4.041012e+02
+LY0 8 co2 stored                co2 stored  6.403623e+04  6.377129e+04  2.649488e+02
+LY0 9 co2 stored                co2 stored  1.853013e+05  1.847401e+05  5.612299e+02
+LY1 0 co2 stored                co2 stored  4.342426e+04  4.319982e+04  2.244394e+02
+LY0 0 oil                              oil  3.545170e+02  4.361622e+06 -4.361268e+06
+LY0 1 oil                              oil  3.533273e+02  3.426599e+06 -3.426246e+06
+LY0 10 oil                             oil  3.525362e+02  4.550508e+06 -4.550155e+06
+LY0 2 oil                              oil  3.538916e+02  3.029224e+06 -3.028870e+06
+LY0 3 oil                              oil  3.541680e+02  1.743916e+05 -1.740374e+05
+LY0 4 oil                              oil  3.553921e+02  4.628951e+06 -4.628596e+06
+LY0 5 oil                              oil  3.538475e+02  1.903620e+06 -1.903266e+06
+LY0 6 oil                              oil  3.546441e+02  2.251758e+06 -2.251404e+06
+LY0 7 oil                              oil  3.546966e+02  2.610371e+06 -2.610016e+06
+LY0 8 oil                              oil  3.543797e+02  2.161529e+05 -2.157985e+05
+LY0 9 oil                              oil  3.530958e+02  2.365225e+07 -2.365189e+07
+LY1 0 oil                              oil  3.545468e+02  1.366112e+05 -1.362567e+05
+LY0 0 gas for industry    gas for industry  4.950698e+05  0.000000e+00  4.950698e+05
+LY0 1 gas for industry    gas for industry  1.467785e+06  0.000000e+00  1.467785e+06
+LY0 10 gas for industry   gas for industry  2.400840e+06  0.000000e+00  2.400840e+06
+LY0 2 gas for industry    gas for industry  1.098126e+06  0.000000e+00  1.098126e+06
+LY0 3 gas for industry    gas for industry  2.282586e+05  0.000000e+00  2.282586e+05
+LY0 4 gas for industry    gas for industry  2.982033e+05  0.000000e+00  2.982033e+05
+LY0 5 gas for industry    gas for industry  1.677152e+05  0.000000e+00  1.677152e+05
+LY0 6 gas for industry    gas for industry  4.416591e+05  0.000000e+00  4.416591e+05
+LY0 7 gas for industry    gas for industry  5.425382e+05  0.000000e+00  5.425382e+05
+LY0 8 gas for industry    gas for industry  2.828088e+05  0.000000e+00  2.828088e+05
+LY0 9 gas for industry    gas for industry  8.461787e+05  0.000000e+00  8.461787e+05
+LY1 0 gas for industry    gas for industry  1.789091e+05  0.000000e+00  1.789091e+05
+process emissions        process emissions  0.000000e+00  1.511088e+07 -1.511088e+07
+LY0 0 NH3                              NH3  4.617735e+04  3.450900e+02  4.583226e+04
+LY0 1 NH3                              NH3  1.368660e+05  9.823413e+02  1.358836e+05
+LY0 10 NH3                             NH3  2.237647e+05  1.501279e+03  2.222634e+05
+LY0 2 NH3                              NH3  1.024277e+05  7.661290e+02  1.016616e+05
+LY0 3 NH3                              NH3  2.161650e+04  4.849154e+02  2.113158e+04
+LY0 4 NH3                              NH3  2.791964e+04  3.127557e+02  2.760688e+04
+LY0 5 NH3                              NH3  1.593036e+04  4.037297e+02  1.552663e+04
+LY0 6 NH3                              NH3  4.142014e+04  5.325080e+02  4.088763e+04
+LY0 7 NH3                              NH3  5.081767e+04  5.909099e+02  5.022676e+04
+LY0 8 NH3                              NH3  2.663635e+04  4.546477e+02  2.618170e+04
+LY0 9 NH3                              NH3  7.904997e+04  7.129742e+02  7.833700e+04
+LY1 0 NH3                              NH3  1.716452e+04  6.015798e+02  1.656294e+04
+LY0 0 low voltage              low voltage  3.686669e+06  3.580565e+06  1.061042e+05
+LY0 1 low voltage              low voltage  9.835673e+06  9.521094e+06  3.145782e+05
+LY0 10 low voltage             low voltage  1.586621e+07  1.535165e+07  5.145522e+05
+LY0 2 low voltage              low voltage  7.546280e+06  7.310928e+06  2.353522e+05
+LY0 3 low voltage              low voltage  1.534119e+06  1.485198e+06  4.892079e+04
+LY0 4 low voltage              low voltage  2.252108e+06  2.188197e+06  6.391146e+04
+LY0 5 low voltage              low voltage  1.245176e+06  1.209231e+06  3.594501e+04
+LY0 6 low voltage              low voltage  3.168008e+06  3.073350e+06  9.465715e+04
+LY0 7 low voltage              low voltage  3.592339e+06  3.476061e+06  1.162777e+05
+LY0 8 low voltage              low voltage  1.836808e+06  1.776196e+06  6.061209e+04
+LY0 9 low voltage              low voltage  5.916541e+06  5.735187e+06  1.813545e+05
+LY1 0 low voltage              low voltage  1.262206e+06  1.223862e+06  3.834413e+04
+
+Full Bus Balance Overview:
+                                                      Carrier      Supply      Demand  Net_Balance
+Bus                                                                                               
+LY0 0                                                      AC   12.28 TWh   12.28 TWh     0.00 MWh
+LY0 1                                                      AC   13.60 TWh   13.60 TWh    -0.00 MWh
+LY0 10                                                     AC   12.62 TWh   12.62 TWh     0.00 MWh
+LY0 2                                                      AC    6.19 TWh    6.19 TWh     0.00 MWh
+LY0 3                                                      AC    9.46 TWh    9.46 TWh     0.00 MWh
+LY0 4                                                      AC   12.20 TWh   12.20 TWh    -0.00 MWh
+LY0 5                                                      AC    6.77 TWh    6.77 TWh    -0.00 MWh
+LY0 6                                                      AC    4.60 TWh    4.60 TWh    -0.00 MWh
+LY0 7                                                      AC   11.78 TWh   11.78 TWh    -0.00 MWh
+LY0 8                                                      AC    7.86 TWh    7.86 TWh     0.00 MWh
+LY0 9                                                      AC    9.04 TWh    9.04 TWh    -0.00 MWh
+LY1 0                                                      AC  787.69 GWh  787.69 GWh    -0.00 MWh
+co2 atmosphere                                            co2   87.72 TWh    0.00 MWh    87.72 TWh
+LY0 0 co2 stored                                   co2 stored  112.21 GWh  111.81 GWh   408.12 MWh
+LY0 1 co2 stored                                   co2 stored  308.51 GWh  307.74 GWh   771.01 MWh
+LY0 10 co2 stored                                  co2 stored   18.64 TWh   18.64 TWh     2.35 GWh
+LY0 2 co2 stored                                   co2 stored  261.48 GWh  260.82 GWh   662.64 MWh
+LY0 3 co2 stored                                   co2 stored   52.31 GWh   52.07 GWh   239.98 MWh
+LY0 4 co2 stored                                   co2 stored   68.04 GWh   67.75 GWh   280.61 MWh
+LY0 5 co2 stored                                   co2 stored   43.06 GWh   42.84 GWh   227.64 MWh
+LY0 6 co2 stored                                   co2 stored   96.48 GWh   96.10 GWh   380.97 MWh
+LY0 7 co2 stored                                   co2 stored  116.36 GWh  115.96 GWh   404.10 MWh
+LY0 8 co2 stored                                   co2 stored   64.04 GWh   63.77 GWh   264.95 MWh
+LY0 9 co2 stored                                   co2 stored  185.30 GWh  184.74 GWh   561.23 MWh
+LY1 0 co2 stored                                   co2 stored   43.42 GWh   43.20 GWh   224.44 MWh
+LY0 0 gas                                                 gas  626.88 GWh  626.88 GWh     0.00 MWh
+LY0 1 gas                                                 gas    1.73 TWh    1.73 TWh    -0.00 MWh
+LY0 10 gas                                                gas  104.62 TWh  104.62 TWh     0.00 MWh
+LY0 2 gas                                                 gas    1.46 TWh    1.46 TWh    -0.00 MWh
+LY0 3 gas                                                 gas  289.12 GWh  289.12 GWh    -0.00 MWh
+LY0 4 gas                                                 gas  378.81 GWh  378.81 GWh    -0.00 MWh
+LY0 5 gas                                                 gas  234.28 GWh  234.28 GWh     0.00 MWh
+LY0 6 gas                                                 gas  538.24 GWh  538.24 GWh     0.00 MWh
+LY0 7 gas                                                 gas  649.75 GWh  649.75 GWh    -0.00 MWh
+LY0 8 gas                                                 gas  356.20 GWh  356.20 GWh     0.00 MWh
+LY0 9 gas                                                 gas    1.03 TWh    1.03 TWh     0.00 MWh
+LY1 0 gas                                                 gas  238.93 GWh  238.93 GWh     0.00 MWh
+LY0 0 oil                                                 oil  354.52 MWh    4.36 TWh    -4.36 TWh
+LY0 1 oil                                                 oil  353.33 MWh    3.43 TWh    -3.43 TWh
+LY0 10 oil                                                oil  352.54 MWh    4.55 TWh    -4.55 TWh
+LY0 2 oil                                                 oil  353.89 MWh    3.03 TWh    -3.03 TWh
+LY0 3 oil                                                 oil  354.17 MWh  174.39 GWh  -174.04 GWh
+LY0 4 oil                                                 oil  355.39 MWh    4.63 TWh    -4.63 TWh
+LY0 5 oil                                                 oil  353.85 MWh    1.90 TWh    -1.90 TWh
+LY0 6 oil                                                 oil  354.64 MWh    2.25 TWh    -2.25 TWh
+LY0 7 oil                                                 oil  354.70 MWh    2.61 TWh    -2.61 TWh
+LY0 8 oil                                                 oil  354.38 MWh  216.15 GWh  -215.80 GWh
+LY0 9 oil                                                 oil  353.10 MWh   23.65 TWh   -23.65 TWh
+LY1 0 oil                                                 oil  354.55 MWh  136.61 GWh  -136.26 GWh
+LY0 0 coal                                               coal    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 1 coal                                               coal    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 10 coal                                              coal    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 2 coal                                               coal    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 3 coal                                               coal    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 4 coal                                               coal    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 5 coal                                               coal    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 6 coal                                               coal    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 7 coal                                               coal    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 8 coal                                               coal    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 9 coal                                               coal    0.00 MWh    0.00 MWh     0.00 MWh
+LY1 0 coal                                               coal    0.00 MWh    0.00 MWh     0.00 MWh
+Earth lignite                                         lignite    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 0 solid biomass                                   biomass    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 1 solid biomass                                   biomass    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 10 solid biomass                                  biomass    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 2 solid biomass                                   biomass    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 3 solid biomass                                   biomass    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 4 solid biomass                                   biomass    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 5 solid biomass                                   biomass    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 6 solid biomass                                   biomass    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 7 solid biomass                                   biomass    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 8 solid biomass                                   biomass    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 9 solid biomass                                   biomass    0.00 MWh    0.00 MWh     0.00 MWh
+LY1 0 solid biomass                                   biomass    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 0 H2                                                   H2   53.77 GWh   53.77 GWh     0.00 MWh
+LY0 1 H2                                                   H2  157.48 GWh  157.48 GWh    -0.00 MWh
+LY0 10 H2                                                  H2  117.52 TWh  117.52 TWh     0.00 MWh
+LY0 2 H2                                                   H2  168.59 GWh  168.59 GWh     0.00 MWh
+LY0 3 H2                                                   H2   25.67 GWh   25.67 GWh     0.00 MWh
+LY0 4 H2                                                   H2   32.91 GWh   32.91 GWh     0.00 MWh
+LY0 5 H2                                                   H2   32.85 GWh   32.85 GWh    -0.00 MWh
+LY0 6 H2                                                   H2   48.21 GWh   48.21 GWh    -0.00 MWh
+LY0 7 H2                                                   H2   61.11 GWh   61.11 GWh     0.00 MWh
+LY0 8 H2                                                   H2   31.88 GWh   31.88 GWh    -0.00 MWh
+LY0 9 H2                                                   H2   92.20 GWh   92.20 GWh     0.00 MWh
+LY1 0 H2                                                   H2   29.60 GWh   29.60 GWh    -0.00 MWh
+LY0 0 battery                                         battery    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 1 battery                                         battery    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 10 battery                                        battery    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 2 battery                                         battery    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 3 battery                                         battery    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 4 battery                                         battery    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 5 battery                                         battery    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 6 battery                                         battery    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 7 battery                                         battery    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 8 battery                                         battery    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 9 battery                                         battery    0.00 MWh    0.00 MWh     0.00 MWh
+LY1 0 battery                                         battery    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 0 solid biomass for industry   solid biomass for industry    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 1 solid biomass for industry   solid biomass for industry    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 10 solid biomass for industry  solid biomass for industry    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 2 solid biomass for industry   solid biomass for industry    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 3 solid biomass for industry   solid biomass for industry    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 4 solid biomass for industry   solid biomass for industry    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 5 solid biomass for industry   solid biomass for industry    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 6 solid biomass for industry   solid biomass for industry    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 7 solid biomass for industry   solid biomass for industry    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 8 solid biomass for industry   solid biomass for industry    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 9 solid biomass for industry   solid biomass for industry    0.00 MWh    0.00 MWh     0.00 MWh
+LY1 0 solid biomass for industry   solid biomass for industry    0.00 MWh    0.00 MWh     0.00 MWh
+LY0 0 gas for industry                       gas for industry  495.07 GWh    0.00 MWh   495.07 GWh
+LY0 1 gas for industry                       gas for industry    1.47 TWh    0.00 MWh     1.47 TWh
+LY0 10 gas for industry                      gas for industry    2.40 TWh    0.00 MWh     2.40 TWh
+LY0 2 gas for industry                       gas for industry    1.10 TWh    0.00 MWh     1.10 TWh
+LY0 3 gas for industry                       gas for industry  228.26 GWh    0.00 MWh   228.26 GWh
+LY0 4 gas for industry                       gas for industry  298.20 GWh    0.00 MWh   298.20 GWh
+LY0 5 gas for industry                       gas for industry  167.72 GWh    0.00 MWh   167.72 GWh
+LY0 6 gas for industry                       gas for industry  441.66 GWh    0.00 MWh   441.66 GWh
+LY0 7 gas for industry                       gas for industry  542.54 GWh    0.00 MWh   542.54 GWh
+LY0 8 gas for industry                       gas for industry  282.81 GWh    0.00 MWh   282.81 GWh
+LY0 9 gas for industry                       gas for industry  846.18 GWh    0.00 MWh   846.18 GWh
+LY1 0 gas for industry                       gas for industry  178.91 GWh    0.00 MWh   178.91 GWh
+process emissions                           process emissions    0.00 MWh   15.11 TWh   -15.11 TWh
+LY0 0 NH3                                                 NH3   46.18 GWh  345.09 MWh    45.83 GWh
+LY0 1 NH3                                                 NH3  136.87 GWh  982.34 MWh   135.88 GWh
+LY0 10 NH3                                                NH3  223.76 GWh    1.50 GWh   222.26 GWh
+LY0 2 NH3                                                 NH3  102.43 GWh  766.13 MWh   101.66 GWh
+LY0 3 NH3                                                 NH3   21.62 GWh  484.92 MWh    21.13 GWh
+LY0 4 NH3                                                 NH3   27.92 GWh  312.76 MWh    27.61 GWh
+LY0 5 NH3                                                 NH3   15.93 GWh  403.73 MWh    15.53 GWh
+LY0 6 NH3                                                 NH3   41.42 GWh  532.51 MWh    40.89 GWh
+LY0 7 NH3                                                 NH3   50.82 GWh  590.91 MWh    50.23 GWh
+LY0 8 NH3                                                 NH3   26.64 GWh  454.65 MWh    26.18 GWh
+LY0 9 NH3                                                 NH3   79.05 GWh  712.97 MWh    78.34 GWh
+LY1 0 NH3                                                 NH3   17.16 GWh  601.58 MWh    16.56 GWh
+LY0 0 low voltage                                 low voltage    3.69 TWh    3.58 TWh   106.10 GWh
+LY0 1 low voltage                                 low voltage    9.84 TWh    9.52 TWh   314.58 GWh
+LY0 10 low voltage                                low voltage   15.87 TWh   15.35 TWh   514.55 GWh
+LY0 2 low voltage                                 low voltage    7.55 TWh    7.31 TWh   235.35 GWh
+LY0 3 low voltage                                 low voltage    1.53 TWh    1.49 TWh    48.92 GWh
+LY0 4 low voltage                                 low voltage    2.25 TWh    2.19 TWh    63.91 GWh
+LY0 5 low voltage                                 low voltage    1.25 TWh    1.21 TWh    35.95 GWh
+LY0 6 low voltage                                 low voltage    3.17 TWh    3.07 TWh    94.66 GWh
+LY0 7 low voltage                                 low voltage    3.59 TWh    3.48 TWh   116.28 GWh
+LY0 8 low voltage                                 low voltage    1.84 TWh    1.78 TWh    60.61 GWh
+LY0 9 low voltage                                 low voltage    5.92 TWh    5.74 TWh   181.35 GWh
+LY1 0 low voltage                                 low voltage    1.26 TWh    1.22 TWh    38.34 GWh
+LY0 0 home battery                               home battery  717.62 GWh  717.62 GWh     0.00 MWh
+LY0 1 home battery                               home battery  809.94 GWh  809.94 GWh     0.00 MWh
+LY0 10 home battery                              home battery    1.65 TWh    1.65 TWh    -0.00 MWh
+LY0 2 home battery                               home battery  741.69 GWh  741.69 GWh     0.00 MWh
+LY0 3 home battery                               home battery  219.61 GWh  219.61 GWh    -0.00 MWh
+LY0 4 home battery                               home battery  430.03 GWh  430.03 GWh    -0.00 MWh
+LY0 5 home battery                               home battery  148.03 GWh  148.03 GWh     0.00 MWh
+LY0 6 home battery                               home battery  400.20 GWh  400.20 GWh     0.00 MWh
+LY0 7 home battery                               home battery  435.76 GWh  435.76 GWh     0.00 MWh
+LY0 8 home battery                               home battery  232.38 GWh  232.38 GWh    -0.00 MWh
+LY0 9 home battery                               home battery  657.10 GWh  657.10 GWh     0.00 MWh
+LY1 0 home battery                               home battery  271.14 GWh  271.14 GWh     0.00 MWh
+H2 export bus                                       H2 export   70.00 TWh   70.00 TWh     0.00 MWh

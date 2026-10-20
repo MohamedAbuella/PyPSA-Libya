@@ -37,6 +37,11 @@ HOURS = 3
 
 USE_CCL = False
 
+#### TRANSMISSION LINE METRIC MODE 
+TRANSMISSION_METRIC_MODE = "max"  # Options: "max" (Peak Loading %) 
+# TRANSMISSION_METRIC_MODE = "mean"  # Options: "mean" (Annual Average Loading %)
+
+
 #### Mapping base run names
 RUN_NAME_BY_CLUSTERS = {
     100: "libya-year-full",
@@ -1011,6 +1016,10 @@ print(f"  saved Carbon Shadow Price      -> {co2_txt_path}")
 # Transmission Line Bottlenecks & Flow Analysis
 has_mu = hasattr(n.lines_t, "mu_upper") and not n.lines_t.mu_upper.empty and (n.lines_t.mu_upper.abs().sum().sum() > 0)
 
+# =====================================================================
+# Transmission Line Bottlenecks & Flow Analysis
+# =====================================================================
+
 flows = n.lines_t.p0.abs()
 caps = n.lines["s_nom_opt"] if "s_nom_opt" in n.lines.columns else n.lines["s_nom"]
 caps = caps.replace(0, 1e-6)
@@ -1027,15 +1036,18 @@ line_summary = pd.DataFrame({
     "max_loading_pct": loading_ratios.max(axis=0),
     "mean_loading_pct": loading_ratios.mean(axis=0),
     "hours_near_capacity_65pct": (loading_ratios >= 65.0).sum(axis=0)
-}, index=n.lines.index).sort_values(by="mean_loading_pct", ascending=False)
+}, index=n.lines.index)
+
+sort_col = "max_loading_pct" if TRANSMISSION_METRIC_MODE.lower() == "max" else "mean_loading_pct"
+line_summary = line_summary.sort_values(by=sort_col, ascending=False)
 
 csv_out_path = os.path.join(OUT_DIR, "transmission_line_loading_analysis.csv")
 line_summary.to_csv(csv_out_path)
 print(f"  saved CSV line analysis        -> {csv_out_path}")
 
-if has_mu:
-    metric_series = n.lines_t.mu_upper.abs().mean(axis=0).sort_values(ascending=False)
-    metric_name = "Mean Shadow Price (€/MW)"
+if TRANSMISSION_METRIC_MODE.lower() == "max":
+    metric_series = line_summary["max_loading_pct"]
+    metric_name = "Peak Capacity Loading (%)"
 else:
     metric_series = line_summary["mean_loading_pct"]
     metric_name = "Mean Capacity Loading (%)"
@@ -1043,7 +1055,7 @@ else:
 line_txt_path = os.path.join(OUT_DIR, "transmission_line_bottlenecks_summary.txt")
 with open(line_txt_path, "w", encoding="utf-8") as f:
     f.write("=" * 125 + "\n")
-    f.write(f" PyPSA-Libya — Transmission Line Bottlenecks Report ({metric_name})\n")
+    f.write(f" PyPSA-Libya — Transmission Line Bottlenecks Report ({metric_name}) [Mode: {TRANSMISSION_METRIC_MODE.upper()}]\n")
     f.write("=" * 125 + "\n\n")
     
     header = f"{'LINE ID':12s} | {'From BUS':10s} | {'To BUS':10s} | {'CAP (MW)':12s} | {'MAX FLOW (MW)':14s} | {'MAX LOAD %':11s} | {'MEAN LOAD %':11s} | {'From BUS REGION':18s} | {'To BUS REGION':18s}"
@@ -1066,10 +1078,10 @@ short_top_labels = [line_summary.loc[idx, "short_line_id"] if idx in line_summar
 fig, ax = plt.subplots(figsize=(10, 5))
 bars = ax.bar(short_top_labels, top_lines.values, color="#dc2626")
 ax.set_ylabel(metric_name)
-ax.set_title(f"PyPSA-Libya — Top 15 Transmission Bottlenecks ({metric_name})")
+ax.set_title(f"PyPSA-Libya — Top 15 Transmission Bottlenecks ({metric_name} - {TRANSMISSION_METRIC_MODE.capitalize()} Mode)")
 plt.xticks(rotation=45, ha='right')
 
-ax.bar_label(bars, fmt='{:,.1f}', padding=3, fontsize=8)
+ax.bar_label(bars, fmt='{:,.1f}%', padding=3, fontsize=8)
 ax.margins(y=0.15)
 
 ax.set_axisbelow(True)
@@ -1146,14 +1158,13 @@ sm_line.set_array([])
 cbar_line = fig.colorbar(sm_line, ax=ax, orientation="vertical", shrink=0.7, pad=0.03)
 cbar_line.set_label(metric_name, fontsize=10, fontweight="normal")
 
-ax.set_title(f"PyPSA-Libya — Transmission Bottlenecks Map\nLine labels highlight Top 10 Congested Corridors ({metric_name})")
+ax.set_title(f"PyPSA-Libya — Transmission Bottlenecks Map ({TRANSMISSION_METRIC_MODE.capitalize()} Loading)\nLine labels highlight Top 10 Congested Corridors ({metric_name})")
 
 out_map_png = os.path.join(OUT_DIR, "transmission_line_bottlenecks_map.png")
 fig.savefig(out_map_png, dpi=150, bbox_inches="tight")
 save_paper_pdf(fig, ax, "transmission_line_bottlenecks_map", is_map=True)
 plt.close(fig)
 print(f"  saved Line Bottlenecks Map     -> {out_map_png}")
-
 # ---------------------------------------------------------------------
 # PART 5 — System-Wide Objective Cost Report & LCOE
 # ---------------------------------------------------------------------

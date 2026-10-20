@@ -92,6 +92,9 @@ PROJECT_LIFETIME_YEARS = len(YEARS)  # 21 years inclusive
 DEFAULT_WACC = 0.071                 # Baseline Discount Rate: 7.10%
 REVENUE_MARGIN = 1.00                # EUR/kg added to LCOH
 
+###---TRANSMISSION LINE METRIC MODE ---
+TRANSMISSION_METRIC_MODE = "max"  # Options: "max" (Peak Loading %) 
+# TRANSMISSION_METRIC_MODE = "mean"  # Options: "mean" (Annual Average Loading %)
 
 
 OUT_DIR = "viz_outputs/h2_scenario_comparison"
@@ -625,6 +628,9 @@ for case_key, case_info in RUN_CASES.items():
                    edgecolor="black", linewidth=0.5, width=0.5)
             bottom += values
 
+        # --- ADD THIS LINE TO CREATE SPACE ABOVE THE HIGHEST BAR ---
+        ax.set_ylim(0, bottom.max() * 1.08)
+
         ax.set_ylabel("Annualized System Cost [Billion EUR]", fontsize=11)
         title_type = "No Export Hydrogen" if case_key == "No_H2_Export" else "Export Hydrogen"
         ax.set_title(f"PyPSA-Libya: {title_type} System Cost Comparison\nScenarios (a), (b), and (c)", fontsize=12, fontweight="bold")
@@ -1141,7 +1147,6 @@ for scenario_name, path in RESULTS.items():
     
     
         
-        
     # =====================================================================
     # 2.3 Spatial & Graphical Transmission Line Bottlenecks for Scenarios
     # =====================================================================
@@ -1149,7 +1154,7 @@ for scenario_name, path in RESULTS.items():
     import numpy as np
 
     print("\n" + "=" * 70)
-    print("Generating Transmission Line Bottlenecks (Reports & Maps) across Scenarios")
+    print(f"Generating Transmission Line Bottlenecks (Reports & Maps) across Scenarios [Mode: {TRANSMISSION_METRIC_MODE.upper()}]")
     print("=" * 70)
 
     # ------------------------------------------------------------------
@@ -1197,26 +1202,15 @@ for scenario_name, path in RESULTS.items():
             ys_land[0], ys_land[-1] = y0, y1
         return xs, ys_land
 
-
-    # ------------------------------------------------------------------
-    # Helper Functions for Routing & Line Identification
-    # ------------------------------------------------------------------
     def shorten_line_id(line_idx, bus0, bus1, existing_line_count):
-            idx_str = str(line_idx).strip()
-    
-            # Check if line index or name indicates a new candidate/expansion line
-            if "lines new" in idx_str or "new" in idx_str.lower() or idx_str.startswith("N"):
-                # Extract trailing numeric ID from string if available (e.g., 'lines new 0' -> 0)
-                m = re.search(r'(\d+)$', idx_str)
-                new_offset = int(m.group(1)) if m else 0
-                # Start 1-indexed counting continuing directly after existing lines
-                return str(existing_line_count + new_offset + 1)
-            
-            # If standard existing line index is purely numeric, shift to 1-based indexing
-            if idx_str.isdigit():
-                return str(int(idx_str) + 1)
-    
-            return idx_str
+        idx_str = str(line_idx).strip()
+        if "lines new" in idx_str or "new" in idx_str.lower() or idx_str.startswith("N"):
+            m = re.search(r'(\d+)$', idx_str)
+            new_offset = int(m.group(1)) if m else 0
+            return str(existing_line_count + new_offset + 1)
+        if idx_str.isdigit():
+            return str(int(idx_str) + 1)
+        return idx_str
 
     # ------------------------------------------------------------------
     # Data Processing & Analysis
@@ -1224,9 +1218,9 @@ for scenario_name, path in RESULTS.items():
     scenario_line_data = {}
     
     with open(os.path.join(OUT_DIR, "transmission_line_bottlenecks_summary.txt"), "w", encoding="utf-8") as f_out:
-        f_out.write("=" * 135 + "\n")
-        f_out.write(" PyPSA-Libya — Scenario Comparison: Transmission Line Bottlenecks Report\n")
-        f_out.write("=" * 135 + "\n\n")
+        f_out.write("=" * 145 + "\n")
+        f_out.write(f" PyPSA-Libya — Scenario Comparison: Transmission Line Bottlenecks Report [Mode: {TRANSMISSION_METRIC_MODE.upper()}]\n")
+        f_out.write("=" * 145 + "\n\n")
 
         for scenario_name, path in RESULTS.items():
             if not os.path.exists(path):
@@ -1241,14 +1235,10 @@ for scenario_name, path in RESULTS.items():
             caps = caps.replace(0, 1e-6)
             loading_ratios = flows.div(caps, axis=1) * 100.0
 
-            # short_ids = [shorten_line_id(idx, row.bus0, row.bus1) for idx, row in n_scen.lines.iterrows()]
-
-            # Calculate total existing non-expansion lines in the network
             n_existing_lines = sum(
                 1 for idx in n_scen.lines.index 
                 if not ("lines new" in str(idx) or "new" in str(idx).lower() or str(idx).startswith("N")))
 
-            # Generate updated 1-indexed short line IDs
             short_ids = [
                 shorten_line_id(idx, row.bus0, row.bus1, n_existing_lines) 
                 for idx, row in n_scen.lines.iterrows()]
@@ -1263,14 +1253,16 @@ for scenario_name, path in RESULTS.items():
                 "mean_loading_pct": loading_ratios.mean(axis=0),
                 "hours_gt_50pct": (loading_ratios >= 50.0).sum(axis=0),
                 "hours_gt_70pct": (loading_ratios >= 70.0).sum(axis=0),
-            }, index=n_scen.lines.index).sort_values(by="mean_loading_pct", ascending=False)
+            }, index=n_scen.lines.index)
+            
+            sort_col = "max_loading_pct" if TRANSMISSION_METRIC_MODE.lower() == "max" else "mean_loading_pct"
+            line_df = line_df.sort_values(by=sort_col, ascending=False)
 
             scenario_line_data[scenario_name] = (n_scen, line_df)
 
-            # Write scenario section to master txt report
-            f_out.write(f"--- SCENARIO: {scenario_name} ---\n")
+            f_out.write(f"--- SCENARIO: {scenario_name} (Sorted by {TRANSMISSION_METRIC_MODE.upper()} Loading) ---\n")
             header = f"{'LINE ID':12s} | {'From BUS':10s} | {'To BUS':10s} | {'CAP (MW)':12s} | {'MAX FLOW (MW)':14s} | {'MAX LOAD %':11s} | {'MEAN LOAD %':11s} | {'HRS >= 50%':10s} | {'HRS >= 70%':10s}"
-            f_out.write(header + "\n" + "-" * 135 + "\n")
+            f_out.write(header + "\n" + "-" * 145 + "\n")
 
             for _, row in line_df.iterrows():
                 f_out.write(f"{row['short_line_id']:12s} | {str(row['bus0']):10s} | {str(row['bus1']):10s} | "
@@ -1284,23 +1276,23 @@ for scenario_name, path in RESULTS.items():
     # Comparative Bar Chart: Top Bottleneck Lines across Scenarios
     # ------------------------------------------------------------------
     if scenario_line_data:
-        # Find global top 10 bottleneck lines based on mean loading across scenarios
-        combined_means = pd.concat([df["mean_loading_pct"] for _, df in scenario_line_data.values()], axis=1)
-        top_line_indices = combined_means.mean(axis=1).nlargest(10).index
+        metric_col = "max_loading_pct" if TRANSMISSION_METRIC_MODE.lower() == "max" else "mean_loading_pct"
+        metric_label = "Peak Capacity Loading (%)" if TRANSMISSION_METRIC_MODE.lower() == "max" else "Mean Capacity Loading (%)"
+
+        combined_metric = pd.concat([df[metric_col] for _, df in scenario_line_data.values()], axis=1)
+        top_line_indices = combined_metric.mean(axis=1).nlargest(10).index
         
-        # Build comparative dataframe for plotting
         chart_data = {}
         for scen_name, (_, df) in scenario_line_data.items():
-            short_labels = df.loc[top_line_indices, "short_line_id"]
-            chart_data[scen_name] = df.loc[top_line_indices, "mean_loading_pct"]
+            chart_data[scen_name] = df.loc[top_line_indices, metric_col]
         
         plot_df = pd.DataFrame(chart_data, index=top_line_indices)
         plot_df.index = [scenario_line_data[list(scenario_line_data.keys())[0]][1].loc[i, "short_line_id"] for i in top_line_indices]
 
         fig, ax = plt.subplots(figsize=(12, 6))
         plot_df.plot(kind="bar", ax=ax, width=0.8, colormap="viridis", edgecolor="black", linewidth=0.5)
-        ax.set_ylabel("Mean Capacity Loading (%)", fontsize=11)
-        ax.set_title("PyPSA-Libya — Transmission Bottlenecks Comparison across Scenarios\n", fontsize=12, fontweight="bold")
+        ax.set_ylabel(metric_label, fontsize=11)
+        ax.set_title(f"PyPSA-Libya — Transmission Bottlenecks Comparison across Scenarios ({TRANSMISSION_METRIC_MODE.capitalize()} Loading)\n", fontsize=12, fontweight="bold")
         ax.set_xticklabels(plot_df.index, rotation=45, ha="right")
         ax.grid(axis="y", linestyle="--", alpha=0.5)
         ax.legend(title="Scenarios", fontsize=9)
@@ -1317,11 +1309,12 @@ for scenario_name, path in RESULTS.items():
     # ------------------------------------------------------------------
     for scenario_name, (n_scen, line_df) in scenario_line_data.items():
         
-        
         fig = plt.figure(figsize=(11, 8))
         ax = setup_map_ax(fig)
 
-        metric_series = line_df["mean_loading_pct"]
+        metric_series = line_df["max_loading_pct"] if TRANSMISSION_METRIC_MODE.lower() == "max" else line_df["mean_loading_pct"]
+        colorbar_label = "Peak Capacity Loading (%)" if TRANSMISSION_METRIC_MODE.lower() == "max" else "Mean Capacity Loading (%)"
+        
         min_val, max_val = 0.0, max(metric_series.max(), 1.0)
         norm_metric = mcolors.Normalize(vmin=min_val, vmax=max_val)
         cmap_lines = plt.cm.get_cmap("Reds")
@@ -1336,12 +1329,7 @@ for scenario_name, path in RESULTS.items():
                 xs, ys = route_line_land(x0, y0, x1, y1)
                 ax.plot(xs, ys, color=line_color, lw=linewidth, zorder=3, alpha=0.85)
 
-        # -------------------------------------------------------------
-        # Label ALL Transmission Lines with Overlap Prevention
-        # -------------------------------------------------------------
-        # Keep track of midpoints to offset overlapping parallel lines
         seen_midpoints = {}
-
         for idx, row in n_scen.lines.iterrows():
             if row.bus0 in n_scen.buses.index and row.bus1 in n_scen.buses.index:
                 x0, y0 = n_scen.buses.loc[row.bus0, ["x", "y"]]
@@ -1351,12 +1339,10 @@ for scenario_name, path in RESULTS.items():
                 mid_idx = len(xs) // 2
                 mx, my = xs[mid_idx], ys[mid_idx]
 
-                # Identify parallel or overlapping segments based on midpoint rounding
                 key = (round(mx, 2), round(my, 2))
                 count = seen_midpoints.get(key, 0)
                 seen_midpoints[key] = count + 1
 
-                # Apply a slight upward/rightward offset for multi-lines between same buses
                 offset_x = 0.08 * count
                 offset_y = 0.08 * count
 
@@ -1377,9 +1363,16 @@ for scenario_name, path in RESULTS.items():
         sm_line = plt.cm.ScalarMappable(cmap=cmap_lines, norm=norm_metric)
         sm_line.set_array([])
         cbar = fig.colorbar(sm_line, ax=ax, orientation="vertical", shrink=0.7, pad=0.03)
-        cbar.set_label("Mean Capacity Loading (%)", fontsize=10)
+        cbar.set_label(colorbar_label, fontsize=10)
+        
+        ticks = list(range(0, int(max_val) + 10, 10))
+        if not any(np.isclose(t, max_val, atol=1.0) for t in ticks):
+            ticks.append(max_val)
+            ticks.sort()
+        cbar.set_ticks(ticks)
+        cbar.set_ticklabels([f"{t:.1f}" if isinstance(t, float) and not t.is_integer() else str(int(t)) for t in ticks])
 
-        ax.set_title(f"PyPSA-Libya — {scenario_name}: Transmission Bottlenecks Map", fontsize=11, fontweight="bold")
+        ax.set_title(f"PyPSA-Libya — {scenario_name}: Transmission Bottlenecks Map ({TRANSMISSION_METRIC_MODE.capitalize()} Loading)", fontsize=11, fontweight="bold")
         
         safe_scen = scenario_name.lower().replace(" ", "_")
         out_map_path = os.path.join(OUT_DIR, f"transmission_line_bottlenecks_map_{safe_scen}.png")

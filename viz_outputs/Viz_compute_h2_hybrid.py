@@ -41,21 +41,21 @@ from matplotlib.lines import Line2D
 # }
 
 
-##### H2 export, year, 3-hrs 
+
+###### H2 export, year, 3-hrs 
   
 RESULTS = {
     "Hybrid": r"Output\libya_h2export_hybrid_emispr_100\3hrs\postnetworks\elec_s_12_ec_lcopt_Co2L-Ep-3h__2030_0.071_AB_70export.nc",
+    
 }
-
 
 
 
 ##### No H2 export, year, 3-hrs 
 
 # RESULTS = {
-    # "Hybrid": r"Output\libya_h2export_hybrid_emispr_100\3hrs\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-Ep-3h__2030_0.071_AB_0export.nc",
+#     "Hybrid": r"Output\libya_h2export_hybrid_emispr_100\3hrs\No_Hydrogen_H2_0\postnetworks\elec_s_12_ec_lcopt_Co2L-Ep-3h__2030_0.071_AB_0export.nc",
 # }
-
 
 
 
@@ -68,6 +68,9 @@ YEARS = np.arange(2030, 2051)
 PROJECT_LIFETIME_YEARS = len(YEARS)  # 21 years inclusive
 DEFAULT_WACC = 0.071                 # Baseline Discount Rate: 7.10%
 REVENUE_MARGIN = 1.00                # EUR/kg added to LCOH
+
+TRANSMISSION_METRIC_MODE = "max"  # Options: "max" (Peak Loading %) 
+# TRANSMISSION_METRIC_MODE = "mean"  # Options: "mean" (Annual Average Loading %)
 
 
 
@@ -1092,7 +1095,6 @@ for scenario_name, path in RESULTS.items():
     
     
         
-        
     # =====================================================================
     # 2.3 Spatial & Graphical Transmission Line Bottlenecks for Hybrid Scenario
     # =====================================================================
@@ -1102,6 +1104,7 @@ for scenario_name, path in RESULTS.items():
     print("\n" + "=" * 70)
     print("Generating Transmission Line Bottlenecks (Reports & Maps) for Hybrid Scenario")
     print("=" * 70)
+
 
     # ------------------------------------------------------------------
     # Helper Functions for Routing & Line Identification
@@ -1150,19 +1153,12 @@ for scenario_name, path in RESULTS.items():
 
     def shorten_line_id(line_idx, bus0, bus1, existing_line_count):
         idx_str = str(line_idx).strip()
-
-        # Check if line index or name indicates a new candidate/expansion line
         if "lines new" in idx_str or "new" in idx_str.lower() or idx_str.startswith("N"):
-            # Extract trailing numeric ID from string if available (e.g., 'lines new 0' -> 0)
             m = re.search(r'(\d+)$', idx_str)
             new_offset = int(m.group(1)) if m else 0
-            # Start 1-indexed counting continuing directly after existing lines
             return str(existing_line_count + new_offset + 1)
-
-        # If standard existing line index is purely numeric, shift to 1-based indexing
         if idx_str.isdigit():
             return str(int(idx_str) + 1)
-
         return idx_str
 
     # ------------------------------------------------------------------
@@ -1171,9 +1167,9 @@ for scenario_name, path in RESULTS.items():
     scenario_line_data = {}
     
     with open(os.path.join(OUT_DIR, "transmission_line_bottlenecks_summary.txt"), "w", encoding="utf-8") as f_out:
-        f_out.write("=" * 135 + "\n")
-        f_out.write(" PyPSA-Libya — Hybrid Scenario: Transmission Line Bottlenecks Report\n")
-        f_out.write("=" * 135 + "\n\n")
+        f_out.write("=" * 145 + "\n")
+        f_out.write(f" PyPSA-Libya — Hybrid Scenario: Transmission Line Bottlenecks Report [Mode: {TRANSMISSION_METRIC_MODE.upper()}]\n")
+        f_out.write("=" * 145 + "\n\n")
 
         for scenario_name, path in RESULTS.items():
             if not os.path.exists(path):
@@ -1188,12 +1184,10 @@ for scenario_name, path in RESULTS.items():
             caps = caps.replace(0, 1e-6)
             loading_ratios = flows.div(caps, axis=1) * 100.0
 
-            # Calculate total existing non-expansion lines in the network
             n_existing_lines = sum(
                 1 for idx in n_scen.lines.index 
                 if not ("lines new" in str(idx) or "new" in str(idx).lower() or str(idx).startswith("N")))
 
-            # Generate updated 1-indexed short line IDs
             short_ids = [
                 shorten_line_id(idx, row.bus0, row.bus1, n_existing_lines) 
                 for idx, row in n_scen.lines.iterrows()]
@@ -1208,14 +1202,16 @@ for scenario_name, path in RESULTS.items():
                 "mean_loading_pct": loading_ratios.mean(axis=0),
                 "hours_gt_50pct": (loading_ratios >= 50.0).sum(axis=0),
                 "hours_gt_70pct": (loading_ratios >= 70.0).sum(axis=0),
-            }, index=n_scen.lines.index).sort_values(by="mean_loading_pct", ascending=False)
+            }, index=n_scen.lines.index)
+            
+            sort_col = "max_loading_pct" if TRANSMISSION_METRIC_MODE.lower() == "max" else "mean_loading_pct"
+            line_df = line_df.sort_values(by=sort_col, ascending=False)
 
             scenario_line_data[scenario_name] = (n_scen, line_df)
 
-            # Write scenario section to master txt report
-            f_out.write(f"--- SCENARIO: {scenario_name} ---\n")
+            f_out.write(f"--- SCENARIO: {scenario_name} (Sorted by {TRANSMISSION_METRIC_MODE.upper()} Loading) ---\n")
             header = f"{'LINE ID':12s} | {'From BUS':10s} | {'To BUS':10s} | {'CAP (MW)':12s} | {'MAX FLOW (MW)':14s} | {'MAX LOAD %':11s} | {'MEAN LOAD %':11s} | {'HRS >= 50%':10s} | {'HRS >= 70%':10s}"
-            f_out.write(header + "\n" + "-" * 135 + "\n")
+            f_out.write(header + "\n" + "-" * 145 + "\n")
 
             for _, row in line_df.iterrows():
                 f_out.write(f"{row['short_line_id']:12s} | {str(row['bus0']):10s} | {str(row['bus1']):10s} | "
@@ -1226,26 +1222,26 @@ for scenario_name, path in RESULTS.items():
     print(f"Saved transmission bottlenecks summary text file -> {os.path.join(OUT_DIR, 'transmission_line_bottlenecks_summary.txt')}")
 
     # ------------------------------------------------------------------
-    # Comparative Bar Chart: Top Bottleneck Lines
+    # Comparative Bar Chart: Top Bottleneck Lines (Dynamic Metric)
     # ------------------------------------------------------------------
     if scenario_line_data:
-        # Find top 10 bottleneck lines based on mean loading
-        combined_means = pd.concat([df["mean_loading_pct"] for _, df in scenario_line_data.values()], axis=1)
-        top_line_indices = combined_means.mean(axis=1).nlargest(10).index
+        metric_col = "max_loading_pct" if TRANSMISSION_METRIC_MODE.lower() == "max" else "mean_loading_pct"
+        metric_label = "Peak Capacity Loading (%)" if TRANSMISSION_METRIC_MODE.lower() == "max" else "Mean Capacity Loading (%)"
+
+        combined_metric = pd.concat([df[metric_col] for _, df in scenario_line_data.values()], axis=1)
+        top_line_indices = combined_metric.mean(axis=1).nlargest(10).index
         
-        # Build comparative dataframe for plotting
         chart_data = {}
         for scen_name, (_, df) in scenario_line_data.items():
-            short_labels = df.loc[top_line_indices, "short_line_id"]
-            chart_data[scen_name] = df.loc[top_line_indices, "mean_loading_pct"]
+            chart_data[scen_name] = df.loc[top_line_indices, metric_col]
         
         plot_df = pd.DataFrame(chart_data, index=top_line_indices)
         plot_df.index = [scenario_line_data[list(scenario_line_data.keys())[0]][1].loc[i, "short_line_id"] for i in top_line_indices]
 
         fig, ax = plt.subplots(figsize=(12, 6))
         plot_df.plot(kind="bar", ax=ax, width=0.8, colormap="viridis", edgecolor="black", linewidth=0.5)
-        ax.set_ylabel("Mean Capacity Loading (%)", fontsize=11)
-        ax.set_title("PyPSA-Libya — Transmission Bottlenecks (Top 10 Congested Lines)\n", fontsize=12, fontweight="bold")
+        ax.set_ylabel(metric_label, fontsize=11)
+        ax.set_title(f"PyPSA-Libya — Transmission Bottlenecks (Top 10 Congested Lines by {TRANSMISSION_METRIC_MODE.capitalize()})\n", fontsize=12, fontweight="bold")
         ax.set_xticklabels(plot_df.index, rotation=45, ha="right")
         ax.grid(axis="y", linestyle="--", alpha=0.5)
         ax.legend(title="Scenario", fontsize=9)
@@ -1258,14 +1254,16 @@ for scenario_name, path in RESULTS.items():
         print(f"Saved transmission bottlenecks bar chart -> {out_bar_path}")
 
     # ------------------------------------------------------------------
-    # Spatial Map: Line Bottleneck Locations
+    # Spatial Map: Line Bottleneck Locations (Dynamic Metric)
     # ------------------------------------------------------------------
     for scenario_name, (n_scen, line_df) in scenario_line_data.items():
         
         fig = plt.figure(figsize=(11, 8))
         ax = setup_map_ax(fig)
 
-        metric_series = line_df["mean_loading_pct"]
+        metric_series = line_df["max_loading_pct"] if TRANSMISSION_METRIC_MODE.lower() == "max" else line_df["mean_loading_pct"]
+        colorbar_label = "Peak Capacity Loading (%)" if TRANSMISSION_METRIC_MODE.lower() == "max" else "Mean Capacity Loading (%)"
+        
         min_val, max_val = 0.0, max(metric_series.max(), 1.0)
         norm_metric = mcolors.Normalize(vmin=min_val, vmax=max_val)
         cmap_lines = plt.cm.get_cmap("Reds")
@@ -1280,12 +1278,7 @@ for scenario_name, path in RESULTS.items():
                 xs, ys = route_line_land(x0, y0, x1, y1)
                 ax.plot(xs, ys, color=line_color, lw=linewidth, zorder=3, alpha=0.85)
 
-        # -------------------------------------------------------------
-        # Label ALL Transmission Lines with Overlap Prevention
-        # -------------------------------------------------------------
-        # Keep track of midpoints to offset overlapping parallel lines
         seen_midpoints = {}
-
         for idx, row in n_scen.lines.iterrows():
             if row.bus0 in n_scen.buses.index and row.bus1 in n_scen.buses.index:
                 x0, y0 = n_scen.buses.loc[row.bus0, ["x", "y"]]
@@ -1295,12 +1288,10 @@ for scenario_name, path in RESULTS.items():
                 mid_idx = len(xs) // 2
                 mx, my = xs[mid_idx], ys[mid_idx]
 
-                # Identify parallel or overlapping segments based on midpoint rounding
                 key = (round(mx, 2), round(my, 2))
                 count = seen_midpoints.get(key, 0)
                 seen_midpoints[key] = count + 1
 
-                # Apply a slight upward/rightward offset for multi-lines between same buses
                 offset_x = 0.08 * count
                 offset_y = 0.08 * count
 
@@ -1321,9 +1312,17 @@ for scenario_name, path in RESULTS.items():
         sm_line = plt.cm.ScalarMappable(cmap=cmap_lines, norm=norm_metric)
         sm_line.set_array([])
         cbar = fig.colorbar(sm_line, ax=ax, orientation="vertical", shrink=0.7, pad=0.03)
-        cbar.set_label("Mean Capacity Loading (%)", fontsize=10)
+        cbar.set_label(colorbar_label, fontsize=10)
+        
+        # Explicitly set ticks to include standard intervals up to the exact maximum value
+        ticks = list(range(0, int(max_val) + 10, 10))
+        if not any(np.isclose(t, max_val, atol=1.0) for t in ticks):
+            ticks.append(max_val)
+            ticks.sort()
+        cbar.set_ticks(ticks)
+        cbar.set_ticklabels([f"{t:.1f}" if isinstance(t, float) and not t.is_integer() else str(int(t)) for t in ticks])
 
-        ax.set_title(f"PyPSA-Libya — {scenario_name}: Transmission Bottlenecks Map", fontsize=11, fontweight="bold")
+        ax.set_title(f"PyPSA-Libya — {scenario_name}: Transmission Bottlenecks Map ({TRANSMISSION_METRIC_MODE.capitalize()} Loading)", fontsize=11, fontweight="bold")
         
         safe_scen = scenario_name.lower().replace(" ", "_")
         out_map_path = os.path.join(OUT_DIR, f"transmission_line_bottlenecks_map_{safe_scen}.png")
@@ -1331,7 +1330,6 @@ for scenario_name, path in RESULTS.items():
         save_paper_pdf(fig, ax, f"transmission_line_bottlenecks_map_{safe_scen}")
         plt.close(fig)
         print(f"Saved transmission map for {scenario_name} -> {out_map_path}")
-
 
 
 # =====================================================================
@@ -1517,6 +1515,10 @@ CAPEX_CARRIER_MAP.update({
     "fuel cell": "H2 Fuel Cell",
     "fc": "H2 Fuel Cell",
     
+    # Battery variations (for storage/battery links if modeled as links)
+    "battery": "Battery",
+    "Battery": "Battery",
+    
     # Gas variations (Capitalized as "Gas")
     "gas": "Gas",
     "Gas": "Gas",
@@ -1533,6 +1535,7 @@ CAPEX_CARRIER_MAP.update({
 
 CHART_COLORS.update({
     "H2 Fuel Cell": "cyan",
+    "Battery": "purple",            # Purple for Battery dispatch
     "Gas": "#7f8c8d",               # Professional muted gray for Gas
     "Solar Rooftop": "#e6007e",     # Distinct magenta/pink accent for Solar Rooftop
     "Solar PV": "#f5a623",          # Standard Solar PV color for consistency
@@ -1540,7 +1543,7 @@ CHART_COLORS.update({
 
 
 def extract_total_dispatch(n: pypsa.Network) -> pd.DataFrame:
-    """Extracts total dispatch per carrier for all generators, storage units, and fuel cell links."""
+    """Extracts total dispatch per carrier for generators, storage units, and electricity-output links only (Battery & Fuel Cell)."""
     parts = []
     
     # Diagnostic print to check available carriers in this network file
@@ -1563,24 +1566,29 @@ def extract_total_dispatch(n: pypsa.Network) -> pd.DataFrame:
         ).sum().T / 1e3
         parts.append(su_dispatch)
 
-    # 3. Links dispatch (Fuel cells / H2 turbines injecting power via p1)
+    # 3. Links dispatch - STRICTLY restricted to electricity output links (Batteries & Fuel Cells)
     if hasattr(n, "links") and not n.links.empty and hasattr(n, "links_t") and hasattr(n.links_t, "p1") and not n.links_t.p1.empty:
         def map_link_carrier(c):
             c_str = str(c).strip()
             c_lower = c_str.lower()
             if "fuel cell" in c_lower or "turbine" in c_lower or c_lower in ["fc", "h2 fuel cell", "h2 turbine"]:
                 return "H2 Fuel Cell"
-            return CAPEX_CARRIER_MAP.get(c_str, CAPEX_CARRIER_MAP.get(c_lower, c_str))
+            elif "battery" in c_lower or c_lower == "battr":
+                return "Battery"
+            # Explicitly ignore all other non-electrical links (Electrolyzers, Fischer-Tropsch, SMR, etc.)
+            return None
 
         link_mapped_carriers = n.links.carrier.map(map_link_carrier)
-        fuel_cell_links = [l for l in n.links.index if link_mapped_carriers[l] == "H2 Fuel Cell" and l in n.links_t.p1.columns]
         
-        if fuel_cell_links:
-            # FIX: Negate p1 because PyPSA stores link outputs as negative values.
-            fc_dispatch = (-n.links_t.p1[fuel_cell_links]).clip(lower=0).T.groupby(
-                link_mapped_carriers[fuel_cell_links]
+        # Filter only links that successfully mapped to Battery or H2 Fuel Cell
+        electricity_links = [l for l in n.links.index if link_mapped_carriers[l] in ["H2 Fuel Cell", "Battery"] and l in n.links_t.p1.columns]
+        
+        if electricity_links:
+            # Negate p1 because PyPSA stores link outputs as negative values.
+            link_dispatch = (-n.links_t.p1[electricity_links]).clip(lower=0).T.groupby(
+                link_mapped_carriers[electricity_links]
             ).sum().T / 1e3
-            parts.append(fc_dispatch)
+            parts.append(link_dispatch)
 
     # Combine all dispatch sources
     if parts:
@@ -1655,7 +1663,7 @@ for scenario_name, path in RESULTS.items():
     plt.close(fig)
     print(f"  Saved August bar chart -> {out_path}")
     
-
+    
     
 # =====================================================================
 # EXTRA SECTION: GENERATE 4 DETAILED OUTCOMES PER H2 SCENARIO
@@ -2520,7 +2528,7 @@ if table1_records:
 
 
 
-
+    
 # =====================================================================
 # 8. ELECTRICITY-ONLY PHYSICAL GENERATION BY CARRIER (Hybrid Scenario)
 # =====================================================================
@@ -2531,7 +2539,6 @@ print("=" * 70)
 
 # Carrier definitions strictly belonging to the Electricity Sector
 ELEC_ONLY_GEN_CARRIERS = ["solar", "solar rooftop", "onwind", "offwind", "oil"]
-ELEC_ONLY_LINK_CARRIERS = ["CCGT", "OCGT"]
 
 for scenario_name, path in RESULTS.items():
     if not os.path.exists(path):
@@ -2554,28 +2561,39 @@ for scenario_name, path in RESULTS.items():
             sel_gens = [g for g in elec_gens.index if g in n_scen.generators_t.p.columns]
             if sel_gens:
                 gen_p = n_scen.generators_t.p[sel_gens].groupby(
-                    n_scen.generators.loc[sel_gens, "carrier"].map(map_outcome_carrier), axis=1
+                    n_scen.generators.loc[sel_gens, "carrier"].map(
+                        lambda c: CAPEX_CARRIER_MAP.get(str(c).strip(), CAPEX_CARRIER_MAP.get(str(c).strip().lower(), str(c).strip()))
+                    ), axis=1
                 ).sum()
                 for carrier in gen_p.columns:
                     energy_twh = (gen_p[carrier] * dt_hours).sum() / 1e6
                     if energy_twh > 1e-6:
                         elec_gen_dict[carrier] = elec_gen_dict.get(carrier, 0.0) + energy_twh
 
-    # 2. Thermal Links (CCGT, OCGT) — Output Generation (p0 * efficiency)
+    # 2. Electricity-Producing Links (CCGT, OCGT, H2 Fuel Cell) — Output Generation (p0 * efficiency)
     if not n_scen.links.empty and not n_scen.links_t.p0.empty:
-        elec_links = n_scen.links[n_scen.links.carrier.isin(ELEC_ONLY_LINK_CARRIERS)]
-        if not elec_links.empty:
-            sel_links = [l for l in elec_links.index if l in n_scen.links_t.p0.columns]
-            if sel_links:
-                eff = n_scen.links.loc[sel_links, "efficiency"].fillna(1.0)
-                link_output = n_scen.links_t.p0[sel_links].mul(eff, axis=1)
-                link_p = link_output.groupby(
-                    n_scen.links.loc[sel_links, "carrier"].map(map_outcome_carrier), axis=1
-                ).sum()
-                for carrier in link_p.columns:
-                    energy_twh = (link_p[carrier] * dt_hours).sum() / 1e6
-                    if energy_twh > 1e-6:
-                        elec_gen_dict[carrier] = elec_gen_dict.get(carrier, 0.0) + energy_twh
+        def map_elec_link_carrier(c):
+            c_str = str(c).strip()
+            c_lower = c_str.lower()
+            if "fuel cell" in c_lower or "turbine" in c_lower or c_lower in ["fc", "h2 fuel cell", "h2 turbine"]:
+                return "H2 Fuel Cell"
+            elif c_lower in ["ccgt", "ocgt", "oil"]:
+                return CAPEX_CARRIER_MAP.get(c_str, c_str.upper() if c_lower in ["ccgt", "ocgt"] else "Oil")
+            return None
+
+        link_mapped_carriers = n_scen.links.carrier.map(map_elec_link_carrier)
+        sel_links = [l for l in n_scen.links.index if link_mapped_carriers[l] is not None and l in n_scen.links_t.p0.columns]
+        
+        if sel_links:
+            eff = n_scen.links.loc[sel_links, "efficiency"].fillna(1.0)
+            link_output = n_scen.links_t.p0[sel_links].mul(eff, axis=1)
+            link_p = link_output.groupby(
+                link_mapped_carriers[sel_links], axis=1
+            ).sum()
+            for carrier in link_p.columns:
+                energy_twh = (link_p[carrier] * dt_hours).sum() / 1e6
+                if energy_twh > 1e-6:
+                    elec_gen_dict[carrier] = elec_gen_dict.get(carrier, 0.0) + energy_twh
 
     elec_gen_twh = pd.Series(elec_gen_dict).sort_values(ascending=False)
 
@@ -2605,7 +2623,6 @@ for scenario_name, path in RESULTS.items():
     for p in ax.patches:
         height = p.get_height()
         if height >= 0:
-            # Format display dynamically for small values (e.g. 0.005 TWh vs 24.94 TWh)
             label_text = f"{height:,.3f} TWh" if height < 0.1 else f"{height:,.2f} TWh"
             ax.annotate(
                 label_text,
@@ -2641,12 +2658,11 @@ for scenario_name, path in RESULTS.items():
         f.write("-" * 65 + "\n")
         f.write(f"{'TOTAL Electricity Generation':30s} | {total_elec_twh:18.4f} | 100.00%\n")
         f.write("=" * 65 + "\n")
+        
 
     print(f"Saved Electricity-Only Summary Text Report -> {txt_elec_path}")
     
     
-
-
 # =====================================================================
 # 9. OPEX BREAKDOWN ANALYSIS (STACKED BAR CHART - BOTH SCENARIOS)
 # =====================================================================
@@ -2953,3 +2969,16 @@ print(f" - Paper-ready PDFs (Directly saved): Created during run")
 print(f" - Summary TXT files copied: {table_count}")
 print(f" Output Location: ./{PAPER_DIR}/")
 print("=" * 70)
+
+
+
+# fc = n.links[n.links.carrier == "H2 fuel cell"]
+# fc = n.links[n.links.carrier.str.contains("fuel cell", case=False, na=False)]
+# print(fc[["p_nom_opt", "marginal_cost", "capital_cost", "efficiency"]])
+
+# smr_links = n.links[n.links.carrier.isin(["SMR", "SMR CC"])]
+# print(f"SMR/SMR CC links present: {len(smr_links)}")  # should be 0
+
+# gas_gens = n.generators[n.generators.carrier == "gas"]
+# print(gas_gens[["p_nom_opt", "marginal_cost"]])
+
