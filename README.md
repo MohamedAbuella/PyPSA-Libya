@@ -1,6 +1,6 @@
 # PyPSA-Libya: Simulation Results & Pathways
 
-[![Live Dashboard Preview](https://img.shields.io/badge/📊_Explore_Interactive_Dashboard-Click_Here-blue?style=for-the-badge)](https://mhdella.github.io/PyPSA-Libya/)
+[![Live Dashboard Preview](https://img.shields.io/badge/📊_Explore_Interactive_Dashboard-Click_Here-blue?style=for-the-badge)](https://MohamedAbuella.github.io/PyPSA-Libya/)
 
 An open, high-resolution model of the Libyan electricity system, built on [PyPSA-Earth](https://github.com/pypsa-meets-earth/pypsa-earth).
 
