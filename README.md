@@ -53,6 +53,7 @@ If you use the PyPSA-Libya model, data, or findings in your research, please cit
   url       = {https://www.researchgate.net/publication/417001034_PyPSA-Libya_An_Open-Source_Energy_System_Model_for_National_Decarbonization_and_Hydrogen_Export_Pathways},
   note      = {ResearchGate Preprint}
 }
+```
 
 ## License
 
