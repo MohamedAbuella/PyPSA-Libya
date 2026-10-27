@@ -57,6 +57,6 @@ If you use the PyPSA-Libya model, data, or findings in your research, please cit
 
 ## License
 
-This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**, matching the upstream [PyPSA-Earth](https://github.com/pypsa-meets-earth/pypsa-earth) codebase. 
+This project is licensed under the **GNU Affero General Public License v3.0** (AGPL-3.0-or-later), matching the upstream [PyPSA-Earth](https://github.com/pypsa-meets-earth/pypsa-earth) codebase alignment.
 
-See the [`LICENSE`](./LICENSE) file for the full text.
+See the [`LICENSE`](./LICENSE) file for the full legal text.
