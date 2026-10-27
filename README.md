@@ -1,6 +1,6 @@
 # PyPSA-Libya: Simulation Results & Pathways
 
-[![Live Dashboard Preview](https://img.shields.io/badge/📊_Explore_Interactive_Dashboard-Click_Here-blue?style=for-the-badge)](https://mhdella.github.io/pypsa-libya/)
+[![Live Dashboard Preview](https://img.shields.io/badge/📊_Explore_Interactive_Dashboard-Click_Here-blue?style=for-the-badge)](https://mhdella.github.io/PyPSA-Libya/)
 
 The complete model code, input data time series, scenario configuration scripts, and optimization routines are publicly available on this repository.
 
