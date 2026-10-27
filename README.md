@@ -2,31 +2,22 @@
 
 [![Live Dashboard Preview](https://img.shields.io/badge/📊_Explore_Interactive_Dashboard-Click_Here-blue?style=for-the-badge)](https://mhdella.github.io/PyPSA-Libya/)
 
-The complete model code, input data time series, scenario configuration scripts, and optimization routines are publicly available on this repository.
+An open, high-resolution model of the Libyan electricity system, built on [PyPSA-Earth](https://github.com/pypsa-meets-earth/pypsa-earth).
+
+The complete model code, input data time series, scenario configuration scripts, and optimization routines are publicly available in this repository.
 
 ---
-
-# PyPSA-Libya
-
-An open, high-resolution model of the Libyan electricity system, built on
-[PyPSA-Earth](https://github.com/pypsa-meets-earth/pypsa-earth), following the
-national-fork methodology introduced by
-[PyPSA-Spain](https://doi.org/10.1016/j.esr.2025.101764)
-(Gallego-Castillo & Victoria, *Energy Strategy Reviews*, 2025).
 
 ## Why a national fork instead of PyPSA-Africa / PyPSA-Earth directly?
 
 A single-country model allows finer spatial and temporal resolution for the
 same compute budget than a continental model, and lets national datasets
 (GECOL capacity data, historical generation, national cost assumptions)
-override the continental defaults — the same rationale PyPSA-Spain gives for
-forking PyPSA-Eur instead of using it directly on Spain alone.
+override the continental defaults.
 
 ## Status
 
-🚧 Early scaffold — configuration and data-collection stage, not yet a
-validated model. See `REPO_STRUCTURE.md` for the repository architecture and
-what is/isn't tracked in git.
+🟢 **Active / Pre-Print Release** — A fully operational, high-resolution energy system model of Libya's power and hydrogen export pathways. The complete analysis, simulation results, and methodology are detailed in our preprint. See `REPO_STRUCTURE.md` for repository architecture and data tracking details.
 
 ## Quickstart
 
@@ -38,19 +29,11 @@ snakemake --configfile config.yaml config.libya.yaml -j4 solve_all_networks
 
 ## Data availability
 
-Large regenerable artifacts (weather cutouts, solved network `.nc` files,
-full result sets) are **not** stored in this repository. Pre-computed inputs
-and published results are archived at:
+The input data time series, custom demand files, network topologies, scenario configuration scripts, and optimization routines are fully tracked and available directly within this repository (see `data/`, `configs/`, and `scripts/`). Pre-computed result figures and summary reports can be found in the `Libya_H2/` folder.
 
-> [ADD Zenodo/OSF DOI link here once published]
+## Limitations
 
-## Known limitations vs. PyPSA-Spain
-
-Libya lacks equivalents of Spain's Datadis (hourly demand by region) and
-ESIOS (capacity by region) APIs, so the renewable-profile correction and
-demand-disaggregation methods from PyPSA-Spain are not yet transferable
-as-is — see `REPO_STRUCTURE.md` §7 for details and what data would be needed
-to close that gap.
+Because high-resolution regional APIs (such as hourly subnational demand and regional capacity tracking) are unavailable for Libya, standard regional demand-disaggregation and profile-correction workflows cannot be fully automated out-of-the-box. Instead, the model relies on custom national datasets and proxy profiles (see `data/`). See `REPO_STRUCTURE.md` for full architectural details and the data required to expand regional granularity.
 
 ## Citing
 
@@ -61,5 +44,6 @@ If you use the PyPSA-Libya model or data, please cite our preprint:
 
 ## License
 
-[Match the upstream PyPSA-Earth license — MIT/AGPL depending on component,
-check LICENSES/ in the fork before publishing.]
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**, matching the upstream [PyPSA-Earth](https://github.com/pypsa-meets-earth/pypsa-earth) codebase. 
+
+See the [`LICENSE`](./LICENSE) file for the full text.
