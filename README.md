@@ -1,3 +1,11 @@
+# PyPSA-Libya: Simulation Results & Pathways
+
+[![Live Dashboard Preview](https://img.shields.io/badge/📊_Explore_Interactive_Dashboard-Click_Here-blue?style=for-the-badge)](https://mhdella.github.io/pypsa-libya/)
+
+The complete model code, input data time series, scenario configuration scripts, and optimization routines are publicly available on this repository.
+
+---
+
 # PyPSA-Libya
 
 An open, high-resolution model of the Libyan electricity system, built on
@@ -46,14 +54,12 @@ to close that gap.
 
 ## Citing
 
-If you use this model, please cite this repository and the methodological
-basis:
+## Citing
 
-```
-Gallego-Castillo, C., Victoria, M., 2025. PyPSA-Spain: An extension of
-PyPSA-Eur to model the Spanish energy system. Energy Strategy Reviews 60,
-101764. https://doi.org/10.1016/j.esr.2025.101764
-```
+If you use the PyPSA-Libya model or data, please cite our preprint:
+
+> Abuella, M. (2026). PyPSA-Libya: An Open-Source Energy System Model for National Decarbonization and Hydrogen Export Pathways. arXiv / SSRN Preprint. [Link to preprint]
+
 
 ## License
 
