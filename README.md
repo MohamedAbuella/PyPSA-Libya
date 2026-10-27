@@ -54,8 +54,6 @@ to close that gap.
 
 ## Citing
 
-## Citing
-
 If you use the PyPSA-Libya model or data, please cite our preprint:
 
 > Abuella, M. (2026). PyPSA-Libya: An Open-Source Energy System Model for National Decarbonization and Hydrogen Export Pathways. arXiv / SSRN Preprint. [Link to preprint]
