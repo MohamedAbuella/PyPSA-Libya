@@ -1,0 +1,77 @@
+\documentclass[tikz,border=3mm]{standalone}
+\usepackage{tikz}
+\usepackage{eurosym}
+\usetikzlibrary{trees, positioning, shapes.geometric, shadows}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    grow=down,
+    level distance=1.3cm,
+    sibling distance=9.5cm,
+    edge from parent/.style={draw, -latex, thick},
+    every node/.style={
+        draw,
+        rectangle,
+        rounded corners,
+        align=center,
+        minimum height=0.6cm,
+        font=\sffamily\footnotesize,
+        fill=white,
+        drop shadow={opacity=0.15}
+    },
+    metric/.style={
+        draw,
+        rectangle,
+        dashed,
+        fill=gray!10,
+        minimum width=2.8cm
+    },
+    switch/.style={ 
+        draw,
+        rectangle,
+        rounded corners,
+        align=center,
+        minimum height=0.7cm,
+        fill=blue!5,
+        font=\sffamily\footnotesize\bfseries
+    }
+]
+
+% Root node: PyPSA-Libya Framework
+\node[fill=blue!10, minimum height=0.7cm, font=\sffamily\normalsize\bfseries] {PyPSA-Libya Framework \\ \mdseries National Decarbonization \& Hydrogen Export Pathways} 
+child{
+    node[switch] {Part 1: Electricity-Only Study \\ (36-Cluster Resolution)}
+    [sibling distance=3.8cm]
+    child {
+        node {Case 1: Zero-CO$_2$ \\ (100\% Renewable Target)} 
+    }
+    child {
+        node {Case 2: Baseline \\ (Unconstrained Fossil Mix)}
+    }
+}
+child{
+    node[switch] {Part 2: Sector-Coupled Export \\ (70 TWh/yr, 12-Cluster Resolution)}
+    [sibling distance=7.0cm]
+    child {
+        node {Baseline Scenarios \\ (No CO$_2$ Tax)}
+        [sibling distance=3.2cm]
+        child { node {Scenario A \\ (Green H$_2$)} }
+        child { node {Scenario B \\ (Blue H$_2$ / SMR-CC)} }
+        child { node {Scenario C \\ (Grey, Blue \& Green)} }
+    }
+    child {
+        node[switch] {Policy Regime Optimization}
+        [sibling distance=3.0cm]
+        child {
+            node {Hybrid Scenario \\ (100 \euro/tonne CO$_2$ Tax)}
+            child[sibling distance=1.2cm] {
+                node[metric][minimum height=0.6cm, font=\sffamily\itshape] {System Metrics: Annual Cost, Net LCOH, \\ NPV, IRR, Payback, Emissions, Water Consumption}
+            }
+        }
+    }
+};
+
+\end{tikzpicture}
+
+\end{document}

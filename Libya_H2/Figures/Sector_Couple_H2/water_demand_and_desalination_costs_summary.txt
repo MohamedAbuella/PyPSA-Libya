@@ -1,0 +1,23 @@
+===============================================================================================
+PyPSA-Libya: Dynamic Multi-Technology Water Consumption & Desalination Summary
+===============================================================================================
+
+                                      Scenario A     Scenario B     Scenario C
+Total H2 Output [MWh]              71,907,230.90  70,917,786.77  70,913,329.67
+Total H2 Mass [Tonnes]              2,157,432.67   2,127,746.38   2,127,612.65
+H2 Mass (Million Tonnes)                   2.157          2.128          2.128
+Water Required [m³]                21,574,326.70  15,958,733.82  10,646,722.02
+Water Demand (Million m3)                  21.57          15.96          10.65
+Est. Water Cost [M EUR/yr]             32.361490      23.938101      15.970083
+Desal Cost Share of System (%)            1.379%         1.037%         1.110%
+Desal Marginal Cost (EUR/kg H2)          €0.0150        €0.0113        €0.0075
+Desal Energy Overhead (GWh)                75.51          55.86          37.26
+Desal Specific Energy (kWh/kg H2)         0.0350         0.0263         0.0175
+Desal Share of Elec Demand (%)            0.067%         0.050%         0.033%
+
+===============================================================================================
+Notes:
+ - H2 output is aggregated across Electrolysis, SMR CC, and SMR technologies.
+ - Water intensities applied: Electrolysis = 10 L/kg, SMR CC = 7.5 L/kg, SMR = 5 L/kg.
+ - Desalination cost estimate is based on 1.50 EUR/m³ of purified water.
+===============================================================================================

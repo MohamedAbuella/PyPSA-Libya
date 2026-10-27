@@ -1,0 +1,20 @@
+====================================================================================================
+PyPSA-Libya: Operational Expenditure (OPEX) Breakdown Summary (3h) (Billion EUR/year)
+====================================================================================================
+
+--- Itemized OPEX Breakdown (Billion EUR/year) ---
+category         CCGT
+Limited CO2    0.0000
+Unlimited CO2  0.9531
+
+----------------------------------------------------------------------------------------------------
+--- Top 5 Shared OPEX Components (Billion EUR/year) ---
+category         CCGT  Solar PV  Onshore Wind  battery  Load Shedding
+Limited CO2    0.0000    0.0010        0.0002   0.0002         0.0002
+Unlimited CO2  0.9531    0.0003        0.0004   0.0000         0.0001
+
+----------------------------------------------------------------------------------------------------
+--- Total OPEX Summary ---
+  Limited CO2    Total OPEX:    0.002 Billion EUR/year
+  Unlimited CO2  Total OPEX:    0.954 Billion EUR/year
+====================================================================================================

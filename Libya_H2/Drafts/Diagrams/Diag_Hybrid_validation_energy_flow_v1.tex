@@ -1,0 +1,219 @@
+\documentclass[tikz,border=12mm]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes.geometric, shadows, calc, fit, layers}
+
+% Background layer declaration for clean connector passing
+\pgfdeclarelayer{behind}
+\pgfsetlayers{behind,main}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    % Base node style
+    base/.style={
+        draw=gray!70,
+        thick,
+        rectangle,
+        rounded corners=5pt,
+        align=center,
+        inner sep=7pt,
+        font=\sffamily\scriptsize,
+        drop shadow={opacity=0.12, shadow xshift=2pt, shadow yshift=-2pt}
+    },
+    % Sector-specific block stylings
+    vreNode/.style={
+        base,
+        draw=olive!80!black,
+        fill=olive!20,
+        font=\sffamily\bfseries\scriptsize
+    },
+    thermalNode/.style={
+        base,
+        draw=brown!80!black,
+        fill=brown!20,
+        font=\sffamily\bfseries\scriptsize
+    },
+    gridNode/.style={
+        base,
+        draw=blue!80!black,
+        fill=blue!15,
+        text=black,
+        font=\sffamily\bfseries\small,
+        inner sep=9pt
+    },
+    lvGridNode/.style={
+        base,
+        draw=cyan!80!black,
+        fill=cyan!15,
+        text=black,
+        font=\sffamily\bfseries\small,
+        inner sep=9pt
+    },
+    gasNode/.style={
+        base,
+        draw=orange!90!black,
+        fill=orange!25,
+        text=black,
+        font=\sffamily\bfseries\small,
+        inner sep=9pt
+    },
+    h2BusNode/.style={
+        base,
+        draw=teal!80!black,
+        fill=teal!25,
+        text=black,
+        font=\sffamily\bfseries\small,
+        inner sep=9pt
+    },
+    co2BusNode/.style={
+        base,
+        draw=gray!80!black,
+        fill=gray!25,
+        text=black,
+        font=\sffamily\bfseries\small,
+        inner sep=9pt
+    },
+    demandNode/.style={
+        base,
+        draw=red!70!black,
+        fill=red!10,
+        font=\sffamily\scriptsize
+    },
+    storageNode/.style={
+        base,
+        draw=purple!80!black,
+        fill=purple!15,
+        font=\sffamily\bfseries\scriptsize
+    },
+    conversionNode/.style={
+        base,
+        draw=green!70!black,
+        fill=green!20,
+        font=\sffamily\bfseries\scriptsize
+    },
+    exportNode/.style={
+        base,
+        draw=teal!90!black,
+        fill=teal!10,
+        font=\sffamily\bfseries\small
+    },
+    % Connectors
+    conn_ac/.style={draw=blue!70!black, -latex, thick, rounded corners=4pt},
+    conn_lv/.style={draw=cyan!80!black, -latex, thick, rounded corners=4pt},
+    conn_h2/.style={draw=teal!80!black, -latex, thick, rounded corners=4pt},
+    conn_gas/.style={draw=orange!80!black, -latex, thick, rounded corners=4pt},
+    conn_co2/.style={draw=gray!70!black, -latex, thick, rounded corners=4pt},
+    conn_oil/.style={draw=brown!80!black, -latex, thick, rounded corners=4pt},
+    % Label style with white fill padding
+    flabel/.style={font=\sffamily\tiny\bfseries, fill=white, inner sep=1.5pt, rounded corners=2pt, opacity=0.95, text opacity=1.0}
+]
+
+    % =========================================================================
+    % LEVEL 1: PRIMARY ENERGY INPUTS & SOURCES
+    % =========================================================================
+    \node[gasNode] (gasnet) {Natural Gas Network\\ \normalfont (Supply: 112.16 TWh)};
+    \node[demandNode, right=1.5cm of gasnet] (ind_gas) {Gas for Industry\\ \normalfont 8.45 TWh};
+    \node[vreNode, right=1.2cm of ind_gas] (wind) {Onshore Wind\\ \normalfont 24.94 TWh};
+    \node[vreNode, right=0.8cm of wind] (solar) {Solar PV\\ \normalfont 12.75 TWh};
+    \node[thermalNode, right=1.2cm of solar] (oil_sup) {Oil Imports / Supply\\ \normalfont (Supply: 22.24 TWh)};
+    \node[vreNode, right=1.2cm of oil_sup] (rooftop) {Rooftop Solar\\ \normalfont 8.73 TWh};
+
+    % =========================================================================
+    % LEVEL 2: TRANSMISSION GRIDS (Increased Vertical Gap)
+    % =========================================================================
+    \node[gridNode, below=2.5cm of $(wind.south)!0.5!(solar.south)$, minimum width=7.2cm] (ac_grid) {AC Transmission Grid (High Voltage)};
+    \node[lvGridNode, right=2.2cm of ac_grid, minimum width=4.5cm] (lv_grid) {Low Voltage Grid};
+
+    % =========================================================================
+    % LEVEL 3: CONVERSION, PROCESSING & DOMESTIC DEMAND
+    % =========================================================================
+    \node[conversionNode, below left=2.2cm and -0.2cm of gasnet] (smr) {SMR (Unmitigated)\\ \normalfont H$_2$: 5.37 TWh};
+    \node[conversionNode, right=0.5cm of smr] (smr_cc) {SMR + CC\\ \normalfont H$_2$: 70.90 TWh | CO$_2$: 18.31 TWh};
+    \node[conversionNode, right=0.5cm of smr_cc] (ccgt) {CCGT Power Plant\\ \normalfont Electricity: 4.89 GWh};
+
+    \node[conversionNode, below=2.2cm of ac_grid] (electrolysis) {H$_2$ Electrolysis\\ \normalfont In: 6.19 GWh AC $\rightarrow$ Out: 3.85 GWh H$_2$};
+
+    \node[demandNode, below=2.2cm of lv_grid] (lv_demand) {Low Voltage Demands\\ \normalfont (LY0 0--10 Nodes: 55.93 TWh)};
+    \node[storageNode, right=0.8cm of lv_demand] (home_bat) {Home Battery\\ \normalfont Charge/Discharge: 2.91 TWh};
+
+    % =========================================================================
+    % LEVEL 4: CORE CARRIER BUSES & CARBON MANAGEMENT
+    % =========================================================================
+    \node[h2BusNode, below=2.5cm of electrolysis, minimum width=8.8cm] (h2_bus) {Hydrogen Network (H$_2$ Carrier - 118.26 TWh Throughput)};
+
+    \node[co2BusNode, left=2.0cm of h2_bus, minimum width=4.5cm] (co2_stored) {Captured CO$_2$ Storage\\ \normalfont (20.00 TWh Stored)};
+    \node[base, draw=red!80!black, fill=red!15, left=1.2cm of co2_stored] (co2_vent) {Atmosphere / Vent\\ \normalfont (Vented: 19.98 TWh)};
+
+    % =========================================================================
+    % LEVEL 5: DOWNSTREAM OFFTAKES, SYNTHESIS & RE-ELECTRIFICATION
+    % =========================================================================
+    \node[exportNode, below=2.5cm of h2_bus] (h2_export) {H$_2$ Export Load\\ \normalfont 70.00 TWh Target};
+    \node[storageNode, left=1.0cm of h2_export] (h2_uhs) {Underground H$_2$ Storage (UHS)\\ \normalfont Charge/Discharge: 47.18 TWh};
+
+    \node[conversionNode, right=0.8cm of h2_export] (haber_bosch) {Haber-Bosch (NH$_3$)\\ \normalfont Out: 783.61 GWh NH$_3$};
+    \node[conversionNode, right=0.6cm of haber_bosch] (ft_synth) {Fischer-Tropsch\\ \normalfont Out: 2.49 GWh Synthetic Oil};
+    \node[conversionNode, right=0.6cm of ft_synth] (h2_power) {H$_2$ Turbine \& Fuel Cell\\ \normalfont Out: 3.24 GWh AC};
+
+
+    % =========================================================================
+    % CONNECTIONS & ROUTING (DRAWN ON BACKGROUND LAYER)
+    % =========================================================================
+    \begin{pgfonlayer}{behind}
+
+        % --- Level 1 Supplies to AC Grid & Oil Connections ---
+        \draw[conn_ac] (wind.south) -- (wind.south |- ac_grid.north) node[midway, flabel] {24.94 TWh};
+        \draw[conn_ac] (solar.south) -- (solar.south |- ac_grid.north) node[midway, flabel] {12.75 TWh};
+        \draw[conn_lv] (rooftop.south) |- (lv_grid.north e) node[near start, flabel] {8.73 TWh};
+
+        % Oil Connections (Supply -> AC Grid Power + Oil Emissions)
+        \draw[conn_oil] (oil_sup.south) -- (oil_sup.south |- ac_grid.north) node[midway, flabel] {7.78 TWh AC};
+        \draw[conn_co2] (oil_sup.west) -- ++(-1.0,0) |- (co2_vent.north) node[midway, flabel] {5.72 TWh CO$_2$};
+
+        % --- Gas Network Distributions (Repositioned Label 3) ---
+        \draw[conn_gas] (gasnet.east) -- (ind_gas.west) node[pos=0.5, flabel] {9.37 TWh CC};
+        \draw[conn_gas] (gasnet.south) -- ++(0,-0.6) -| (smr.north) node[near start, flabel] {7.06 GWh};
+        \draw[conn_gas] (gasnet.south) -- ++(0,-0.6) -| (smr_cc.north) node[near start, flabel] {102.76 TWh};
+        \draw[conn_gas] (gasnet.south) -- ++(0,-0.6) -| (ccgt.north) node[near start, flabel] {8.44 GWh};
+
+        % --- Power Generation to Grid ---
+        \draw[conn_ac] (ccgt.north) -- ++(0,0.6) -| (ac_grid.south west) node[near end, flabel] {4.89 GWh};
+
+        % --- Grid Offtakes ---
+        \draw[conn_ac] (ac_grid.east) -- (lv_grid.west) node[midway, flabel] {45.28 TWh};
+        \draw[conn_ac] (ac_grid.south) -- (electrolysis.north) node[midway, flabel] {6.19 GWh};
+        \draw[conn_ac] (ac_grid.south) -- ++(0,-0.8) -| (haber_bosch.north) node[near start, flabel] {193.79 GWh};
+
+        % --- Low Voltage Subsystem ---
+        \draw[conn_lv] (lv_grid.south) -- (lv_demand.north) node[midway, flabel] {55.93 TWh};
+        \draw[conn_lv] (lv_grid.south) -- ++(0,-0.6) -| (home_bat.north) node[near start, flabel] {3.89 TWh};
+        \draw[conn_lv] (home_bat.west) -- (lv_demand.east) node[midway, flabel] {3.73 TWh};
+
+        % --- Hydrogen Inputs to H2 Bus ---
+        \draw[conn_h2] (smr.south) |- (h2_bus.north west) node[near end, flabel] {5.37 GWh};
+        \draw[conn_h2] (smr_cc.south) -- (smr_cc.south |- h2_bus.north) node[midway, flabel] {70.90 TWh};
+        \draw[conn_h2] (electrolysis.south) -- (electrolysis.south |- h2_bus.north) node[midway, flabel] {3.85 GWh};
+
+        % --- Carbon Capture & Venting (Clear Offset Lines) ---
+        \draw[conn_co2] (smr_cc.west) -- ++(-0.4,0) |- (co2_stored.north) node[near end, flabel] {18.31 TWh};
+        \draw[conn_co2] (co2_stored.west) -- (co2_vent.east) node[midway, flabel] {19.98 TWh Vent};
+        \draw[conn_co2] (co2_stored.south) |- (ft_synth.west) node[near end, flabel] {639.95 MWh};
+
+        % --- H2 Bus Offtakes & Distribution ---
+        \draw[conn_h2] (h2_bus.south) -- (h2_export.north) node[midway, flabel] {70.00 TWh Export};
+
+        % Underground Storage Cyclic Loop (Rerouted to Avoid Collisions)
+        \draw[conn_h2] (h2_bus.south west) -- ++(-1.2,-0.8) |- (h2_uhs.west) node[near start, flabel] {47.18 TWh Charge};
+        \draw[conn_h2] (h2_uhs.east) -- (h2_export.west) node[midway, flabel] {Discharge};
+
+        % Synthesis Routes
+        \draw[conn_h2] (h2_bus.south) -- ++(0,-0.8) -| (haber_bosch.north west) node[near start, flabel] {899.90 GWh};
+        \draw[conn_h2] (h2_bus.south) -- ++(0,-0.8) -| (ft_synth.north) node[near start, flabel] {3.12 GWh};
+        \draw[conn_h2] (h2_bus.south) -- ++(0,-0.8) -| (h2_power.north) node[near start, flabel] {7.23 GWh};
+
+        % --- Re-electrification Loop Back to AC Grid ---
+        \draw[conn_ac] (h2_power.east) -- ++(1.2,0) |- (ac_grid.south east) node[near start, flabel] {3.24 GWh AC};
+
+    \end{pgfonlayer}
+
+\end{tikzpicture}
+\end{document}

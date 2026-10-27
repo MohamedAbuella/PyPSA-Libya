@@ -1,0 +1,43 @@
+=========================================================================================================
+PyPSA-Libya: NPV Analysis with +1 Euro/kg Revenue Margin over Scenario LCOH Cost
+=========================================================================================================
+
+--- Configured Dynamic Financial & Margin Parameters ---
+  Discount Rate (r):                    7.10%
+  Operational Horizon:                 2030 - 2050 (21 years inclusive)
+  Revenue Margin Added to LCOH:        +1.00 EUR/kg H2
+
+--- Table 1: Scenario Specific LCOH, Dynamic Price & Annual Cash Flows ---
+            LCOH LHV [EUR/kg]  Price (+1) [EUR/kg]  Export Cost [B EUR/yr]  CO2 Tax [B EUR/yr]  Ann. Cost [B EUR/yr]  Ann. Revenue [B EUR/yr]  Ann. Net Cash Flow [B EUR/yr]
+Scenario                                                                                                                                                                    
+Scenario A           4.885008             5.885008               12.606640                 0.0             12.606640                12.359752                      -0.246888
+Scenario B           2.552665             3.552665                7.668663                 0.0              7.668663                 7.461342                      -0.207321
+Scenario C           2.131370             3.131370                5.914796                 0.0              5.914796                 6.576534                       0.661738
+
+---------------------------------------------------------------------------------------------------------
+
+--- Table 2: Multi-Year Discounted Valuation Summary (2030-2050) ---
+            PV System Cost [B EUR]  PV Net H2 Cost [B EUR]  PV Gross Revenue (+1 EUR) [B EUR]  NPV Total System [B EUR]
+Scenario                                                                                                               
+Scenario A              135.508686              110.279749                         132.854892                 -2.653794
+Scenario B               82.430408               57.626770                          80.201913                 -2.228495
+Scenario C               63.578103               48.115977                          70.691120                  7.113017
+
+---------------------------------------------------------------------------------------------------------
+
+--- Table 3: Financial Cash Flow, Project IRR & Payback Assessment Summary ---
+            Price [EUR/kg]  Annual Revenue [B EUR]  Net Cash Flow [B EUR]  Project IRR (%)  Payback Period [Years]
+Scenario                                                                                                          
+Scenario A        5.885008               12.359752               7.105612         9.561512                8.921664
+Scenario B        3.552665                7.461342               3.507258        15.268027                6.218251
+Scenario C        3.131370                6.576534               3.178005        17.543197                5.508903
+
+=========================================================================================================
+Notes:
+ - PV stands for Present Value (discounted cash flows over the 2030–2050 horizon at r = 7.10%).
+ - Price is computed dynamically per scenario as (Net LCOH LHV + 1.00 EUR/kg).
+ - Cash flow vector for Project IRR (%): Year 0 = -Net Overnight CAPEX, Years 1..N = Annual Net Cash Inflow.
+ - Payback Period [Years] = Net Overnight CAPEX / Annual Net Operating Cash Inflow.
+  CO2 Tax Rate Applied:                +0.00 EUR/tonne (on Net Atmospheric/Vented CO2 only)
+
+=========================================================================================================

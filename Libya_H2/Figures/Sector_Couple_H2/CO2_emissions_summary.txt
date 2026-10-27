@@ -1,0 +1,24 @@
+Recommended Table for Your Results Section
+To make your report clear and avoid confusion, present both rows under a structured CO2 mass balance header:
+
+CO2 Accounting Metric                         | Scenario A   | Scenario B   | Scenario C  
+------------------------------------------------------------------------------------------
+Net Atmospheric CO2 Emissions (Vented)        |     6.82 Mt |     6.82 Mt |    59.15 Mt
+Geologically Sequestered CO2 (Captured)       |    25.22 Mt |    43.55 Mt |    75.90 Mt
+Total Gross CO2 Generated (Vented + Stored)   |    32.05 Mt |    50.37 Mt |   135.04 Mt
+------------------------------------------------------------------------------------------
+
+Vented CO2 Breakdown by Carrier [Mt]
+(Shows exactly which technologies contribute to the 'Vented' row above)
+------------------------------------------------------------------------------------------
+Carrier                                       | Scenario A   | Scenario B   | Scenario C  
+------------------------------------------------------------------------------------------
+CCGT                                          |   0.0069 Mt |   0.0031 Mt |   0.0007 Mt
+SMR                                           |   0.0000 Mt |   0.0000 Mt |  18.4543 Mt
+SMR CC                                        |   0.0000 Mt |   2.0348 Mt |   0.0012 Mt
+gas for industry                              |   0.0044 Mt |   0.0029 Mt |   1.6727 Mt
+gas for industry CC                           |   0.1854 Mt |   0.1855 Mt |   0.0000 Mt
+oil                                           |   6.6271 Mt |   4.5984 Mt |  39.0201 Mt
+solid biomass for industry CC                 |   0.0000 Mt |   0.0000 Mt |   0.0000 Mt
+------------------------------------------------------------------------------------------
+==========================================================================================
