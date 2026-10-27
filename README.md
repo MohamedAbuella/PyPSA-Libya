@@ -37,9 +37,22 @@ Because high-resolution regional APIs (such as hourly subnational demand and reg
 
 ## Citing
 
-If you use the PyPSA-Libya model or data, please cite our preprint:
+If you use the PyPSA-Libya model, data, or findings in your research, please cite our preprint:
 
-> Abuella, M. (2026). PyPSA-Libya: An Open-Source Energy System Model for National Decarbonization and Hydrogen Export Pathways. arXiv / SSRN Preprint. [Link to preprint]
+> Abuella, M. (2026). *PyPSA-Libya: An Open-Source Energy System Model for National Decarbonization and Hydrogen Export Pathways*. ResearchGate Preprint. [https://doi.org/10.13140/RG.2.2.30042.50886](https://www.researchgate.net/publication/417001034_PyPSA-Libya_An_Open-Source_Energy_System_Model_for_National_Decarbonization_and_Hydrogen_Export_Pathways)
+
+### BibTeX
+
+```bibtex
+@unpublished{abuella2026pypsalibya,
+  author    = {Abuella, Mhdella},
+  title     = {PyPSA-Libya: An Open-Source Energy System Model for National Decarbonization and Hydrogen Export Pathways},
+  month     = {October},
+  year      = {2026},
+  doi       = {10.13140/RG.2.2.30042.50886},
+  url       = {[https://www.researchgate.net/publication/417001034_PyPSA-Libya_An_Open-Source_Energy_System_Model_for_National_Decarbonization_and_Hydrogen_Export_Pathways](https://www.researchgate.net/publication/417001034_PyPSA-Libya_An_Open-Source_Energy_System_Model_for_National_Decarbonization_and_Hydrogen_Export_Pathways)},
+  note      = {ResearchGate Preprint}
+}
 
 
 ## License
