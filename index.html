@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyPSA-Libya: Simulation Results & Pathways</title>
+    <!-- Libraries for In-Browser ZIP Unpacking & High-DPI PDF Rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <!-- EMBEDDED CSS -->
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #2563eb;
+            --sidebar-bg: #f8fafc;
+            --sidebar-border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-main);
+            background-color: #f1f5f9;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        #sidebar {
+            width: 340px;
+            min-width: 340px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--sidebar-border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px 16px;
+            overflow-y: auto;
+        }
+
+        .brand-title {
+            font-size: 1.55rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .path-settings { margin-bottom: 18px; }
+        .path-settings details { background:#fff; border:1px solid var(--border-color); border-radius:8px; padding:8px 12px; }
+        .path-settings summary { cursor:pointer; font-weight:600; font-size:0.84rem; color:#334155; }
+        .path-settings label { display:block; font-size:0.78rem; color:#475569; margin:10px 0 4px; }
+        .path-settings input[type=text] { width:100%; box-sizing:border-box; padding:7px 8px; font-size:0.75rem; border:1px solid #cbd5e1; border-radius:6px; background: #f8fafc; color: #475569; }
+        #zipStatus { font-size:0.74rem; color:#16a34a; margin-top:8px; font-weight:500; word-break:break-all; }
+
+        .nav-section-label {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 18px 8px 8px 8px;
+        }
+
+        .nav-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.86rem;
+            color: #334155;
+            background: transparent;
+            border: 1px solid transparent;
+            cursor: pointer;
+            margin-bottom: 3px;
+            transition: all 0.15s ease;
+            user-select: none;
+            font-weight: 500;
+            text-align: left;
+        }
+        .nav-btn:hover {
+            background-color: #e2e8f0;
+            color: var(--primary-light);
+        }
+        .nav-btn.active {
+            background-color: #e0e7ff;
+            color: var(--primary);
+            font-weight: 700;
+            border: 1px solid #c7d2fe;
+        }
+
+        /* Accordion Structure */
+        .accordion-wrapper { margin-bottom: 4px; }
+        .accordion-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 9px 12px;
+            border-radius: 6px;
+            font-size: 0.86rem;
+            color: #334155;
+            background: transparent;
+            border: 1px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            text-align: left;
+            transition: background 0.15s ease;
+        }
+        .accordion-header:hover {
+            background-color: #e2e8f0;
+            color: var(--primary);
+        }
+        .accordion-header.open {
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .accordion-chevron {
+            font-size: 0.65rem;
+            transition: transform 0.2s ease;
+        }
+        .accordion-header.open .accordion-chevron { transform: rotate(90deg); }
+        .accordion-body {
+            display: none;
+            padding-left: 12px;
+            margin-top: 2px;
+            border-left: 2px solid #cbd5e1;
+            margin-left: 10px;
+        }
+        .accordion-body.open { display: block; }
+        .accordion-body .nav-btn { font-size: 0.81rem; padding: 6px 10px; }
+
+        .nav-divider {
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 14px 4px;
+        }
+
+        /* --- CONTENT AREA --- */
+        #content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 32px 40px;
+        }
+
+        .header-box { margin-bottom: 24px; }
+        .header-title { font-size: 1.6rem; font-weight: 700; color: var(--primary); }
+        .header-subtitle { font-size: 0.95rem; color: var(--text-muted); margin-top: 4px; }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .kpi-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 16px 20px;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--primary-light);
+        }
+        .kpi-title { font-size: 0.78rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+        .kpi-value { font-size: 1.45rem; font-weight: 700; color: var(--text-main); margin-top: 4px; }
+        .kpi-delta { font-size: 0.8rem; color: #16a34a; margin-top: 2px; }
+        .kpi-delta.neg { color: #dc2626; }
+
+        /* Tabs */
+        .tab-bar {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 18px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+        }
+        .tab-btn.active {
+            color: var(--primary-light);
+            border-bottom-color: var(--primary-light);
+            font-weight: 600;
+        }
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
+
+        /* Figure Cards with Dynamic Aspect-Ratio Fitting */
+        .figure-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .figure-viewport {
+            width: 100%;
+            min-height: 400px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: height 0.2s ease;
+        }
+        .figure-viewport object {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .placeholder-msg {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 40px;
+        }
+        .caption-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            color: #475569;
+            background-color: #f8fafc;
+            border-top: 1px solid var(--border-color);
+        }
+        .caption-download-link {
+            color: var(--primary-light);
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            padding: 3px 6px;
+            border-radius: 4px;
+        }
+        .caption-download-link:hover { background-color: #e2e8f0; }
+
+        /* Grid Layouts */
+        .two-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .three-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            font-size: 0.88rem;
+        }
+        th, td { padding: 12px 16px; text-align: left; }
+        th { background: #f8fafc; font-weight: 600; color: #475569; border-bottom: 1px solid var(--border-color); }
+        tr:not(:last-child) td { border-bottom: 1px solid #f1f5f9; }
+
+        /* Report PDF Viewer */
+        #pdfjs-wrapper {
+            background-color: #525659;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #cbd5e1;
+        }
+        #pdf-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1e293b;
+            color: #ffffff;
+            padding: 10px 18px;
+            font-size: 0.88rem;
+        }
+        .tb-group { display: flex; align-items: center; gap: 8px; }
+        .tb-btn {
+            background: #334155;
+            border: 1px solid #475569;
+            color: #ffffff;
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.82rem;
+            transition: background 0.15s;
+        }
+        .tb-btn:hover { background: #475569; }
+        #canvas-viewport {
+            height: 800px;
+            overflow-y: auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .pdf-page-card {
+            display: inline-block;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <div id="sidebar">
+        <div class="brand-title">PyPSA-Libya</div>
+
+        <!-- Project Path Settings -->
+        <div class="path-settings">
+            <details open>
+                <summary>⚙️ Project Path Settings</summary>
+                <label for="projectPathInput">Archive / Folder Path:</label>
+                <input type="text" id="projectPathInput" spellcheck="false" autocomplete="off"
+                       value="C:\Users\Mhdella\Documents\pypsa-libya\paper\Libya_H2" readonly>
+            </details>
+            <div id="zipStatus">Loading assets automatically...</div>
+        </div>
+
+        <!-- 1. Standalone Overview -->
+        <button class="nav-btn active" id="btn-ov" onclick="showView('sec-overview', this)">Overview & Methodology</button>
+
+        <!-- Heading: Pathways and Scenarios -->
+        <div class="nav-section-label">Pathways and Scenarios:</div>
+
+        <!-- ACCORDION 1: Pathway 1 -->
+        <div class="accordion-wrapper">
+            <div class="accordion-header open" onclick="toggleAccordion(this)">
+                <span>Pathway 1: Electricity-Only</span>
+                <span class="accordion-chevron">▶</span>
+            </div>
+            <div class="accordion-body open">
+                <button class="nav-btn" onclick="showView('sec-p1-a', this)">Scenario A: Unlimited CO2 Baseline</button>
+                <button class="nav-btn" onclick="showView('sec-p1-b', this)">Scenario B: Zero-CO2 Carbon-Limited</button>
+                <button class="nav-btn" onclick="showView('sec-p1-all', this)">Comparison (Both Scenarios)</button>
+            </div>
+        </div>
+
+        <!-- ACCORDION 2: Pathway 2 -->
+        <div class="accordion-wrapper">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span>Pathway 2: Sector-Coupled H2 Export</span>
+                <span class="accordion-chevron">▶</span>
+            </div>
+            <div class="accordion-body">
+                <button class="nav-btn" onclick="showView('sec-p2-a', this)">Scenario A: Green H2</button>
+                <button class="nav-btn" onclick="showView('sec-p2-b', this)">Scenario B: Blue H2</button>
+                <button class="nav-btn" onclick="showView('sec-p2-c', this)">Scenario C: Grey H2</button>
+                <button class="nav-btn" onclick="showView('sec-p2-all', this)">Cross-Scenario Comparison</button>
+                <button class="nav-btn" onclick="showView('sec-p2-tax', this)">Carbon Tax Impact Comparison (100 €/t)</button>
+            </div>
+        </div>
+
+        <!-- ACCORDION 3: Pathway 3 -->
+        <div class="accordion-wrapper">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span>Pathway 3: Hybrid Co-Optimization</span>
+                <span class="accordion-chevron">▶</span>
+            </div>
+            <div class="accordion-body">
+                <button class="nav-btn" onclick="showView('sec-p3-layout', this)">Nodal Layout</button>
+                <button class="nav-btn" onclick="showView('sec-p3-cost', this)">Cost Structures</button>
+                <button class="nav-btn" onclick="showView('sec-p3-fin', this)">Financial Valuation</button>
+                <button class="nav-btn" onclick="showView('sec-p3-env', this)">Environment & Water</button>
+                <button class="nav-btn" onclick="showView('sec-p3-all', this)">All Hybrid Subsections</button>
+            </div>
+        </div>
+
+        <div class="nav-divider"></div>
+
+        <!-- Standalone Bottom Items -->
+        <button class="nav-btn" onclick="showView('sec-appendix', this)">Appendix: Model Complexity</button>
+        <button class="nav-btn" onclick="showView('sec-report', this)">Report PyPSA-Libya.pdf</button>
+        <button class="nav-btn" onclick="showView('sec-github', this)">GitHub Repo & Data</button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="content-area">
+
+        <!-- ==================== SECTION: OVERVIEW ==================== -->
+        <div id="sec-overview" class="content-view">
+            <div class="header-box">
+                <div class="header-title">Methodology & Modeling Architecture</div>
+                <div class="header-subtitle">Methodology flowchart, multi-scenario framework, and sector-coupling carriers.</div>
+            </div>
+            <div class="tab-bar">
+                <button class="tab-btn active" onclick="switchTab(this, 'tab-f1')">Workflow Flowchart</button>
+                <button class="tab-btn" onclick="switchTab(this, 'tab-f2')">Scenario Design</button>
+                <button class="tab-btn" onclick="switchTab(this, 'tab-f3')">Multi-Sector Coupling</button>
+            </div>
+            <div id="tab-f1" class="tab-pane active">
+                <div class="figure-card">
+                    <div class="figure-viewport" data-fig="fig_Flowchart_Pypsa-Libya_Method.pdf">
+                        <div class="placeholder-msg">Loading Workflow Flowchart...</div>
+                    </div>
+                    <div class="caption-bar"><span>Workflow Pipeline</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div>
+                </div>
+            </div>
+            <div id="tab-f2" class="tab-pane">
+                <div class="figure-card">
+                    <div class="figure-viewport" data-fig="fig_PyPSA_Libya_Framework_Diagram.pdf">
+                        <div class="placeholder-msg">Loading Scenario Design...</div>
+                    </div>
+                    <div class="caption-bar"><span>Scenario Architecture</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div>
+                </div>
+            </div>
+            <div id="tab-f3" class="tab-pane">
+                <div class="figure-card">
+                    <div class="figure-viewport" data-fig="fig_Sector_Coupling_Diagram.pdf">
+                        <div class="placeholder-msg">Loading Multi-Sector Coupling...</div>
+                    </div>
+                    <div class="caption-bar"><span>Sector Coupling Architecture</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SECTION: PATHWAY 1 ==================== -->
+        <div id="sec-p1-a" class="content-view" style="display:none;">
+            <div class="header-box">
+                <div class="header-title">Pathway 1: Electricity-Only Decarbonization</div>
+                <div class="header-subtitle"><strong>Case View: Scenario A (Unlimited CO2 Baseline)</strong> — Minimizing system cost under unconstrained fossil dispatch.</div>
+            </div>
+            <div class="kpi-grid">
+                <div class="kpi-card"><div class="kpi-title">Baseline LCOE</div><div class="kpi-value">36.90 €/MWh</div><div class="kpi-delta">Fossil Fuel Reliance</div></div>
+                <div class="kpi-card"><div class="kpi-title">Overnight CAPEX</div><div class="kpi-value">€32.62 B</div><div class="kpi-delta">Low Upfront Capital</div></div>
+                <div class="kpi-card"><div class="kpi-title">Annual Emissions</div><div class="kpi-value">6.95 Mt/yr</div><div class="kpi-delta neg">0.13 g CO2/kWh</div></div>
+                <div class="kpi-card"><div class="kpi-title">Simple Payback</div><div class="kpi-value">10.63 Yrs</div><div class="kpi-delta">IRR: 8.05%</div></div>
+            </div>
+            <div class="two-cols">
+                <div class="figure-card">
+                    <div class="figure-viewport" data-fig="fig_No_LCO2_nodal_dispatch_map.pdf">
+                        <div class="placeholder-msg">Loading Nodal Dispatch Map...</div>
+                    </div>
+                    <div class="caption-bar"><span>Energy mix & peak loading</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div>
+                </div>
+                <div class="figure-card">
+                    <div class="figure-viewport" data-fig="fig_No_LCO2_nodal_bar_chart.pdf">
+                        <div class="placeholder-msg">Loading Cluster Dispatch...</div>
+                    </div>
+                    <div class="caption-bar"><span>Top 10 clusters dispatch</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="sec-p1-b" class="content-view" style="display:none;">
+            <div class="header-box">
+                <div class="header-title">Pathway 1: Electricity-Only Decarbonization</div>
+                <div class="header-subtitle"><strong>Case View: Scenario B (Zero-CO2 Carbon-Limited)</strong> — Complete domestic grid decarbonization (Solar, Wind, Battery Storage).</div>
+            </div>
+            <div class="kpi-grid">
+                <div class="kpi-card"><div class="kpi-title">Zero-CO2 LCOE</div><div class="kpi-value">58.94 €/MWh</div><div class="kpi-delta neg">+22.04 € Green Premium</div></div>
+                <div class="kpi-card"><div class="kpi-title">Overnight CAPEX</div><div class="kpi-value">€57.49 B</div><div class="kpi-delta neg">+€24.87 B Capital Inflow</div></div>
+                <div class="kpi-card"><div class="kpi-title">CO2 Emissions Saved</div><div class="kpi-value">6.95 Mt/yr</div><div class="kpi-delta">100% Clean Grid</div></div>
+                <div class="kpi-card"><div class="kpi-title">Annual OPEX</div><div class="kpi-value">€1.33 M/yr</div><div class="kpi-delta">Virtually Zero Fuel</div></div>
+            </div>
+            <div class="two-cols">
+                <div class="figure-card">
+                    <div class="figure-viewport" data-fig="fig_LCO2_nodal_dispatch_map.pdf">
+                        <div class="placeholder-msg">Loading Zero-CO2 Nodal Map...</div>
+                    </div>
+                    <div class="caption-bar"><span>Zero-CO2 energy mix & peak loading</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div>
+                </div>
+                <div class="figure-card">
+                    <div class="figure-viewport" data-fig="fig_LCO2_nodal_bar_chart.pdf">
+                        <div class="placeholder-msg">Loading Zero-CO2 Cluster Dispatch...</div>
+                    </div>
+                    <div class="caption-bar"><span>Top 10 clusters dispatch</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="sec-p1-all" class="content-view" style="display:none;">
+            <div class="header-box">
+                <div class="header-title">Pathway 1: Electricity-Only Decarbonization (Comparison)</div>
+                <div class="header-subtitle">Evaluating 100% renewable grid constraint against unconstrained fossil baseline.</div>
+            </div>
+            <div class="tab-bar">
+                <button class="tab-btn active" onclick="switchTab(this, 'p1-tab-mix')">Maps & Nodal Mix</button>
+                <button class="tab-btn" onclick="switchTab(this, 'p1-tab-cost')">Cost Breakdown</button>
+                <button class="tab-btn" onclick="switchTab(this, 'p1-tab-fin')">Financial Analysis</button>
+            </div>
+            <div id="p1-tab-mix" class="tab-pane active">
+                <div class="two-cols">
+                    <div>
+                        <h4 style="margin-bottom:8px;">Unlimited CO2 Baseline Case</h4>
+                        <div class="figure-card"><div class="figure-viewport" data-fig="fig_No_LCO2_nodal_dispatch_map.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Nodal Dispatch Map</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                        <div class="figure-card"><div class="figure-viewport" data-fig="fig_No_LCO2_nodal_bar_chart.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Cluster Dispatch Bar Chart</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom:8px;">Zero-CO2 Carbon-Limited Case</h4>
+                        <div class="figure-card"><div class="figure-viewport" data-fig="fig_LCO2_nodal_dispatch_map.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Nodal Dispatch Map</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                        <div class="figure-card"><div class="figure-viewport" data-fig="fig_LCO2_nodal_bar_chart.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Cluster Dispatch Bar Chart</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                    </div>
+                </div>
+            </div>
+            <div id="p1-tab-cost" class="tab-pane">
+                <div class="figure-card">
+                    <div class="figure-viewport" data-fig="Elec_LCO2/fig_cost_by_scenario.pdf">
+                        <div class="placeholder-msg">Loading Cost Breakdown...</div>
+                    </div>
+                    <div class="caption-bar"><span>Limited vs Unlimited CO2 Cost Structure</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div>
+                </div>
+            </div>
+            <div id="p1-tab-fin" class="tab-pane">
+                <table>
+                    <tr><th>Metric</th><th>Zero-CO2 (Limited)</th><th>Unlimited (Baseline)</th></tr>
+                    <tr><td>Overnight CAPEX (€ B)</td><td>57.494</td><td>32.619</td></tr>
+                    <tr><td>Annualized CAPEX (€ B/yr)</td><td>4.934</td><td>2.799</td></tr>
+                    <tr><td>Annual OPEX (€ M/yr)</td><td>1.330</td><td>953.920</td></tr>
+                    <tr><td>LCOE (€/MWh)</td><td>58.94</td><td>36.90</td></tr>
+                    <tr><td>Project IRR (%)</td><td>4.86%</td><td>8.05%</td></tr>
+                    <tr><td>Simple Payback Period (Years)</td><td>14.29</td><td>10.63</td></tr>
+                    <tr><td>Total Annual Emissions (MtCO2/yr)</td><td>0.000</td><td>6.950</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- ==================== SECTION: PATHWAY 2 ==================== -->
+        <div id="sec-p2-a" class="content-view" style="display:none;">
+            <div class="header-box">
+                <div class="header-title">Pathway 2: Sector-Coupled Hydrogen Export</div>
+                <div class="header-subtitle"><strong>Case View: Scenario A (Green H2)</strong> — 100% Water electrolysis restricted to coastal desalination nodes.</div>
+            </div>
+            <div class="kpi-grid">
+                <div class="kpi-card"><div class="kpi-title">Net LCOH (Green)</div><div class="kpi-value">€4.89 / kg</div><div class="kpi-delta">146.56 €/MWh (LHV)</div></div>
+                <div class="kpi-card"><div class="kpi-title">Export Run Cost</div><div class="kpi-value">€12.61 B/yr</div><div class="kpi-delta neg">CAPEX Intensive</div></div>
+                <div class="kpi-card"><div class="kpi-title">Water Demand</div><div class="kpi-value">21.57 Mm³</div><div class="kpi-delta">Desal Cost: €32.36 M/yr</div></div>
+                <div class="kpi-card"><div class="kpi-title">Project IRR</div><div class="kpi-value">9.56%</div><div class="kpi-delta">Payback: 8.92 Yrs</div></div>
+            </div>
+            <div class="two-cols">
+                <div class="figure-card"><div class="figure-viewport" data-fig="fig_Scenario_a_nodal_dispatch_map.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Nodal Dispatch Map</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                <div class="figure-card"><div class="figure-viewport" data-fig="fig_Scenario_a_nodal_bar_chart_2panels.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Cluster Dispatch Chart</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+            </div>
+        </div>
+
+        <div id="sec-p2-b" class="content-view" style="display:none;">
+            <div class="header-box">
+                <div class="header-title">Pathway 2: Sector-Coupled Hydrogen Export</div>
+                <div class="header-subtitle"><strong>Case View: Scenario B (Blue H2)</strong> — Steam Methane Reforming coupled with Carbon Capture (SMR-CC).</div>
+            </div>
+            <div class="kpi-grid">
+                <div class="kpi-card"><div class="kpi-title">Net LCOH (Blue)</div><div class="kpi-value">€2.55 / kg</div><div class="kpi-delta">76.59 €/MWh (LHV)</div></div>
+                <div class="kpi-card"><div class="kpi-title">Export Run Cost</div><div class="kpi-value">€7.67 B/yr</div><div class="kpi-delta">Balanced Grid Sharing</div></div>
+                <div class="kpi-card"><div class="kpi-title">CO2 Sequestered</div><div class="kpi-value">43.55 Mt/yr</div><div class="kpi-delta">Deep Geologic Storage</div></div>
+                <div class="kpi-card"><div class="kpi-title">Project IRR</div><div class="kpi-value">15.27%</div><div class="kpi-delta">Payback: 6.22 Yrs</div></div>
+            </div>
+            <div class="two-cols">
+                <div class="figure-card"><div class="figure-viewport" data-fig="fig_Scenario_b_nodal_dispatch_map.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Nodal Dispatch Map</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                <div class="figure-card"><div class="figure-viewport" data-fig="fig_Scenario_b_nodal_bar_chart_2panels.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Cluster Dispatch Chart</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+            </div>
+        </div>
+
+        <div id="sec-p2-c" class="content-view" style="display:none;">
+            <div class="header-box">
+                <div class="header-title">Pathway 2: Sector-Coupled Hydrogen Export</div>
+                <div class="header-subtitle"><strong>Case View: Scenario C (Grey H2)</strong> — Unabated SMR exploiting domestic natural gas reserves.</div>
+            </div>
+            <div class="kpi-grid">
+                <div class="kpi-card"><div class="kpi-title">Net LCOH (Grey)</div><div class="kpi-value">€2.13 / kg</div><div class="kpi-delta">63.95 €/MWh (LHV)</div></div>
+                <div class="kpi-card"><div class="kpi-title">Export Run Cost</div><div class="kpi-value">€5.91 B/yr</div><div class="kpi-delta">Lowest Untaxed Cost</div></div>
+                <div class="kpi-card"><div class="kpi-title">Atmospheric Venting</div><div class="kpi-value">59.15 Mt/yr</div><div class="kpi-delta neg">High Carbon Footprint</div></div>
+                <div class="kpi-card"><div class="kpi-title">Project IRR</div><div class="kpi-value">17.54%</div><div class="kpi-delta">Payback: 5.51 Yrs</div></div>
+            </div>
+            <div class="two-cols">
+                <div class="figure-card"><div class="figure-viewport" data-fig="fig_Scenario_c_nodal_dispatch_map.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Nodal Dispatch Map</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                <div class="figure-card"><div class="figure-viewport" data-fig="fig_Scenario_c_nodal_bar_chart_2panels.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Cluster Dispatch Chart</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+            </div>
+        </div>
+
+        <div id="sec-p2-tax" class="content-view" style="display:none;">
+            <div class="header-box">
+                <div class="header-title">Pathway 2: Carbon Tax Impact Comparison (100 €/tonne CO2)</div>
+                <div class="header-subtitle">Evaluating structural shifts and financial liabilities when atmospheric emissions are penalized.</div>
+            </div>
+            <div class="two-cols">
+                <div class="figure-card"><div class="figure-viewport" data-fig="Sector_Couple_H2/fig_cost_by_scenario.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Cost Comparison (No Tax)</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                <div class="figure-card"><div class="figure-viewport" data-fig="Sector_Couple_H2_CO2Tax100/fig_cost_by_scenario.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Cost Comparison (Carbon Taxed)</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+            </div>
+            <h4>Table 6: Comparison of Financial Performance Under Zero Tax vs 100 €/t CO2 Tax</h4>
+            <table>
+                <tr><th>Financial Metric</th><th>Scenario A (No Tax / Taxed)</th><th>Scenario B (No Tax / Taxed)</th><th>Scenario C (No Tax / Taxed)</th></tr>
+                <tr><td>Annual System Cost [B €/yr]</td><td>12.61 / 13.29</td><td>7.67 / 8.35</td><td>5.91 / 11.83</td></tr>
+                <tr><td>Total System NPV [B €]</td><td>-2.65 / -9.99</td><td>-2.23 / -9.56</td><td>+7.11 / -56.47</td></tr>
+                <tr><td>Project IRR (%)</td><td>9.56% / 8.78%</td><td>15.27% / 12.77%</td><td>17.54% / N/A*</td></tr>
+                <tr><td>Simple Payback Period [Years]</td><td>8.92 / 9.44</td><td>6.22 / 7.21</td><td>5.51 / N/A*</td></tr>
+            </table>
+        </div>
+
+        <div id="sec-p2-all" class="content-view" style="display:none;">
+            <div class="header-box">
+                <div class="header-title">Pathway 2: Sector-Coupled Hydrogen Export Pathways (70 TWh/year)</div>
+                <div class="header-subtitle">Evaluating green, blue, and grey hydrogen export logistics under untaxed conditions.</div>
+            </div>
+            <div class="tab-bar">
+                <button class="tab-btn active" onclick="switchTab(this, 'p2-tab-layout')">Nodal Layouts</button>
+                <button class="tab-btn" onclick="switchTab(this, 'p2-tab-cost')">Cost & OPEX Dynamics</button>
+                <button class="tab-btn" onclick="switchTab(this, 'p2-tab-lcoh')">Net LCOH & Valuation</button>
+                <button class="tab-btn" onclick="switchTab(this, 'p2-tab-env')">Environment & Water</button>
+            </div>
+            <div id="p2-tab-layout" class="tab-pane active">
+                <div class="three-cols">
+                    <div>
+                        <h4>Scenario A (Green H2)</h4>
+                        <div class="figure-card"><div class="figure-viewport" data-fig="fig_Scenario_a_nodal_dispatch_map.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Map</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                        <div class="figure-card"><div class="figure-viewport" data-fig="fig_Scenario_a_nodal_bar_chart_2panels.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Dispatch</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                    </div>
+                    <div>
+                        <h4>Scenario B (Blue H2)</h4>
+                        <div class="figure-card"><div class="figure-viewport" data-fig="fig_Scenario_b_nodal_dispatch_map.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Map</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                        <div class="figure-card"><div class="figure-viewport" data-fig="fig_Scenario_b_nodal_bar_chart_2panels.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Dispatch</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                    </div>
+                    <div>
+                        <h4>Scenario C (Grey H2)</h4>
+                        <div class="figure-card"><div class="figure-viewport" data-fig="fig_Scenario_c_nodal_dispatch_map.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Map</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                        <div class="figure-card"><div class="figure-viewport" data-fig="fig_Scenario_c_nodal_bar_chart_2panels.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Dispatch</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                    </div>
+                </div>
+            </div>
+            <div id="p2-tab-cost" class="tab-pane">
+                <div class="two-cols">
+                    <div>
+                        <h4>Annualized System Cost Comparison</h4>
+                        <div class="figure-card"><div class="figure-viewport" data-fig="Sector_Couple_H2/fig_cost_by_scenario.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>With Export</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                        <div class="figure-card"><div class="figure-viewport" data-fig="fig_No_H2_export_cost_by_scenario.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Zero-Export Baseline</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                    </div>
+                    <div>
+                        <h4>Operational Expenditure (OPEX) Breakdown</h4>
+                        <div class="figure-card"><div class="figure-viewport" data-fig="Sector_Couple_H2/fig_opex_cost_by_scenario.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>With Export</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                        <div class="figure-card"><div class="figure-viewport" data-fig="fig_No_H2_export_opex_cost_by_scenario.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Zero-Export Baseline</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                    </div>
+                </div>
+            </div>
+            <div id="p2-tab-lcoh" class="tab-pane">
+                <h4>Table 2: Summary of H2 Export Costs & Net LCOH Breakdown</h4>
+                <table>
+                    <tr><th>Metric</th><th>Scenario A (Green)</th><th>Scenario B (Blue)</th><th>Scenario C (Grey)</th></tr>
+                    <tr><td>Export Run Cost [B €]</td><td>12.61</td><td>7.67</td><td>5.91</td></tr>
+                    <tr><td>Baseline Zero-Export Cost [B €]</td><td>2.35</td><td>2.31</td><td>1.44</td></tr>
+                    <tr><td>Net H2 Cost [B €]</td><td>10.26</td><td>5.36</td><td>4.48</td></tr>
+                    <tr><td>Net LCOH [€/MWh]</td><td>146.56</td><td>76.59</td><td>63.95</td></tr>
+                    <tr><td>Net LCOH LHV [€/kg]</td><td>4.89</td><td>2.55</td><td>2.13</td></tr>
+                </table>
+            </div>
+            <div id="p2-tab-env" class="tab-pane">
+                <div class="two-cols">
+                    <div>
+                        <h4>Table 4: Gross CO2 Generation (Mt)</h4>
+                        <table>
+                            <tr><th>CO2 Metric</th><th>Scenario A</th><th>Scenario B</th><th>Scenario C</th></tr>
+                            <tr><td>Vented Emissions</td><td>6.82 Mt</td><td>6.82 Mt</td><td>59.15 Mt</td></tr>
+                            <tr><td>Captured (CCS)</td><td>25.22 Mt</td><td>43.55 Mt</td><td>75.90 Mt</td></tr>
+                            <tr><td>Total Gross CO2</td><td>32.05 Mt</td><td>50.37 Mt</td><td>135.04 Mt</td></tr>
+                        </table>
+                    </div>
+                    <div>
+                        <h4>Table 5: Desalination & Water Footprint</h4>
+                        <table>
+                            <tr><th>Metric</th><th>Scenario A</th><th>Scenario B</th><th>Scenario C</th></tr>
+                            <tr><td>Water Demand (Mm³)</td><td>21.57</td><td>15.96</td><td>10.65</td></tr>
+                            <tr><td>Desalination Cost (M€/yr)</td><td>32.36</td><td>23.94</td><td>15.97</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SECTION: PATHWAY 3 ==================== -->
+        <div id="sec-p3-layout" class="content-view" style="display:none;">
+            <div class="header-box">
+                <div class="header-title">Pathway 3: Hybrid Co-Optimization</div>
+                <div class="header-subtitle"><strong>Sub-Section: Nodal Layout</strong> — Infrastructure hubbing at Cluster 1 (Al Zawia) & Cluster 2 (Marsa Al Brega).</div>
+            </div>
+            <div class="two-cols">
+                <div class="figure-card"><div class="figure-viewport" data-fig="fig_Hybrid_nodal_dispatch_map.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Nodal Dispatch Map</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                <div class="figure-card"><div class="figure-viewport" data-fig="fig_Hybrid_nodal_bar_chart_2panels.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Cluster Dispatch Chart</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+            </div>
+        </div>
+
+        <div id="sec-p3-cost" class="content-view" style="display:none;">
+            <div class="header-box">
+                <div class="header-title">Pathway 3: Hybrid Co-Optimization</div>
+                <div class="header-subtitle"><strong>Sub-Section: Cost Structures</strong> — Annualized system expenditure and OPEX fuel procurement breakdown.</div>
+            </div>
+            <div class="two-cols">
+                <div>
+                    <h4>Annualized System Cost Breakdown</h4>
+                    <div class="figure-card"><div class="figure-viewport" data-fig="Sector_Couple_H2_Hybrid/fig_cost_by_scenario.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Export Cost</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                    <div class="figure-card"><div class="figure-viewport" data-fig="Sector_Couple_H2_Hybrid/fig_No_H2_export_cost_by_scenario.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Zero-Export Baseline</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                </div>
+                <div>
+                    <h4>OPEX Breakdown (Natural Gas Procurement)</h4>
+                    <div class="figure-card"><div class="figure-viewport" data-fig="fig_opex_cost_hybrid.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>With Export</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                    <div class="figure-card"><div class="figure-viewport" data-fig="fig_No_H2_export_opex_cost_hybrid.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Zero-Export Baseline</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="sec-p3-fin" class="content-view" style="display:none;">
+            <div class="header-box">
+                <div class="header-title">Pathway 3: Hybrid Co-Optimization</div>
+                <div class="header-subtitle"><strong>Sub-Section: Financial Valuation</strong> — Net LCOH and project return metrics.</div>
+            </div>
+            <h4>Table 7: Summary of H2 Export Costs and Net LCOH Breakdown</h4>
+            <table>
+                <tr><th>Metric</th><th>Hybrid Scenario</th></tr>
+                <tr><td>Export Run Cost [B €]</td><td>8.42</td></tr>
+                <tr><td>Baseline Zero-Export Cost [B €]</td><td>2.95</td></tr>
+                <tr><td>Net H2 Cost [B €]</td><td>5.47</td></tr>
+                <tr><td>Net LCOH LHV [€/kg]</td><td>2.60</td></tr>
+            </table>
+            <h4 style="margin-top:20px;">Table 8: Financial Evaluation for Hybrid Scenario (r = 7.10%)</h4>
+            <table>
+                <tr><th>Financial Metric</th><th>Hybrid Scenario</th></tr>
+                <tr><td>Selling Price (+1 €/kg) [€/kg]</td><td>3.60</td></tr>
+                <tr><td>Annual Total System Cost [B €/yr]</td><td>9.48</td></tr>
+                <tr><td>CO2 Tax Liability [B €/yr]</td><td>0.79</td></tr>
+                <tr><td>Project IRR (%)</td><td>12.54%</td></tr>
+                <tr><td>Simple Payback Period [Years]</td><td>7.31</td></tr>
+                <tr><td>Discounted Payback Period [Years]</td><td>10.67</td></tr>
+            </table>
+        </div>
+
+        <div id="sec-p3-env" class="content-view" style="display:none;">
+            <div class="header-box">
+                <div class="header-title">Pathway 3: Hybrid Co-Optimization</div>
+                <div class="header-subtitle"><strong>Sub-Section: Environment & Water</strong> — 84.9% Carbon capture effectiveness and RO desalination overhead.</div>
+            </div>
+            <div class="two-cols">
+                <div>
+                    <h4>Table 9: CO2 Mass Balance & Vented Emissions</h4>
+                    <table>
+                        <tr><th>CO2 Metric / Source</th><th>Value</th></tr>
+                        <tr><td>Net Atmospheric Emissions (Vented)</td><td>7.92 Mt</td></tr>
+                        <tr><td>Geologically Sequestered (CCS)</td><td>44.65 Mt (84.9%)</td></tr>
+                        <tr><td>Total Gross CO2 Generated</td><td>52.57 Mt</td></tr>
+                        <tr><td>Vented: Oil</td><td>5.70 Mt</td></tr>
+                        <tr><td>Vented: SMR-CC</td><td>2.03 Mt</td></tr>
+                        <tr><td>Vented: Industrial Gas</td><td>0.19 Mt</td></tr>
+                    </table>
+                </div>
+                <div>
+                    <h4>Table 10: Multi-Technology Water Consumption</h4>
+                    <table>
+                        <tr><th>Metric</th><th>Hybrid Scenario</th></tr>
+                        <tr><td>Total H2 Output</td><td>70.92 TWh / 2.13 Mt</td></tr>
+                        <tr><td>Total Water Demand</td><td>15.96 Mm³</td></tr>
+                        <tr><td>Estimated Desalination Cost</td><td>23.94 M€/yr</td></tr>
+                        <tr><td>Desalination Marginal Cost</td><td>0.0112 €/kg H2</td></tr>
+                        <tr><td>Desalination Electricity Share</td><td>0.050%</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="sec-p3-all" class="content-view" style="display:none;">
+            <div class="header-box">
+                <div class="header-title">Pathway 3: Hybrid Co-Optimization (Full Overview)</div>
+                <div class="header-subtitle">Technology-neutral co-optimization between Green, Blue, and Grey hydrogen.</div>
+            </div>
+            <div class="kpi-grid">
+                <div class="kpi-card"><div class="kpi-title">Hybrid Net LCOH</div><div class="kpi-value">€2.60 / kg</div><div class="kpi-delta">78.15 €/MWh (LHV)</div></div>
+                <div class="kpi-card"><div class="kpi-title">Dominant Tech</div><div class="kpi-value">SMR with CC</div><div class="kpi-delta">Blue H2 Dominates</div></div>
+                <div class="kpi-card"><div class="kpi-title">Project IRR</div><div class="kpi-value">12.54%</div><div class="kpi-delta">> 7.10% WACC Hurdle</div></div>
+                <div class="kpi-card"><div class="kpi-title">Capital Recovery</div><div class="kpi-value">7.31 Yrs</div><div class="kpi-delta">Discounted: 10.67 Yrs</div></div>
+            </div>
+            <div class="tab-bar">
+                <button class="tab-btn active" onclick="switchTab(this, 'p3-all-layout')">Nodal Layout</button>
+                <button class="tab-btn" onclick="switchTab(this, 'p3-all-cost')">Cost Structures</button>
+                <button class="tab-btn" onclick="switchTab(this, 'p3-all-fin')">Financial Valuation</button>
+                <button class="tab-btn" onclick="switchTab(this, 'p3-all-env')">Environment & Water</button>
+            </div>
+            <div id="p3-all-layout" class="tab-pane active">
+                <div class="two-cols">
+                    <div class="figure-card"><div class="figure-viewport" data-fig="fig_Hybrid_nodal_dispatch_map.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Map</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                    <div class="figure-card"><div class="figure-viewport" data-fig="fig_Hybrid_nodal_bar_chart_2panels.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Dispatch</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                </div>
+            </div>
+            <div id="p3-all-cost" class="tab-pane">
+                <div class="two-cols">
+                    <div>
+                        <h4>Annualized System Cost Breakdown</h4>
+                        <div class="figure-card"><div class="figure-viewport" data-fig="Sector_Couple_H2_Hybrid/fig_cost_by_scenario.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>Export Cost</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                    </div>
+                    <div>
+                        <h4>OPEX Breakdown</h4>
+                        <div class="figure-card"><div class="figure-viewport" data-fig="fig_opex_cost_hybrid.pdf"><div class="placeholder-msg">Loading...</div></div><div class="caption-bar"><span>OPEX</span><a class="caption-download-link" href="#" target="_blank">⬇️</a></div></div>
+                    </div>
+                </div>
+            </div>
+            <div id="p3-all-fin" class="tab-pane">
+                <table>
+                    <tr><th>Financial Metric</th><th>Hybrid Scenario</th></tr>
+                    <tr><td>LCOH LHV Cost</td><td>€2.60 / kg</td></tr>
+                    <tr><td>Selling Price (+1 €/kg)</td><td>€3.60 / kg</td></tr>
+                    <tr><td>Annual Total System Cost</td><td>€9.48 B/yr</td></tr>
+                    <tr><td>Project IRR</td><td>12.54%</td></tr>
+                    <tr><td>Simple Payback Period</td><td>7.31 Years</td></tr>
+                </table>
+            </div>
+            <div id="p3-all-env" class="tab-pane">
+                <table>
+                    <tr><th>Resource Metric</th><th>Hybrid Scenario</th></tr>
+                    <tr><td>Total H2 Output</td><td>70.92 TWh / 2.13 Mt</td></tr>
+                    <tr><td>Total Water Demand</td><td>15.96 Mm³</td></tr>
+                    <tr><td>Estimated Desalination Cost</td><td>€23.94 M/yr</td></tr>
+                    <tr><td>Desalination Marginal Cost</td><td>€0.0112 / kg H2</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- ==================== SECTION: APPENDIX ==================== -->
+        <div id="sec-appendix" class="content-view" style="display:none;">
+            <div class="header-box">
+                <div class="header-title">Appendix: Model Complexity & Problem Scale</div>
+                <div class="header-subtitle">Linear programming matrix dimensions across modeled scenarios.</div>
+            </div>
+            <table>
+                <tr><th>Scenario</th><th>Decision Variables</th><th>Constraints</th><th>Non-Zero Entries</th></tr>
+                <tr><td>Scenario A (Electrolysis only)</td><td>2,228,414</td><td>4,596,589</td><td>9,611,971</td></tr>
+                <tr><td>Scenario B (Electrolysis + SMR-CC)</td><td>2,263,466</td><td>4,666,680</td><td>9,752,143</td></tr>
+                <tr><td>Scenario C (Electrolysis + SMR + SMR-CC)</td><td>2,298,518</td><td>4,736,772</td><td>9,962,395</td></tr>
+            </table>
+        </div>
+
+        <!-- ==================== SECTION: REPORT PDF ==================== -->
+        <div id="sec-report" class="content-view" style="display:none;">
+            <div class="header-box">
+                <div class="header-title">Report: PyPSA-Libya</div>
+                <div class="header-subtitle">Compiled project report (PDF).</div>
+            </div>
+            <div id="pdfjs-wrapper">
+                <div id="pdf-toolbar">
+                    <div class="tb-group">
+                        <span id="doc-title-display">Report: <strong>Libya_H2.pdf</strong></span>
+                    </div>
+                    <div class="tb-group">
+                        <button class="tb-btn" onclick="zoomChange(-0.2)">Zoom −</button>
+                        <span id="scale-indicator">125%</span>
+                        <button class="tb-btn" onclick="zoomChange(0.2)">Zoom +</button>
+                        <button class="tb-btn" onclick="fitPageWidth()">Fit Width</button>
+                    </div>
+                    <div class="tb-group">
+                        <span id="page-counter">No report loaded</span>
+                        <a id="full-report-dl" class="tb-btn" style="text-decoration:none;" href="#" download="Libya_H2.pdf">⬇️ Download</a>
+                    </div>
+                </div>
+                <div id="canvas-viewport">
+                    <div id="loading-indicator" style="color:#ffffff; padding:24px;">
+                        <div id="loading-msg">Locating report PDF automatically...</div>
+                    </div>
+                    <div id="pages-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SECTION: GITHUB REPO ==================== -->
+        <div id="sec-github" class="content-view" style="display:none;">
+            <div class="header-box">
+                <div class="header-title">Code and Data Availability</div>
+                <div class="header-subtitle">Open-source repository and model resources for PyPSA-Libya.</div>
+            </div>
+            <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+                <h3 style="color: var(--primary); margin-bottom: 12px; font-size: 1.2rem;">PyPSA-Libya Repository</h3>
+                <p style="color: var(--text-main); font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px;">
+                    The complete model code, input data time series, scenario configuration scripts, and optimization routines are publicly available on GitHub.
+                </p>
+                <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px; padding: 16px 20px; display: inline-flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 1.2rem;">🔗</span>
+                    <a href="https://github.com/mhdella/PyPSA-Libya" target="_blank" style="color: var(--primary-light); font-weight: 600; text-decoration: none; font-size: 1.05rem;">
+                        https://github.com/mhdella/PyPSA-Libya
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- EMBEDDED JAVASCRIPT -->
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        window.pdfBuffers = {};
+        window.pdfBlobUrls = {};
+        window.pdfDocInstance = null;
+        window.currentPdfScale = 1.25;
+
+        // Accordion Toggle
+        function toggleAccordion(header) {
+            const body = header.nextElementSibling;
+            const isOpen = header.classList.contains('open');
+
+            document.querySelectorAll('.accordion-header').forEach(h => {
+                h.classList.remove('open');
+                if (h.nextElementSibling) h.nextElementSibling.classList.remove('open');
+            });
+
+            if (!isOpen) {
+                header.classList.add('open');
+                body.classList.add('open');
+            }
+        }
+
+        // View Navigation
+        function showView(viewId, btn) {
+            document.querySelectorAll('.content-view').forEach(v => v.style.display = 'none');
+            document.querySelectorAll('#sidebar .nav-btn').forEach(b => b.classList.remove('active'));
+
+            const target = document.getElementById(viewId);
+            if (target) {
+                target.style.display = 'block';
+                renderVisibleCanvases(target);
+            }
+            if (btn) btn.classList.add('active');
+
+            if (viewId === 'sec-report' && window.pdfDocInstance) {
+                setTimeout(fitPageWidth, 60);
+            }
+        }
+
+        // Tab Switching
+        function switchTab(btn, tabId) {
+            const bar = btn.parentElement;
+            bar.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const parent = bar.parentElement;
+            parent.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            const targetPane = document.getElementById(tabId);
+            if (targetPane) {
+                targetPane.classList.add('active');
+                renderVisibleCanvases(targetPane);
+            }
+        }
+
+        function getActiveSection() {
+            return Array.from(document.querySelectorAll('.content-view'))
+                .find(v => getComputedStyle(v).display !== 'none') || null;
+        }
+
+        // Helper to compute PDF aspect ratio dynamically
+        async function getPdfAspectRatio(buffer) {
+            try {
+                const loadingTask = pdfjsLib.getDocument({ data: buffer.slice(0) });
+                const pdf = await loadingTask.promise;
+                const page = await pdf.getPage(1);
+                const viewport = page.getViewport({ scale: 1.0 });
+                return viewport.height / viewport.width;
+            } catch (e) {
+                return 0.75; // fallback ratio
+            }
+        }
+
+        // Dynamic Sizing & Aspect-Ratio Fitting Figure Renderer with Toolbar Enabled
+        async function renderFigureToCanvas(viewportEl, key) {
+            if (viewportEl.dataset.rendered === '1') return;
+            if (window.FOLDER_MODE) {
+                const u = window.folderFigUrls && window.folderFigUrls[key];
+                if (!u) return;
+                const w = viewportEl.clientWidth || viewportEl.parentElement.clientWidth || 600;
+                const h = Math.max(320, Math.min(800, Math.round(w * 0.75)));
+                viewportEl.innerHTML = '';
+                viewportEl.style.minHeight = h + 'px';
+                viewportEl.style.height = h + 'px';
+                const wrap = document.createElement('div');
+                wrap.style.cssText = 'position:relative;width:100%;height:100%;overflow:hidden;';
+                const obj = document.createElement('object');
+                obj.type = 'application/pdf';
+                obj.data = u + '#toolbar=1&navpanes=0&scrollbar=1&view=FitH';
+                obj.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;border:none;';
+                obj.innerHTML = '<p style="padding:15px;">PDF preview not supported in this browser. <a href="' + u + '">Open file</a></p>';
+                wrap.appendChild(obj);
+                viewportEl.appendChild(wrap);
+                viewportEl.dataset.rendered = '1';
+                return;
+            }
+            const path = findMatchingKey(key);
+            if (!path) return;
+
+            const buffer = window.pdfBuffers[path];
+            const url = window.pdfBlobUrls[path] + '#toolbar=1&navpanes=0&scrollbar=1&view=FitH';
+            const name = path.split('/').pop();
+
+            let aspectRatio = 0.75;
+            if (buffer) {
+                aspectRatio = await getPdfAspectRatio(buffer);
+            }
+            const currentWidth = viewportEl.clientWidth || viewportEl.parentElement.clientWidth || 600;
+            const calculatedHeight = Math.round(currentWidth * aspectRatio);
+            const finalHeight = Math.max(320, Math.min(800, calculatedHeight));
+
+            viewportEl.innerHTML = '';
+            viewportEl.style.minHeight = finalHeight + 'px';
+            viewportEl.style.height = finalHeight + 'px';
+
+            const wrap = document.createElement('div');
+            wrap.style.cssText = 'position:relative;width:100%;height:100%;overflow:hidden;';
+
+            const obj = document.createElement('object');
+            obj.type = 'application/pdf';
+            obj.data = url;
+            obj.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;border:none;';
+
+            const fb = document.createElement('p');
+            fb.style.padding = '15px';
+            fb.innerHTML = 'PDF preview not supported in this browser. <a download="' + name + '" href="' + window.pdfBlobUrls[path] + '">Download file</a>';
+            obj.appendChild(fb);
+
+            wrap.appendChild(obj);
+            viewportEl.appendChild(wrap);
+            viewportEl.dataset.rendered = '1';
+
+            const card = viewportEl.closest('.figure-card');
+            if (card) {
+                const dl = card.querySelector('.caption-download-link');
+                if (dl) {
+                    dl.href = window.pdfBlobUrls[path];
+                    dl.download = name;
+                }
+            }
+        }
+
+        function renderVisibleCanvases(container) {
+            if (!container || !window.pdfBuffers) return;
+            container.querySelectorAll('.figure-viewport[data-fig]').forEach(vp => {
+                const key = vp.getAttribute('data-fig');
+                if (window.FOLDER_MODE ? (window.folderFigUrls && window.folderFigUrls[key]) : findMatchingKey(key)) renderFigureToCanvas(vp, key);
+            });
+        }
+
+        function findMatchingBuffer(targetPath) {
+            const k = findMatchingKey(targetPath);
+            return k ? window.pdfBuffers[k] : null;
+        }
+
+        function findMatchingKey(targetPath) {
+            const cleanTarget = targetPath.replace(/\\/g, '/').toLowerCase();
+            const fileName = cleanTarget.split('/').pop();
+            const keys = Object.keys(window.pdfBuffers);
+
+            for (const path of keys) {
+                if (path === cleanTarget || path.endsWith('/' + cleanTarget)) return path;
+            }
+            const parts = cleanTarget.split('/');
+            if (parts.length >= 2) {
+                const subPath = parts.slice(-2).join('/');
+                for (const path of keys) {
+                    if (path === subPath || path.endsWith('/' + subPath)) return path;
+                }
+            }
+            if (parts.length === 1) {
+                for (const path of keys) {
+                    if (path.split('/').pop() === fileName) return path;
+                }
+            }
+            return null;
+        }
+
+        // Worker-safe PDF opener
+        const PDFJS_WORKER_URL = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        const workerReady = (async () => {
+            try {
+                const r = await fetch(PDFJS_WORKER_URL);
+                const t = await r.text();
+                pdfjsLib.GlobalWorkerOptions.workerSrc = URL.createObjectURL(new Blob([t], { type: 'text/javascript' }));
+            } catch (err) {
+                pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_URL;
+            }
+        })();
+
+        async function openPdf(buffer) {
+            await workerReady;
+            return pdfjsLib.getDocument({ data: buffer.slice(0) }).promise;
+        }
+
+        function initPdfJsReport(arrayBuffer, docName, blobUrl) {
+            document.getElementById('doc-title-display').innerHTML = 'Report: <strong></strong>';
+            document.querySelector('#doc-title-display strong').textContent = docName;
+            const dlBtn = document.getElementById('full-report-dl');
+            if (dlBtn && blobUrl) { dlBtn.href = blobUrl; dlBtn.download = docName; }
+
+            const li = document.getElementById('loading-indicator');
+            li.style.display = 'block';
+            document.getElementById('loading-msg').textContent = 'Loading ' + docName + '...';
+            document.getElementById('page-counter').textContent = 'Loading...';
+
+            openPdf(arrayBuffer).then(function (pdf) {
+                window.pdfDocInstance = pdf;
+                li.style.display = 'none';
+                document.getElementById('page-counter').textContent = 'Total: ' + pdf.numPages + ' Pages';
+                const sec = document.getElementById('sec-report');
+                if (getComputedStyle(sec).display !== 'none') fitPageWidth(); else renderAllReportPages();
+            }).catch(function (err) {
+                li.style.display = 'block';
+                document.getElementById('loading-msg').innerHTML =
+                    '<span style="color:#f87171;">Error rendering report: ' + (err && err.message ? err.message : err) + '</span>';
+                document.getElementById('page-counter').textContent = 'Error';
+            });
+        }
+
+        let reportRenderToken = 0;
+        async function renderAllReportPages() {
+            const pdf = window.pdfDocInstance;
+            if (!pdf) return;
+            const token = ++reportRenderToken;
+            const container = document.getElementById('pages-container');
+            container.innerHTML = '';
+            const dpr = window.devicePixelRatio || 1;
+
+            for (let num = 1; num <= pdf.numPages; num++) {
+                if (token !== reportRenderToken) return;
+                const page = await pdf.getPage(num);
+                const viewport = page.getViewport({ scale: window.currentPdfScale });
+                const card = document.createElement('div');
+                card.className = 'pdf-page-card';
+                const canvas = document.createElement('canvas');
+                canvas.width = Math.floor(viewport.width * dpr);
+                canvas.height = Math.floor(viewport.height * dpr);
+                canvas.style.width = Math.floor(viewport.width) + 'px';
+                canvas.style.height = Math.floor(viewport.height) + 'px';
+                card.appendChild(canvas);
+                container.appendChild(card);
+                container.appendChild(document.createElement('br'));
+                await page.render({
+                    canvasContext: canvas.getContext('2d'),
+                    viewport: viewport,
+                    transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : null
+                }).promise;
+            }
+        }
+
+        function zoomChange(delta) {
+            window.currentPdfScale = Math.max(0.6, Math.min(2.5, window.currentPdfScale + delta));
+            document.getElementById('scale-indicator').textContent = Math.round(window.currentPdfScale * 100) + '%';
+            renderAllReportPages();
+        }
+
+        function fitPageWidth() {
+            const vWidth = document.getElementById('canvas-viewport').clientWidth - 64;
+            if (window.pdfDocInstance && vWidth > 200) {
+                window.pdfDocInstance.getPage(1).then(function (page) {
+                    const unscaled = page.getViewport({ scale: 1.0 });
+                    window.currentPdfScale = vWidth / unscaled.width;
+                    document.getElementById('scale-indicator').textContent = Math.round(window.currentPdfScale * 100) + '%';
+                    renderAllReportPages();
+                });
+            } else if (window.pdfDocInstance) {
+                renderAllReportPages();
+            }
+        }
+
+        // ================= Automatic loader: dashboard OUTSIDE the data folder =================
+        let probing = false;
+        window.addEventListener('error', e => { if (probing) e.preventDefault(); }, true);
+        const IS_FILE = location.protocol === 'file:';
+        function probeFile(url) {
+            return new Promise(res => {
+                const s = document.createElement('script');
+                const done = ok => { s.onload = s.onerror = null; s.remove(); res(ok); };
+                s.onload = () => done(true);
+                s.onerror = () => done(false);
+                s.src = url;
+                document.head.appendChild(s);
+            });
+        }
+        async function fileExists(url) {
+            if (IS_FILE) return probeFile(url);
+            try { const r = await fetch(url, { method: 'HEAD' }); return r.ok; } catch (e) { return false; }
+        }
+        const encRel = rel => rel.split('/').map(encodeURIComponent).join('/');
+        const FIG_FOLDERS = ['', 'Energy_Mix/', 'Elec_LCO2/', 'Sector_Couple_H2/', 'Sector_Couple_H2_CO2Tax100/', 'Sector_Couple_H2_Hybrid/'];
+        const REPORT_NAMES = ['Report PyPSA-Libya.pdf', 'Libya_H2.pdf', 'Report_PyPSA_Libya.pdf', 'main.pdf'];
+
+        async function detectFigureRoot() {
+            const bases = ['Libya_H2/', 'Libya_H2/Libya_H2/', 'libya_h2/', '', '../'];
+            const subs = ['Figures/', ''];
+            const tests = ['fig_Flowchart_Pypsa-Libya_Method.pdf', 'Energy_Mix/fig_No_LCO2_nodal_dispatch_map.pdf',
+                           'fig_Sector_Coupling_Diagram.pdf', 'Elec_LCO2/fig_cost_by_scenario.pdf'];
+            for (const b of bases) for (const s of subs) for (const t of tests) {
+                if (await fileExists(encRel(b + s + t))) return b + s;
+            }
+            return null;
+        }
+
+        function showNativeReport(name, url) {
+            document.getElementById('doc-title-display').innerHTML = 'Report: <strong></strong>';
+            document.querySelector('#doc-title-display strong').textContent = name;
+            const groups = document.querySelectorAll('#pdf-toolbar .tb-group');
+            if (groups[1]) groups[1].style.display = 'none';
+            document.getElementById('page-counter').textContent = '';
+            const dl = document.getElementById('full-report-dl');
+            dl.href = url; dl.download = name;
+            const vp = document.getElementById('canvas-viewport');
+            vp.innerHTML = '';
+            const obj = document.createElement('object');
+            obj.type = 'application/pdf';
+            obj.data = url + '#toolbar=1&navpanes=1&view=FitH';
+            obj.style.cssText = 'width:100%;height:calc(100vh - 210px);min-height:600px;border:none;display:block;';
+            obj.innerHTML = '<p style="color:#fff;padding:20px;">PDF preview not supported in this browser. <a style="color:#93c5fd;" href="' + url + '">Open the report</a></p>';
+            vp.appendChild(obj);
+        }
+
+        async function autoLoadAssets() {
+            const status = document.getElementById('zipStatus');
+            status.style.color = '#475569';
+            status.innerText = 'Automatically locating the Libya_H2 folder...';
+            probing = true;
+            try {
+                const root = await detectFigureRoot();
+                if (root === null) {
+                    status.style.color = '#d97706';
+                    status.innerText = IS_FILE
+                        ? '⚠️ Could not find the Libya_H2 folder next to this HTML. Expected: Libya_H2\\Figures\\... in the same folder as this file.'
+                        : '⚠️ Could not find Libya_H2/Figures on this server (expected beside this HTML).';
+                    return;
+                }
+                window.FOLDER_MODE = true;
+                window.folderFigUrls = {};
+
+                const keys = Array.from(new Set(Array.from(document.querySelectorAll('.figure-viewport[data-fig]'))
+                                 .map(v => v.getAttribute('data-fig')).filter(Boolean)));
+                await Promise.all(keys.map(async key => {
+                    const clean = key.replace(/\\/g, '/');
+                    const cands = clean.includes('/') ? [root + clean] : FIG_FOLDERS.map(f => root + f + clean);
+                    let found = null;
+                    for (const c of cands) { if (await fileExists(encRel(c))) { found = encRel(c); break; } }
+                    window.folderFigUrls[key] = found;
+                }));
+
+                document.querySelectorAll('.figure-card').forEach(card => {
+                    const vp = card.querySelector('.figure-viewport[data-fig]');
+                    if (!vp) return;
+                    const key = vp.getAttribute('data-fig'), u = window.folderFigUrls[key];
+                    if (u) {
+                        const dl = card.querySelector('.caption-download-link');
+                        if (dl) { dl.href = u; dl.download = key.split('/').pop(); }
+                    } else {
+                        const ph = vp.querySelector('.placeholder-msg');
+                        if (ph) ph.textContent = 'Not found in the Libya_H2 folder: ' + key;
+                    }
+                });
+
+                let reportUrl = null, reportName = null;
+                outer: for (const prefix of ['', 'Libya_H2/']) {
+                    for (const n of REPORT_NAMES) {
+                        const u = encRel(prefix + n);
+                        if (await fileExists(u)) { reportUrl = u; reportName = n; break outer; }
+                    }
+                }
+                if (reportUrl) {
+                    let usedPdfJs = false;
+                    if (!IS_FILE) {
+                        try {
+                            const res = await fetch(reportUrl);
+                            const buf = await res.arrayBuffer();
+                            if (new TextDecoder('latin1').decode(buf.slice(0, 5)).startsWith('%PDF')) {
+                                initPdfJsReport(buf, reportName, URL.createObjectURL(new Blob([buf], { type: 'application/pdf' })));
+                                usedPdfJs = true;
+                            }
+                        } catch (e) {}
+                    }
+                    if (!usedPdfJs) showNativeReport(reportName, reportUrl);
+                } else {
+                    const lm = document.getElementById('loading-msg');
+                    if (lm) lm.textContent = 'No report PDF found next to the Libya_H2 folder (expected e.g. "Report PyPSA-Libya.pdf" or "Libya_H2.pdf").';
+                }
+
+                const found = keys.filter(k => window.folderFigUrls[k]).length;
+                status.style.color = '#16a34a';
+                status.innerText = '✅ Libya_H2 folder connected automatically - ' + found + ' of ' + keys.length + ' figures found' +
+                                   (reportName ? ', report: ' + reportName : ', no report PDF found') + '.';
+                const det = document.querySelector('.path-settings details'); if (det) det.open = false;
+                const active = getActiveSection();
+                if (active) renderVisibleCanvases(active);
+            } finally {
+                probing = false;
+            }
+        }
+
+        autoLoadAssets();
+    </script>
+</body>
+</html>
