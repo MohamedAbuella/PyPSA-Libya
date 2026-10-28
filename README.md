@@ -2,9 +2,9 @@
 
 [![Live Dashboard Preview](https://img.shields.io/badge/📊_Explore_Interactive_Dashboard-Click_Here-blue?style=for-the-badge)](https://MohamedAbuella.github.io/PyPSA-Libya/)
 
-An open, high-resolution model of the Libyan electricity system, built on [PyPSA-Earth](https://github.com/pypsa-meets-earth/pypsa-earth).
+The complete model code, input data time series, scenario configuration scripts, and optimization routines are publicly available in this repository. 
 
-The complete model code, input data time series, scenario configuration scripts, and optimization routines are publicly available in this repository.
+This project provides an open, high-resolution model of the Libyan electricity system built on top of the global [PyPSA-Earth](https://github.com/pypsa-meets-earth/pypsa-earth) framework.
 
 ---
 
