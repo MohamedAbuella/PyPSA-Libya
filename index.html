@@ -398,7 +398,6 @@
         <!-- Heading: Pathways and Scenarios -->
         <div class="nav-section-label">Pathways and Scenarios:</div>
 
-
         <!-- ACCORDION 1: Pathway 1 -->
         <div class="accordion-wrapper">
             <div class="accordion-header" onclick="toggleAccordion(this)">
@@ -424,7 +423,7 @@
                 <button class="nav-btn" onclick="showView('sec-p2-c', this)">Scenario C: Grey H2</button>
                 <button class="nav-btn" onclick="showView('sec-p2-all', this)">Cross-Scenario Comparison</button>
                 <button class="nav-btn" onclick="showView('sec-p2-tax', this)">Carbon Tax Impact Comparison (100 €/t)</button>
-                <!-- 6th Sub-Tab for LCOH Sankey Diagrams -->
+                <!-- 6th Sub-Tab for Pathway 2 Sankey Diagrams -->
                 <button class="nav-btn" onclick="showView('sec-p2-sankey', this)">LCOH Cost-Flow Sankey Diagrams</button>
             </div>
         </div>
@@ -441,6 +440,8 @@
                 <button class="nav-btn" onclick="showView('sec-p3-fin', this)">Financial Valuation</button>
                 <button class="nav-btn" onclick="showView('sec-p3-env', this)">Environment & Water</button>
                 <button class="nav-btn" onclick="showView('sec-p3-all', this)">All Hybrid Subsections</button>
+                <!-- 6th Sub-Tab for Pathway 3 Hybrid Sankey Diagram -->
+                <button class="nav-btn" onclick="showView('sec-p3-sankey', this)">LCOH Cost-Flow Sankey Diagram</button>
             </div>
         </div>
 
@@ -990,6 +991,68 @@
             </div>
         </div>
 
+        <!-- ==================== SECTION: PATHWAY 3 HYBRID SANKEY (SUB-TAB 6) ==================== -->
+        <div id="sec-p3-sankey" class="content-view" style="display:none;">
+            <div class="header-box">
+                <div class="header-title">Pathway 3: Levelized Cost of Hydrogen (LCOH) Sankey Diagram</div>
+                <div class="header-subtitle">Interactive cost-flow decomposition for the co-optimized Hybrid pathway under 100 €/tonne CO₂ carbon taxation (70 TWh/year export).</div>
+            </div>
+
+            <!-- Executive KPI Summary Cards (Reconciled with Report Table 7 & Section 6.2) -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-title">Total System Cost</div>
+                    <div class="kpi-value">€9.21 B / yr</div>
+                    <div class="kpi-delta">+159.9% over zero-export baseline</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">Net LCOH (Marginal)</div>
+                    <div class="kpi-value">€2.60 / kg</div>
+                    <div class="kpi-delta">78.15 €/MWh</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">Incremental Net Cost</div>
+                    <div class="kpi-value">€5.47 B / yr</div>
+                    <div class="kpi-delta">Net Export Burden</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">CO₂ Tax Liability</div>
+                    <div class="kpi-value">€0.79 B / yr</div>
+                    <div class="kpi-delta">84.9% CCS Capture Rate</div>
+                </div>
+            </div>
+
+            <div class="figure-card">
+                <!-- Zoom & Action Toolbar -->
+                <div class="sankey-toolbar">
+                    <div class="tb-group">
+                        <span>Diagram: <strong>(c) Hybrid Co-Optimization Flow (100 €/t CO₂ Tax)</strong></span>
+                    </div>
+                    <div class="tb-group">
+                        <button class="tb-btn" onclick="zoomSankey('hybrid', -0.15)">Zoom −</button>
+                        <span id="zoom-indicator-hybrid" class="sankey-zoom-indicator">100%</span>
+                        <button class="tb-btn" onclick="zoomSankey('hybrid', 0.15)">Zoom +</button>
+                        <button class="tb-btn" onclick="zoomSankey('hybrid', 0, true)">Reset</button>
+                    </div>
+                    <div class="tb-group">
+                        <a id="btn-open-sankey-hybrid" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Hybrid.html" target="_blank">🔗 Open Fullscreen</a>
+                        <a id="btn-dl-sankey-hybrid" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Hybrid.html" download="PyPSA_Libya_LCOH_Sankey_Hybrid.html">⬇️ Download HTML</a>
+                    </div>
+                </div>
+
+                <!-- Scrollable Viewport with Zoomable Target -->
+                <div class="sankey-viewport-wrapper" id="viewport-wrapper-hybrid">
+                    <div class="sankey-zoom-target" id="zoom-target-hybrid">
+                        <iframe id="iframe-sankey-hybrid" src="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Hybrid.html" loading="lazy"></iframe>
+                    </div>
+                </div>
+
+                <div class="caption-bar">
+                    <span><strong>Figure (c):</strong> Levelized Cost of Hydrogen (LCOH) breakdown for the Hybrid pathway. SMR with CC captures the dominant share while co-optimizing with wind and solar under shared national grid flexibility.</span>
+                </div>
+            </div>
+        </div>
+
         <!-- ==================== SECTION: APPENDIX ==================== -->
         <div id="sec-appendix" class="content-view" style="display:none;">
             <div class="header-box">
@@ -1069,7 +1132,8 @@
         // --- SANKEY ZOOM CONTROLLER ---
         window.sankeyZoomLevels = {
             'untaxed': 1.0,
-            'taxed': 1.0
+            'taxed': 1.0,
+            'hybrid': 1.0
         };
 
         function zoomSankey(targetKey, delta, isReset = false) {
@@ -1165,7 +1229,7 @@
                 const viewport = page.getViewport({ scale: 1.0 });
                 return viewport.height / viewport.width;
             } catch (e) {
-                return 0.75; // fallback ratio
+                return 0.75;
             }
         }
 
@@ -1386,7 +1450,7 @@
             try { const r = await fetch(url, { method: 'HEAD' }); return r.ok; } catch (e) { return false; }
         }
         const encRel = rel => rel.split('/').map(encodeURIComponent).join('/');
-        const FIG_FOLDERS = ['', 'Energy_Mix/', 'Elec_LCO2/', 'Sector_Couple_H2/', 'Sector_Couple_H2_CO2Tax100/', 'Sector_Couple_H2_Hybrid/'];
+        const FIG_FOLDERS = ['', 'Energy_Mix/', 'Elec_LCO2/', 'Sector_Couple_H2/', 'Sector_Couple_H2_CO2Tax100/', 'Sector_Couple_H2_Hybrid/', 'Sankey Diagrams/'];
         const REPORT_NAMES = ['Report PyPSA-Libya.pdf', 'Libya_H2.pdf', 'Report_PyPSA_Libya.pdf', 'main.pdf'];
 
         async function detectFigureRoot() {
@@ -1414,7 +1478,6 @@
             obj.type = 'application/pdf';
             obj.data = url + '#toolbar=1&navpanes=1&view=FitH';
             obj.style.cssText = 'width:100%;height:calc(100vh - 210px);min-height:600px;border:none;display:block;';
-            obj.innerHTML = '<p style="color:#fff;padding:20px;">PDF preview not supported in this browser. <a style="color:#93c5fd;" href="' + url + '">Open the report</a></p>';
             vp.appendChild(obj);
         }
 
@@ -1431,9 +1494,16 @@
                 'Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100.html',
                 '../Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100.html'
             ];
+            const candidatesHybrid = [
+                'Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Hybrid.html',
+                'Libya_H2/Sankey_Diagrams/PyPSA_Libya_LCOH_Sankey_Hybrid.html',
+                'Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Hybrid.html',
+                '../Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Hybrid.html'
+            ];
 
             let pathUntaxed = 'Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Untaxed.html';
             let pathTaxed = 'Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100.html';
+            let pathHybrid = 'Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Hybrid.html';
 
             for (const p of candidatesUntaxed) {
                 if (await fileExists(encRel(p))) { pathUntaxed = p; break; }
@@ -1441,21 +1511,33 @@
             for (const p of candidatesTaxed) {
                 if (await fileExists(encRel(p))) { pathTaxed = p; break; }
             }
+            for (const p of candidatesHybrid) {
+                if (await fileExists(encRel(p))) { pathHybrid = p; break; }
+            }
 
+            // Bind Untaxed Diagram
             const ifrU = document.getElementById('iframe-sankey-untaxed');
-            const ifrT = document.getElementById('iframe-sankey-taxed');
             if (ifrU) ifrU.src = pathUntaxed;
-            if (ifrT) ifrT.src = pathTaxed;
-
             const btnOpenU = document.getElementById('btn-open-sankey-untaxed');
             const btnDlU = document.getElementById('btn-dl-sankey-untaxed');
             if (btnOpenU) btnOpenU.href = pathUntaxed;
             if (btnDlU) btnDlU.href = pathUntaxed;
 
+            // Bind Taxed Diagram
+            const ifrT = document.getElementById('iframe-sankey-taxed');
+            if (ifrT) ifrT.src = pathTaxed;
             const btnOpenT = document.getElementById('btn-open-sankey-taxed');
             const btnDlT = document.getElementById('btn-dl-sankey-taxed');
             if (btnOpenT) btnOpenT.href = pathTaxed;
             if (btnDlT) btnDlT.href = pathTaxed;
+
+            // Bind Hybrid Diagram
+            const ifrH = document.getElementById('iframe-sankey-hybrid');
+            if (ifrH) ifrH.src = pathHybrid;
+            const btnOpenH = document.getElementById('btn-open-sankey-hybrid');
+            const btnDlH = document.getElementById('btn-dl-sankey-hybrid');
+            if (btnOpenH) btnOpenH.href = pathHybrid;
+            if (btnDlH) btnDlH.href = pathHybrid;
         }
 
         async function autoLoadAssets() {
