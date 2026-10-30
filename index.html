@@ -373,6 +373,16 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             background-color: #ffffff;
         }
+
+        /* --- Sankey case switch & notes --- */
+        .case-switch { display:inline-flex; background:#e2e8f0; border-radius:8px; padding:4px; gap:4px; margin-bottom:20px; }
+        .case-btn { border:none; background:transparent; padding:8px 20px; border-radius:6px; font-size:0.9rem; font-weight:600; color:#475569; cursor:pointer; }
+        .case-btn:hover { color: var(--primary); }
+        .case-btn.active { background:#fff; color: var(--primary); box-shadow:0 1px 3px rgba(0,0,0,0.12); }
+        .def-box { background:#f8fafc; border-left:4px solid #3b82f6; padding:12px 18px; margin:15px 0 20px 0; border-radius:4px; font-size:0.92rem; color:#334155; line-height:1.5; }
+        .def-formula { text-align:center; margin:8px 0; font-family:'Courier New',Courier,monospace; font-weight:bold; color:#1e293b; }
+        .sankey-note { font-size:0.88rem; color:#475569; margin-bottom:14px; }
+        .sankey-subtabs { flex-wrap: wrap; }
     </style>
 </head>
 <body>
@@ -665,117 +675,211 @@
             </table>
         </div>
 
-	<!-- ==================== SECTION: PATHWAY 2 SANKEY DIAGRAMS (SUB-TAB 6) ==================== -->
+<!-- ==================== SECTION: PATHWAY 2 SANKEY DIAGRAMS ==================== -->
         <div id="sec-p2-sankey" class="content-view" style="display:none;">
             <div class="header-box">
-                <div class="header-title">Pathway 2: Gross Levelized Cost of Hydrogen (Gross LCOH) Sankey Diagrams</div>
-                <div class="header-subtitle">Interactive cost-flow decomposition tracing CAPEX, OPEX, and carbon liabilities into delivered export costs (€/kg H₂).</div>          
+                <div class="header-title">Pathway 2: Net Levelized Cost of Hydrogen (Net LCOH) Sankey Diagrams</div>
+                <div class="header-subtitle">Interactive cost-flow decomposition tracing CAPEX, OPEX, and carbon liabilities into the net cost of exported hydrogen (€/kg H₂) for Green, Blue and Grey pathways — with and without a carbon tax.</div>
+            </div>
 
-<div style="background: #f8fafc; border-left: 4px solid #3b82f6; padding: 12px 18px; margin: 15px 0 20px 0; border-radius: 4px; font-size: 0.92rem; color: #334155; line-height: 1.5;">
-                <strong>Definition of Gross LCOH:</strong> Allocates the total system cost covering both domestic electricity demand and the 70 TWh/year export directly per kg of exported hydrogen. <em>(Unlike Net LCOH, it does not subtract the domestic baseline grid cost).</em>
-                <div style="text-align: center; margin: 8px 0; font-family: 'Courier New', Courier, monospace; font-weight: bold; color: #1e293b;">
-                    Gross LCOH = ( Total Annualized System Cost ) / ( Exported H₂ Mass )
+            <!-- Main case selector: Untaxed vs Taxed -->
+            <div class="case-switch">
+                <button class="case-btn active" onclick="switchSankeyCase(this, 'sankey-case-u')">(a) Untaxed Baseline</button>
+                <button class="case-btn" onclick="switchSankeyCase(this, 'sankey-case-t')">(b) 100 €/tonne CO₂ Tax</button>
+            </div>
+
+            <div id="sankey-case-u" class="sankey-case-panel" style="display:block;">
+                <div class="kpi-grid"><div class="kpi-card"><div class="kpi-title">Net LCOH · Green (A)</div><div class="kpi-value">€4.89 / kg H₂</div><div class="kpi-delta neg">146.56 €/MWh (LHV)</div></div><div class="kpi-card"><div class="kpi-title">Net LCOH · Blue (B)</div><div class="kpi-value">€2.55 / kg H₂</div><div class="kpi-delta">76.59 €/MWh (LHV)</div></div><div class="kpi-card"><div class="kpi-title">Net LCOH · Grey (C)</div><div class="kpi-value">€2.13 / kg H₂</div><div class="kpi-delta">63.95 €/MWh (LHV)</div></div><div class="kpi-card"><div class="kpi-title">Lowest Untaxed Net LCOH</div><div class="kpi-value">Grey H₂ (C)</div><div class="kpi-delta">Blue is +€0.42 / kg</div></div></div>
+                <div class="sankey-note"><strong>Untaxed baseline:</strong> no carbon price. Use the tabs below to move between the Green, Blue and Grey cost-flow diagrams, or open the side-by-side comparison.</div>
+                <div class="tab-bar sankey-subtabs"><button class="tab-btn active" onclick="switchTab(this, 'sankey-pane-u-a')">🟢 Scenario A: Green H₂</button><button class="tab-btn" onclick="switchTab(this, 'sankey-pane-u-b')">🔵 Scenario B: Blue H₂</button><button class="tab-btn" onclick="switchTab(this, 'sankey-pane-u-c')">⚪ Scenario C: Grey H₂</button><button class="tab-btn" onclick="switchTab(this, 'sankey-pane-u-cmp')">📊 Comparison (A · B · C)</button></div>
+                <div id="sankey-pane-u-a" class="tab-pane active">
+                    <div class="figure-card">
+                        <div class="sankey-toolbar">
+                            <div class="tb-group"><span>Diagram: <strong>Scenario A: Green H₂ — Untaxed Baseline</strong></span></div>
+                            <div class="tb-group">
+                                <button class="tb-btn" onclick="zoomSankey('u-a', -0.15)">Zoom −</button>
+                                <span id="zoom-indicator-u-a" class="sankey-zoom-indicator">100%</span>
+                                <button class="tb-btn" onclick="zoomSankey('u-a', 0.15)">Zoom +</button>
+                                <button class="tb-btn" onclick="zoomSankey('u-a', 0, true)">Reset</button>
+                            </div>
+                            <div class="tb-group">
+                                <a id="btn-open-sankey-u-a" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_scenario_a.html" target="_blank">🔗 Open Fullscreen</a>
+                                <a id="btn-dl-sankey-u-a" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_scenario_a.html" download="PyPSA_Libya_LCOH_Sankey_scenario_a.html">⬇️ Download HTML</a>
+                            </div>
+                        </div>
+                        <div class="sankey-viewport-wrapper" id="viewport-wrapper-u-a">
+                            <div class="sankey-zoom-target" id="zoom-target-u-a">
+                                <iframe id="iframe-sankey-u-a" src="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_scenario_a.html" loading="lazy"></iframe>
+                            </div>
+                        </div>
+                        <div class="caption-bar"><span>Scenario A: Green H₂ · Untaxed Baseline · Net LCOH cost-flow (€/kg H₂)</span></div>
+                    </div>
+                </div>
+                <div id="sankey-pane-u-b" class="tab-pane">
+                    <div class="figure-card">
+                        <div class="sankey-toolbar">
+                            <div class="tb-group"><span>Diagram: <strong>Scenario B: Blue H₂ — Untaxed Baseline</strong></span></div>
+                            <div class="tb-group">
+                                <button class="tb-btn" onclick="zoomSankey('u-b', -0.15)">Zoom −</button>
+                                <span id="zoom-indicator-u-b" class="sankey-zoom-indicator">100%</span>
+                                <button class="tb-btn" onclick="zoomSankey('u-b', 0.15)">Zoom +</button>
+                                <button class="tb-btn" onclick="zoomSankey('u-b', 0, true)">Reset</button>
+                            </div>
+                            <div class="tb-group">
+                                <a id="btn-open-sankey-u-b" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_scenario_b.html" target="_blank">🔗 Open Fullscreen</a>
+                                <a id="btn-dl-sankey-u-b" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_scenario_b.html" download="PyPSA_Libya_LCOH_Sankey_scenario_b.html">⬇️ Download HTML</a>
+                            </div>
+                        </div>
+                        <div class="sankey-viewport-wrapper" id="viewport-wrapper-u-b">
+                            <div class="sankey-zoom-target" id="zoom-target-u-b">
+                                <iframe id="iframe-sankey-u-b" src="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_scenario_b.html" loading="lazy"></iframe>
+                            </div>
+                        </div>
+                        <div class="caption-bar"><span>Scenario B: Blue H₂ · Untaxed Baseline · Net LCOH cost-flow (€/kg H₂)</span></div>
+                    </div>
+                </div>
+                <div id="sankey-pane-u-c" class="tab-pane">
+                    <div class="figure-card">
+                        <div class="sankey-toolbar">
+                            <div class="tb-group"><span>Diagram: <strong>Scenario C: Grey H₂ — Untaxed Baseline</strong></span></div>
+                            <div class="tb-group">
+                                <button class="tb-btn" onclick="zoomSankey('u-c', -0.15)">Zoom −</button>
+                                <span id="zoom-indicator-u-c" class="sankey-zoom-indicator">100%</span>
+                                <button class="tb-btn" onclick="zoomSankey('u-c', 0.15)">Zoom +</button>
+                                <button class="tb-btn" onclick="zoomSankey('u-c', 0, true)">Reset</button>
+                            </div>
+                            <div class="tb-group">
+                                <a id="btn-open-sankey-u-c" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_scenario_c.html" target="_blank">🔗 Open Fullscreen</a>
+                                <a id="btn-dl-sankey-u-c" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_scenario_c.html" download="PyPSA_Libya_LCOH_Sankey_scenario_c.html">⬇️ Download HTML</a>
+                            </div>
+                        </div>
+                        <div class="sankey-viewport-wrapper" id="viewport-wrapper-u-c">
+                            <div class="sankey-zoom-target" id="zoom-target-u-c">
+                                <iframe id="iframe-sankey-u-c" src="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_scenario_c.html" loading="lazy"></iframe>
+                            </div>
+                        </div>
+                        <div class="caption-bar"><span>Scenario C: Grey H₂ · Untaxed Baseline · Net LCOH cost-flow (€/kg H₂)</span></div>
+                    </div>
+                </div>
+                <div id="sankey-pane-u-cmp" class="tab-pane">
+                    <div class="figure-card">
+                        <div class="sankey-toolbar">
+                            <div class="tb-group"><span>Diagram: <strong>Comparison (A · B · C) — Untaxed Baseline</strong></span></div>
+                            <div class="tb-group">
+                                <button class="tb-btn" onclick="zoomSankey('u-cmp', -0.15)">Zoom −</button>
+                                <span id="zoom-indicator-u-cmp" class="sankey-zoom-indicator">100%</span>
+                                <button class="tb-btn" onclick="zoomSankey('u-cmp', 0.15)">Zoom +</button>
+                                <button class="tb-btn" onclick="zoomSankey('u-cmp', 0, true)">Reset</button>
+                            </div>
+                            <div class="tb-group">
+                                <a id="btn-open-sankey-u-cmp" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Comparison.html" target="_blank">🔗 Open Fullscreen</a>
+                                <a id="btn-dl-sankey-u-cmp" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Comparison.html" download="PyPSA_Libya_LCOH_Sankey_Comparison.html">⬇️ Download HTML</a>
+                            </div>
+                        </div>
+                        <div class="sankey-viewport-wrapper" id="viewport-wrapper-u-cmp">
+                            <div class="sankey-zoom-target" id="zoom-target-u-cmp">
+                                <iframe id="iframe-sankey-u-cmp" src="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Comparison.html" loading="lazy"></iframe>
+                            </div>
+                        </div>
+                        <div class="caption-bar"><span>Comparison (A · B · C) · Untaxed Baseline · Net LCOH cost-flow (€/kg H₂)</span></div>
+                    </div>
                 </div>
             </div>
 
-
-                <!-- INSERTED NOTE BOX END -->
-
-            </div>
-
-
-            <!-- Executive KPI Summary Cards -->
-            <div class="kpi-grid">
-                <div class="kpi-card">
-                    <div class="kpi-title">Lower Untaxed Cost</div>
-                    <div class="kpi-value">€2.78 / kg H₂</div>
-                    <div class="kpi-delta">Scenario C (Grey H₂)</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-title">Lower Taxed Cost</div>
-                    <div class="kpi-value">€3.93 / kg H₂</div>
-                    <div class="kpi-delta">Scenario B (Blue H₂)</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-title">Higher Untaxed Cost</div>
-                    <div class="kpi-value">€5.84 / kg H₂</div>
-                    <div class="kpi-delta neg">Scenario A (Green H₂)</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-title">Higher Taxed Cost</div>
-                    <div class="kpi-value">€6.16 / kg H₂</div>
-                    <div class="kpi-delta neg">Scenario A (Green H₂)</div>
-                </div>
-            </div>
-
-            <!-- Sankey Sub-Tabs (2 Tabs Only) -->
-            <div class="tab-bar">
-                <button class="tab-btn active" onclick="switchTab(this, 'sankey-tab-untaxed')">(a) Untaxed Baseline</button>
-                <button class="tab-btn" onclick="switchTab(this, 'sankey-tab-taxed')">(b) 100 €/tonne CO₂ Tax</button>
-            </div>
-
-            <!-- Tab 1: Untaxed Sankey -->
-            <div id="sankey-tab-untaxed" class="tab-pane active">
-                <div class="figure-card">
-                    <!-- Zoom & Action Toolbar -->
-                    <div class="sankey-toolbar">
-                        <div class="tb-group">
-                            <span>Diagram: <strong>(a) Untaxed Baseline Flow</strong></span>
+            <div id="sankey-case-t" class="sankey-case-panel" style="display:none;">
+                <div class="kpi-grid"><div class="kpi-card"><div class="kpi-title">Net LCOH · Green (A)</div><div class="kpi-value">€4.88 / kg H₂</div><div class="kpi-delta neg">146.56 €/MWh (LHV)</div></div><div class="kpi-card"><div class="kpi-title">Net LCOH · Blue (B)</div><div class="kpi-value">€2.55 / kg H₂</div><div class="kpi-delta">76.58 €/MWh (LHV)</div></div><div class="kpi-card"><div class="kpi-title">Net LCOH · Grey (C)</div><div class="kpi-value">€3.02 / kg H₂</div><div class="kpi-delta neg">90.54 €/MWh (LHV)</div></div><div class="kpi-card"><div class="kpi-title">Lowest Taxed Net LCOH</div><div class="kpi-value">Blue H₂ (B)</div><div class="kpi-delta">Grey shifts (+€0.89 / kg)</div></div></div>
+                <div class="sankey-note"><strong>Carbon-taxed case (100 €/t CO₂):</strong> same layout as the untaxed case; the emissions liability appears as an additional cost flow in each diagram.</div>
+                <div class="tab-bar sankey-subtabs"><button class="tab-btn active" onclick="switchTab(this, 'sankey-pane-t-a')">🟢 Scenario A: Green H₂</button><button class="tab-btn" onclick="switchTab(this, 'sankey-pane-t-b')">🔵 Scenario B: Blue H₂</button><button class="tab-btn" onclick="switchTab(this, 'sankey-pane-t-c')">⚪ Scenario C: Grey H₂</button><button class="tab-btn" onclick="switchTab(this, 'sankey-pane-t-cmp')">📊 Comparison (A · B · C)</button></div>
+                <div id="sankey-pane-t-a" class="tab-pane active">
+                    <div class="figure-card">
+                        <div class="sankey-toolbar">
+                            <div class="tb-group"><span>Diagram: <strong>Scenario A: Green H₂ — 100 €/t CO₂ Tax</strong></span></div>
+                            <div class="tb-group">
+                                <button class="tb-btn" onclick="zoomSankey('t-a', -0.15)">Zoom −</button>
+                                <span id="zoom-indicator-t-a" class="sankey-zoom-indicator">100%</span>
+                                <button class="tb-btn" onclick="zoomSankey('t-a', 0.15)">Zoom +</button>
+                                <button class="tb-btn" onclick="zoomSankey('t-a', 0, true)">Reset</button>
+                            </div>
+                            <div class="tb-group">
+                                <a id="btn-open-sankey-t-a" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100/PyPSA_Libya_LCOH_Sankey_scenario_a.html" target="_blank">🔗 Open Fullscreen</a>
+                                <a id="btn-dl-sankey-t-a" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100/PyPSA_Libya_LCOH_Sankey_scenario_a.html" download="PyPSA_Libya_LCOH_Sankey_scenario_a.html">⬇️ Download HTML</a>
+                            </div>
                         </div>
-                        <div class="tb-group">
-                            <button class="tb-btn" onclick="zoomSankey('untaxed', -0.15)">Zoom −</button>
-                            <span id="zoom-indicator-untaxed" class="sankey-zoom-indicator">100%</span>
-                            <button class="tb-btn" onclick="zoomSankey('untaxed', 0.15)">Zoom +</button>
-                            <button class="tb-btn" onclick="zoomSankey('untaxed', 0, true)">Reset</button>
+                        <div class="sankey-viewport-wrapper" id="viewport-wrapper-t-a">
+                            <div class="sankey-zoom-target" id="zoom-target-t-a">
+                                <iframe id="iframe-sankey-t-a" src="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100/PyPSA_Libya_LCOH_Sankey_scenario_a.html" loading="lazy"></iframe>
+                            </div>
                         </div>
-                        <div class="tb-group">
-                            <a id="btn-open-sankey-untaxed" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Untaxed.html" target="_blank">🔗 Open Fullscreen</a>
-                            <a id="btn-dl-sankey-untaxed" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Untaxed.html" download="PyPSA_Libya_LCOH_Sankey_Untaxed.html">⬇️ Download HTML</a>
-                        </div>
-                    </div>
-
-                    <!-- Scrollable Viewport with Zoomable Target -->
-                    <div class="sankey-viewport-wrapper" id="viewport-wrapper-untaxed">
-                        <div class="sankey-zoom-target" id="zoom-target-untaxed">
-                            <iframe id="iframe-sankey-untaxed" src="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Untaxed.html" loading="lazy"></iframe>
-                        </div>
-                    </div>
-
-                    <div class="caption-bar">
-                        <span> </span>
+                        <div class="caption-bar"><span>Scenario A: Green H₂ · 100 €/t CO₂ Tax · Net LCOH cost-flow (€/kg H₂)</span></div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Tab 2: Taxed Sankey -->
-            <div id="sankey-tab-taxed" class="tab-pane">
-                <div class="figure-card">
-                    <!-- Zoom & Action Toolbar -->
-                    <div class="sankey-toolbar">
-                        <div class="tb-group">
-                            <span>Diagram: <strong>(b) 100 €/tonne CO₂ Tax Flow</strong></span>
+                <div id="sankey-pane-t-b" class="tab-pane">
+                    <div class="figure-card">
+                        <div class="sankey-toolbar">
+                            <div class="tb-group"><span>Diagram: <strong>Scenario B: Blue H₂ — 100 €/t CO₂ Tax</strong></span></div>
+                            <div class="tb-group">
+                                <button class="tb-btn" onclick="zoomSankey('t-b', -0.15)">Zoom −</button>
+                                <span id="zoom-indicator-t-b" class="sankey-zoom-indicator">100%</span>
+                                <button class="tb-btn" onclick="zoomSankey('t-b', 0.15)">Zoom +</button>
+                                <button class="tb-btn" onclick="zoomSankey('t-b', 0, true)">Reset</button>
+                            </div>
+                            <div class="tb-group">
+                                <a id="btn-open-sankey-t-b" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100/PyPSA_Libya_LCOH_Sankey_scenario_b.html" target="_blank">🔗 Open Fullscreen</a>
+                                <a id="btn-dl-sankey-t-b" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100/PyPSA_Libya_LCOH_Sankey_scenario_b.html" download="PyPSA_Libya_LCOH_Sankey_scenario_b.html">⬇️ Download HTML</a>
+                            </div>
                         </div>
-                        <div class="tb-group">
-                            <button class="tb-btn" onclick="zoomSankey('taxed', -0.15)">Zoom −</button>
-                            <span id="zoom-indicator-taxed" class="sankey-zoom-indicator">100%</span>
-                            <button class="tb-btn" onclick="zoomSankey('taxed', 0.15)">Zoom +</button>
-                            <button class="tb-btn" onclick="zoomSankey('taxed', 0, true)">Reset</button>
+                        <div class="sankey-viewport-wrapper" id="viewport-wrapper-t-b">
+                            <div class="sankey-zoom-target" id="zoom-target-t-b">
+                                <iframe id="iframe-sankey-t-b" src="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100/PyPSA_Libya_LCOH_Sankey_scenario_b.html" loading="lazy"></iframe>
+                            </div>
                         </div>
-                        <div class="tb-group">
-                            <a id="btn-open-sankey-taxed" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100.html" target="_blank">🔗 Open Fullscreen</a>
-                            <a id="btn-dl-sankey-taxed" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100.html" download="PyPSA_Libya_LCOH_Sankey_CO2Tax100.html">⬇️ Download HTML</a>
-                        </div>
+                        <div class="caption-bar"><span>Scenario B: Blue H₂ · 100 €/t CO₂ Tax · Net LCOH cost-flow (€/kg H₂)</span></div>
                     </div>
-
-                    <!-- Scrollable Viewport with Zoomable Target -->
-                    <div class="sankey-viewport-wrapper" id="viewport-wrapper-taxed">
-                        <div class="sankey-zoom-target" id="zoom-target-taxed">
-                            <iframe id="iframe-sankey-taxed" src="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100.html" loading="lazy"></iframe>
+                </div>
+                <div id="sankey-pane-t-c" class="tab-pane">
+                    <div class="figure-card">
+                        <div class="sankey-toolbar">
+                            <div class="tb-group"><span>Diagram: <strong>Scenario C: Grey H₂ — 100 €/t CO₂ Tax</strong></span></div>
+                            <div class="tb-group">
+                                <button class="tb-btn" onclick="zoomSankey('t-c', -0.15)">Zoom −</button>
+                                <span id="zoom-indicator-t-c" class="sankey-zoom-indicator">100%</span>
+                                <button class="tb-btn" onclick="zoomSankey('t-c', 0.15)">Zoom +</button>
+                                <button class="tb-btn" onclick="zoomSankey('t-c', 0, true)">Reset</button>
+                            </div>
+                            <div class="tb-group">
+                                <a id="btn-open-sankey-t-c" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100/PyPSA_Libya_LCOH_Sankey_scenario_c.html" target="_blank">🔗 Open Fullscreen</a>
+                                <a id="btn-dl-sankey-t-c" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100/PyPSA_Libya_LCOH_Sankey_scenario_c.html" download="PyPSA_Libya_LCOH_Sankey_scenario_c.html">⬇️ Download HTML</a>
+                            </div>
                         </div>
+                        <div class="sankey-viewport-wrapper" id="viewport-wrapper-t-c">
+                            <div class="sankey-zoom-target" id="zoom-target-t-c">
+                                <iframe id="iframe-sankey-t-c" src="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100/PyPSA_Libya_LCOH_Sankey_scenario_c.html" loading="lazy"></iframe>
+                            </div>
+                        </div>
+                        <div class="caption-bar"><span>Scenario C: Grey H₂ · 100 €/t CO₂ Tax · Net LCOH cost-flow (€/kg H₂)</span></div>
                     </div>
-
-                    <div class="caption-bar">
-                        <span> </span>
+                </div>
+                <div id="sankey-pane-t-cmp" class="tab-pane">
+                    <div class="figure-card">
+                        <div class="sankey-toolbar">
+                            <div class="tb-group"><span>Diagram: <strong>Comparison (A · B · C) — 100 €/t CO₂ Tax</strong></span></div>
+                            <div class="tb-group">
+                                <button class="tb-btn" onclick="zoomSankey('t-cmp', -0.15)">Zoom −</button>
+                                <span id="zoom-indicator-t-cmp" class="sankey-zoom-indicator">100%</span>
+                                <button class="tb-btn" onclick="zoomSankey('t-cmp', 0.15)">Zoom +</button>
+                                <button class="tb-btn" onclick="zoomSankey('t-cmp', 0, true)">Reset</button>
+                            </div>
+                            <div class="tb-group">
+                                <a id="btn-open-sankey-t-cmp" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100/PyPSA_Libya_LCOH_Sankey_Comparison.html" target="_blank">🔗 Open Fullscreen</a>
+                                <a id="btn-dl-sankey-t-cmp" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100/PyPSA_Libya_LCOH_Sankey_Comparison.html" download="PyPSA_Libya_LCOH_Sankey_Comparison.html">⬇️ Download HTML</a>
+                            </div>
+                        </div>
+                        <div class="sankey-viewport-wrapper" id="viewport-wrapper-t-cmp">
+                            <div class="sankey-zoom-target" id="zoom-target-t-cmp">
+                                <iframe id="iframe-sankey-t-cmp" src="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100/PyPSA_Libya_LCOH_Sankey_Comparison.html" loading="lazy"></iframe>
+                            </div>
+                        </div>
+                        <div class="caption-bar"><span>Comparison (A · B · C) · 100 €/t CO₂ Tax · Net LCOH cost-flow (€/kg H₂)</span></div>
                     </div>
                 </div>
             </div>
@@ -1003,40 +1107,34 @@
             </div>
         </div>
 
-	<!-- ==================== SECTION: PATHWAY 3 HYBRID SANKEY (SUB-TAB 6) ==================== -->
+<!-- ==================== SECTION: PATHWAY 3 HYBRID SANKEY (SUB-TAB 6) ==================== -->
         <div id="sec-p3-sankey" class="content-view" style="display:none;">
             <div class="header-box">
-                <div class="header-title">Pathway 3: Gross Levelized Cost of Hydrogen (Gross LCOH) Sankey Diagram</div>
+                <div class="header-title">Pathway 3: Net Levelized Cost of Hydrogen (Net LCOH) Sankey Diagram</div>
                 <div class="header-subtitle">Interactive cost-flow decomposition for the co-optimized Hybrid pathway under 100 €/tonne CO₂ carbon taxation (70 TWh/year export).</div>
-                <div style="background: #f8fafc; border-left: 4px solid #3b82f6; padding: 12px 18px; margin: 15px 0 20px 0; border-radius: 4px; font-size: 0.92rem; color: #334155; line-height: 1.5;">
-                    <strong>Definition of Gross LCOH:</strong> Allocates the total system cost covering both domestic electricity demand and the 70 TWh/year export directly per kg of exported hydrogen. <em>(Unlike Net LCOH, it does not subtract the domestic baseline grid cost).</em>
-                    <div style="text-align: center; margin: 8px 0; font-family: 'Courier New', Courier, monospace; font-weight: bold; color: #1e293b;">
-                        Gross LCOH = ( Total Annualized System Cost ) / ( Exported H₂ Mass )
-                    </div>
-                </div>
             </div>
 
             <!-- Executive KPI Summary Cards (Reconciled with Report Table 7 & Section 6.2) -->
-            <div class="kpi-grid">
+	<div class="kpi-grid">
                 <div class="kpi-card">
-                    <div class="kpi-title">Total System Cost</div>
-                    <div class="kpi-value">€9.21 B / yr</div>
-                    <div class="kpi-delta">+159.9% over zero-export baseline</div>
+                    <div class="kpi-title">Net LCOH (Hybrid)</div>
+                    <div class="kpi-value">€2.60 / kg</div>
+                    <div class="kpi-delta">€2.70 / kg (Taxed) [78.15 €/MWh]</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-title"> LCOH (Gross)</div>
-                    <div class="kpi-value">€4.33 / kg</div>
-                    <div class="kpi-delta">78.15 €/MWh</div>
+                    <div class="kpi-title">Net Export Cost</div>
+                    <div class="kpi-value">€5.47 B / yr</div>
+                    <div class="kpi-delta">€5.67 B / yr (Taxed)</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-title">Highest Cost Element</div>
-                    <div class="kpi-value">€2.77 B / yr</div>
-                    <div class="kpi-delta">Natural Gas Feedstock OPEX</div>
+                    <div class="kpi-title">Domestic Baseline Cost</div>
+                    <div class="kpi-value">€3.22 B / yr</div>
+                    <div class="kpi-delta">€3.81 B / yr (Taxed)</div>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-title">CO₂ Tax Liability</div>
                     <div class="kpi-value">€0.79 B / yr</div>
-                    <div class="kpi-delta">84.9% CCS Capture Rate</div>
+                    <div class="kpi-delta">€0.20 B Export | €0.59 B Baseline</div>
                 </div>
             </div>
 
@@ -1148,18 +1246,14 @@
         window.currentPdfScale = 1.25;
 
         // --- SANKEY ZOOM CONTROLLER ---
-        window.sankeyZoomLevels = {
-            'untaxed': 1.0,
-            'taxed': 1.0,
-            'hybrid': 1.0
-        };
+        window.sankeyZoomLevels = { 'hybrid': 1.0 };   // other keys default to 1.0 on first use
 
         function zoomSankey(targetKey, delta, isReset = false) {
             if (isReset) {
                 window.sankeyZoomLevels[targetKey] = 1.0;
             } else {
-                let newZoom = window.sankeyZoomLevels[targetKey] + delta;
-                newZoom = Math.max(0.6, Math.min(2.2, Math.round(newZoom * 100) / 100));
+                let newZoom = (window.sankeyZoomLevels[targetKey] ?? 1.0) + delta;
+                newZoom = Math.max(0.25, Math.min(2.2, Math.round(newZoom * 100) / 100));
                 window.sankeyZoomLevels[targetKey] = newZoom;
             }
             const currentZoom = window.sankeyZoomLevels[targetKey];
@@ -1174,15 +1268,29 @@
                 targetWrap.style.transformOrigin = '0 0';
                 targetWrap.style.transform = `scale(${currentZoom})`;
 
-                // Expand parent scroll bounds when zoomed in
-                if (currentZoom > 1.0) {
-                    targetWrap.style.marginBottom = `${740 * (currentZoom - 1)}px`;
-                    targetWrap.style.marginRight = `${1180 * (currentZoom - 1)}px`;
+                if (currentZoom < 1.0) {
+                    // Zoom OUT: enlarge the iframe's own box by 1/zoom so that, after the
+                    // visual shrink, it still fills the whole viewport. The Sankey then gets
+                    // more room (full diagram visible) instead of being cropped in a small box.
+                    targetWrap.style.width = `${100 / currentZoom}%`;
+                    targetWrap.style.height = `${740 / currentZoom}px`;
                 } else {
-                    targetWrap.style.marginBottom = '0px';
-                    targetWrap.style.marginRight = '0px';
+                    // Zoom IN / 100%: normal box; the scaled overflow is scrollable in the wrapper.
+                    targetWrap.style.width = '100%';
+                    targetWrap.style.height = '740px';
                 }
+                targetWrap.style.marginRight = '0px';
+                targetWrap.style.marginBottom = '0px';
             }
+        }
+
+        // Pathway 2 Sankey: Untaxed / Taxed case switch
+        function switchSankeyCase(btn, panelId) {
+            btn.parentElement.querySelectorAll('.case-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.sankey-case-panel').forEach(p => p.style.display = 'none');
+            const panel = document.getElementById(panelId);
+            if (panel) panel.style.display = 'block';
         }
 
         // Accordion Toggle
@@ -1499,63 +1607,39 @@
             vp.appendChild(obj);
         }
 
+        // Sankey file map (relative to the "Sankey Diagrams" folder)
+        const SANKEY_FILES = {
+            'u-a':   'PyPSA_Libya_LCOH_Sankey_scenario_a.html',
+            'u-b':   'PyPSA_Libya_LCOH_Sankey_scenario_b.html',
+            'u-c':   'PyPSA_Libya_LCOH_Sankey_scenario_c.html',
+            'u-cmp': 'PyPSA_Libya_LCOH_Sankey_Comparison.html',
+            't-a':   'PyPSA_Libya_LCOH_Sankey_CO2Tax100/PyPSA_Libya_LCOH_Sankey_scenario_a.html',
+            't-b':   'PyPSA_Libya_LCOH_Sankey_CO2Tax100/PyPSA_Libya_LCOH_Sankey_scenario_b.html',
+            't-c':   'PyPSA_Libya_LCOH_Sankey_CO2Tax100/PyPSA_Libya_LCOH_Sankey_scenario_c.html',
+            't-cmp': 'PyPSA_Libya_LCOH_Sankey_CO2Tax100/PyPSA_Libya_LCOH_Sankey_Comparison.html',
+            'hybrid':'PyPSA_Libya_LCOH_Sankey_Hybrid.html'
+        };
+
         async function resolveSankeyPaths() {
-            const candidatesUntaxed = [
-                'Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Untaxed.html',
-                'Libya_H2/Sankey_Diagrams/PyPSA_Libya_LCOH_Sankey_Untaxed.html',
-                'Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Untaxed.html',
-                '../Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Untaxed.html'
+            const bases = [
+                'Libya_H2/Sankey Diagrams/',
+                'Libya_H2/Sankey_Diagrams/',
+                'Sankey Diagrams/',
+                '../Libya_H2/Sankey Diagrams/'
             ];
-            const candidatesTaxed = [
-                'Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100.html',
-                'Libya_H2/Sankey_Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100.html',
-                'Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100.html',
-                '../Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100.html'
-            ];
-            const candidatesHybrid = [
-                'Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Hybrid.html',
-                'Libya_H2/Sankey_Diagrams/PyPSA_Libya_LCOH_Sankey_Hybrid.html',
-                'Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Hybrid.html',
-                '../Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Hybrid.html'
-            ];
-
-            let pathUntaxed = 'Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Untaxed.html';
-            let pathTaxed = 'Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_CO2Tax100.html';
-            let pathHybrid = 'Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOH_Sankey_Hybrid.html';
-
-            for (const p of candidatesUntaxed) {
-                if (await fileExists(encRel(p))) { pathUntaxed = p; break; }
+            let base = bases[0];
+            for (const b of bases) {
+                if (await fileExists(encRel(b + SANKEY_FILES['u-a']))) { base = b; break; }
             }
-            for (const p of candidatesTaxed) {
-                if (await fileExists(encRel(p))) { pathTaxed = p; break; }
+            for (const [key, rel] of Object.entries(SANKEY_FILES)) {
+                const path = base + rel;
+                const ifr = document.getElementById('iframe-sankey-' + key);
+                if (ifr) ifr.src = path;
+                const o = document.getElementById('btn-open-sankey-' + key);
+                const d = document.getElementById('btn-dl-sankey-' + key);
+                if (o) o.href = path;
+                if (d) d.href = path;
             }
-            for (const p of candidatesHybrid) {
-                if (await fileExists(encRel(p))) { pathHybrid = p; break; }
-            }
-
-            // Bind Untaxed Diagram
-            const ifrU = document.getElementById('iframe-sankey-untaxed');
-            if (ifrU) ifrU.src = pathUntaxed;
-            const btnOpenU = document.getElementById('btn-open-sankey-untaxed');
-            const btnDlU = document.getElementById('btn-dl-sankey-untaxed');
-            if (btnOpenU) btnOpenU.href = pathUntaxed;
-            if (btnDlU) btnDlU.href = pathUntaxed;
-
-            // Bind Taxed Diagram
-            const ifrT = document.getElementById('iframe-sankey-taxed');
-            if (ifrT) ifrT.src = pathTaxed;
-            const btnOpenT = document.getElementById('btn-open-sankey-taxed');
-            const btnDlT = document.getElementById('btn-dl-sankey-taxed');
-            if (btnOpenT) btnOpenT.href = pathTaxed;
-            if (btnDlT) btnDlT.href = pathTaxed;
-
-            // Bind Hybrid Diagram
-            const ifrH = document.getElementById('iframe-sankey-hybrid');
-            if (ifrH) ifrH.src = pathHybrid;
-            const btnOpenH = document.getElementById('btn-open-sankey-hybrid');
-            const btnDlH = document.getElementById('btn-dl-sankey-hybrid');
-            if (btnOpenH) btnOpenH.href = pathHybrid;
-            if (btnDlH) btnDlH.href = pathHybrid;
         }
 
         async function autoLoadAssets() {
