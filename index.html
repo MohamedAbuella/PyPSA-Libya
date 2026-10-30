@@ -424,7 +424,7 @@
                 <button class="nav-btn" onclick="showView('sec-p2-all', this)">Cross-Scenario Comparison</button>
                 <button class="nav-btn" onclick="showView('sec-p2-tax', this)">Carbon Tax Impact Comparison (100 €/t)</button>
                 <!-- 6th Sub-Tab for Pathway 2 Sankey Diagrams -->
-                <button class="nav-btn" onclick="showView('sec-p2-sankey', this)">LCOH Cost-Flow Sankey Diagrams</button>
+                <button class="nav-btn" onclick="showView('sec-p2-sankey', this)">Cost-Flow Sankey Diagrams</button>
             </div>
         </div>
 
@@ -441,7 +441,7 @@
                 <button class="nav-btn" onclick="showView('sec-p3-env', this)">Environment & Water</button>
                 <button class="nav-btn" onclick="showView('sec-p3-all', this)">All Hybrid Subsections</button>
                 <!-- 6th Sub-Tab for Pathway 3 Hybrid Sankey Diagram -->
-                <button class="nav-btn" onclick="showView('sec-p3-sankey', this)">LCOH Cost-Flow Sankey Diagram</button>
+                <button class="nav-btn" onclick="showView('sec-p3-sankey', this)">Cost-Flow Sankey Diagram</button>
             </div>
         </div>
 
@@ -668,31 +668,31 @@
         <!-- ==================== SECTION: PATHWAY 2 SANKEY DIAGRAMS (SUB-TAB 6) ==================== -->
         <div id="sec-p2-sankey" class="content-view" style="display:none;">
             <div class="header-box">
-                <div class="header-title">Pathway 2: Levelized Cost of Hydrogen (LCOH) Sankey Diagrams</div>
+                <div class="header-title">Pathway 2: Gross Levelized Cost of Hydrogen (Gross LCOH) Sankey Diagrams</div>
                 <div class="header-subtitle">Interactive cost-flow decomposition tracing CAPEX, OPEX, and carbon liabilities into delivered export costs (€/kg H₂).</div>
             </div>
 
             <!-- Executive KPI Summary Cards -->
             <div class="kpi-grid">
                 <div class="kpi-card">
-                    <div class="kpi-title">Untaxed Cost Leader</div>
-                    <div class="kpi-value">€2.13 / kg</div>
-                    <div class="kpi-delta">Scenario C (Grey H₂ Net LCOH)</div>
+                    <div class="kpi-title">Lower Untaxed Cost</div>
+                    <div class="kpi-value">€2.78 / kg H₂</div>
+                    <div class="kpi-delta">Scenario C (Grey H₂)</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-title">Taxed Cost Leader</div>
-                    <div class="kpi-value">€3.93 / kg</div>
-                    <div class="kpi-delta">Scenario B (Blue H₂ / SMR+CC)</div>
+                    <div class="kpi-title">Lower Taxed Cost</div>
+                    <div class="kpi-value">€3.93 / kg H₂</div>
+                    <div class="kpi-delta">Scenario B (Blue H₂)</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-title">CO₂ Penalty on Grey H₂</div>
-                    <div class="kpi-value">+€2.78 / kg</div>
-                    <div class="kpi-delta neg">50.0% of Total System Budget</div>
+                    <div class="kpi-title">Higher Untaxed Cost</div>
+                    <div class="kpi-value">€5.84 / kg H₂</div>
+                    <div class="kpi-delta neg">Scenario A (Green H₂)</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-title">Desalination Overhead</div>
-                    <div class="kpi-value">&lt; €0.015 / kg</div>
-                    <div class="kpi-delta">&lt; 1% Total Levelized Cost</div>
+                    <div class="kpi-title">Higher Taxed Cost</div>
+                    <div class="kpi-value">€6.16 / kg H₂</div>
+                    <div class="kpi-delta neg">Scenario A (Green H₂)</div>
                 </div>
             </div>
 
@@ -994,7 +994,7 @@
         <!-- ==================== SECTION: PATHWAY 3 HYBRID SANKEY (SUB-TAB 6) ==================== -->
         <div id="sec-p3-sankey" class="content-view" style="display:none;">
             <div class="header-box">
-                <div class="header-title">Pathway 3: Levelized Cost of Hydrogen (LCOH) Sankey Diagram</div>
+                <div class="header-title">Pathway 3: Gross Levelized Cost of Hydrogen (Gross LCOH) Sankey Diagram</div>
                 <div class="header-subtitle">Interactive cost-flow decomposition for the co-optimized Hybrid pathway under 100 €/tonne CO₂ carbon taxation (70 TWh/year export).</div>
             </div>
 
@@ -1006,14 +1006,14 @@
                     <div class="kpi-delta">+159.9% over zero-export baseline</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-title">Net LCOH (Marginal)</div>
-                    <div class="kpi-value">€2.60 / kg</div>
+                    <div class="kpi-title"> LCOH (Gross)</div>
+                    <div class="kpi-value">€4.33 / kg</div>
                     <div class="kpi-delta">78.15 €/MWh</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-title">Incremental Net Cost</div>
-                    <div class="kpi-value">€5.47 B / yr</div>
-                    <div class="kpi-delta">Net Export Burden</div>
+                    <div class="kpi-title">Highest Cost Element</div>
+                    <div class="kpi-value">€2.77 B / yr</div>
+                    <div class="kpi-delta">Natural Gas Feedstock OPEX</div>
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-title">CO₂ Tax Liability</div>
@@ -1026,7 +1026,7 @@
                 <!-- Zoom & Action Toolbar -->
                 <div class="sankey-toolbar">
                     <div class="tb-group">
-                        <span>Diagram: <strong>(c) Hybrid Co-Optimization Flow (100 €/t CO₂ Tax)</strong></span>
+                        <span>Diagram: <strong> Hybrid Co-Optimization Flow (100 €/t CO₂ Tax)</strong></span>
                     </div>
                     <div class="tb-group">
                         <button class="tb-btn" onclick="zoomSankey('hybrid', -0.15)">Zoom −</button>
