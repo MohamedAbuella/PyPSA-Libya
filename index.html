@@ -418,6 +418,8 @@
                 <button class="nav-btn" onclick="showView('sec-p1-a', this)">Scenario A: Unlimited CO2 Baseline</button>
                 <button class="nav-btn" onclick="showView('sec-p1-b', this)">Scenario B: Zero-CO2 Carbon-Limited</button>
                 <button class="nav-btn" onclick="showView('sec-p1-all', this)">Comparison (Both Scenarios)</button>
+                <!-- 4th Sub-Tab for Pathway 1 Sankey Diagrams -->
+                <button class="nav-btn" onclick="showView('sec-p1-sankey', this)">Cost-Flow Sankey Diagram</button>
             </div>
         </div>
 
@@ -675,7 +677,71 @@
             </table>
         </div>
 
-<!-- ==================== SECTION: PATHWAY 2 SANKEY DIAGRAMS ==================== -->
+<!-- ==================== SECTION: PATHWAY 1 SANKEY DIAGRAMS ==================== -->
+        <div id="sec-p1-sankey" class="content-view" style="display:none;">
+            <div class="header-box">
+                <div class="header-title">Pathway 1: Levelized Cost of Electricity (LCOE) Sankey Diagrams</div>
+                <div class="header-subtitle">Interactive cost-flow decomposition tracing CAPEX and OPEX by technology into total system cost and LCOE (€/MWh) for the electricity-only pathway — unlimited versus limited CO₂.</div>
+            </div>
+
+            <div class="kpi-grid">
+                <div class="kpi-card"><div class="kpi-title">LCOE · Scenario A (Unlimited CO₂)</div><div class="kpi-value">€36.90 / MWh</div><div class="kpi-delta">€1.98 B / yr · 53.7 TWh served</div></div>
+                <div class="kpi-card"><div class="kpi-title">LCOE · Scenario B (Limited CO₂)</div><div class="kpi-value">€58.94 / MWh</div><div class="kpi-delta neg">Zero-CO₂ carbon-limited grid</div></div>
+                <div class="kpi-card"><div class="kpi-title">Green Premium</div><div class="kpi-value">+€22.04 / MWh</div><div class="kpi-delta neg">B vs. A</div></div>
+                <div class="kpi-card"><div class="kpi-title">Lowest-Cost Case</div><div class="kpi-value">Scenario A</div><div class="kpi-delta">Unlimited CO₂ baseline</div></div>
+            </div>
+
+            <div class="sankey-note">Use the tabs below to move between the unlimited-CO₂ (Scenario A) and limited-CO₂ (Scenario B) cost-flow diagrams.</div>
+            <div class="tab-bar sankey-subtabs"><button class="tab-btn active" onclick="switchTab(this, 'sankey-pane-e-a')">🟠 Scenario A: Unlimited CO₂ (NoLCO2)</button><button class="tab-btn" onclick="switchTab(this, 'sankey-pane-e-b')">🟢 Scenario B: Limited CO₂ (LCO2)</button></div>
+                <div id="sankey-pane-e-a" class="tab-pane active">
+                    <div class="figure-card">
+                        <div class="sankey-toolbar">
+                            <div class="tb-group"><span>Diagram: <strong>Scenario A: Unlimited CO₂ (NoLCO2)</strong></span></div>
+                            <div class="tb-group">
+                                <button class="tb-btn" onclick="zoomSankey('e-a', -0.15)">Zoom −</button>
+                                <span id="zoom-indicator-e-a" class="sankey-zoom-indicator">100%</span>
+                                <button class="tb-btn" onclick="zoomSankey('e-a', 0.15)">Zoom +</button>
+                                <button class="tb-btn" onclick="zoomSankey('e-a', 0, true)">Reset</button>
+                            </div>
+                            <div class="tb-group">
+                                <a id="btn-open-sankey-e-a" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOE_Sankey_NoLCO2.html" target="_blank">🔗 Open Fullscreen</a>
+                                <a id="btn-dl-sankey-e-a" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOE_Sankey_NoLCO2.html" download="PyPSA_Libya_LCOE_Sankey_NoLCO2.html">⬇️ Download HTML</a>
+                            </div>
+                        </div>
+                        <div class="sankey-viewport-wrapper" id="viewport-wrapper-e-a">
+                            <div class="sankey-zoom-target" id="zoom-target-e-a">
+                                <iframe id="iframe-sankey-e-a" src="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOE_Sankey_NoLCO2.html" loading="lazy"></iframe>
+                            </div>
+                        </div>
+                        <div class="caption-bar"><span>Scenario A: Unlimited CO₂ (NoLCO2) · LCOE cost-flow (€/MWh)</span></div>
+                    </div>
+                </div>
+                <div id="sankey-pane-e-b" class="tab-pane">
+                    <div class="figure-card">
+                        <div class="sankey-toolbar">
+                            <div class="tb-group"><span>Diagram: <strong>Scenario B: Limited CO₂ (LCO2)</strong></span></div>
+                            <div class="tb-group">
+                                <button class="tb-btn" onclick="zoomSankey('e-b', -0.15)">Zoom −</button>
+                                <span id="zoom-indicator-e-b" class="sankey-zoom-indicator">100%</span>
+                                <button class="tb-btn" onclick="zoomSankey('e-b', 0.15)">Zoom +</button>
+                                <button class="tb-btn" onclick="zoomSankey('e-b', 0, true)">Reset</button>
+                            </div>
+                            <div class="tb-group">
+                                <a id="btn-open-sankey-e-b" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOE_Sankey_LCO2.html" target="_blank">🔗 Open Fullscreen</a>
+                                <a id="btn-dl-sankey-e-b" class="tb-btn" href="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOE_Sankey_LCO2.html" download="PyPSA_Libya_LCOE_Sankey_LCO2.html">⬇️ Download HTML</a>
+                            </div>
+                        </div>
+                        <div class="sankey-viewport-wrapper" id="viewport-wrapper-e-b">
+                            <div class="sankey-zoom-target" id="zoom-target-e-b">
+                                <iframe id="iframe-sankey-e-b" src="Libya_H2/Sankey Diagrams/PyPSA_Libya_LCOE_Sankey_LCO2.html" loading="lazy"></iframe>
+                            </div>
+                        </div>
+                        <div class="caption-bar"><span>Scenario B: Limited CO₂ (LCO2) · LCOE cost-flow (€/MWh)</span></div>
+                    </div>
+                </div>
+        </div>
+
+        <!-- ==================== SECTION: PATHWAY 2 SANKEY DIAGRAMS ==================== -->
         <div id="sec-p2-sankey" class="content-view" style="display:none;">
             <div class="header-box">
                 <div class="header-title">Pathway 2: Net Levelized Cost of Hydrogen (Net LCOH) Sankey Diagrams</div>
@@ -1617,6 +1683,8 @@
             't-b':   'PyPSA_Libya_LCOH_Sankey_CO2Tax100/PyPSA_Libya_LCOH_Sankey_scenario_b.html',
             't-c':   'PyPSA_Libya_LCOH_Sankey_CO2Tax100/PyPSA_Libya_LCOH_Sankey_scenario_c.html',
             't-cmp': 'PyPSA_Libya_LCOH_Sankey_CO2Tax100/PyPSA_Libya_LCOH_Sankey_Comparison.html',
+            'e-a':   'PyPSA_Libya_LCOE_Sankey_NoLCO2.html',
+            'e-b':   'PyPSA_Libya_LCOE_Sankey_LCO2.html',
             'hybrid':'PyPSA_Libya_LCOH_Sankey_Hybrid.html'
         };
 
